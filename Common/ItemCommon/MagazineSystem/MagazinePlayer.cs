@@ -1,11 +1,9 @@
-﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon.MagazineSystem.UI;
+﻿using SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Bow;
+using SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Bullet;
+using SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Dart;
+using SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Rocket;
+using SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Shell;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Subclasses.Wrenches;
-using SpiritReforged.Common.Visuals;
-using Terraria.Audio;
-using Terraria.ModLoader;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
 
@@ -43,9 +41,8 @@ public class MagazinePlayer : ModPlayer
 	/// Calculates the players true magazine size of their held weapon based on bonuses. Cannot be lower than one
 	/// Will throw exceptions if the player is not holding a magazine weapon. Check with <see cref="GetMagazineWeapon(Player)"/> before calling.
 	/// </summary>
-	/// <param name="player">The player to check the held weapon of</param>
 	/// <returns></returns>
-	public int GetMagazineSize(Player player) => GetMagazineSize(GetMagazineWeapon(player).GetMagazineData()._magazineSize);
+	public int GetMagazineSize() => GetMagazineSize(GetMagazineWeapon(Player).GetMagazineData()._magazineSize);
 
 	/// <summary>
 	/// Calculates the players true reload time based on bonuses. Cannot be lower than 30 (ticks, half a second)
@@ -58,9 +55,7 @@ public class MagazinePlayer : ModPlayer
 	/// Calculates the players true reload time of their held weapon based on bonuses. Cannot be lower than 30 (ticks, half a second)
 	/// Will throw exceptions if the player is not holding a magazine weapon. Check with <see cref="GetMagazineWeapon(Player)"/> before calling.
 	/// </summary>
-	/// <param name="player">The player to check the held weapon of</param>
-	/// <returns></returns>
-	public int GetReloadTime(Player player) => GetReloadTime(GetMagazineWeapon(player).GetMagazineData()._reloadTime);
+	public int GetReloadTime() => GetReloadTime(GetMagazineWeapon(Player).GetMagazineData()._reloadTime);
 
 	/// <summary>
 	/// Returns the <see cref="MagazineGlobalItem"/> of the player's held item.
@@ -162,6 +157,14 @@ public class MagazinePlayer : ModPlayer
 			{
 				case MagazineUIType.Shell:
 					ShellUI.DrawUI(sb, _count, uiSlotMoveTime, maxMoveTime, empoweredCount, empoweredFlashTimer, maxEmpoweredFlashTimer); break;
+				case MagazineUIType.Bullet:
+					BulletUI.DrawUI(sb, _count, uiSlotMoveTime, maxMoveTime, empoweredCount, empoweredFlashTimer, maxEmpoweredFlashTimer); break;
+				case MagazineUIType.Rocket:
+					RocketUI.DrawUI(sb, _count, uiSlotMoveTime, maxMoveTime, empoweredCount, empoweredFlashTimer, maxEmpoweredFlashTimer); break;
+				case MagazineUIType.Dart:
+					DartUI.DrawUI(sb, _count, uiSlotMoveTime, maxMoveTime, empoweredCount, empoweredFlashTimer, maxEmpoweredFlashTimer); break;
+				case MagazineUIType.Bow:
+					BowUI.DrawUI(sb, _count, uiSlotMoveTime, maxMoveTime, empoweredCount, empoweredFlashTimer, maxEmpoweredFlashTimer); break;
 			}
 		}
 	}
@@ -179,6 +182,14 @@ public class MagazinePlayer : ModPlayer
 			{
 				case MagazineUIType.Shell:
 					ammo = ShellUI.OnEject(empoweredCount); break;
+				case MagazineUIType.Bullet:
+					ammo = BulletUI.OnEject(empoweredCount); break;
+				case MagazineUIType.Rocket:
+					ammo = RocketUI.OnEject(empoweredCount); break;
+				case MagazineUIType.Dart:
+					ammo = DartUI.OnEject(empoweredCount); break;
+				case MagazineUIType.Bow:
+					ammo = BowUI.OnEject(empoweredCount); break;
 			}
 
 			if (ammo is not null)

@@ -30,12 +30,21 @@ public class LastWord : ModItem
 	class LastWordPlayer : ModPlayer
 	{
 		public bool equipped;
+		public bool canEmpower;
 
 		public override void ResetEffects() => equipped = false;
 		public override void PostUpdateEquips() // we must use PostUpdateEquips to ensure it works with magazine changes
 		{
-			if (equipped && MagazinePlayer.TryGetMagazineWeapon(Player, out var magazineWeapon) && magazineWeapon.AmmoRemaining(Player) == 1 && MagazinePlayer.empoweredCount <= 0 && !magazineWeapon.Reloading)
-				MagazinePlayer.EmpowerShot();
+			if (equipped && MagazinePlayer.TryGetMagazineWeapon(Player, out var magazineWeapon))
+			{
+				if (magazineWeapon.AmmoRemaining(Player) == 1 && MagazinePlayer.empoweredCount <= 0 && !magazineWeapon.Reloading && canEmpower)
+				{
+					MagazinePlayer.EmpowerShot();
+					canEmpower = false;
+				}
+				else if (magazineWeapon.AmmoRemaining(Player) == Player.GetModPlayer<MagazinePlayer>().GetMagazineSize())
+					canEmpower = true;
+			}
 		}
 	}
 

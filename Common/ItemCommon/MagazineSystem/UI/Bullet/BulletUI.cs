@@ -1,15 +1,22 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Ocean.Items.JellyMinion;
 using static Terraria.GameContent.Animations.IL_Actions.Sprites;
 
-namespace SpiritReforged.Common.ItemCommon.MagazineSystem.UI;
-public class ShellUI
+namespace SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Bullet;
+public class BulletUI
 {
-	public class ShellUIAmmo(Vector2 position, Vector2 velocity, int timeLeft, bool empowered = false) : MagazineUIAmmo(position, velocity, timeLeft, empowered)
+	public static readonly Asset<Texture2D> BulletTexture = DrawHelpers.RequestLocal<BulletUI>("BulletUI", false);
+	public static readonly Asset<Texture2D> BulletOutline = DrawHelpers.RequestLocal<BulletUI>("BulletUI_Outline", false);
+	public static readonly Asset<Texture2D> BulletEjectTexture = DrawHelpers.RequestLocal<BulletUI>("BulletUIEject", false);
+	public static readonly Asset<Texture2D> BulletEjectTextureOutline = DrawHelpers.RequestLocal<BulletUI>("BulletUIEject_Outline", false);
+
+	public class BulletUIAmmo(Vector2 position, Vector2 velocity, int timeLeft, bool empowered = false) : MagazineUIAmmo(position, velocity, timeLeft, empowered)
 	{
 		public override void DoUpdate()
 		{
-			_velocity.Y += 0.1f;
+			_velocity.Y += 0.2f;
 			_velocity *= 0.98f;
 
 			offset += _velocity;
@@ -19,8 +26,8 @@ public class ShellUI
 
 		public override void Draw(SpriteBatch sb)
 		{
-			Texture2D texture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell").Value;
-			Texture2D outlineTexture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell_Outline").Value;
+			Texture2D texture = BulletEjectTexture.Value;
+			Texture2D outlineTexture = BulletEjectTextureOutline.Value;
 
 			if (Progress > 0.5f)
 			{
@@ -30,33 +37,34 @@ public class ShellUI
 
 			sb.Draw(texture, offset - Main.screenPosition, null, Main.mouseColor * Progress, rotation, texture.Size() / 2f, _scale, 0f, 0f);
 		}
-	}	
+	}
 
 	public static void DrawUI(SpriteBatch sb, int _count, int uiSlotMoveTime, int maxMoveTime, int empoweredCount, int empoweredFlashTimer, int maxEmpoweredFlashTimer)
 	{
 		if (Main.LocalPlayer.TryGetModPlayer(out MagazinePlayer modPlayer) && MagazinePlayer.TryGetMagazineWeapon(Main.LocalPlayer, out var magazineWeapon))
 		{
-			Texture2D texture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell").Value;
-			Texture2D outlineTexture = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineUIShell_Outline").Value;
+			Texture2D texture = BulletTexture.Value;
+			Texture2D outlineTexture = BulletOutline.Value;
 			Texture2D starTexture = AssetLoader.LoadedTextures["Star"].Value;
 			Texture2D bloomTexture = AssetLoader.LoadedTextures["Bloom"].Value;
 
-			int magazineSize = modPlayer.GetMagazineSize(Main.LocalPlayer);
+			int magazineSize = modPlayer.GetMagazineSize();
 			var magazine = magazineWeapon.GetCurrentMagazine();
 
-			const int offsetSize = 12;
+			const int offsetSize = 8;
+			const int maxVisible = 10;
 
 			for (int i = 0; i < _count; i++)
 			{
 				float fadeOut = (i + 1) / (float)_count;
 
-				if (_count >= 5)
+				if (_count >= maxVisible)
 				{
-					if (i < _count - 5) // anything more than five just gets turned invisible
+					if (i < _count - maxVisible) // anything more than maxVisible just gets turned invisible
 						fadeOut = 0f;
 					else
 					{
-						fadeOut = (i - (_count - 5)) / 5f;
+						fadeOut = (i - (_count - maxVisible)) / (float)maxVisible;
 					}
 				}
 
@@ -64,7 +72,7 @@ public class ShellUI
 
 				float moveShellUp = MathHelper.Lerp((magazine.AmmoUsed - 1) * offsetSize, magazine.AmmoUsed * offsetSize, uiSlotMoveTime > 0 ? EaseBuilder.EaseCircularOut.Ease(1 - uiSlotMoveTime / (float)maxMoveTime) : 1f);
 
-				if (magazineWeapon.Reloading)
+				if (magazineWeapon.Reloading && uiSlotMoveTime <= 0)
 					moveShellUp = magazineWeapon.GetCurrentMagazine().AmmoUsed * offsetSize;
 
 				Vector2 offset = new Vector2(0, -offsetSize * i - moveShellUp);
@@ -119,6 +127,6 @@ public class ShellUI
 	{
 		Vector2 position = Main.MouseWorld + new Vector2(32, 0) / Main.GameViewMatrix.Zoom;
 
-		return new ShellUIAmmo(position, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(3f, 6f), 45, empoweredCount > 0);
+		return new BulletUIAmmo(position, -Vector2.UnitY.RotatedByRandom(0.75f) * Main.rand.NextFloat(4f, 7f), 45, empoweredCount > 0);
 	}
 }

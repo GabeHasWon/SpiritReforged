@@ -102,7 +102,17 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 		}
 	}
 
-	public void ReloadUseStyle(Item item, Player player, Rectangle heldItemFrame, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
+	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
+	{
+		/*if (Item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineWeapon) && magazineWeapon.Reloading)
+		{
+			return false;
+		}*/
+
+		return true;
+	}
+
+	public static void ReloadUseStyle(Item item, Player player, Rectangle heldItemFrame, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
 	{
 		float itemRotation = player.compositeBackArm.rotation + 1.5707964f * player.gravDir;
 		Vector2 itemPosition = player.MountedCenter;
@@ -128,7 +138,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 		ItemVisualHelpers.CleanHoldStyle(player, itemRotation, itemPosition, itemSize, itemOrigin, true, false, true);
 	}
 
-	public void ReloadUseFrame(Item item, Player player, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
+	public static void ReloadUseFrame(Item item, Player player, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
 	{
 		float rotation = shootRotation * player.gravDir + 1.5707964f;
 		float frontArmRotation = shootRotation * player.gravDir + 1.5707964f;

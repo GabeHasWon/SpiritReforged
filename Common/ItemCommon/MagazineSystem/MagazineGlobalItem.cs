@@ -27,7 +27,6 @@ public enum MagazineUIType
 	Bolt = 4, // Crossbows
 	Dart = 5, // Dart Weapons
 	Rocket = 6, // Launchers
-	Misc = 7, // .. Anything else? Might not be needed
 }
 
 /// <summary>
@@ -50,6 +49,37 @@ public record struct CurrentMagazine(int AmmoUsed, int ReloadTimer);
 
 public class MagazineGlobalItem : GlobalItem
 {
+	// testing UI
+	public override void SetDefaults(Item entity)
+	{
+		switch (entity.type)
+		{
+			case ItemID.TheUndertaker:
+				ActivateMagazine(entity, null, new MagazineData(0, 1, 20, 120), Vector2.Zero, Vector2.Zero, MagazineReloadType.EntireMagazine, MagazineUIType.Bullet, false);
+				break;
+
+			case ItemID.Musket:
+				ActivateMagazine(entity, null, new MagazineData(0, 1, 20, 120), Vector2.Zero, Vector2.Zero, MagazineReloadType.OneAtATime, MagazineUIType.Bullet, false);
+				break;
+
+			case ItemID.Minishark:
+				ActivateMagazine(entity, null, new MagazineData(0, 1, 20, 240), Vector2.Zero, Vector2.Zero, MagazineReloadType.EntireMagazine, MagazineUIType.Bullet, false);
+				break;
+
+			case ItemID.SnowmanCannon:
+				ActivateMagazine(entity, null, new MagazineData(0, 1, 5, 240), Vector2.Zero, Vector2.Zero, MagazineReloadType.OneAtATime, MagazineUIType.Rocket, false);
+				break;
+
+			case ItemID.DartPistol:
+				ActivateMagazine(entity, null, new MagazineData(0, 1, 15, 120), Vector2.Zero, Vector2.Zero, MagazineReloadType.EntireMagazine, MagazineUIType.Dart, false);
+				break;
+
+			case ItemID.DemonBow:
+				ActivateMagazine(entity, null, new MagazineData(0, 1, 15, 120), Vector2.Zero, Vector2.Zero, MagazineReloadType.OneAtATime, MagazineUIType.Bow, false);
+				break;
+		}
+	}
+
 	/// Animation methods for the custom use style. If null, default will be used, unless <see cref="_useCustomUseStyle"/> is false
 	public delegate void ShotUseStyle(Item item, Player player, Rectangle heldItemFrame, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin);
 	public delegate void ShotUseFrame(Item item, Player player, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin);
@@ -102,8 +132,8 @@ public class MagazineGlobalItem : GlobalItem
 
 	public bool Active => _magazineData is not null;
 	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0;
-	public int AmmoRemaining(Player player) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize(player) - _currentMagazine.AmmoUsed;
-	public float MagazineProgress(Player player) => 1f - AmmoRemaining(player) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize(player);
+	public int AmmoRemaining(Player player) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize() - _currentMagazine.AmmoUsed;
+	public float MagazineProgress(Player player) => 1f - AmmoRemaining(player) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize();
 	public void ActivateMagazine(Item item, ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, MagazineReloadType reloadType, MagazineUIType uiType, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
 	{
 		oldHoldStyle = item.holdStyle;
@@ -268,7 +298,7 @@ public class MagazineGlobalItem : GlobalItem
 
 	public override void HoldStyle(Item item, Player player, Rectangle heldItemFrame)
 	{
-		if (Active && Reloading)
+		if (Active && Reloading && _useCustomUseStyle)
 		{
 			if (Main.myPlayer == player.whoAmI)
 				player.direction = _shootDirection;
@@ -323,7 +353,7 @@ public class MagazineGlobalItem : GlobalItem
 
 	public override void HoldItem(Item item, Player player)
 	{
-		if (Active && Reloading)
+		if (Active && Reloading && _useCustomUseStyle)
 		{
 			if (Main.myPlayer == player.whoAmI)
 				player.direction = _shootDirection;
@@ -414,6 +444,37 @@ public class MagazineGlobalItem : GlobalItem
 				}*/
 
 				_currentMagazine.ReloadTimer--;
+
+				if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
+				{
+					float interpolant = 1 - MagazineProgress(player);
+					float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
+
+					const float padding = 0.25f;
+
+					if (reloadProgress is > padding and < (1f - padding))
+					{
+						float lerp = 1f - (reloadProgress - padding) / (1f - padding * 2);
+
+						int old = _currentMagazine.AmmoUsed;
+						_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
+
+						if (old != _currentMagazine.AmmoUsed)
+						{
+							MagazinePlayer.UnempowerShot();
+
+							SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+						}
+					}
+				}
+				else if (ReloadType == MagazineReloadType.EntireMagazine)
+				{
+					if (_currentMagazine.ReloadTimer == 0)
+						_currentMagazine.AmmoUsed = 0;
+				}
+
+				if (_currentMagazine.ReloadTimer == 0)
+					item.holdStyle = oldHoldStyle;
 			}
 			else
 			{
@@ -432,37 +493,6 @@ public class MagazineGlobalItem : GlobalItem
 					}
 				}			
 			}
-
-			if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
-			{
-				float interpolant = 1 - MagazineProgress(player);
-				float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
-
-				const float padding = 0.25f;
-
-				if (reloadProgress is > padding and < (1f - padding))
-				{
-					float lerp = 1f - (reloadProgress - padding) / (1f - padding * 2);
-
-					int old = _currentMagazine.AmmoUsed;
-					_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
-
-					if (old != _currentMagazine.AmmoUsed)
-					{
-						MagazinePlayer.UnempowerShot();
-
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
-					}
-				}
-			}
-			else if (ReloadType == MagazineReloadType.EntireMagazine)
-			{
-				if (_currentMagazine.ReloadTimer == 0)
-					_currentMagazine.AmmoUsed = 0;
-			}
-
-			if (_currentMagazine.ReloadTimer == 0) 
-				item.holdStyle = oldHoldStyle;
 		}
 	}
 
