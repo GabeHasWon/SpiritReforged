@@ -104,10 +104,42 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
 	{
-		/*if (Item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineWeapon) && magazineWeapon.Reloading)
+		if (Item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineWeapon) && magazineWeapon.Reloading)
 		{
+			float animationProgress = magazineWeapon.ReloadProgress(drawInfo.drawPlayer, Item);
+
+			var handle = ModContent.Request<Texture2D>(Texture + "_Handle").Value;
+			var barrel = ModContent.Request<Texture2D>(Texture + "_Barrel").Value;
+
+			SpriteEffects flip = drawInfo.drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : 0;
+
+			var handleData = new DrawData(handle, drawData.position, drawData.sourceRect, drawData.color, drawData.rotation, drawData.origin, drawData.scale, flip, 0f);
+
+			float maxRotation = 0.9f * drawInfo.drawPlayer.direction;
+
+			float barrelRot = drawData.rotation;
+			if (animationProgress is > 0.1f and < 0.4f)
+			{
+				float lerp = EaseBuilder.EaseCircularOut.Ease((animationProgress - 0.1f) / 0.3f);
+
+				barrelRot += MathHelper.Lerp(0, maxRotation, lerp);
+			}
+			else if (animationProgress is >= 0.4f and < 0.7f)
+				barrelRot += maxRotation;
+			else if (animationProgress >= 0.7f)
+			{
+				float lerp = EaseBuilder.EaseInOutBack().Ease((animationProgress - 0.7f) / 0.3f);
+
+				barrelRot += MathHelper.Lerp(maxRotation, 0, lerp);
+			}
+			
+			var barrelData = new DrawData(barrel, drawData.position + new Vector2(36 * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation), null, drawData.color, barrelRot, barrel.Size() / 2f, drawData.scale, flip, 0f);
+
+			drawInfo.DrawDataCache.Add(handleData);
+			drawInfo.DrawDataCache.Add(barrelData);
+
 			return false;
-		}*/
+		}
 
 		return true;
 	}
@@ -165,7 +197,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 			if (animProgress > 0.75f)
 			{
 				float lerper = (animProgress - 0.75f) / 0.25f;
-				rotation += MathHelper.Lerp(0.25f, 0f, EaseFunction.EaseCircularInOut.Ease(lerper)) * player.direction;
+				rotation += MathHelper.Lerp(0.25f, 0f, EaseFunction.EaseInOutBack().Ease(lerper)) * player.direction;
 			}
 			else
 			{

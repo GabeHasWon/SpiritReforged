@@ -30,12 +30,28 @@ public abstract class EaseFunction
 
 	public static readonly EaseFunction EaseSine = new PolynomialEase((float x) => (float)Math.Sin(x * MathHelper.Pi));
 
+	public static EaseFunction EaseInBack(double maxValue = 1.70158)
+	{
+		double c1 = maxValue;
+		double c3 = c1 + 1;
+
+		return new PolynomialEase((float x) => (float)(c3 * Math.Pow(x, 3) - c1 * Math.Pow(x, 2)));
+	}
+
 	public static EaseFunction EaseOutBack(double maxValue = 1.70158)
 	{
 		double c1 = maxValue;
 		double c3 = c1 + 1;
 
 		return new PolynomialEase((float x) => (float)(1 + c3 * Math.Pow(x - 1, 3) + c1 * Math.Pow(x - 1, 2)));
+	}
+
+	public static EaseFunction EaseInOutBack(double maxValue = 1.70158)
+	{
+		double c1 = maxValue;
+		double c2 = c1 * 1.525;
+
+		return new PolynomialEase(x => x < 0.5 ? ((float)(Math.Pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2) / 2)) : ((float)(Math.Pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2));
 	}
 
 	public static EaseFunction EaseOutElastic(double maxValue = 2.09439) => new PolynomialEase((float x) => x switch

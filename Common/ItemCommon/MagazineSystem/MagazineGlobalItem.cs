@@ -132,6 +132,17 @@ public class MagazineGlobalItem : GlobalItem
 
 	public bool Active => _magazineData is not null;
 	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0;
+	public float ReloadProgress(Player player, Item item)
+	{
+		float interpolant = 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
+
+		// When a reload happens right after firing, Terraria stashes a clone of the item and this clone does not update variables, like the reload timer,
+		// So the timer does not update during this time, which causes a jump in our animation. This just uses the players item and item time to recalculate it to account for it.
+		if (interpolant == 0)
+			interpolant = 1f - (_currentMagazine.ReloadTimer - (item.useTime - player.itemTime)) / (float)_maxReloadTimer;
+
+		return interpolant;
+	}
 	public int AmmoRemaining(Player player) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize() - _currentMagazine.AmmoUsed;
 	public float MagazineProgress(Player player) => 1f - AmmoRemaining(player) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize();
 	public void ActivateMagazine(Item item, ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, MagazineReloadType reloadType, MagazineUIType uiType, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
@@ -276,12 +287,10 @@ public class MagazineGlobalItem : GlobalItem
 		{
 			if (Reloading)
 			{
-				float animProgress = 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
-
 				if (_reloadUseStyle is not null)
-					_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, animProgress);
+					_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, ReloadProgress(player, item));
 				else
-					ReloadStyle(player, animProgress);
+					ReloadStyle(player, ReloadProgress(player, item));
 			}
 			else
 			{
@@ -303,12 +312,10 @@ public class MagazineGlobalItem : GlobalItem
 			if (Main.myPlayer == player.whoAmI)
 				player.direction = _shootDirection;
 
-			float animProgress = 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
-
 			if (_reloadUseStyle is not null)
-				_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, animProgress);
+				_reloadUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin, ReloadProgress(player, item));
 			else
-				ReloadStyle(player, animProgress);
+				ReloadStyle(player, ReloadProgress(player, item));
 		}
 	}
 
@@ -358,12 +365,10 @@ public class MagazineGlobalItem : GlobalItem
 			if (Main.myPlayer == player.whoAmI)
 				player.direction = _shootDirection;
 
-			float animProgress = 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
-
 			if (_reloadUseFrame is not null && _maxReloadTimer > 0)
-				_reloadUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin, animProgress);
+				_reloadUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin, ReloadProgress(player, item));
 			else
-				ReloadFrame(player, animProgress);
+				ReloadFrame(player, ReloadProgress(player, item));
 		}
 	}
 
