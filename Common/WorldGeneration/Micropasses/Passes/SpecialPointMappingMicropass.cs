@@ -1,8 +1,7 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.DragonFossil;
 using SpiritReforged.Content.Desert.Tiles;
@@ -93,11 +92,11 @@ internal class SpecialPointMappingMicropass : Micropass
 		if (Thorium.Enabled && ((Mod)Thorium).Call("GetBloodChamberBounds") is Rectangle bounds)
 			Add(bounds.Center.X, bounds.Center.Y, InterestType.BloodAltar);
 
-		foreach (Microbiome biome in MicrobiomeSystem.Microbiomes)
+		foreach (MicrobiomeSystem.Microbiome biome in MicrobiomeSystem.Microbiomes)
 		{
-			if (biome is ButterflyShrineBiome butterflyBiome)
+			if (biome is ButterflyMicropass.ButterflyShrineBiome butterflyBiome)
 				Add(butterflyBiome.Position.X, butterflyBiome.Position.Y, InterestType.ButterflyShrine);
-			else if (biome is ZigguratMicrobiome zigguratBiome)
+			else if (biome is ZigguratMicropass.ZigguratBiome zigguratBiome)
 				Add(zigguratBiome.Position.X, zigguratBiome.Position.Y, InterestType.Ziggurat);
 		}
 

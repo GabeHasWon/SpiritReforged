@@ -28,7 +28,7 @@ internal class DesertMicropass : Micropass, IGenerationPage
 
 	PageInfo IGenerationPage.Info => new()
 	{
-		CopiedPage = new UndergroundOasisBiome()
+		CopiedPage = new OasisMicropass()
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;

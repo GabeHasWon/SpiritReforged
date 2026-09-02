@@ -680,6 +680,71 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/LapisDresserItem] Кол-во содержимого комодов"
 				Tooltip: Устанавливает значение разброса количества содержимого в комоде.
 			}
+
+			DebrisMinimum: {
+				// DisplayName: DebrisMinimum
+				// Tooltip: DebrisMinimum
+			}
+
+			DebrisRange: {
+				// DisplayName: DebrisRange
+				// Tooltip: DebrisRange
+			}
+
+			TopPlatChance: {
+				// DisplayName: TopPlatChance
+				// Tooltip: TopPlatChance
+			}
+
+			BottomPlatChance: {
+				// DisplayName: BottomPlatChance
+				// Tooltip: BottomPlatChance
+			}
+
+			FlagpoleChance: {
+				// DisplayName: FlagpoleChance
+				// Tooltip: FlagpoleChance
+			}
+
+			FlagpoleCountMinumum: {
+				// DisplayName: FlagpoleCountMinumum
+				// Tooltip: FlagpoleCountMinumum
+			}
+
+			FlagpoleCountRange: {
+				// DisplayName: FlagpoleCountRange
+				// Tooltip: FlagpoleCountRange
+			}
+
+			FlagpoleHeightMin: {
+				// DisplayName: FlagpoleHeightMin
+				// Tooltip: FlagpoleHeightMin
+			}
+
+			FlagpoleHeightRange: {
+				// DisplayName: FlagpoleHeightRange
+				// Tooltip: FlagpoleHeightRange
+			}
+
+			PotMultiplier: {
+				// DisplayName: PotMultiplier
+				// Tooltip: PotMultiplier
+			}
+
+			ChestChance: {
+				// DisplayName: ChestChance
+				// Tooltip: ChestChance
+			}
+
+			UncommonPotChance: {
+				// DisplayName: UncommonPotChance
+				// Tooltip: UncommonPotChance
+			}
+
+			AbovegroundPillarChance: {
+				// DisplayName: AbovegroundPillarChance
+				// Tooltip: AbovegroundPillarChance
+			}
 		}
 
 		Presets: {

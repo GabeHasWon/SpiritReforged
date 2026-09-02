@@ -8,6 +8,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Jungle.Pineapple;

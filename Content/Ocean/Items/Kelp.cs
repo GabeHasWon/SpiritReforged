@@ -10,7 +10,7 @@ public class Kelp : FloatingItem
 	public override float Weight => base.Weight * 0.9f;
 	public override float Bouyancy => base.Bouyancy * 1.15f;
 
-	public override string Texture => base.Texture + "0"; //Kelp01 ???
+	public override string Texture => base.Texture + "0";
 
 	public override void SetStaticDefaults()
 	{

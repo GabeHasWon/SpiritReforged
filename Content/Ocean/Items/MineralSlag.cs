@@ -76,6 +76,8 @@ public class MineralSlagPickup : MineralSlag
 	public override void SetStaticDefaults()
 	{
 		ItemID.Sets.IsAPickup[Type] = true;
+		ItemID.Sets.ItemsThatShouldNotBeInInventory[Type] = true;
+
 		base.SetStaticDefaults();
 	}
 
@@ -85,14 +87,13 @@ public class MineralSlagPickup : MineralSlag
 		{
 			float duration = 60f * 5;
 			float intensity = (_timeLeft - (TimeLeftMax - duration)) / duration;
-			Texture2D texture = VariantItemRenderer.GetTexture(Item, out Rectangle source);
+			Texture2D texture = VariantItemRenderer.GetTexture(Item, out _);
 
 			Main.EntitySpriteDraw(AssetLoader.LoadedTextures["Bloom"].Value, Item.Center - Main.screenPosition, null,
-				Color.Yellow.Additive() * 0.35f * intensity, rotation, AssetLoader.LoadedTextures["Bloom"].Size() / 2, Item.scale * 0.25f, SpriteEffects.None);
+				Color.Yellow.Additive() * 0.35f * intensity, rotation, AssetLoader.LoadedTextures["Bloom"].Size() / 2, scale * 0.3f, 0);
 
 			for (int i = 0; i < 3; i++)
-				Main.EntitySpriteDraw(texture, Item.Center - Main.screenPosition, source,
-					Color.Orange.Additive() * intensity, rotation, source.Size() / 2, Item.scale + 0.1f * i * intensity, SpriteEffects.None);
+				Item.DrawInWorld(Color.Lerp(Color.BlueViolet, Color.Orange, intensity).Additive() * intensity, rotation, scale, texture);
 		}
 	}
 
@@ -135,6 +136,12 @@ public class MineralSlagPickup : MineralSlag
 					dust.alpha = 150;
 			}
 		}
+	}
+
+	public override void OnStack(Item source, int numToTransfer)
+	{
+		if (source.ModItem is MineralSlagPickup slag)
+			_timeLeft = slag._timeLeft;
 	}
 
 	public override bool CanPickup(Player player) => true;

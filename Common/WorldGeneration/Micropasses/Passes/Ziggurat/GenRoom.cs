@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+﻿namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 
 public abstract class GenRoom
 {
