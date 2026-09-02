@@ -37,7 +37,13 @@ public class GreenSpookyStargrass : GrassTile
 		AddGrassMapEntry();
 		DustType = DustID.Flare_Blue;
 
-		this.AnchorSelfTo(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
+		int[] mergeTypes = [TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants];
+
+		foreach (int type in mergeTypes)
+		{
+			if (TileObjectData.GetTileData(type, 0) is TileObjectData data && data.AnchorValidTiles != null)
+				data.AnchorValidTiles = [.. data.AnchorValidTiles, Type]; //Allow type to anchor to THIS type
+		}
 
 		TileID.Sets.Conversion.Grass[Type] = true;
 	}
@@ -104,7 +110,7 @@ public class GreenSpookyStargrass : GrassTile
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D tex))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D tex))
 			return;
 
 		Tile tile = Main.tile[i, j];

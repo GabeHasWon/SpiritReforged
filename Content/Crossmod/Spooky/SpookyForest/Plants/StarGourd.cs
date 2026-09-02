@@ -118,13 +118,13 @@ internal abstract class StarGourd : ModTile
 
 	public override void PostDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!Info.HasGlow || !TileExtensions.GetVisualInfo(i, j, out _, out Texture2D tex))
+		if (!Info.HasGlow || !TileMethods.GetVisualInfo(i, j, out _, out Texture2D tex))
 			return;
 
 		Tile tile = Main.tile[i, j];
 		var data = TileObjectData.GetTileData(tile);
 		Color color = Color.White * 0.7f * MathF.Sin(i * 0.6f + j * 0.6f + (float)Main.timeForVisualEffects * 0.03f) * 0.3f;
-		spriteBatch.Draw(tex, TileExtensions.DrawPosition(i, j, new Vector2(0, -2)), new Rectangle(tile.TileFrameX, tile.TileFrameY + data.Height * 18, 16, 16), color);
+		spriteBatch.Draw(tex, Helpers.GetTilePosition(i, j) + new Vector2(0, -2), new Rectangle(tile.TileFrameX, tile.TileFrameY + data.Height * 18, 16, 16), color);
 	}
 }
 
@@ -221,7 +221,7 @@ internal class CarvedStarGourd<T>() : ModTile, ILoadItem where T : StarGourd, ne
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) 
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D tex))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D tex))
 			return false;
 
 		Tile tile = Main.tile[i, j];
@@ -231,7 +231,7 @@ internal class CarvedStarGourd<T>() : ModTile, ILoadItem where T : StarGourd, ne
 		if (tile.TileFrameY >= data.Height * 18)
 			frameY -= data.Height * 18;
 
-		Vector2 position = TileExtensions.DrawPosition(i, j, new Vector2(0, -2));
+		Vector2 position = Helpers.GetTilePosition(i, j) + new Vector2(0, -2);
 		spriteBatch.Draw(tex, position, new Rectangle(tile.TileFrameX, frameY, 16, 16), color);
 		spriteBatch.Draw(tex, position, new Rectangle(tile.TileFrameX, tile.TileFrameY + data.Height * 18, 16, 16), Color.White);
 		return false;

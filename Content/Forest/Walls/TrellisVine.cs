@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Walls;
 
@@ -119,12 +120,12 @@ public class CustomTrellisVine(int customId, string internalName, string assetPa
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 		{
 			Tile tile = Main.tile[i, j];
 			var data = TileObjectData.GetTileData(tile);
 			var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, data.CoordinateWidth, data.CoordinateFullHeight);
-			var position = new Vector2(i, j).ToWorldCoordinates(8, 0) - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j).ToWorldCoordinates(8, 0) - Main.screenPosition + (Main.drawToScreen ? Vector2.Zero : new Vector2(Main.offScreenRange));
 			var origin = new Vector2(source.Width / 2, 4);
 
 			if (Framing.GetTileSafely(i + 1, j + 1).TileType == Type)

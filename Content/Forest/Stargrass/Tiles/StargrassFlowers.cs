@@ -9,6 +9,8 @@ public class StargrassFlowers : ModTile
 	public const int StyleRange = 27;
 	public const int TileHeight = 24;
 
+	protected virtual bool HasGlowmask => true;
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = false;
@@ -19,15 +21,19 @@ public class StargrassFlowers : ModTile
 
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
-		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, static (i, j) =>
+
+		if (HasGlowmask)
 		{
-			const float max_distance = 140;
+			TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, static (i, j) =>
+			{
+				const float max_distance = 140;
 
-			Point coords = new(i, j);
-			float distance = Main.player[Player.FindClosest(coords.ToWorldCoordinates(0, 0), 16, 16)].DistanceSQ(coords.ToWorldCoordinates());
+				Point coords = new(i, j);
+				float distance = Main.player[Player.FindClosest(coords.ToWorldCoordinates(0, 0), 16, 16)].DistanceSQ(coords.ToWorldCoordinates());
 
-			return StargrassTile.GetGlowColor(coords.X, coords.Y) * MathHelper.Clamp(1f - distance / (max_distance * max_distance), 0.4f, 1f);
-		});
+				return StargrassTile.GetGlowColor(coords.X, coords.Y) * MathHelper.Clamp(1f - distance / (max_distance * max_distance), 0.4f, 1f);
+			});
+		}
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.LavaDeath = true;
