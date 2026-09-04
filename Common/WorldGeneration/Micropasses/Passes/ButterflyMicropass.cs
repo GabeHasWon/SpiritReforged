@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 using SpiritReforged.Content.Forest.ButterflyStaff;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
@@ -17,9 +16,10 @@ internal class ButterflyMicropass : Micropass, IGenerationPage
 {
 	public class ButterflyShrineBiome : MicrobiomeSystem.Microbiome
 	{
-		public static readonly Point16 Size = new(35); //An approximation of how big one cavern usually is
+		/// <summary> A square approximation of how big one cavern usually is. </summary>
+		public const int Size = 35;
 
-		public Rectangle Rectangle => new(Position.X - Size.X / 2, Position.Y - Size.Y / 2, Size.X, Size.Y);
+		public Rectangle Area => new(Position.X - Size / 2, Position.Y - Size / 2, Size, Size);
 
 		public override void WorldLoad(TagCompound tag)
 		{
@@ -36,7 +36,7 @@ internal class ButterflyMicropass : Micropass, IGenerationPage
 				var pos = Vector2.Zero;
 				for (int t = 0; t < tries; t++)
 				{
-					pos = WorldGen.genRand.NextVector2FromRectangle(Rectangle).ToWorldCoordinates();
+					pos = WorldGen.genRand.NextVector2FromRectangle(Area).ToWorldCoordinates();
 					if (!Collision.SolidCollision(pos, 8, 8))
 						break;
 				}
@@ -73,7 +73,7 @@ internal class ButterflyMicropass : Micropass, IGenerationPage
 		int count = 0;
 		ButterflyCountMax = this.GetPage().ValueOrDefault(nameof(ButterflyCountMax), Main.maxTilesX / WorldGen.WorldSizeSmallX); // 1 shrine in small and medium worlds, 2 in large
 
-		Point16 size = ButterflyShrineBiome.Size;
+		Point16 size = new(ButterflyShrineBiome.Size);
 		int third = Main.maxTilesX / 3;
 
 		for (int a = 0; a < maxAttempts; a++)
@@ -93,11 +93,11 @@ internal class ButterflyMicropass : Micropass, IGenerationPage
 				if (blacklist.Contains(biome))
 					continue;
 
-				Rectangle area = new Rectangle(pt.X + size.X / 2, pt.Y + size.Y / 2, size.X, size.Y);
+				Rectangle area = new(pt.X + size.X / 2, pt.Y + size.Y / 2, size.X, size.Y);
 				MicrobiomeSystem.Microbiome.Create<ButterflyShrineBiome>(area.Center);
 				Generate(area);
 
-				var origin = new Point(pt.X + size.X / 2, pt.Y + 8); //Centered position
+				var origin = new Point(area.Center.X, area.Top + 8); //Top-centered position
 				bool foundClearing = WorldUtils.Find(origin, Searches.Chain(new Searches.Up(1000), new Conditions.IsSolid().AreaOr(1, 50).Not()), out var top);
 				top.Y += 50;
 
@@ -139,7 +139,7 @@ internal class ButterflyMicropass : Micropass, IGenerationPage
 	{
 		ShapeData slimeShapeData = new();
 		ShapeData sideCarversShapeData = new();
-		Point location = area.Location;
+		Point location = area.Center;
 		float xScale = 0.8f + WorldGen.genRand.NextFloat() * 0.25f; // Randomize the width of the shrine area
 
 		// Create a masking layer for the cavern, so the walls tilt inwards while going up

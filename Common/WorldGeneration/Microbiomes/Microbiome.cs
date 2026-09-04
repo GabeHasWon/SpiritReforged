@@ -7,7 +7,8 @@ namespace SpiritReforged.Common.WorldGeneration.Microbiomes;
 
 public sealed class MicrobiomeSystem : ModSystem
 {
-	/// <summary> Data structure for individually-generated biome instances that are automatically loaded and synced in multiplayer. <para/>
+	/// <summary> Data structure for individually-generated biome instances that are automatically loaded and synced in multiplayer.<br/>
+	/// Intended for use with Micropasses. <para/>
 	/// Contains <see cref="Position"/> by default and can be placed using method <code>Create(Point16 | Point)</code> </summary>
 	public abstract class Microbiome : ILoadable
 	{

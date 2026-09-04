@@ -52,7 +52,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		var overlap = MicrobiomeSystem.Microbiomes.Where(x => x is ButterflyMicropass.ButterflyShrineBiome e && e.Rectangle.Contains(new Point(i, j)));
+		var overlap = MicrobiomeSystem.Microbiomes.Where(x => x is ButterflyMicropass.ButterflyShrineBiome e && e.Area.Contains(new Point(i, j)));
 		bool removedAny = false;
 
 		foreach (var biome in overlap)

@@ -206,10 +206,10 @@ public class ButterflyCritter : ModNPC
 				if (biome is not ButterflyMicropass.ButterflyShrineBiome e)
 					continue;
 
-				if (e.Rectangle.Contains(coord))
+				if (e.Area.Contains(coord))
 					return 0.8f; //Commonly spawn butterflies in the zone
 
-				if (coord.Y < e.Position.Y && Math.Abs(coord.X - e.Position.X) < e.Rectangle.Width)
+				if (coord.Y < e.Position.Y && Math.Abs(coord.X - e.Position.X) < e.Area.Width)
 					return Main.dayTime ? 0.047f : 0.08f; //Rarely spawn butterflies anywhere above the zone
 			}
 		}
