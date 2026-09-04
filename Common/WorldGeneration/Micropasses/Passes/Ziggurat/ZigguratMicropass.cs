@@ -91,7 +91,7 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 	[GenConfigurable(1, 15)]
 	[Slider]
 	[PriorityModifier(nameof(FlagpoleChance))]
-	private static int FlagpoleCountMinumum = 1;
+	private static int FlagpoleCountMinimum = 1;
 
 	[GenConfigurable(0, 15)]
 	[Slider]
@@ -392,7 +392,7 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 		Decorator decorator = new(result); //Add decorations
 
 		if (WorldGen.genRand.NextBool(FlagpoleChance))
-			decorator.Enqueue(AddFlagpole, FlagpoleCountMinumum + WorldGen.genRand.Next(FlagpoleCountRange + 1));
+			decorator.Enqueue(AddFlagpole, FlagpoleCountMinimum + WorldGen.genRand.Next(FlagpoleCountRange + 1));
 
 		decorator.Enqueue(SprinkleSandDunes, 3);
 		decorator.Enqueue(PlacePot, (int)(segments * PotMultiplier));

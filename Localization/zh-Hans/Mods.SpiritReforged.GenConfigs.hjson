@@ -641,68 +641,68 @@ Pages: {
 			}
 
 			DebrisMinimum: {
-				// DisplayName: DebrisMinimum
-				// Tooltip: DebrisMinimum
+				// DisplayName: "[i:3271] Debris Minimum"
+				// Tooltip: (Ruins) The minimum number of random debris to generate.
 			}
 
 			DebrisRange: {
-				// DisplayName: DebrisRange
-				// Tooltip: DebrisRange
+				// DisplayName: "[i:3271] Debris Range"
+				// Tooltip: (Ruins) The maximum number of random debris to generate.
 			}
 
 			TopPlatChance: {
-				// DisplayName: TopPlatChance
-				// Tooltip: TopPlatChance
+				// DisplayName: "[i:SpiritReforged/BronzePlatform] Top Platform Chance"
+				// Tooltip: (Ruins) The chance for platforms to appear at the top of a structure.
 			}
 
 			BottomPlatChance: {
-				// DisplayName: BottomPlatChance
-				// Tooltip: BottomPlatChance
+				// DisplayName: "[i:SpiritReforged/FlagRing] Bottom Platform Chance"
+				// Tooltip: (Ruins) The chance for platforms to appear at the bottom of a structure.
 			}
 
 			FlagpoleChance: {
-				// DisplayName: FlagpoleChance
-				// Tooltip: FlagpoleChance
+				// DisplayName: "[i:SpiritReforged/FlagRing] Flagpole Chance"
+				// Tooltip: (Ruins) The chance for flagpoles to generate.
 			}
 
-			FlagpoleCountMinumum: {
-				// DisplayName: FlagpoleCountMinumum
-				// Tooltip: FlagpoleCountMinumum
+			FlagpoleCountMinimum: {
+				// DisplayName: "[i:SpiritReforged/FlagRing] Flagpole Count Minimum"
+				// Tooltip: (Ruins) The minimum number of flagpoles to generate.
 			}
 
 			FlagpoleCountRange: {
-				// DisplayName: FlagpoleCountRange
-				// Tooltip: FlagpoleCountRange
+				// DisplayName: "[i:SpiritReforged/FlagRing] Flagpole Count Range"
+				// Tooltip: (Ruins) The number range of flagpoles to generate.
 			}
 
 			FlagpoleHeightMin: {
-				// DisplayName: FlagpoleHeightMin
-				// Tooltip: FlagpoleHeightMin
+				// DisplayName: "[i:SpiritReforged/FlagRing] Flagpole Height Minimum"
+				// Tooltip: (Ruins) The minimum height of flagpoles.
 			}
 
 			FlagpoleHeightRange: {
-				// DisplayName: FlagpoleHeightRange
-				// Tooltip: FlagpoleHeightRange
+				// DisplayName: "[i:SpiritReforged/FlagRing] Flagpole Height Range"
+				// Tooltip: (Ruins) The height range of flagpoles.
 			}
 
 			PotMultiplier: {
-				// DisplayName: PotMultiplier
-				// Tooltip: PotMultiplier
+				// DisplayName: "[i:SpiritReforged/PotsDesert] Pot Multiplier"
+				// Tooltip: (Ruins) A multiplier for the number of pots to generate.
 			}
 
 			ChestChance: {
-				// DisplayName: ChestChance
-				// Tooltip: ChestChance
+				// DisplayName: "[i:4267] Chest Chance"
+				// Tooltip: (Ruins) The chance for a chest to generate.
 			}
 
 			UncommonPotChance: {
-				// DisplayName: UncommonPotChance
-				// Tooltip: UncommonPotChance
+				// DisplayName: "[i:SpiritReforged/BiomePotsDesert] Uncommon Pot Chance"
+				// Tooltip: (Ruins) The chance for uncommon pots to generate.
 			}
 
 			AbovegroundPillarChance: {
-				// DisplayName: AbovegroundPillarChance
-				// Tooltip: AbovegroundPillarChance
+				// DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] Aboveground Pillar Chance"
+				// Tooltip: (Ruins) The chance for additional pillars to generate.
 			}
 		}
 
