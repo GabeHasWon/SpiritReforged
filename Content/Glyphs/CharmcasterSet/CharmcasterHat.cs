@@ -1,6 +1,9 @@
+using SpiritReforged.Common.ModCompat.Classic;
+
 namespace SpiritReforged.Content.Glyphs.CharmcasterSet;
 
 [AutoloadEquip(EquipType.Head)]
+[FromClassic("WitchHead")]
 public class CharmcasterHat : ModItem
 {
 	public override void SetStaticDefaults()

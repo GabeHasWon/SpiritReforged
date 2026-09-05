@@ -1,10 +1,12 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.MountCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
+[FromClassic("ScarabPendant")]
 internal class ScarabMountItem : ModItem
 {
 	public class ScarabMountBuff : ModBuff
