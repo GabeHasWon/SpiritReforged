@@ -682,68 +682,68 @@ Pages: {
 			}
 
 			DebrisMinimum: {
-				// DisplayName: "[i:3271] (Ruins) Debris Minimum"
-				// Tooltip: The minimum number of random debris to generate.
+				DisplayName: "[i:3271]Руины: Мин. развалин"
+				Tooltip: Устанавливает минимальное возможное количество развалин в руинах.
 			}
 
 			DebrisRange: {
-				// DisplayName: "[i:3271] (Ruins) Debris Range"
-				// Tooltip: The range of random debris to generate.
+				DisplayName: "[i:3271]Руины: Разброс кол-ва развалин"
+				Tooltip: Устанавливает значение разброса количества развалин в руинах.
 			}
 
 			TopPlatChance: {
-				// DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Top Platform Chance"
-				// Tooltip: The chance for platforms to appear at the top of a structure.
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem]Руины: Шанс на плат. сверху"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации платформ в верхней части руин.
 			}
 
 			BottomPlatChance: {
-				// DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Bottom Platform Chance"
-				// Tooltip: The chance for platforms to appear at the bottom of a structure.
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem]Руины: Шанс на плат. снизу"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации платформ в нижней части руин.
 			}
 
 			FlagpoleChance: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Chance"
-				// Tooltip: The chance for flagpoles to generate.
+				DisplayName: "[i:SpiritReforged/FlagRingItem]Руины: Шанс на флагш."
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации флагштока в руинах.
 			}
 
 			FlagpoleCountMinimum: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Minimum"
-				// Tooltip: The minimum number of flagpoles to generate.
+				DisplayName: "[i:SpiritReforged/FlagRingItem]Руины: Мин. флагштоков"
+				Tooltip: Устанавливает минимальное возможное количество флагштоков в руинах.
 			}
 
 			FlagpoleCountRange: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Range"
-				// Tooltip: The range of flagpoles to generate.
+				DisplayName: "[i:SpiritReforged/FlagRingItem]Руины: Разброс кол-ва флагш."
+				Tooltip: Устанавливает значение разброса количества флагштоков в руинах.
 			}
 
 			FlagpoleHeightMin: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Minimum"
-				// Tooltip: The minimum height of flagpoles.
+				DisplayName: "[i:SpiritReforged/FlagRingItem]Руины: Мин. высота флагш."
+				Tooltip: Устанавливает минимальную возможную длину флагштоков в руинах.
 			}
 
 			FlagpoleHeightRange: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Range"
-				// Tooltip: The height range of flagpoles.
+				DisplayName: "[i:SpiritReforged/FlagRingItem]Руины: Разброс высоты флагш."
+				Tooltip: Устанавливает значение разброса высоты флагштоков в руинах.
 			}
 
 			PotMultiplier: {
-				// DisplayName: "[i:SpiritReforged/PotsDesertItem] (Ruins) Pot Multiplier"
-				// Tooltip: A multiplier for the number of pots to generate.
+				DisplayName: "[i:SpiritReforged/PotsDesertItem]Руины: Множ. горшков"
+				Tooltip: Устанавливает множитель количества генерируемых горшков в руинах.
 			}
 
 			ChestChance: {
-				// DisplayName: "[i:4267] (Ruins) Chest Chance"
-				// Tooltip: The chance for a chest to generate.
+				DisplayName: "[i:4267]Руины: Шанс на сундук"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации сундука в руинах.
 			}
 
 			UncommonPotChance: {
-				// DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] (Ruins) Uncommon Pot Chance"
-				// Tooltip: The chance for uncommon pots to generate.
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem]Руины: Шанс на ред. горшок"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации редкого горшка в руинах.
 			}
 
 			AbovegroundPillarChance: {
-				// DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] (Ruins) Aboveground Pillar Chance"
-				// Tooltip: The chance for additional pillars to generate.
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem]Руины: Шанс на колонну"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации дополнительной колонны в руинах.
 			}
 		}
 
