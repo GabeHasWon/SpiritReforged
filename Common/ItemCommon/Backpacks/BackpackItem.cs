@@ -40,8 +40,27 @@ public abstract class BackpackItem : ModItem
 	}
 
 	private Item[] _items;
+
 	/// <summary> The number slots this backpack has by default. </summary>
 	protected int slotCount;
+
+	public int UsedSlotCount(Player player) => slotCount 
+		+ ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+
+	/// <summary>
+	/// Solely used to make sure _items isn't copied between instances when spawned by the Hiker.
+	/// </summary>
+	internal void EnsureNewItemArray(Player player)
+	{
+		int length = _items?.Length ?? UsedSlotCount(player);
+		_items = new Item[length];
+		
+		for (int i = 0; i < length; ++i)
+		{
+			_items[i] = new Item(0);
+			_items[i].TurnToAir();
+		}
+	}
 
 	public override ModItem Clone(Item newEntity)
 	{

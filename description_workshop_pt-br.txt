@@ -12,11 +12,11 @@ Spirit Reforged é o mais recente e principal projeto desenvolvido pela Team Spi
 
 Spirit Reforged é um projeto independente e não precisa ser jogado junto com Spirit Classic. No entanto, Reforged possui compatibilidade extra com Spirit Classic. Você pode explorar Spirit Reforged enquanto aproveita a enorme quantidade de conteúdo que Spirit Classic oferece.
 
-Nossa novíssima atualização, Sunscorched (v0.2), apresenta o primeiro chefe de Reforged, Escarabeus, nosso novo ecótono As Salinas, e muitas mudanças no Deserto! Aqui estão as elas em resumo:
+Nossa mais nova atualização, Spellbound (v0.2.2), introduz um sistema inteiramente novo encantamento de armas chamado Glifos ao jogo!
 
-553 Itens, incluindo novas armas e equipamentos
+615 Itens, incluindo novas armas e equipamentos
 2 Novos biomas ecótonos: A Savana e as Salinas
-65 Inimigos e NPCs, incluindo 2 novos NPCs Errantes Mundiais para encontrar
+67 Inimigos e NPCs, incluindo 2 novos NPCs Errantes Mundiais para encontrar e 1 NPC de cidade, que se chama Encantadore!
 Diversos microbiomas, microestruturas e descobertas espalhadas pelo mundo
 
 Esperamos que você aproveite Spirit Reforged e junte-se à Team Spirit em nossa próxima aventura.

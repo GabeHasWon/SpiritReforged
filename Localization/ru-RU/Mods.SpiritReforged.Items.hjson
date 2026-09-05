@@ -101,8 +101,8 @@ CascadeLeggings: {
 }
 
 JellyfishJamJar: {
-	// DisplayName: Jellyfish Jam Jar
-	// Tooltip: Summons a tiny jellyfish to fight for you!
+	DisplayName: Банка с медузным джемом
+	Tooltip: Призывает крошку-медузу сражаться за вас!
 }
 
 Lifesaver: {
@@ -2881,7 +2881,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Зазубренные клешни
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -3176,9 +3176,9 @@ NotSunItemIcon: {
 ChromaticWax: {
 	DisplayName: Хроматический воск
 	Tooltip: Можно обменять на магические глифы
-	Gain: Зачарованное оружие получит эффект [c/{0}:«{1}»]:
+	Gain: Выбранный предмет получит эффект [c/{0}:«{1}»]:
 	Target: Можно применить только к оружию
-	RightClick: Держа этот глиф, нажмите ПКМ по оружию, который вы хотите зачаровать
+	RightClick: Нажмите ПКМ по оружию, держа этот глиф, чтобы наложить на него зачарование
 }
 
 BlazeGlyph: {
@@ -3318,10 +3318,10 @@ PrefixVoucher: {
 	Tooltip:
 		'''
 		{0}
-		[c/{0}:«{1}»]:
+		Выбранный предмет получит эффект [c/{0}:«{1}»]:
 		'''
-	AccessoryTooltip: Нажмите ПКМ по аксессуару, к которому хотите применить этот префикс
-	WeaponTooltip: Нажмите ПКМ по оружию, к которому хотите применить этот префикс
+	AccessoryTooltip: Нажмите ПКМ по аксессуару, держа этот ваучер, чтобы наложить на него префикс
+	WeaponTooltip: Нажмите ПКМ по оружию, держа этот ваучер, чтобы наложить на него префикс
 }
 
 EnchantedStamp: {
@@ -3404,7 +3404,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: Пилон космоса
+	DisplayName: Пилон небес
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
@@ -3438,13 +3438,108 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Зачарованный верстак
+	DisplayName: Верстак зачарований
 	Tooltip: ""
 }
 
 CandlewickCoil: {
 	DisplayName: Моток верёвки из фитиля
 	Tooltip: Бросьте, чтобы расправить моток верёвки из фитиля
+}
+
+CandleBathtubItem: {
+	DisplayName: Свечная ванна
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: Свечная кровать
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: Свечной книжный шкаф
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Свечной подсвечник
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Свечная свеча
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Свечной стул
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Свечная люстра
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Свечной сундук
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Свечная дверь
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Свечной комод
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Свечная напольная лампа
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Свечной фонарь
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Свечная раковина
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Свечной диван
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Свечной стол
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Свечной унитаз
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Свечной верстак
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Свечные напольные часы
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Свечное пианино
+	Tooltip: ""
 }
 
 ScrapPickup: {

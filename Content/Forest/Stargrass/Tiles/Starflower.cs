@@ -1,12 +1,12 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-public class Starflower : ModTile, ISwayTile
+public class Starflower : ModTile
 {
 	public override void Load() => On_Player.FigureOutWhatToPlace += OverrideSunflower;
 
@@ -29,7 +29,9 @@ public class Starflower : ModTile, ISwayTile
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
+
 		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		WindTileRenderer.TileDrawInWind[Type] = TileDrawing.TileCounterType.MultiTileGrass;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Width = 2;
@@ -57,13 +59,14 @@ public class Starflower : ModTile, ISwayTile
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
+
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
 		if (!closer)
 			Main.SceneMetrics.HasSunflower = true;
 	}
 
-	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (.3f, .28f, .1f);
+	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.3f, 0.28f, 0.1f);
 
 	public override void Convert(int i, int j, int conversionType)
 	{
@@ -74,36 +77,8 @@ public class Starflower : ModTile, ISwayTile
 			if (Framing.GetTileSafely(i, j + 1).TileType == type)
 				return; //Return if this is not the base of the flower
 
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 			ConversionHelper.ConvertTiles(i, j, 2, 4, TileID.Sunflower);
 		}
-	}
-
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
-	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
-			return;
-
-		var t = Main.tile[i, j];
-		var data = TileObjectData.GetTileData(t);
-
-		var drawPos = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y);
-		int heights = (t.TileFrameY == 54) ? 18 : 16;
-
-		var source = new Rectangle(t.TileFrameX, t.TileFrameY, data.CoordinateWidth, heights);
-
-		spriteBatch.Draw(texture, drawPos + offset, source, color, rotation, origin, 1, SpriteEffects.None, 0);
-		spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, drawPos + offset, source, TileExtensions.GetTint(i, j, Color.White), rotation, origin, 1, SpriteEffects.None, 0);
-	}
-
-	public float Physics(Point16 topLeft)
-	{
-		var data = TileObjectData.GetTileData(Framing.GetTileSafely(topLeft));
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.TreeWindCounter);
-
-		if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, data.Width, data.Height))
-			rotation = 0f;
-
-		return rotation * .75f;
 	}
 }

@@ -455,6 +455,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: Hocus pocus - não se assuste desse jeito, enchi suas cavernas com vasos com incríveis efeitos!
 		CavesAndClubs_1: Abra cadabra! Eu vos concedo novos vasos; ande para as cavernas caso queira encontrá-los!
+		Spellbound_0: Novas mesas cheias de encantamentos para encontrar; sei que com elas, você irá se deslumbrar!
+		Spellbound_1: Agora você poderá encontrar esses espelhos, procure por eles, este é meu conselho!
 	}
 }
 
@@ -547,9 +549,9 @@ Graverobber: {
 LootBag.DisplayName: Sacola de Brindes
 
 Scarabeus: {
-	DisplayName: Escarabeus
+	DisplayName: Escaravelhaos
 	Title: "{$Mods.SpiritReforged.Items.ScarabTabletOneItem}"
-	Entry: Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ele permanece vivo até hoje, aguardando oferendas.
+	Entry: Com sua postura majestosa e tonalidade iridescente, este besouro gigante já foi adorado pelos antigos habitantes do Zigurate. Ela permanece viva até hoje, aguardando oferendas.
 	SpawnInfo: Use qualquer tipo de gema no Antigo Altar no Zigurate
 }
 
@@ -585,7 +587,7 @@ GoldCricket: {
 
 BeetleTownPet: {
 	DisplayName: Besouro
-	Entry: Embora não sejam muito bons para abraços, seu jeito desajeitado os tornam bem cativantes.
+	Entry: Embora não sejam muito bons para abraçar, seus jeitos desajeitados os tornam bem cativantes.
 	Chitter0: *Sons animados de chiado*
 	Chitter1: *Sons de inseto*
 	Chitter2: *Sons de Besouro*
@@ -691,8 +693,8 @@ BeetleTownPet: {
 }
 
 Enchanter: {
-	// DisplayName: Enchanter
-	// Entry: Perpetually tired but kind at heart, the Enchanter deals with various spells and magicks. If some weapons or tools need a little more spice, just ask!
+	DisplayName: Encantadore
+	Entry: Com um cansaço perpétuo em si, mas doce de coração, está criatura consegue lidar com magia e feitiços. Se algumas armas parecem sem sal para você, venha aqui!
 
 	Names: {
 		// 0: Albion
@@ -718,62 +720,62 @@ Enchanter: {
 	}
 
 	TownNPCMood: {
-		// Content: I take a moment and feel... all is well.
-		// NoHome: I don't imagine you've got a place for me to rest my weary bones?
-		// FarFromHome: I am quite far for from my workspace, and my bed. May we return home soon?
-		// LoveSpace: This town is very quaint. Enough people to have a nice chin-wag, but not so many it becomes overwhelming.
-		// DislikeCrowded: I am finding it difficult to concentrate with all this hubbub.
-		// HateCrowded: There are far too many people living here. I haven't gotten a good night's sleep in days.
-		// LoveNPC: "{NPCName}'s hot chocolate is to die for! Oh and his parlor tricks, they're delightful!"
-		// LikeNPC: I don't know what kind of magic {NPCName} uses to light up the sky like that, but it looks spectacular! Shame about the noise though, I had a headache for three days after...
-		// DislikeNPC: "{NPCName}'s idea of 'improving' your gear is barbaric! How is denting it with a hammer supposed to help?!"
-		// HateNPC: I swear, if {NPCName} tells one more of his stories about slaughtering kobolds at afternoon tea, I'll turn him into a sheep!
-		// LikeBiome: Here above the clouds, I feel so much more attuned to the flows of magick. Not to mention the view!
-		// DislikeBiome: Bees produce such high-quality wax, but oh why must they sting me so? I'm covered head to toe in welts!
-		// LikeNPC_Princess: "{NPCName} is such a sweet little girl, but I can scarcely keep up with her. How can such a small body contain so much energy?"
-		// Princess_LovesNPC: "{NPCName}'s magic is unlike any I've seen before! I wonder what its source may be?"
+		Content: As vezes, dedico um tempo de mim para sentir... que tudo ficará bem.
+		NoHome: Imagino que você não tenha um lugar para eu descansar meus ossos desgastados?
+		FarFromHome: Estou até que longe de meu espaço de trabalho, e de minha cama. Poderiamos voltar em breve, certo?
+		LoveSpace: Este lugar é bem pitoresco. Pessoas o suficiente para bater um papo, mas não ao ponto de ser cansativo.
+		DislikeCrowded: Está sendo dificil manter minha concentração com toda essa baderna.
+		HateCrowded: Tem gente demais vivendo aqui. Não consigo dormir bem já faz um tempinho.
+		LoveNPC: O achocolatado de {NPCName} é de cair o queixo! Ah e seus truques de salão, me encantam tanto!
+		LikeNPC: Eu não sei que tipo de magia que {NPCName} para fazer o céu brilhar assim, Mas é espetacular! Uma pena que faça tanto barulho, fiquei com uma dor de cabeça por 3 dias após aquilo...
+		DislikeNPC: As ideias que {NPCName} tem para melhorar equipamentos são horrorosas! Como bater com um martelo vai ajudar em algo?!
+		HateNPC: Eu juro, se {NPCName} me contar mais uma história sobre matar Kobolds no meio do meu chá da tarde, irei transformar ele numa ovelha!
+		LikeBiome: Aqui, acima das nuvens, sinto uma conexão bem maior com os fluidos da minha magia. Isso sem mencionar a vista!
+		DislikeBiome: Abelhas produzem uma cera de qualidade tão alta, mas qual a necessidade de serem tão agressivas? Me cobriram da cabeça aos pés em picadas!
+		LikeNPC_Princess: "{NPCName} é uma garota tão doce, mas eu mal consigo manter um papo com ela. Como pode um corpo tão pequeno conter toda aquela energia?"
+		Princess_LovesNPC: A magia de {NPCName} é diferente de qualquer outra que eu ja vi! Me pergunto qual seja a fonte dela?
 	}
 
 	Dialogue: {
 		Idle: {
-			// 0: Do stop to smell the roses from time to time. Rest is good for you!
-			// 1: It's easy to lose track of time when you are snout deep in a good tome.
-			// 2: Have you come to learn about the wondrous properties of wax?
-			// 3: Would you like a cup of tea? I have black, green, herbal, chamomile, berry, citrus...
-			// 4: Greetings! What can I enchant for you today?
+			0: As vezes você deveria dar uma parada pra cheirar as flores. Descanso é bom para você!
+			1: É fácil perder noção do tempo quando você dá uma boa soneca lendo seu livro de feitiços.
+			2: Você já tentou aprender as incríveis propriedades da cera?
+			3: Você gostaria de uma xícara de cha? Eu tenho chá preto, verde, de ervas, camomila, frutinhas, cítrico...
+			4: Seja bem-vindo(a)! O que poderia encantar por você?
 		}
 
 		IdleNight: {
-			// 0: The moon is high, and my candles burn brighter than ever!
-			// 1: Fireflies dot the sky like small, dancing flames. There is magic everywhere we look.
-			// 2: It's far beyond my second bedtime. I kindly request you make this quick.
+			0: A lua está brilhando, e minhas velas brilham mais forte que nunca!
+			1: Vagalumes criam pontinhos no céu, como se fossem chamas dançarinas. Tem magia em todo lugar que nós olhamos.
+			2: Já passou da hora da minha segunda soneca. Gostaria de pedir que faça isso ser rápido.
 		}
 
 		BloodMoon: {
-			// 0: I cannot sleep on a night such as this. When I close my eyes, all I see is red.
-			// 1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
+			0: Não consigo ter minha soneca em uma noite como essa. Quando fecho meus olhos, tudo que eu vejo é vermelho.
+			1: Minhas velas soam estar com uma leve chama carmim. Algo horrível irá acontecer está noite.
 		}
 
 		Rain: {
-			// 0: There's nothing quite like the sound of rain pattering against the windows.
-			// 1: I'm not going outside again. I only just got my hat dry from last time!
+			0: Não tem nada como o som das gotas da chuva batendo sobre minha janela.
+			1: Eu não vou sair novamente. Acabei de secar meu chapéu da última vez!
 		}
 
 		Graveyard: {
-			// 0: I usually like it quiet, but the air is completely still. It's unnerving.
-			// 1: I can't shake the feeling that something is watching me.
+			0: Eu gosto de um lugar calmo, mas parece tudo tão monótono. É desconfortante.
+			1: Só consigo sentir que algo está me observando.
 		}
 
-		// Thunderstorm: It's a perfect time to huddle around the fireplace and share spooky stories!
-		// Eclipse: How am I meant to know when to put on afternoon tea when its neither day nor night?
-		// Party: Your human festivities are fascinating, if a bit... raucous for my tastes. I might have to excuse myself soon.
-		// Goblin: You can stick seals on many things, but {0} keeps asking me to enchant his various inventions. It typically doesn't end well...
-		// Golfer: "{0} always invites me to play golf with the others, but I always find myself dozing off... I don't have the heart to reject his invitations."
-		// Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
-		// WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
+		Thunderstorm: É a hora perfeita de dar uma parada em uma fogueira e compartilhar algumas histórias assustadoras!
+		Eclipse: Como eu vou ter meu chá da tarde sem saber se é dia ou noite?
+		Party: Essas festividades humanas são bem fascinantes, se não forem... um pouco estranhas pro meu gosto. Talvez tenha que me retirar em breve.
+		Goblin: Aquele goblin insiste em ficar colocando selos nas coisas dos outros, além disso, ele insiste em ficar pedindo pra eu encantar as várias invenções dele. Geralmente não dá muito certo...
+		Golfer: "{0} sempre me convida pra jogar golfe com os outros, mas sempre acabo cochilando... Eu não tenho o coração para ficar rejeitando os convites dele."
+		Stylist: Eu smpre deixo {0} me convencer a deixar minhas escamas revestidas com cera, eu não sei como qual é o apelo. Mas eu fico brilhando como um peixe fresquinho do lago!
+		WitchDoctor: "{0} tem uma aura tão misteriosa sobre ele, mas eu gostaria de conhecer ele melhor. Você poderia... talvez, me introduzir a ele?"
 	}
 
-	// Census.SpawnCondition: Hold any enchanted item or Chromatic Wax [i:SpiritReforged/ChromaticWax], or beat a boss
+	Census.SpawnCondition: Segure qualquer item encantado ou Cera Cromática [i:SpiritReforged/ChromaticWax], ou derrote um chefe.
 }
 
-// SealedKnight.DisplayName: Sealed Knight
+SealedKnight.DisplayName: Cavaleiro Vendado

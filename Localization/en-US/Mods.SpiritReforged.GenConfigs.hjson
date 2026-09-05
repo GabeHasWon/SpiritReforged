@@ -685,8 +685,8 @@ Pages: {
 			}
 
 			GlowflowerChance: {
-				DisplayName: "[i:4045] (Oasis) Glowflower Chance"
-				Tooltip: Chance for a Glowflower to be placed.
+				DisplayName: "[i:4045] (Oasis) Mariglow Chance"
+				Tooltip: Chance for a Mariglow to be placed.
 			}
 
 			PineappleChance: {

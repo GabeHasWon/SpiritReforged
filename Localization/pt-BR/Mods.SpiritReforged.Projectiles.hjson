@@ -94,6 +94,13 @@ SoilBallProjectile.DisplayName: Bola de Tralha
 // SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 // SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 // SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
+Firefall.DisplayName: Chuva de Fogo
+WindBurstProjectile.DisplayName: Rajada de Vento
+SingularCollapse.DisplayName: Colapso
+ShockGlyphLightningBolt.DisplayName: Glifo de Choque Raio
+MariglowSeed.DisplayName: Sementes de Calêndula Solar
+RageHit.DisplayName: Ataque Raivoso
+MirrorReturnPortal.DisplayName: Portal do Espelho do Retorno
 // Firefall.DisplayName: Firefall
 // WindBurstProjectile.DisplayName: Wind Burst
 // SingularCollapse.DisplayName: Singularity

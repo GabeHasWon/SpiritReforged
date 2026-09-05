@@ -63,7 +63,7 @@ public class ScarabTablet : ModTile
 			Rectangle source = new(tile.TileFrameX + 108, tile.TileFrameY, 16, 16);
 			Color color = (Color.Lerp(Color.PaleVioletRed, Color.Goldenrod, opacity) * opacity * 0.5f).Additive();
 
-			spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset, source, color, 0, Vector2.Zero, 1, 0, 0);
+			spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset, source, color, 0, Vector2.Zero, 1, 0, 0);
 		}
 	} //Bedouin armor set proximity glow
 }

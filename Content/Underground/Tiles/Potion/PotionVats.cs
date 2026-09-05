@@ -8,6 +8,7 @@ using SpiritReforged.Content.Underground.Pottery;
 using System.Linq;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles.Potion;
 
@@ -27,7 +28,7 @@ public class PotionVats : PotTile, ICutAttempt
 		if (!skipTypeCheck && Main.tile[i, j].TileType != Type)
 			return null;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		int id = ModContent.GetInstance<VatSlot>().Find(i, j);
 
 		return (id == -1) ? null : (VatSlot)TileEntity.ByID[id];
@@ -94,7 +95,7 @@ public class PotionVats : PotTile, ICutAttempt
 
 				if (Main.netMode != NetmodeID.MultiplayerClient)
 				{
-					TileExtensions.GetTopLeft(ref i, ref j);
+					(i, j) = Helpers.GetTopLeft(i, j);
 
 					var pos = new Vector2(i, j).ToWorldCoordinates();
 
@@ -149,7 +150,7 @@ public class PotionVats : PotTile, ICutAttempt
 	private static bool AdjustFrame(int i, int j)
 	{
 		const int fullWidth = 54;
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		if (Main.tile[i, j].TileFrameX > fullWidth)
 			return false; //Frame has already been adjusted to capacity
@@ -257,7 +258,7 @@ public class PotionVats : PotTile, ICutAttempt
 			return true;
 
 		var texture = FluidTexture.Value;
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(0, 2);
+		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(0, 2);
 
 		var t = Main.tile[i, j];
 		var frame = new Rectangle(t.TileFrameX, t.TileFrameY, 16, 16);

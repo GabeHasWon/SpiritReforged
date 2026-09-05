@@ -18,7 +18,7 @@ public class GooBlock : ModTile, ILoadItem
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
-		this.Merge(ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
+		TileMethods.Merge(Type, ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
 		AddMapEntry(new Color(220, 115, 25));
 
 		DustType = DustID.OrangeStainedGlass;

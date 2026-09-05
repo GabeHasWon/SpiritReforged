@@ -35,7 +35,7 @@ public class CascadeArmorPlayer : ModPlayer
 			maxResist = 50;
 		else if (Main.expertMode)
 			maxResist = 35;
-
+		
 		return (maxResist + Main.rand.NextFloat(-variance, variance)) * bubbleStrength;
 	}
 

@@ -54,7 +54,7 @@ ButterflyMinion_Buff: {
 }
 
 ToucanMinion_Buff: {
-	DisplayName: Toucano
+	DisplayName: Tucano
 	Description: O tucano luta por você
 }
 
@@ -64,7 +64,7 @@ QuenchPotion_Buff: {
 }
 
 TumblerPet_Buff: {
-	DisplayName: Tumbleweed Amigável
+	DisplayName: Arbusto Seco Amigável
 	Description: Uma bolota de galhos amiga está te seguindo
 }
 
@@ -124,8 +124,8 @@ Slowed: {
 }
 
 ToucaneMinion_Buff: {
-	DisplayName: Tucano
-	Description: O Tucano luta por você?
+	DisplayName: Toucano
+	Description: O Toucano luta por você?
 }
 
 TinyDragonPet_Buff: {
@@ -140,7 +140,7 @@ EnlilBuff: {
 
 ScarabLightPetBuff: {
 	DisplayName: Escarabebê
-	Description: "'Ele tá tramando algo...'"
+	Description: Ela tá tramando algo...'
 }
 
 ScarabMountBuff: {
@@ -149,28 +149,28 @@ ScarabMountBuff: {
 }
 
 DivineStrike: {
-	// DisplayName: Divine Strike
-	// Description: Your next attack is empowered
+	DisplayName: Ataque Divino
+	Description: Seu próximo ataque será mais forte!
 }
 
 RotDebuff: {
-	// DisplayName: Rotting [{0}]
-	// Description: "'Your skin is turning green'"
+	DisplayName: Apodrecendo [{0}]
+	Description: "'Sua pele está ficando verde...'"
 }
 
 SanguineStackingBuff: {
-	// DisplayName: Sanguine Energy [{0}]
-	// Description: Damage increased by {0}%
+	DisplayName: Maldição Sangrenta
+	Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
 }
 
 BlazeDebuff: {
-	// DisplayName: Blazing
-	// Description: This is fine!
+	DisplayName: Queimando
+	Description: Tá de boa!
 }
 
 RageGlyphBuff: {
-	// DisplayName: Wrathful Damage [{0}]
-	// Description: Stored damage: {0}
+	DisplayName: Efeito do Glifo da Raiva
+	Description: Mods.SpiritReforged.Buffs.RageGlyphBuff.Description
 }
 
 StonemasonBuff: {

@@ -53,7 +53,7 @@ public class AmberFossil : EntityTile<FossilEntity>
 
 		AddMapEntry(Color.Orange);
 		RegisterItemDrop(AutoContent.ItemType<PolishedAmber>());
-		this.Merge(ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>(), TileID.Sand);
+		TileMethods.Merge(Type, ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>(), TileID.Sand);
 
 		DustType = DustID.GemAmber;
 		MineResist = 0.5f;
@@ -111,7 +111,7 @@ public class AmberFossil : EntityTile<FossilEntity>
 		Color color = Lighting.GetColor(i, j);
 
 		if (Main.LocalPlayer.findTreasure)
-			color = TileExtensions.GetSpelunkerTint(color);
+			color = TileMethods.GetSpelunkerTint(color);
 		else
 			color *= 0.4f;
 
@@ -120,14 +120,14 @@ public class AmberFossil : EntityTile<FossilEntity>
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out _))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out _))
 			return false;
 
 		Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
 		PolishedAmber.Overlay.AddToGrid(i, j);
 
-		TileExtensions.DrawSingleTile(i, j, true, TileExtensions.TileOffset);
-		TileMerger.DrawMerge(spriteBatch, i, j, color, TileExtensions.TileOffset, TileID.Sand);
+		TileMethods.DrawSingleTile(i, j, true, TileMethods.TileOffset);
+		TileMerger.DrawMerge(spriteBatch, i, j, color, TileMethods.TileOffset, TileID.Sand);
 		return false;
 	}
 }

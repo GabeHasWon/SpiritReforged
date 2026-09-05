@@ -2877,7 +2877,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Serrated Claws
-	Tooltip: Can mine Meteorite
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -3396,7 +3396,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: Space Pylon
+	DisplayName: Sky Pylon
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
@@ -3433,6 +3433,101 @@ EnchantedWorkbenchItem: {
 CandlewickCoil: {
 	DisplayName: Candlewick Rope Coil
 	Tooltip: Throw to create a climbable line of candlewick rope
+}
+
+CandleBathtubItem: {
+	DisplayName: Candle Bathtub
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: Candle Bed
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: Candle Bookcase
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Candle Candelabra
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Candle Candle
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Candle Chair
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Candle Chandelier
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Candle Chest
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Candle Door
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Candle Dresser
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Candle Lamp
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Candle Lantern
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Candle Sink
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Candle Sofa
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Candle Table
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Candle Toilet
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Candle Work Bench
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Candle Clock
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Candle Piano
+	Tooltip: ""
 }
 
 ScrapPickup: {

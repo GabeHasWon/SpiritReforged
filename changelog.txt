@@ -1,2 +1,4 @@
-v0.2.1.5
-- Fixed an incompatibility issue with Advanced World Generation that stopped Reforged seeds from working properly
+v0.2.2.5
+- Fixed vanity fish in the ocean being much faster than they should be
+- Fixed? an issue with Prefix Voucher hanging some worlds. Maybe. Please?
+- Fixed visual offset issue for Stargrass trees

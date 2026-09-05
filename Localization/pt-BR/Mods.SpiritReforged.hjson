@@ -25,8 +25,8 @@ Conditions: {
 	InSaltFlats: Nas Salinas
 	IsPrickly: Caso seja Espinhento
 	InZiggurat: No Zigurate
-	// InSpace: In Space
-	// NotSnow: Not in the Snow
+	InSpace: No Espaço
+	NotSnow: Fora da Neve
 }
 
 Misc: {
@@ -37,11 +37,11 @@ Misc: {
 	}
 
 	Enchantment: {
-		// PlaceToEnchant: Place an item here to enchant
-		// Enchant: Enchant
-		// Cost: "{0} [c/{1}:Chromatic Wax]"
-		// Clear: Remove enchantment
-		// Random: Randomize enchantment
+		PlaceToEnchant: Coloque um item para encantar
+		Enchant: Encantar
+		Cost: "{0} [c/{1}:Cera Cromática]"
+		Clear: Remover encantamento
+		Random: Randomizar encantamento
 	}
 
 	NoStock: Fora de estoque
@@ -81,15 +81,15 @@ GameTips: {
 	ReforgedTip15: Âmbar esconde segredos! Talvez você encontre algumas recompensas dentro dele...
 	ReforgedTip16: Cuidado ao caminhar pelas ruínas do deserto! Alguns pisos podem ser menos sólidos do que você imagina.
 	# Spellbound
-	// ReforgedTip17: Glyphs provide your weapons with powerful effects which transform how they are used!
-	// ReforgedTip18: Chromatic Wax can be found in pots, crates, and as loot for defeating certain enemies.
-	// ReforgedTip19: The Enchanter can imbue your weapon with an array of unique Glyphs. Try them all!
+	ReforgedTip17: Glifos irão dar poderosos efeitos a suas armas, que mudam como elas serão usadas!
+	ReforgedTip18: Cera Cromática pode ser achada em baús, em vasos, em caixas, e até ao derrotar certo inimigos.
+	ReforgedTip19: Encantadore irá alterar suas armas com um certo alcance de efeitos de glifos. Teste todos eles!
 }
 
 Emotes: {
 	CartographerEmote.Command: cartografo
 	HikerEmote.Command: caminhante
-	// EnchanterEmote.Command: enchanteremote
+	EnchanterEmote.Command: encantadore
 }
 
 InfoDisplays: {
@@ -122,6 +122,7 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
+DamageClasses.HybridDamageClass.DisplayName: Classe de Dano Hibrido
 DamageClasses: {
 	// HybridDamageClass.DisplayName: Hybrid Damage Class
 	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"

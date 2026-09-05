@@ -42,7 +42,7 @@ public class NeedleTrap : ModTile, ILoadItem
 		Main.tileFrameImportant[Type] = true;
 
 		AddMapEntry(new Color(174, 74, 48), Language.GetText("MapObject.Trap"));
-		this.Merge(ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());
+		TileMethods.Merge(Type, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());
 
 		DustType = DustID.DynastyShingle_Red;
 		HitSound = SoundID.Tink;
