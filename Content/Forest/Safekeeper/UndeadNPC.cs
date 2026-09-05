@@ -8,7 +8,7 @@ public class UndeadNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
 
-	private static readonly HashSet<int> NoDeathAnim = [];
+	public static readonly HashSet<int> NoDeathAnim = [];
 
 	public static readonly HashSet<int> UndeadTypes = [NPCID.Zombie, NPCID.ZombieDoctor, NPCID.ZombieElf, NPCID.ZombieElfBeard, NPCID.ZombieElfGirl, NPCID.ZombieEskimo,
 		NPCID.ZombieMerman, NPCID.ZombieMushroom, NPCID.ZombieMushroomHat, NPCID.ZombiePixie, NPCID.ZombieRaincoat, NPCID.ZombieSuperman, NPCID.ZombieSweater,
@@ -27,32 +27,6 @@ public class UndeadNPC : GlobalNPC
 		NPCID.BloodMummy, NPCID.DarkMummy, NPCID.LightMummy, NPCID.Ghost];
 
 	private static bool TrackingGore;
-
-	internal static bool AddCustomUndead(params object[] args)
-	{
-		switch (args.Length)
-		{
-			case 1:
-				{
-					if (args[0] is int customType)
-						return UndeadTypes.Add(customType);
-					else
-						throw new ArgumentException("AddUndead parameter 0 should be an int!");
-				}
-			case 2:
-				{
-					if (args[0] is not int customType)
-						throw new ArgumentException("AddUndead parameter 0 should be an int!");
-
-					if (args[1] is not bool excludeDeathAnim)
-						throw new ArgumentException("AddUndead parameter 1 should be a bool!");
-
-					return UndeadTypes.Add(customType) && (!excludeDeathAnim || NoDeathAnim.Add(customType));
-				}
-		}
-
-		return false;
-	}
 
 	/// <summary> Checks whether the NPC of the given type is considered "undead". </summary>
 	internal static bool IsUndeadType(int type) => UndeadTypes.Contains(type) || NPCID.Sets.Zombies[type] || NPCID.Sets.Skeletons[type] || NPCID.Sets.DemonEyes[type];

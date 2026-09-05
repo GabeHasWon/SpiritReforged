@@ -690,6 +690,8 @@ BeetleTownPet: {
 		Ladybug14: Titania
 		Ladybug15: Tulip
 	}
+
+	Census.SpawnCondition: 使用甲虫许可证 [i:SpiritReforged/BeetleLicense] ，其掉落自圣甲虫
 }
 
 Enchanter: {

@@ -4,8 +4,10 @@ using SpiritReforged.Common.NPCCommon.Interfaces;
 namespace SpiritReforged.Content.Desert.NPCs.Beetle;
 
 [AutoloadCritter]
-public class GoldDivingBeetle : DivingBeetle, IGoldCritter
+public class GoldDivingBeetle : DivingBeetle, IGoldCritter, ItemEvents.IQuickRecipeNPC
 {
+	void ItemEvents.IQuickRecipeNPC.AddRecipes() => Recipe.Create(ItemID.GoldenDelight).AddIngredient(this.AutoItemType()).AddTile(TileID.CookingPots).Register();
+
 	public int[] NormalPersistentIDs => [ModContent.NPCType<DivingBeetle>()];
 
 	public override void CreateItemDefaults() =>
