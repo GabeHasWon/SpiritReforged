@@ -78,7 +78,7 @@ GildedScarabBuff: {
 	Description: 防御力增加{0}
 }
 
-PoolNoodleBubbleBuff: {
+Bubbled: {
 	DisplayName: 游泳浮条泡泡
 	Description: 你已寻获魂灵传说秘典……敬请期待我们的超级Boss——坠落之星，暗钢！
 }
