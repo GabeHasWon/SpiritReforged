@@ -27,13 +27,14 @@ public partial class SpiritReforgedMod : Mod
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 	private class ModCallAttribute : Attribute;
 
+	/// <summary> All mod call methods registered by name. </summary>
 	private static readonly Dictionary<string, MethodInfo> CallMethods = [];
 
 	public override object Call(params object[] arguments)
 	{
 		try
 		{
-			if (CallMethods.Count == 0) //Initialize
+			if (CallMethods.Count == 0) //Initialize local methods attributed by [ModCall]
 			{
 				foreach (MethodInfo methodInfo in GetType().GetMethods(BindingFlags.Static | BindingFlags.NonPublic))
 				{
@@ -97,6 +98,7 @@ public partial class SpiritReforgedMod : Mod
 	}
 	#endregion
 
+	//A list of all mod calls accessible by method name
 	#region calls
 	[ModCall]
 	private static void AddCustomDoT(int buffType, float scalability, int damageLimit, bool stackable, Action scalingBehaviour = null, Action<SpriteBatch, NPC, Color, Vector2, float, float> onPostDraw = null)
