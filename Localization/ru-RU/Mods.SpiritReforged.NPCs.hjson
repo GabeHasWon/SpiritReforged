@@ -691,7 +691,7 @@ BeetleTownPet: {
 		Ladybug15: Тюльпан
 	}
 
-	// Census.SpawnCondition: Use a Beetle License [i:SpiritReforged/BeetleLicense], dropped by Scarabeus
+	Census.SpawnCondition: Используйте [i:SpiritReforged/BeetleLicense] жучий паспорт, выпадающий со Скарабеуса
 }
 
 Enchanter: {
