@@ -53,4 +53,7 @@ public class SpiritSets : ModSystem
 
 	/// <summary> Whether this type blocks light. </summary>
 	public static readonly bool[] WallBlocksLight = WallFactory.CreateBoolSet();
+
+	/// <summary> The rules on which solid tiles this foreground wall can merge with, if any. </summary>
+	public static readonly Func<int, int, bool>[] ForegroundMergeFunc = WallFactory.CreateCustomSet<Func<int, int, bool>>(null);
 }
