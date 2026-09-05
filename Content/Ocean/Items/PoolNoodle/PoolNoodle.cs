@@ -9,8 +9,6 @@ namespace SpiritReforged.Content.Ocean.Items.PoolNoodle;
 
 public class PoolNoodle : ModItem
 {
-	protected override bool CloneNewInstances => true;
-
 	public const int NUM_STYLES = 3;
 
 	public byte Style
@@ -20,7 +18,7 @@ public class PoolNoodle : ModItem
 		{
 			_style = value;
 
-			if (!Main.dedServ && Main.ContentLoaded && Item.TryGetGlobalItem(out VariantItemRenderer global))
+			if (!Main.dedServ && Item.TryGetGlobalItem(out VariantItemRenderer global))
 				global.subID = value;
 		}
 	}
@@ -30,7 +28,7 @@ public class PoolNoodle : ModItem
 
 	public override void SetStaticDefaults()
 	{
-		VariantItemRenderer.VariantCounts[Type] = 3;
+		VariantItemRenderer.VariantCounts[Type] = NUM_STYLES;
 
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(Type, 8));
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(Type, 8));
@@ -46,13 +44,6 @@ public class PoolNoodle : ModItem
 		Item.value = Item.sellPrice(silver: 45);
 
 		Style = (byte)Main.rand.Next(NUM_STYLES);
-	}
-
-	public override ModItem Clone(Item itemClone)
-	{
-		var myClone = (PoolNoodle)base.Clone(itemClone);
-		myClone.Style = Style;
-		return myClone;
 	}
 
 	public override bool MeleePrefix() => true;
