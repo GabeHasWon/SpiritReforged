@@ -1,25 +1,65 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.Noise;
+using SpiritReforged.Common.WorldGeneration.SecretSeeds;
+using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using SpiritReforged.Content.Ziggurat.Walls;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using Terraria.IO;
 using Terraria.ModLoader.Config;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
+namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 
-internal class ZigguratMicropass : Micropass
+internal partial class ZigguratMicropass : Micropass, IGenerationPage
 {
+	public class ZigguratBiome : MicrobiomeSystem.Microbiome
+	{
+		/// <summary> The full rectangular area this biome encompasses. </summary>
+		public Rectangle FullArea
+		{
+			get
+			{
+				Rectangle bounds = new(Position.X - UsedWidth / 2, Position.Y - UsedHeight / 2, UsedWidth, UsedHeight);
+
+				if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
+					bounds = new Rectangle(Position.X - UsedWidth - 16, Position.Y - UsedHeight / 2, UsedWidth * 2 + 32, UsedHeight * 4);
+
+				return bounds;
+			}
+		}
+
+		public override void NetReceive(BinaryReader reader)
+		{
+			base.NetReceive(reader);
+
+			TotalBounds.Clear();
+
+			foreach (Rectangle bound in GetBounds(FullArea))
+				TotalBounds.Add(bound);
+		}
+
+		public override void WorldLoad(TagCompound tag)
+		{
+			base.WorldLoad(tag);
+
+			TotalBounds.Clear();
+
+			foreach (Rectangle bound in GetBounds(FullArea))
+				TotalBounds.Add(bound);
+		}
+	}
+
 	public override string WorldGenName => "Ziggurat";
 
 	[GenConfigurable(0, 12)]
@@ -51,7 +91,7 @@ internal class ZigguratMicropass : Micropass
 	[GenConfigurable(1, 15)]
 	[Slider]
 	[PriorityModifier(nameof(FlagpoleChance))]
-	private static int FlagpoleCountMinumum = 1;
+	private static int FlagpoleCountMinimum = 1;
 
 	[GenConfigurable(0, 15)]
 	[Slider]
@@ -86,12 +126,47 @@ internal class ZigguratMicropass : Micropass
 	[Slider]
 	private static int AbovegroundPillarChance = 3;
 
+	PageInfo IGenerationPage.Info => new("Ziggurat", DrawHelpers.RequestLocal(GetType(), "ZigguratPage", false), DrawHelpers.RequestLocal(GetType(), "ZigguratPageButton", false))
+	{
+		Presets =
+		[
+			new("Plagued",
+				[
+					new IndividualPreset(nameof(MaxInfections), 12),
+					new IndividualPreset(nameof(SandSplatChance), 20),
+					new IndividualPreset(nameof(FloorDivotChance), 20),
+					new IndividualPreset(nameof(SkipRoomChance), 3),
+				]),
+
+			new("Opulent",
+				[
+					new IndividualPreset(nameof(SpecialRoomChance), 1),
+					new IndividualPreset(nameof(MaxInfections), 1),
+					new IndividualPreset(nameof(LapisPotChance), 5),
+					new IndividualPreset(nameof(UncommonChance), 2),
+					new IndividualPreset(nameof(SandSplatChance), 200),
+					new IndividualPreset(nameof(SkipRoomChance), 15),
+					new IndividualPreset(nameof(CenserChance), 2)
+				]),
+
+		new("Perilous",
+				[
+					new IndividualPreset(nameof(SpikeStripChance), 1),
+					new IndividualPreset(nameof(MaxSpikeStripWidth), 14),
+					new IndividualPreset(nameof(ChestItemRange), new GenRange(6, 3)),
+				]),
+		]
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
+
 	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Pyramids");
+
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
 		const int scanRadius = 50;
 		
-		int range = ZigguratMicrobiome.UsedWidth / 2;
+		int range = UsedWidth / 2;
 
 		Rectangle loc = GenVars.UndergroundDesertLocation;
 		Point finalPosition = Point.Zero;
@@ -107,17 +182,18 @@ internal class ZigguratMicropass : Micropass
 			if (!WorldUtils.Find(new(x, y), new Searches.Down(1500).Conditions(new Conditions.IsSolid()), out Point foundPos))
 				return; // ?? big hole where the desert is?
 
-			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(ZigguratMicrobiome.DefaultHeight * 0.3f));
+			Point zigguratPos = new(foundPos.X, foundPos.Y + (int)(DefaultHeight * 0.3f));
 
 			Dictionary<ushort, int> typeToCount = [];
-			Rectangle area = new Rectangle(-(ZigguratMicrobiome.UsedWidth / 2), -(ZigguratMicrobiome.UsedHeight / 2), ZigguratMicrobiome.UsedWidth, ZigguratMicrobiome.UsedHeight);
+			Rectangle area = new Rectangle(-(UsedWidth / 2), -(UsedHeight / 2), UsedWidth, UsedHeight);
 			WorldUtils.Gen(zigguratPos, new Shapes.Rectangle(area), new Actions.TileScanner(TileID.Sand, TileID.SandstoneBrick).Output(typeToCount));
 
-			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.SandstoneBrick] > 10 && !ZigguratMicrobiome.UnnaturallyBig)
+			if (typeToCount[TileID.Sand] < scanRadius * scanRadius * 0.5f || typeToCount[TileID.SandstoneBrick] > 10 && !UnnaturallyBig)
 				continue;
 
 			CreateDunes(new(foundPos.X - 80, foundPos.Y - 10, 160, 10));
-			Microbiome.Create<ZigguratMicrobiome>(finalPosition = zigguratPos);
+			var instance = MicrobiomeSystem.Microbiome.Create<ZigguratBiome>(finalPosition = zigguratPos);
+			Generate(instance.FullArea);
 
 			break;
 		}
@@ -125,7 +201,7 @@ internal class ZigguratMicropass : Micropass
 		if (finalPosition != Point.Zero) //Gen didn't fail
 		{
 			int worldScalar = Main.maxTilesX / WorldGen.WorldSizeSmallX;
-			int ruinsWidth = (int)(ZigguratMicrobiome.DefaultWidth / 1.5f) * worldScalar;
+			int ruinsWidth = (int)(DefaultWidth / 1.5f) * worldScalar;
 			WorldMethods.Generate(GenerateRuins, 3 * worldScalar, out _, new(finalPosition.X - ruinsWidth, loc.Y - 40, ruinsWidth * 2, 40), 100);
 		}
 	}
@@ -316,7 +392,7 @@ internal class ZigguratMicropass : Micropass
 		Decorator decorator = new(result); //Add decorations
 
 		if (WorldGen.genRand.NextBool(FlagpoleChance))
-			decorator.Enqueue(AddFlagpole, FlagpoleCountMinumum + WorldGen.genRand.Next(FlagpoleCountRange + 1));
+			decorator.Enqueue(AddFlagpole, FlagpoleCountMinimum + WorldGen.genRand.Next(FlagpoleCountRange + 1));
 
 		decorator.Enqueue(SprinkleSandDunes, 3);
 		decorator.Enqueue(PlacePot, (int)(segments * PotMultiplier));

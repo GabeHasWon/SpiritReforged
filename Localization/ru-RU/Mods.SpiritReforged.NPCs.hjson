@@ -690,6 +690,8 @@ BeetleTownPet: {
 		Ladybug14: Титания
 		Ladybug15: Тюльпан
 	}
+
+	// Census.SpawnCondition: Use a Beetle License [i:SpiritReforged/BeetleLicense], dropped by Scarabeus
 }
 
 Enchanter: {

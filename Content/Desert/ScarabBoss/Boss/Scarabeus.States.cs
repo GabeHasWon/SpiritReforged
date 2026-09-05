@@ -1898,7 +1898,7 @@ public partial class Scarabeus : ModNPC
 						Counter = 0;
 					}
 
-					//If were despawning
+					// If we're despawning
 					if (CurrentState == AIState.Despawn)
 					{
 						NPC.active = false;

@@ -1,6 +1,6 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 
@@ -203,13 +203,13 @@ public class ButterflyCritter : ModNPC
 			var coord = new Point(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 			foreach (var biome in MicrobiomeSystem.Microbiomes)
 			{
-				if (biome is not ButterflyShrineBiome e)
+				if (biome is not ButterflyMicropass.ButterflyShrineBiome e)
 					continue;
 
-				if (e.Rectangle.Contains(coord))
+				if (e.Area.Contains(coord))
 					return 0.8f; //Commonly spawn butterflies in the zone
 
-				if (coord.Y < e.Position.Y && Math.Abs(coord.X - e.Position.X) < e.Rectangle.Width)
+				if (coord.Y < e.Position.Y && Math.Abs(coord.X - e.Position.X) < e.Area.Width)
 					return Main.dayTime ? 0.047f : 0.08f; //Rarely spawn butterflies anywhere above the zone
 			}
 		}

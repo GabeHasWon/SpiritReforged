@@ -39,18 +39,14 @@ internal static class MiscExtensions
 
 	public static Vector2 TurnLeft(this Vector2 vec) => new(vec.Y, -vec.X);
 
-	/// <summary>
-	/// Ends & restarts the spriteBatch with default vanilla parameters.
-	/// </summary>
+	/// <summary> Ends and restarts the spriteBatch with default vanilla parameters. </summary>
 	public static void RestartToDefault(this SpriteBatch batch)
 	{
 		batch.End();
 		batch.BeginDefault();
 	}
 
-	/// <summary>
-	/// Begins the spriteBatch with default vanilla parameters.
-	/// </summary>
+	/// <summary> Begins the spriteBatch with default vanilla parameters. </summary>
 	/// <param name="batch"></param>
 	public static void BeginDefault(this SpriteBatch batch) => batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 

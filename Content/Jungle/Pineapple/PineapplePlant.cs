@@ -1,7 +1,7 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using System.Linq;
 using Terraria.GameContent.Metadata;
 
@@ -25,7 +25,7 @@ public class PineapplePlant : HerbTile
 						Point pt = new(i, j);
 						int tileType = ModContent.TileType<PineapplePlant>();
 
-						if (Placer.CanPlaceHerb(i, j, tileType) && MicrobiomeSystem.Microbiomes.Any(x => x is UndergroundOasisBiome o && o.Rectangle.Contains(pt)))
+						if (Placer.CanPlaceHerb(i, j, tileType) && MicrobiomeSystem.Microbiomes.Any(x => x is OasisMicropass.UndergroundOasisBiome o && o.Rectangle.Contains(pt)))
 							Placer.PlaceTile(i, j - 1, tileType).Send();
 					}
 
