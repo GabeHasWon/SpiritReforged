@@ -1,8 +1,8 @@
-﻿using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
-using SpiritReforged.Content.Ziggurat.Tiles;
+﻿using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 
 namespace SpiritReforged.Content.Ziggurat.Biome;
 
@@ -43,7 +43,7 @@ public class ZigguratBiome : ModBiome
 		Point tileCoords = player.Center.ToTileCoordinates();
 		int wallType = Framing.GetTileSafely(tileCoords).WallType;
 
-		return !Main.wallHouse[wallType] && ZigguratMicrobiome.TotalBounds.Any(x => x.Contains(tileCoords));
+		return !Main.wallHouse[wallType] && ZigguratMicropass.TotalBounds.Any(x => x.Contains(tileCoords));
 	}
 
 	public override void OnInBiome(Player player) => player.ZoneDesert = true;
