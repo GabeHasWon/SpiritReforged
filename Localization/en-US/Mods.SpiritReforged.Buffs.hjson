@@ -78,8 +78,8 @@ GildedScarabBuff: {
 	Description: Defense increased by {0}
 }
 
-PoolNoodleBubbleBuff: {
-	DisplayName: Pool Noodle Bubble Buff
+Bubbled: {
+	DisplayName: Bubbled
 	Description: You've found the secret Spirit Lore Codex... Stay tuned for our superboss Darksteel, the Fallen Star!
 }
 
