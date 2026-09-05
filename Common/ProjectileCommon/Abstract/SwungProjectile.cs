@@ -160,7 +160,7 @@ public abstract class SwungProjectile : ModProjectile
 		return PreNewProjectile.New(source, position, velocity, type, damage, knockback, owner.whoAmI, ai0, ai1, ai2, (p) => (p.ModProjectile as SwungProjectile).SwingArc = swingArc);
 	}
 
-	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(ScaledReach + add, 0).RotatedBy(GetRotation(out _, out Player.CompositeArmStretchAmount _) - MathHelper.PiOver4);
+	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(ScaledReach + add, 0).RotatedBy(GetRotation(out _, out Player.CompositeArmStretchAmount _) - MathHelper.PiOver4 * SwingDirection);
 
 	public Player.CompositeArmStretchAmount ProgressiveStretch() => (int)(Progress * 4f) switch
 	{

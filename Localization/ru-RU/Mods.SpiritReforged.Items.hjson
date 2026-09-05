@@ -3684,3 +3684,8 @@ SuperExtendoMags: {
 	// DisplayName: Super Extendo Mags
 	// Tooltip: ""
 }
+
+Claymore: {
+	// DisplayName: Claidheamh-Mor
+	// Tooltip: ""
+}

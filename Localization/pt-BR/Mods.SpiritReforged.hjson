@@ -122,9 +122,8 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
-DamageClasses.HybridDamageClass.DisplayName: Classe de Dano Hibrido
 DamageClasses: {
-	// HybridDamageClass.DisplayName: Hybrid Damage Class
+	HybridDamageClass.DisplayName: Classe de Dano Hibrido
 	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
 	// WrenchClass.DisplayName: "{$LegacyTooltip.53}"
 	// MagazineDamageClass.DisplayName: "{$LegacyTooltip.3}"
