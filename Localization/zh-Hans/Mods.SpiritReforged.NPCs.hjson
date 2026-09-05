@@ -691,7 +691,7 @@ BeetleTownPet: {
 		Ladybug15: Tulip
 	}
 
-	// Census.SpawnCondition: Use a Beetle License [i:SpiritReforged/BeetleLicense], dropped by Scarabeus
+	Census.SpawnCondition: 使用甲虫许可证 [i:SpiritReforged/BeetleLicense] ，其掉落自圣甲虫
 }
 
 Enchanter: {
