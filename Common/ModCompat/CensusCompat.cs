@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Glyphs;
+﻿using SpiritReforged.Content.Desert.NPCs.TownBeetle;
+using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.Underground.NPCs;
 
 namespace SpiritReforged.Common.ModCompat;
@@ -13,8 +14,8 @@ internal class CensusCompat : ModSystem
 
 		RegisterEntry<PotterySlime>(census);
 		RegisterEntry<Enchanter>(census);
+		RegisterEntry<BeetleTownPet>(census);
 	}
 
-	public static void RegisterEntry<T>(Mod census) where T : ModNPC 
-		=> census.Call("TownNPCCondition", ModContent.NPCType<T>(), ModContent.GetInstance<T>().GetLocalization("Census.SpawnCondition"));
+	public static void RegisterEntry<T>(Mod census) where T : ModNPC => census.Call("TownNPCCondition", ModContent.NPCType<T>(), ModContent.GetInstance<T>().GetLocalization("Census.SpawnCondition"));
 }
