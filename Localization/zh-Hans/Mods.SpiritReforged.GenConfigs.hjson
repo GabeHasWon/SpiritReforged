@@ -640,7 +640,7 @@ Pages: {
 				Tooltip: 梳妆台中物品数量的范围值。
 			}
 
-			ebrisMinimum: {
+			DebrisMinimum: {
 				DisplayName: "[i:3271] （废墟）最小残骸"
 				Tooltip: 生成的随机残骸的最小数量。
 			}
