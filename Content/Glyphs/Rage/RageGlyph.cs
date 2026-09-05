@@ -21,9 +21,11 @@ public class RageGlyph : GlyphItem
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (player.GetModPlayer<RagePlayer>().overflowDamage > 0)
-				// find the stack with the most timer and use that for the time display
+			if (player.GetModPlayer<RagePlayer>().OverflowDamage > 0)
+			{
+				// find the stack with the greatest timer and use that for the time display
 				player.buffTime[buffIndex] = player.GetModPlayer<RagePlayer>().overflowDecayTimer;
+			}
 			else
 			{
 				player.DelBuff(buffIndex);
@@ -33,10 +35,10 @@ public class RageGlyph : GlyphItem
 
 		public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 		{
-			int dmg = Main.LocalPlayer.GetModPlayer<RagePlayer>().overflowDamage;
+			int dmg = Main.LocalPlayer.GetModPlayer<RagePlayer>().OverflowDamage;
 
-			buffName = "Wrathful Damage [" + dmg + "]";
-			tip = $"Stored damage: {dmg}";
+			buffName = Language.GetTextValue("Mods.SpiritReforged.Buffs.RageGlyphBuff.DisplayName", dmg);
+			tip = Language.GetTextValue("Mods.SpiritReforged.Buffs.RageGlyphBuff.Description", dmg);
 			rare = ItemRarityID.Red;
 		}
 
@@ -45,7 +47,7 @@ public class RageGlyph : GlyphItem
 			RagePlayer mp = Main.LocalPlayer.GetModPlayer<RagePlayer>();
 			float lerp = mp.fadeInTimer / 20f;
 			float scale = MathHelper.Lerp(0.8f, 1f, lerp);
-			string text = mp.overflowDamage.ToString();
+			string text = mp.OverflowDamage.ToString();
 
 			var drawColor = Color.Lerp(Color.Red, Color.OrangeRed, lerp);
 			Vector2 shake = Main.rand.NextVector2Circular(0.5f, 0.5f) * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.5f);
@@ -58,21 +60,32 @@ public class RageGlyph : GlyphItem
 	{
 		public static readonly Asset<Texture2D> RageIcon = DrawHelpers.RequestLocal<RagePlayer>("RageGlyph_Icon", false);
 
-		// what percentage of overflow damage should be stored
 		public const float OVERFLOW_DAMAGE_MULT = 2.25f;
 		public const float DAMAGE_TAKEN_MULT = 1.5f;
+		public const int OVERFLOW_DECAY_MAX = 600;
 
-		public bool activateOverflow;
-		public int overflowDamage;
+		public int OverflowDamage
+		{
+			get => Math.Min(_overflowDamage, Main.hardMode ? 2500 : 500);
+			set
+			{
+				if (value != 0)
+					overflowDecayTimer = OVERFLOW_DECAY_MAX;
+
+				_overflowDamage = value;
+			}
+		}
+
 		public int overflowDecayTimer;
-		// we need to cache npc life before every hit in case they die (to calculate rage overflow damage)
-		// target.life would be always 0 in OnHitNPC
-		private int _npcLifeBeforeDeath;
 
 		// drawing
 		public int fadeOutTimer;
 		public int fadeInTimer;
+
 		private List<Vector2> _oldPositions;
+		private int _overflowDamage;
+
+		public static bool CanActivateRage(NPC npc) => npc.chaseable && npc.lifeMax > 5 && !npc.dontTakeDamage && !npc.immortal && !npc.friendly;
 
 		public override void Load() => On_Main.DrawCachedProjs += DrawRage;
 
@@ -89,7 +102,7 @@ public class RageGlyph : GlyphItem
 			if (projCache.Equals(Main.instance.DrawCacheProjsOverPlayers))
 				foreach (Player player in Main.ActivePlayers)
 				{
-					if (!player.TryGetModPlayer(out RagePlayer ragePlayer) || ragePlayer.overflowDamage <= 0 && ragePlayer.fadeOutTimer <= 0)
+					if (!player.TryGetModPlayer(out RagePlayer ragePlayer) || ragePlayer.OverflowDamage <= 0 && ragePlayer.fadeOutTimer <= 0)
 						continue;
 
 					float scale = 1f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.5f);
@@ -134,8 +147,7 @@ public class RageGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
 			{
-				overflowDamage += (int)(info.Damage * DAMAGE_TAKEN_MULT);
-				overflowDecayTimer = 600;
+				OverflowDamage += (int)(info.Damage * DAMAGE_TAKEN_MULT);
 
 				if (!Main.dedServ)
 				{
@@ -160,14 +172,9 @@ public class RageGlyph : GlyphItem
 				fadeInTimer--;
 
 			if (overflowDecayTimer > 0)
-			{
 				overflowDecayTimer--;
-			}
-			else if (overflowDamage > 0)
-			{
-				overflowDamage = 0;
+			else if (OverflowDamage > 0)
 				Clear();
-			}
 
 			if (!Main.dedServ)
 			{
@@ -188,7 +195,7 @@ public class RageGlyph : GlyphItem
 			//if (Player.HeldItem.GetGlyph().ItemType != ModContent.ItemType<RageGlyph>() && overflowDamage > 0)
 			//	Clear();
 
-			if (!Main.dedServ && overflowDamage > 0)
+			if (!Main.dedServ && OverflowDamage > 0)
 			{
 				float scale = 1f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.5f);
 
@@ -204,71 +211,55 @@ public class RageGlyph : GlyphItem
 		{
 			_oldPositions.Clear();
 			fadeOutTimer = 10;
-			overflowDamage = 0;
-			activateOverflow = false;
-			_npcLifeBeforeDeath = 0;
-		}
-
-		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
-		{
-			if (item.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
-				_npcLifeBeforeDeath = target.life;
-		}
-
-		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
-		{
-			if (proj.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
-				_npcLifeBeforeDeath = target.life;
+			OverflowDamage = 0;
 		}
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.CanBeChasedBy() && item.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
+			if (item.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
 			{
-				RageHitEffects(target, Player, damageDone);
+				RageHitEffects(target, Player);
 
 				if (Main.netMode != NetmodeID.SinglePlayer)
-					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player, damageDone);
+					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player);
 			}
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (target.CanBeChasedBy() && proj.type != ModContent.ProjectileType<RageHit>() && proj.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
+			if (proj.type != ModContent.ProjectileType<RageHit>() && proj.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
 			{
-				RageHitEffects(target, Player, damageDone);
+				RageHitEffects(target, Player);
 
 				if (Main.netMode != NetmodeID.SinglePlayer)
-					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player, damageDone);
+					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player);
 			}
 		}
 
 		[NetSynced(true)]
-		private static void RageHitEffects(NPC target, Player owner, int damageDone)
+		public static void RageHitEffects(NPC target, Player owner)
 		{
 			if (!owner.TryGetModPlayer(out RagePlayer ragePlayer))
 				return;
 
-			// Cap overflow damage to 2500 in hardmode and 500 in pre-hardmode
-			ragePlayer.overflowDamage = (int)MathHelper.Min(Main.hardMode ? 2500 : 500, ragePlayer.overflowDamage);
+			int overDamage = target.life * -1;
 
 			if (target.life > 0)
 			{
-				if (ragePlayer.overflowDamage > 0)
+				if (ragePlayer.OverflowDamage > 0)
 				{
 					SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, target.Center);
-					
-					if (owner.whoAmI == Main.myPlayer)
-						Projectile.NewProjectile(target.GetSource_OnHurt(owner), target.Center, Vector2.Zero, ModContent.ProjectileType<RageHit>(), ragePlayer.overflowDamage, 3f, owner.whoAmI, target.whoAmI);
 
-					ragePlayer.overflowDamage = 0;
+					if (owner.whoAmI == Main.myPlayer)
+						Projectile.NewProjectile(target.GetSource_OnHurt(owner), target.Center, Vector2.Zero, ModContent.ProjectileType<RageHit>(), ragePlayer.OverflowDamage, 3f, owner.whoAmI, target.whoAmI);
+
+					ragePlayer.OverflowDamage = 0;
 				}
 			}
-			else if (ragePlayer._npcLifeBeforeDeath - damageDone < 0)
+			else if (overDamage > 0 && CanActivateRage(target))
 			{
 				// whatever was leftover from the hit, ie negative is what we store as extra damage
-				ragePlayer.overflowDamage += (int)((ragePlayer._npcLifeBeforeDeath - damageDone) * -1 * OVERFLOW_DAMAGE_MULT);
-				ragePlayer.overflowDecayTimer = 600;
+				ragePlayer.OverflowDamage += (int)(overDamage * OVERFLOW_DAMAGE_MULT);
 
 				if (!Main.dedServ)
 				{
@@ -300,7 +291,7 @@ public class RageGlyph : GlyphItem
 			}
 		}
 
-		public	sealed class RageHit : ModProjectile
+		public sealed class RageHit : ModProjectile
 		{
 			public override string Texture => AssetLoader.EmptyTexture;
 

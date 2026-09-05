@@ -1,5 +1,4 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.Particle;
@@ -11,7 +10,7 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Content.Ziggurat;
 
 [FromClassic("CleftHorn")]
-public class BangleOfStrength : EquippableItem
+public class BangleOfStrength : ModItem, IFlagged
 {
 	public sealed class BanglePlayer : ModPlayer
 	{
@@ -25,7 +24,7 @@ public class BangleOfStrength : EquippableItem
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Player.HasEquip<BangleOfStrength>() && hit.DamageType.CountsAsClass(DamageClass.Melee) && _cooldown == 0)
+			if (Player.HasFlag<BangleOfStrength>() && hit.DamageType.CountsAsClass(DamageClass.Melee) && _cooldown == 0)
 			{
 				Projectile.NewProjectile(Player.GetSource_OnHit(target), target.Center, Vector2.Zero, ModContent.ProjectileType<BangleImpact>(), 50, 0, Player.whoAmI, target.whoAmI);
 				_cooldown = 200;

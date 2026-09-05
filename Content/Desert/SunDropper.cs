@@ -83,7 +83,7 @@ public class LightShaft : ModTile
 		for (int x = 0; x < 3; x++)
 		{
 			float lerp = (float)Math.Sin((Main.timeForVisualEffects + x * 200f) / 50f);
-			var position = center + TileExtensions.TileOffset - Main.screenPosition + new Vector2(6f * lerp, 0);
+			var position = center + TileMethods.TileOffset - Main.screenPosition + new Vector2(6f * lerp, 0);
 
 			spriteBatch.Draw(texture, position, null, Color.Goldenrod.Additive() * (0.1f + 0.05f * lerp) * strength, 0, new Vector2(texture.Width / 2, 0), 1.5f, default, 0);
 			spriteBatch.Draw(texture, position, null, Color.White.Additive() * (0.05f + 0.025f * lerp) * strength, 0, new Vector2(texture.Width / 2, 0), 0.5f, default, 0);

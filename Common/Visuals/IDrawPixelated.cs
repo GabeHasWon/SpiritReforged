@@ -1,44 +1,65 @@
-﻿using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals.RenderTargets;
 
 namespace SpiritReforged.Common.Visuals;
 
 public interface IDrawPixelated
 {
-	public sealed class PixelatedDrawSystem : ModSystem
+	public sealed class PixelatedDrawLoader : ILoadable
 	{
 		public static readonly EasyTarget PixelTarget = new(new Vector2(0.5f));
 
-		public override void Load()
+		void ILoadable.Load(Mod mod)
 		{
 			TargetSetup.DrawIntoRendertargets += SetupPixelTarget;
 			On_Main.DrawItems += DrawPixelTarget;
 		}
 
-		private static void SetupPixelTarget() //TODO: DEACTIVATE WHEN NOT IN USE
+		void ILoadable.Unload() { }
+
+		private static void SetupPixelTarget()
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-			graphics.SetRenderTarget(PixelTarget.Value);
-			graphics.Clear(Color.Transparent);
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
-
-			graphics.BlendState = BlendState.AlphaBlend; //Required for prims
-
+			List<IDrawPixelated> pixelQueue = []; //Setup queue
 			foreach (Item item in Main.ActiveItems)
 			{
 				if (item.ModItem is IDrawPixelated iDrawPixelated)
-					iDrawPixelated.DrawPixelated(spriteBatch);
+					pixelQueue.Add(iDrawPixelated);
 			}
 
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
 				if (projectile.ModProjectile is IDrawPixelated iDrawPixelated)
-					iDrawPixelated.DrawPixelated(spriteBatch);
+					pixelQueue.Add(iDrawPixelated);
 			}
 
-			spriteBatch.End();
-			graphics.SetRenderTarget(null);
+			foreach (Particle.Particle particle in ParticleHandler.Particles)
+			{
+				if (particle is null || particle.TimeActive > particle.MaxTime)
+					continue;
+
+				if (particle is IDrawPixelated iDrawPixelated)
+				{
+					pixelQueue.Add(iDrawPixelated);
+				}
+			}
+
+			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
+			{
+				graphics.SetRenderTarget(PixelTarget.Value);
+				graphics.Clear(Color.Transparent);
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
+
+				graphics.BlendState = BlendState.AlphaBlend; //Required for prims
+
+				foreach (IDrawPixelated iDrawPixelated in pixelQueue)
+					iDrawPixelated.DrawPixelated(spriteBatch);
+
+				spriteBatch.End();
+				graphics.SetRenderTarget(null);
+			}
 		}
 
 		private static void DrawPixelTarget(On_Main.orig_DrawItems orig, Main self)

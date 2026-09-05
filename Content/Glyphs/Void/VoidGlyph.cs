@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -36,6 +37,13 @@ public class VoidGlyph : GlyphItem
 		Item.maxStack = Item.CommonMaxStack;
 		settings = new(new(225, 63, 255));
 	}
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
+	{
+		MoRHelper.OverrideElement(item, MoRHelper.Shadow);
+
+		base.OnApplyGlyph(item, context);
+	}
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Shadow, -1);
 
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
 	{

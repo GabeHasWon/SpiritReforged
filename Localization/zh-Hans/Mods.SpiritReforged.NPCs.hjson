@@ -455,6 +455,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: 莫叹空空洞穴幽，百瓮藏宝待君收！
 		CavesAndClubs_1: 洞窟深处有玄谋，吾今赠瓮助君游！
+		Spellbound_0: 新台能将附魔契，此器世间可寻觅！
+		Spellbound_1: 明镜遍野任君赏，只待冒险焕新章！
 	}
 }
 
@@ -550,7 +552,7 @@ Scarabeus: {
 	DisplayName: 圣甲虫
 	Title: 羽冠神像
 	Entry: 这只巨型甲虫仪态威严、色彩斑斓，曾受到远古庙塔居民的崇拜。时至今日，它仍在原地等待朝拜。
-	SpawnInfo: 在庙塔的 [i:SpiritReforged/ScarabAltarItem] 远古祭坛处使用任意宝石物品。
+	SpawnInfo: 在白天于庙塔的 [i:SpiritReforged/ScarabAltarItem] 远古祭坛处使用任意宝石物品。
 }
 
 TinyGrub: {
@@ -574,13 +576,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
 	DisplayName: 蟋蟀
+	Entry: 在夜晚，这些小动物可能会出现在各种草中。夜晚的声音主要源于它们。
 }
 
 GoldCricket: {
-	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
 	DisplayName: 金蟋蟀
+	Entry: 镇上的居民说，看到金色蟋蟀会带来好运。有人觉得这是因为它们能卖个好价钱，但也有人不这么觉得……显然并非如此。
 }
 
 BeetleTownPet: {
@@ -691,87 +693,89 @@ BeetleTownPet: {
 }
 
 Enchanter: {
-	// DisplayName: Enchanter
-	// Entry: Perpetually tired but kind at heart, the Enchanter deals with various spells and magicks. If some weapons or tools need a little more spice, just ask!
+	DisplayName: 附魔师
+	Entry: 总是很累，但心地善良，附魔师会使用多种咒语和魔法。如果有武器或工具需要多一点的加持，尽管开口！
 
 	Names: {
-		// 0: Albion
-		// 1: Bertilak
-		// 2: Eango
-		// 3: Enki
-		// 4: Gil
-		// 5: Heka
-		// 6: Ilmarinen
-		// 7: Itani
-		// 8: Kokabiel
-		// 9: Mallyck
-		// 10: Mazdak
-		// 11: Morrigan
-		// 12: Myrrdin
-		// 13: Oeti
-		// 14: Ose
-		// 15: Sulyvahn
-		// 16: Tethra
-		// 17: Themisto
-		// 18: Vorv
-		// 19: Ywain
+		0: Albion
+		1: Bertilak
+		2: Eango
+		3: Enki
+		4: Gil
+		5: Heka
+		6: Ilmarinen
+		7: Itani
+		8: Kokabiel
+		9: Mallyck
+		10: Mazdak
+		11: Morrigan
+		12: Myrrdin
+		13: Oeti
+		14: Ose
+		15: Sulyvahn
+		16: Tethra
+		17: Themisto
+		18: Vorv
+		19: Ywain
 	}
 
 	TownNPCMood: {
-		// Content: I take a moment and feel... all is well.
-		// NoHome: I don't imagine you've got a place for me to rest my weary bones?
-		// FarFromHome: I am quite far for from my workspace, and my bed. May we return home soon?
-		// LoveSpace: This town is very quaint. Enough people to have a nice chin-wag, but not so many it becomes overwhelming.
-		// DislikeCrowded: I am finding it difficult to concentrate with all this hubbub.
-		// HateCrowded: There are far too many people living here. I haven't gotten a good night's sleep in days.
-		// LoveNPC: "{NPCName}'s hot chocolate is to die for! Oh and his parlor tricks, they're delightful!"
-		// LikeNPC: I don't know what kind of magic {NPCName} uses to light up the sky like that, but it looks spectacular! Shame about the noise though, I had a headache for three days after...
-		// DislikeNPC: "{NPCName}'s idea of 'improving' your gear is barbaric! How is denting it with a hammer supposed to help?!"
-		// HateNPC: I swear, if {NPCName} tells one more of his stories about slaughtering kobolds at afternoon tea, I'll turn him into a sheep!
-		// LikeBiome: Here above the clouds, I feel so much more attuned to the flows of magick. Not to mention the view!
-		// DislikeBiome: Bees produce such high-quality wax, but oh why must they sting me so? I'm covered head to toe in welts!
-		// LikeNPC_Princess: "{NPCName} is such a sweet little girl, but I can scarcely keep up with her. How can such a small body contain so much energy?"
-		// Princess_LovesNPC: "{NPCName}'s magic is unlike any I've seen before! I wonder what its source may be?"
+		Content: 我花了片刻时间来感受……一切都好。
+		NoHome: 我想你应该没有个地方来让我疲惫的骨头歇一歇吧？
+		FarFromHome: 我离我的工作区和床很远了。我们能快点回家吗？
+		LoveSpace: 这个城镇非常古朴。有足够多的人可以聊天，但没有那么多人会让人感到不知所措。
+		DislikeCrowded: 我发现在这么吵闹的环境中难以集中注意力。
+		HateCrowded: 这里住的人太多了。我已经好几天没睡个好觉了。
+		LoveNPC: "{NPCName}的热巧克力简直绝了！哦，还有他的小把戏，真是太有趣了！"
+		LikeNPC: 我不知道{NPCName}用了什么魔法让天空如此绚烂，但看起来太壮观了！可惜噪音太大了，事后我头疼了三天……
+		DislikeNPC: "{NPCName}所谓的“改进”装备简直是野蛮！用锤子砸凹它怎么会管用？！"
+		HateNPC: 我发誓，如果{NPCName}在下午茶时再讲一次他屠杀狗头人的故事，我就把他变成一只羊！
+		LikeBiome: 在这云层之上，我感觉更能与魔法的流动相契合。更别提这景色了！
+		DislikeBiome: 蜜蜂能产出如此高品质的蜡，但哦，它们为何总要蜇我呢？我从头到脚都是肿包！
+		LikeNPC_Princess: "{NPCName}真是个可爱的小女孩，但我几乎跟不上她的步伐。这么小的身体怎么能装下这么多能量呢？"
+		Princess_LovesNPC: "{NPCName}的魔法是我从未见过的！我很好奇它的源头会是什么呢？"
 	}
 
 	Dialogue: {
 		Idle: {
-			// 0: Do stop to smell the roses from time to time. Rest is good for you!
-			// 1: It's easy to lose track of time when you are snout deep in a good tome.
-			// 2: Have you come to learn about the wondrous properties of wax?
-			// 3: Would you like a cup of tea? I have black, green, herbal, chamomile, berry, citrus...
-			// 4: Greetings! What can I enchant for you today?
+			0: 记得偶尔停下来闻闻花香。休息对你有好处！
+			1: 埋头于一本好书中，很容易就会忘记时间。
+			2: 你是来了解蜡所具备的各种神奇特性的吗？
+			3: 想来杯茶吗？我有红茶、绿茶、草本茶、洋甘菊茶、浆果茶、柑橘茶……
+			4: 你好！今天想给什么附魔呢？
 		}
 
 		IdleNight: {
-			// 0: The moon is high, and my candles burn brighter than ever!
-			// 1: Fireflies dot the sky like small, dancing flames. There is magic everywhere we look.
-			// 2: It's far beyond my second bedtime. I kindly request you make this quick.
+			0: 明月高悬，蜡烛的光芒比以往任何时候都要明亮！
+			1: 萤火虫像小小的舞动火焰一样布满天空。我们目光所及之处皆有魔法……
+			2: 这已经远远超过我的第二个睡觉时间了。我恳请你长话短说。
 		}
 
 		BloodMoon: {
-			// 0: I cannot sleep on a night such as this. When I close my eyes, all I see is red.
-			// 1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
+			0: I我无法在这样的夜晚入睡。当我闭上眼睛时，看到的只有红色。
+			1: 我的蜡烛燃烧着可怕的深红色。今晚有邪恶的事情正在酝酿。
 		}
 
 		Rain: {
-			// 0: There's nothing quite like the sound of rain pattering against the windows.
-			// 1: I'm not going outside again. I only just got my hat dry from last time!
+			0: 没有什么比雨点拍打窗户的声音更动听了。
+			1: 我不会再出去了。我刚刚才弄干我上次弄湿的帽子！
 		}
 
 		Graveyard: {
-			// 0: I usually like it quiet, but the air is completely still. It's unnerving.
-			// 1: I can't shake the feeling that something is watching me.
+			0: 我通常喜欢安静，但此刻空气完全凝滞了。这让人不安。
+			1: 我总觉得有什么东西在注视着我。
 		}
 
-		// Thunderstorm: It's a perfect time to huddle around the fireplace and share spooky stories!
-		// Eclipse: How am I meant to know when to put on afternoon tea when its neither day nor night?
-		// Party: Your human festivities are fascinating, if a bit... raucous for my tastes. I might have to excuse myself soon.
-		// Goblin: You can stick seals on many things, but {0} keeps asking me to enchant his various inventions. It typically doesn't end well...
-		// Golfer: "{0} always invites me to play golf with the others, but I always find myself dozing off... I don't have the heart to reject his invitations."
-		// Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
-		// WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
+		Thunderstorm: 这正是围坐在壁炉旁分享恐怖故事的绝佳时机！
+		Eclipse: 既非白昼也非黑夜，我怎么能知道什么时候该准备下午茶呢？
+		Party: 你们人类的庆祝活动很有趣，虽然对我来说有点……喧闹。我可能得不久就告辞了。
+		Goblin: 你可以把漆印贴在许多东西上，但{0}老是让我给他的各种发明附魔。通常结局都不太好……
+		Golfer: "{0}总是邀请我和其他人一起打高尔夫，但我总是发现自己昏昏欲睡……我实在不忍心拒绝他的邀请。"
+		Stylist: "{0}说服了我去给鳞片打蜡，但我不确定这有什么吸引力。我像一条刚捕上来的鱼一样闪闪发光！"
+		WitchDoctor: "{0}身上有一种神秘的气质，我想更深入地了解他。或许你能……帮我们引荐一下吗？"
 	}
+
+	Census.SpawnCondition: 持有任意附魔物品或彩蜡 [i:SpiritReforged/ChromaticWax]、或击败一位Boss
 }
 
-// SealedKnight.DisplayName: Sealed Knight
+SealedKnight.DisplayName: 漆印骑士

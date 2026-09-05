@@ -32,6 +32,7 @@ public abstract class BuffExtension : ILoadable
         }
     }
 
+	/// <summary> The duration of the buff corresponding to <see cref="Type"/>. </summary>
 	public int BuffTime
 	{
 		get => (NPC.FindBuffIndex(Type) is int index && index != -1) ? NPC.buffTime[index] : 0;

@@ -3,6 +3,8 @@ using System.Linq;
 
 namespace SpiritReforged.Common.PrimitiveRendering.Trails;
 
+public delegate float TrailWidthFunction(float factorAlongTrail);
+
 public class VertexTrail : BaseTrail
 {
 	public float DissolveSpeed { get; set; }
@@ -11,6 +13,11 @@ public class VertexTrail : BaseTrail
 	/// Controls immediate trail opacity, useful for fading out.
 	/// </summary>
 	public float Opacity { get; set; }
+
+	/// <summary>
+	/// Controls immediate trail width, useful for fading out.
+	/// </summary>
+	public float WidthMultiplier { get; set; }
 
 	private readonly ITrailCap _trailCap;
 	private readonly ITrailColor _trailColor;
@@ -21,12 +28,14 @@ public class VertexTrail : BaseTrail
 	private float _currentLength;
 	private float _maxLength;
 
-	private readonly List<Vector2> _points;
+	public List<Vector2> _points;
 
 	private readonly float _originalMaxLength;
 	private readonly float _originalWidth;
 
-	public VertexTrail(ITrailColor type, ITrailCap cap, ITrailPosition position, ITrailShader shader, float widthAtFront, float maxLength, float dissolveSpeed = -1)
+	private readonly TrailWidthFunction _trailWidthFunction;
+
+	public VertexTrail(ITrailColor type, ITrailCap cap, ITrailPosition position, ITrailShader shader, float widthAtFront, float maxLength, float dissolveSpeed = -1, TrailWidthFunction trailWidthFunction = null)
 	{
 		_trailCap = cap;
 		_trailColor = type;
@@ -40,6 +49,9 @@ public class VertexTrail : BaseTrail
 
 		_points = [];
 		Opacity = 1;
+		WidthMultiplier = 1;
+
+		_trailWidthFunction = trailWidthFunction;
 	}
 
 	protected override void OnDissolve()
@@ -135,11 +147,15 @@ public class VertexTrail : BaseTrail
 		Color previousColor = _trailColor.GetColourAt(0f, trailLength, _points, _points[0]) * Opacity;
 
 		_trailCap.AddCap(vertices, ref currentIndex, previousColor, _points[0], startNormal, _widthStart);
+
 		for (int i = 1; i < _points.Count; i++)
 		{
 			currentDistance += Vector2.Distance(_points[i - 1], _points[i]);
 
-			float thisPointsWidth = halfWidth * (1f - i / (float)(_points.Count - 1));
+			// invoke our custom trail width function, or use the default if its null
+			float thisPointsWidth = _trailWidthFunction?.Invoke(i / _points.Count) ?? halfWidth * (1f - i / (float)(_points.Count - 1));
+
+			thisPointsWidth *= WidthMultiplier;
 
 			Vector2 normal = CurveNormal(_points, i);
 			Vector2 clockwise = _points[i] + normal * thisPointsWidth;

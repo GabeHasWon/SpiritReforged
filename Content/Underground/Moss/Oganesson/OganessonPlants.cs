@@ -162,7 +162,7 @@ public class OganessonPlants : ModTile, ICheckItemUse
 
 		var texture = TextureAssets.Tile[Type].Value;
 		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 18, 18);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset;
+		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset;
 
 		position += (t.TileFrameX / 18 / StyleRange) switch
 		{

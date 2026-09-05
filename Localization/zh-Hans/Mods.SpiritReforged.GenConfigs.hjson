@@ -389,8 +389,8 @@ Pages: {
 			}
 
 			WaxScale: {
-				// DisplayName: WaxScale
-				// Tooltip: WaxScale
+				DisplayName: "[i:SpiritReforged/WaxPotItem] 蜡罐比例"
+				Tooltip: 蜡罐尝试生成的次数的倍率。
 			}
 		}
 
@@ -477,18 +477,18 @@ Pages: {
 			}
 
 			EnchantedWorkbenchChance: {
-				// DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Houses) Workbench Chance"
-				// Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] （房屋）工作台几率"
+				Tooltip: 地下小屋中附魔工作台生成的几率的分母（1/x）。
 			}
 
 			DisplayCaseChance: {
-				// DisplayName: "[i:SpiritReforged/DisplayCaseItem] (Houses) Display Case Chance"
-				// Tooltip: The denominator (1/x) of the chance for a Display Case to spawn in an underground house.
+				DisplayName: "[i:SpiritReforged/DisplayCaseItem] （房屋）展示柜几率"
+				Tooltip: 地下小屋中展示柜生成的几率的分母（1/x）。
 			}
 
 			MirrorRate: {
-				// DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] (Decor) Mirror Rate"
-				// Tooltip: The multiplier to the maximum amount of Mirrors of Return that spawn in a world.
+				DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] （装饰）镜子比率"
+				Tooltip: 世界中生成的返回之镜的最大数量的倍率。
 			}
 		}
 
@@ -685,8 +685,8 @@ Pages: {
 			}
 
 			GlowflowerChance: {
-				DisplayName: "[i:4045] （绿洲）发光花几率"
-				Tooltip: 发光花被放置的几率。
+				DisplayName: "[i:4045] （绿洲）光盏几率"
+				Tooltip: 光盏被放置的几率。
 			}
 
 			PineappleChance: {

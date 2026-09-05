@@ -25,6 +25,7 @@ public class TileMaterial : ModSystem
 				return material;
 		}
 
+		Main.instance.LoadTiles(tileType);
 		var texture = TextureAssets.Tile[tileType].Value;
 		return new(TextureColorCache.GetBrightestColor(texture), lightness);
 	}

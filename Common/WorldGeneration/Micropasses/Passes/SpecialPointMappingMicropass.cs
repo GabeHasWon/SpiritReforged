@@ -60,7 +60,7 @@ internal class SpecialPointMappingMicropass : Micropass
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (TileExtensions.TryGetChestID(i, j, out VanillaChestID chestType))
+				if (TileMethods.TryGetChestID(i, j, out VanillaChestID chestType))
 				{
 					if (chestType == VanillaChestID.Sky)
 						Add(i, j, InterestType.FloatingIsland);

@@ -105,10 +105,7 @@ class GoldClubProj : BaseClubProj
 	public override void OnSwingStart()
 	{
 		if (!Main.dedServ)
-		{
-			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 			CreateTrail(TrailSystem.ProjectileRenderer);
-		}
 	}
 
 	public override void Swinging(Player owner)

@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.BuffCommon;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.Misc;
@@ -7,9 +8,8 @@ namespace SpiritReforged.Common.PlayerCommon;
 
 internal static class PlayerExtensions
 {
-	public static bool HasEquip<TItem>(this Player player) where TItem : EquippableItem => player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<TItem>().Name) == true;
-
 	public static bool HasInfoItem(this Player player, string itemName) => player.GetModPlayer<InfoItem.InfoPlayer>().info[itemName];
+
 	public static bool HasInfoItem<TItem>(this Player player) where TItem : InfoItem => player.HasInfoItem(ModContent.GetInstance<TItem>().Name);
 
 	/// <summary> Checks whether the set bonus related to this item is active on <paramref name="player"/>.<br/>
@@ -20,13 +20,21 @@ internal static class PlayerExtensions
 	public static bool WearingSet<T>(this Player player) where T : ModItem => ModContent.GetInstance<T>().IsArmorSet(player.armor[0], player.armor[1], player.armor[2]);
 
 	public static void SetFlag(this Player player, string name, bool? value = true) => player.GetModPlayer<PlayerFlags>().SetFlag(name, value);
+
 	public static bool? CheckFlag(this Player player, string name) => player.GetModPlayer<PlayerFlags>().CheckFlag(name);
+
+	/// <summary> Checks Whether <paramref name="player"/> has a true flag of name <typeparamref name="T"/>. Often used with <see cref="IFlagged"/>. </summary>
+	public static bool HasFlag<T>(this Player player) where T : ModType => player.GetModPlayer<PlayerFlags>().CheckFlag(ModContent.GetInstance<T>().Name) == true;
 
 	/// <summary> Checks whether the player is in the corruption, crimson, or hallow. </summary>
 	public static bool ZoneEvil(this Player player) => player.ZoneCorrupt || player.ZoneCrimson || player.ZoneHallow;
+
 	/// <inheritdoc cref="CollisionPlayer.FallThrough"/>
 	public static bool FallThrough(this Player player) => player.GetModPlayer<CollisionPlayer>().FallThrough();
+
+	/// <summary> Whether <paramref name="player"/> has used quick buff. </summary>
 	public static bool UsedQuickBuff(this Player player) => player.GetModPlayer<BuffPlayer>().usedQuickBuff;
+
 	/// <summary> Safely rotates the whole player. Must be continuously set. </summary>
 	public static void Rotate(this Player player, float rotation, Vector2? origin = null)
 	{

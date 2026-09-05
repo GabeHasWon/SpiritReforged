@@ -26,7 +26,7 @@ public abstract class SaltBlock : ModTile, ILoadItem
 		TileID.Sets.CrimsonBiome[Type] = -2;
 		SpiritSets.AntiInfectionStrength[Type] = 5;
 
-		this.Merge(TileID.IceBlock, TileID.SnowBlock, TileID.Sand, TileID.Dirt);
+		TileMethods.Merge(Type, TileID.IceBlock, TileID.SnowBlock, TileID.Sand, TileID.Dirt);
 
 		DustType = DustID.Pearlsand;
 		MineResist = 0.5f;

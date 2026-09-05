@@ -455,6 +455,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: Hocus pocus - don't look so blue, I've filled your caves with pots to loot anew!
 		CavesAndClubs_1: Abra kadabra I bestow upon you pots anew; should you head underground you'll enjoy them true!
+		Spellbound_0: New tables for enchantments to bind; these tools in your world you shall find!
+		Spellbound_1: Now you can enjoy mirrors about, just waiting for new adventures to sprout!
 	}
 }
 
@@ -550,7 +552,7 @@ Scarabeus: {
 	DisplayName: Scarabeus
 	Title: Crested Idol
 	Entry: With its regal bearing and iridescent hue, this giant beetle was once worshipped by the ancient inhabitants of the Ziggurat. It remains to this day, awaiting tribute.
-	SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat.
+	SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat during daytime.
 }
 
 TinyGrub: {
@@ -574,13 +576,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
 	DisplayName: Cricket
+	Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
 }
 
 GoldCricket: {
-	Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
 	DisplayName: Gold Cricket
+	Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
 }
 
 BeetleTownPet: {
@@ -772,6 +774,8 @@ Enchanter: {
 		Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
 		WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
 	}
+
+	Census.SpawnCondition: Hold any enchanted item or Chromatic Wax [i:SpiritReforged/ChromaticWax], or beat a boss
 }
 
 SealedKnight.DisplayName: Sealed Knight

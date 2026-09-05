@@ -5,7 +5,7 @@ ReforgedClientConfig: {
 		Label: Детализация отражений
 		Tooltip:
 			'''
-			Определяет уровень детализации отражений.
+			Устанавливает уровень детализации отражений.
 			Более высокие значения оказывают большую нагрузку на производительность.
 			'''
 	}
@@ -17,7 +17,7 @@ ReforgedClientConfig: {
 
 	ScreenshakeStrength: {
 		Label: Множитель силы тряски экрана
-		Tooltip: Определяет уровень силы тряски экрана, создаваемой контентом Reforged.
+		Tooltip: Устанавливает уровень силы тряски экрана, создаваемой контентом Reforged.
 	}
 
 	DisableWater: {
@@ -36,29 +36,19 @@ ReforgedClientConfig: {
 
 	Headers.Developer: Для разработчиков
 
-	GlyphProjectileEffects: {
-		// Label: Glyph Projectile Effects
-		// Tooltip: Determines if projectiles with glyphs should create visual effects
-	}
-
-	GlyphItemEffects: {
-		// Label: Glyph Item Effects
-		// Tooltip: Determines if items with glyphs should have shaders and visual effects when dropped in world
-	}
-
 	GlyphProjectileVisualEffects: {
-		// Label: Glyph Projectile Visual Effects
-		// Tooltip: ""
+		Label: Эффекты снарядов зачарованного оружия
+		Tooltip: Добавляет визуальные эффекты для снарядов оружия, на которое наложены глифы.
 	}
 
 	GlyphItemVisualEffects: {
-		// Label: Glyph Item Visual Effects
-		// Tooltip: ""
+		Label: Эффекты выброшенного зачарованного оружия
+		Tooltip: Добавляет шейдеры и визуальные эффекты для выброшенного оружия, на которое наложены глифы.
 	}
 
 	BannerJingle: {
-		// Label: Banner Jingle
-		// Tooltip: Enables the banner jingle, which plays when the first banner for an NPC type is spawned.
+		Label: Уведомление о знамени
+		Tooltip: Добавляет звуковой эффект звоночка, воспроизводящийся при получении первого знамени каждого существа.
 	}
 }
 
@@ -80,15 +70,15 @@ ReforgedServerConfig: {
 	}
 
 	AutoloadHeldProjectiles: {
-		// Label: Autoload Held Projectiles
-		/* Tooltip:
+		Label: Автоматически определять удерживаемые снаряды
+		Tooltip:
 			'''
-			Enables a system that automatically detects 'held projectiles' during loading.
-			This may substantially increase load times or cause load errors if enabled with other mods,
-			but may fix some issues with certain mechanics (such as glyphs) in-game.
-			Ideally, other mods use the HeldProjectile named projectile set (bool) for stable compatibility.
+			Добавляет систему, автоматически определяющую снаряды, «удерживаемые» игроком, во время загрузки модов.
+			Может значительно увеличить время загрузки или вызвать ошибки при загрузке других модов,
+			но способна исправить определённые проблемы с некоторыми игровыми механиками (такими как глифы).
+			Для обеспечения стабильной совместимости другие моды в идеале должны использовать именованный набор снарядов HeldProjectile (bool).
 
-			This has NO effect on vanilla or Reforged projectiles, which are already set.
-			''' */
+			Эта настройка не влияет на ванильные снаряды и снаряды Reforged, поскольку для них эта информация уже задана вручную.
+			'''
 	}
 }

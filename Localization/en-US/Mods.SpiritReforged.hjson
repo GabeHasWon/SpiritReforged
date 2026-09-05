@@ -39,6 +39,9 @@ Misc: {
 	Enchantment: {
 		PlaceToEnchant: Place an item here to enchant
 		Enchant: Enchant
+		Cost: "{0} [c/{1}:Chromatic Wax]"
+		Clear: Remove enchantment
+		Random: Randomize enchantment
 	}
 
 	NoStock: Out of stock

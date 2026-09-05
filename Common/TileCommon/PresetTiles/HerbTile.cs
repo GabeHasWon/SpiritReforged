@@ -45,6 +45,8 @@ public abstract class HerbTile : ModTile, ICheckItemUse
 		TileID.Sets.IgnoredByGrowingSaplings[Type] = true;
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 
+		TileID.Sets.TileCutIgnore.Regrowth[Type] = true;
+
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
 		HerbSet.IsHerb[Type] = true;
 

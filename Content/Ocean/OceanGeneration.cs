@@ -92,7 +92,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[PriorityModifier(nameof(KelpChance))]
 	private static int KelpMaxHeight = 4;
 
-	[GenConfigurable(0.2f, 5f, 0.1f)]
+	[GenConfigurable(0.2f, 2f, 0.1f)]
 	[Slider]
 	private static float GravelMultiplier = 1f;
 

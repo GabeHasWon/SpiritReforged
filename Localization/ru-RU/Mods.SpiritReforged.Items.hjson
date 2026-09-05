@@ -32,11 +32,11 @@ RawFish: {
 }
 
 SunkenTreasure: {
-	DisplayName: Затонувшее сокровище
+	DisplayName: Затонувшие сокровища
 	Tooltip:
 		'''
 		{$CommonItemTooltip.RightClickToOpen}
-		«Возможно, внутри всё ещё полно ценных сокровищ»
+		«Возможно, внутри всё ещё полно ценностей»
 		'''
 }
 
@@ -90,8 +90,8 @@ CascadeLeggings: {
 	Tooltip: Увеличивает скорость передвижения в воде на 15%
 }
 
-JellyfishStaff: {
-	DisplayName: Посох медузы
+JellyfishJamJar: {
+	DisplayName: Банка с медузным джемом
 	Tooltip: Призывает крошку-медузу сражаться за вас!
 }
 
@@ -140,7 +140,7 @@ UrchinStaff: {
 
 GarInAJar: {
 	Tooltip: ""
-	DisplayName: Панцирник в банке
+	DisplayName: Аквариум с панцирником
 }
 
 GarItem: {
@@ -975,12 +975,12 @@ DrywoodWallItem: {
 }
 
 ZiplineGun: {
-	DisplayName: Рельсострел
+	DisplayName: Тросомёт
 	Tooltip:
 		'''
-		Создаёт рельсы, по которым могут перемещаться игроки
-		Рельсы можно полностью убрать, нажав ПКМ
-		Нажмите ЛКМ по одному концу рельс, чтобы убрать только его
+		Создаёт трос, по которым могут перемещаться игроки
+		Тросы можно полностью убрать, нажав ПКМ
+		Нажмите ЛКМ по одному концу троса, чтобы убрать только его
 		'''
 	AssistantOn: Нажмите ПКМ, чтобы включить предпросмотр
 	AssistantOff: Нажмите ПКМ, чтобы отключить предпросмотр
@@ -1000,7 +1000,7 @@ RogueCrest: {
 	Tooltip:
 		'''
 		Призывает ржавый меч, не занимающий слоты миньонов, сражаться за вас
-		Меч может наложить дебафф «{$Buffs.OpenWounds.DisplayName}» на поражённых врагов
+		Меч может наложить на врага дебафф «{$Buffs.OpenWounds.DisplayName}»
 		Атаки по врагам с этим дебаффом оружием ближнего боя вызывают у них кровотечение
 		'''
 }
@@ -1064,7 +1064,7 @@ LeatherCloakItem: {
 	DisplayName: Кожаный плащ
 	Tooltip:
 		'''
-		Даёт невосприимчивость к дебаффу «{$BuffName.WindPushed}» во время песчаных бурь 
+		Даёт невосприимчивость к дебаффу «{$BuffName.WindPushed}» во время песчаных бурь
 		Увеличивает скорость передвижения на 5% и ускорение на 15%
 		'''
 }
@@ -1103,7 +1103,7 @@ ArcaneNecklaceGold: {
 	Tooltip:
 		'''
 		Увеличивает максимальный запас маны на 20 ед.
-		С поражённых врагов могут выпасть звёзды маны
+		С поражённых врагов иногда будут выпадать звёзды маны
 		'''
 }
 
@@ -1941,7 +1941,7 @@ VexpowderBlue: {
 	Tooltip:
 		'''
 		{$Items.Flarepowder.Tooltip}
-		Накладывает дебафф «{$BuffName.Confused}» на поражённых врагов
+		Накладывает на врагов дебафф «{$BuffName.Confused}»
 		'''
 }
 
@@ -2299,8 +2299,8 @@ SleightOfHand: {
 	DisplayName: Ловкость рук
 	Tooltip:
 		'''
-		Позволяет менять используемые боеприпасы двойным нажатием клавиши {0}, если у вас в руках есть стрелковое оружие
-		Работает даже находясь в инвентаре
+		Дважды нажмите клавишу {0}, держа стрелковое оружие, чтобы сменить используемые боеприпасы
+		Работает даже в инвентаре
 		'''
 }
 
@@ -2866,12 +2866,12 @@ SaltTallGateItem: {
 
 EnlilStatueItem: {
 	DisplayName: Статуя Энлиля
-	Tooltip: Увеличивает вертикальную подвижность, если размещена поблизости
+	Tooltip: Увеличивает вертикальную мобильность, если размещена поблизости
 }
 
 SerratedClaws: {
 	DisplayName: Зазубренные клешни
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -2930,7 +2930,7 @@ BedouinCowl: {
 }
 
 BedouinLeggings: {
-	DisplayName: Бедуинские поножи
+	DisplayName: Бедуинские штаны
 	Tooltip: Увеличивает скорость передвижения на 10%
 }
 
@@ -3159,205 +3159,375 @@ SaltGraveMarkerItem: {
 }
 
 NotSunItemIcon: {
-	// DisplayName: Not Sun Item Icon
-	// Tooltip: ""
+	DisplayName: Not Sun Item Icon
+	Tooltip: ""
 }
 
 ChromaticWax: {
-	// DisplayName: Chromatic Wax
-	// Tooltip: Can be exchanged for magical glyphs
-	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
-	// Target: Can only be applied to weapons
-	// RightClick: Hold this glyph and right-click the item you want to enchant
+	DisplayName: Хроматический воск
+	Tooltip: Можно обменять на магические глифы
+	Gain: Выбранный предмет получит эффект [c/{0}:«{1}»]:
+	Target: Можно применить только к оружию
+	RightClick: Нажмите ПКМ по оружию, держа этот глиф, чтобы наложить на него зачарование
 }
 
 BlazeGlyph: {
-	// DisplayName: Blaze Glyph
-	/* Tooltip:
+	DisplayName: Глиф пламени
+	Tooltip:
 		'''
-		Dealing damage sets you ablaze
-		up to +40% damage and +20% critical strike chance depending on lost hp
-		''' */
-	// Effect: Blazing
-	// Death: "{0} was consumed by Rage..."
+		Нанесение урона врагам поджигает вас
+		Урон и шанс критического удара увеличиваются в зависимости от потерянного здоровья,
+		вплоть до 40% и 20% соответственно
+		'''
+	Effect: Пылающий
+	Death: Игрока {0} поглотила ярость...
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		Fem: Пылающая
+		Neutral: Пылающее
+		Plural: Пылающие
+	}
 }
 
 RadiantGlyph: {
-	// DisplayName: Radiant Glyph
-	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
-	// Effect: Radiant
+	DisplayName: Глиф сияния
+	Tooltip:
+		'''
+		Пока вы не наносите урон, накапливается сияющая энергия
+		Накопив энергию вам дастся бафф, усиливающий следующую атаку
+		'''
+	Effect: Сияющий
+
+	Gendered: {
+		Fem: Сияющая
+		Neutral: Сияющее
+		Plural: Сияющие
+	}
 }
 
 StormGlyph: {
-	// DisplayName: Storm Glyph
-	/* Tooltip:
+	DisplayName: Глиф шторма
+	Tooltip:
 		'''
-		Can only be applied to weapons that fire projectiles
-		Increases projectile velocity
-		Projectiles occasionally create powerful bursts of wind
-		''' */
-	// Effect: Billowed
+		Можно применить только к оружию, выпускающему снаряды
+		Скорость снарядов увеличена
+		Снаряды будут периодически создавать сильный порыв ветра
+		'''
+	Effect: Взмывающий
+
+	Gendered: {
+		Fem: Взмывающая
+		Neutral: Взмывающее
+		Plural: Взмывающие
+	}
 }
 
 MoonlightGlyph: {
-	// DisplayName: Moonlight Glyph
-	/* Tooltip:
+	DisplayName: Глиф полуночи
+	Tooltip:
 		'''
-		Converts 20% of the item's damage into magic damage
-		Increases damage the lower your mana is
-		Damaging enemies leeches mana
-		''' */
-	// Effect: Dazzling
+		20% урона оружия конвертировано в магический урон
+		Урон увеличивается по мере снижения запаса маны
+		Атаки по врагам восстанавливают ману
+		'''
+	Effect: Сверкающий
+
+	Gendered: {
+		Fem: Сверкающая
+		Neutral: Сверкающее
+		Plural: Сверкающие
+	}
 }
 
 RotGlyph: {
-	// DisplayName: Rot Glyph
-	/* Tooltip:
+	DisplayName: Глиф гниения
+	Tooltip:
 		'''
-		Attacks inflict a contagious blight
-		This blight can be inflicted on to you by enemies suffering from it
-		''' */
-	// Effect: Blighted
+		Атаки накладывают на врагов заразную скверну
+		Заражённые враги могут перенести скверну так и на других врагов, так и на вас
+		'''
+	Effect: Скверный
+
+	Gendered: {
+		Fem: Скверная
+		Neutral: Скверное
+		Plural: Скверные
+	}
 }
 
 ShockGlyph: {
-	// DisplayName: Shock Glyph
-	// Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
-	// Effect: Shocking
+	DisplayName: Глиф электрошока
+	Tooltip: Критические удары наносят на 10% больше урона и поражают электричеством ближайших врагов
+	Effect: Электрошоковый
+
+	Gendered: {
+		Fem: Электрошоковая
+		Neutral: Электрошоковое
+		Plural: Электрошоковые
+	}
 }
 
 BeeGlyph: {
-	// DisplayName: Bee Glyph
-	/* Tooltip:
+	DisplayName: Глиф пчелы
+	Tooltip:
 		'''
-		Converts 20% of the item's damage into summon damage
-		Hitting enemies tags them
-		Tagged enemies release bees when struck by minions
-		''' */
-	// Effect: Buzzing
+		20% урона оружия конвертировано в урон призывателя
+		{$CommonItemTooltip.Whips}
+		Атаки миньонов по отмеченным врагам призывают атакующих пчёл
+		'''
+	Effect: Жужжащий
+
+	Gendered: {
+		Fem: Жужжащая
+		Neutral: Жужжащее
+		Plural: Жужжащие
+	}
 }
 
 SanguineGlyph: {
-	// DisplayName: Sanguine Glyph
-	/* Tooltip:
+	DisplayName: Глиф крови
+	Tooltip:
 		'''
-		20% reduced damage
-		Attacks gain lifesteal that increases as your health decreases
-		Stealing life grants stacks of a decaying damage buff
-		''' */
-	// Effect: Leeching
+		-20% к наносимому урону
+		Атаки по врагам высасывают их здоровье, причём тем больше, чем ниже ваше текущее здоровье
+		Высасывание здоровья даёт суммирующийся бафф, увеличивающий урон
+		'''
+	Effect: Высасывающий
+
+	Gendered: {
+		Fem: Высасывающая
+		Neutral: Высасывающие
+		Plural: Высасывающее
+	}
 }
 
 PrefixVoucher: {
-	// DisplayName: "{0} Prefix Voucher"
-	/* Tooltip:
+	DisplayName: "{0} ваучер"
+	Tooltip:
 		'''
-		Can be used on items with <right>
-		Applies [c/{0}:{1}]
-		''' */
+		{0}
+		Выбранный предмет получит эффект [c/{0}:«{1}»]:
+		'''
+	AccessoryTooltip: Нажмите ПКМ по аксессуару, держа этот ваучер, чтобы наложить на него префикс
+	WeaponTooltip: Нажмите ПКМ по оружию, держа этот ваучер, чтобы наложить на него префикс
 }
 
 EnchantedStamp: {
-	// DisplayName: Enchanted Stamp
-	/* Tooltip:
+	DisplayName: Зачарованный штамп
+	Tooltip:
 		'''
-		Unlocks an ability toggle to the left of the inventory
-		When enabled occasionally grants glyph effects to crafted, looted and reforged items
-		''' */
-	// Active: Enchantment on
-	// Inactive: Enchantment off
+		Разблокирует переключатель слева от инвентаря
+		Когда он включён, созданное, найденное или перекованное оружие иногда будет получать эффект случайного глифа
+		'''
+	Active: Зачарования: ВКЛ
+	Inactive: Зачарования: ВЫКЛ
 }
 
 CelestialStamp: {
-	// DisplayName: Celestial Stamp
-	/* Tooltip:
+	DisplayName: Неземной штамп
+	Tooltip:
 		'''
-		Unlocks an ability toggle to the left of the inventory
-		When enabled occasionally grants glyph effects to crafted, looted and reforged items
-		Additionally allows items to receive prefixes and glyph effects simultaneously
-		''' */
-	// Active: Enchantment on
-	// Inactive: Enchantment off
+		{$Items.EnchantedStamp.Tooltip}
+		Оружие также сможет иметь одновременно и префикс, и эффект глифа
+		'''
 }
 
 RageGlyph: {
-	// DisplayName: Rage Glyph
-	// Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
-	// Effect: Wrathful
+	DisplayName: Глиф ярости
+	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесёт при следующей атаке
+	Effect: Мстительный
+
+	Gendered: {
+		Fem: Мстительная
+		Neutral: Мстительное
+		Plural: Мстительные
+	}
 }
 
 CharmcasterHat: {
-	// DisplayName: Charmcaster's Hat
-	// Tooltip: ""
+	DisplayName: Шляпа колдуна
+	Tooltip: ""
 }
 
 CharmcasterLeggings: {
-	// DisplayName: Charmcaster's Leggings
-	// Tooltip: ""
+	DisplayName: Штаны колдуна
+	Tooltip: ""
 }
 
 CharmcasterRobe: {
-	// DisplayName: Charmcaster's Robe
-	// Tooltip: ""
+	DisplayName: Мантия колдуна
+	Tooltip: ""
 }
 
 VoidGlyph: {
-	// DisplayName: Void Glyph
-	/* Tooltip:
+	DisplayName: Глиф пустоты
+	Tooltip:
 		'''
-		Attacks inflict stacks of Void Collapse
-		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
-		''' */
-	// Effect: Null
+		Атаки периодически накладывают суммирующийся эффект пустотного коллапса
+		Достаточное количество стаков пустотного коллапса создаст сингулярность, наносящую урон врагам и снижающую их защиту
+		'''
+	Effect: Пустотный
+
+	Gendered: {
+		Fem: Пустотная
+		Neutral: Пустотное
+		Plural: Пустотные
+	}
 }
 
 GlitterPurse: {
-	// DisplayName: Glitter Purse
-	// Tooltip: Permanently increases the item capacity of backpacks
-	// StatusText: Your backpacks grow larger
+	DisplayName: Блестящая сумочка
+	Tooltip: Навсегда увеличивает вместимость рюкзаков
+	StatusText: Размер ваших рюкзаков увеличился!
 }
 
 MariglowSeedPouch: {
-	// DisplayName: Mariglow Seed Pouch
-	// Tooltip: Scatters seeds which sprout into mariglow on sand
+	DisplayName: Мешочек с семенами бархатца
+	Tooltip: На песке, на котором будут рассыпаны семена, моментально вырастут бархатцы
 }
 
 DisplayCaseItem: {
-	// DisplayName: Display Case
-	// Tooltip: <right> to place accessory in case
+	DisplayName: Витрина
+	Tooltip: Нажмите ПКМ, чтобы положить аксессуар
 }
 
 SkyPylonItem: {
-	// DisplayName: Space Pylon
-	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+	DisplayName: Пилон небес
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
 CandlewickItem: {
-	// DisplayName: Candlewick Rope
-	// Tooltip: Can be climbed on
+	DisplayName: Верёвка из фитиля
+	Tooltip: "{$ItemTooltip.Rope}"
 }
 
 WaxBlockItem: {
-	// DisplayName: Wax Block
-	// Tooltip: ""
+	DisplayName: Воск
+	Tooltip: ""
 }
 
 WaxPotItem: {
-	// DisplayName: Wax Pot
-	// Tooltip: ""
+	DisplayName: Восковой горшок
+	Tooltip: ""
 }
 
 EnchantedMirrorItem: {
-	// DisplayName: Mirror of Return
-	// Tooltip: <right> to teleport home and create a portal
+	DisplayName: Зеркало возвращения
+	Tooltip:
+		'''
+		Нажмите ПКМ, чтобы телепортироваться домой и создать портал
+		Используйте портал, чтобы вернуться, когда сочтёте нужным
+		'''
 }
 
 MirrorItem: {
-	// DisplayName: Mirror
-	// Tooltip: ""
+	DisplayName: Зеркало
+	Tooltip: ""
 }
 
 EnchantedWorkbenchItem: {
-	// DisplayName: Enchanted Workbench
-	// Tooltip: ""
+	DisplayName: Верстак зачарований
+	Tooltip: ""
+}
+
+CandlewickCoil: {
+	DisplayName: Моток верёвки из фитиля
+	Tooltip: Бросьте, чтобы расправить моток верёвки из фитиля
+}
+
+CandleBathtubItem: {
+	DisplayName: Свечная ванна
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: Свечная кровать
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: Свечной книжный шкаф
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Свечной подсвечник
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Свечная свеча
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Свечной стул
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Свечная люстра
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Свечной сундук
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Свечная дверь
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Свечной комод
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Свечная напольная лампа
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Свечной фонарь
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Свечная раковина
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Свечной диван
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Свечной стол
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Свечной унитаз
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Свечной верстак
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Свечные напольные часы
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Свечное пианино
+	Tooltip: ""
 }

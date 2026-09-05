@@ -138,6 +138,8 @@ public class CompositeSmoke : Particle
 
 	internal int _variant;
 
+	internal float _bloomOpacity;
+
 	internal readonly Action<Particle> _action;
 
 	public virtual int VerticalFrames => 5;
@@ -146,7 +148,7 @@ public class CompositeSmoke : Particle
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
 	public override ParticleLayer DrawLayer => Layer;
-	public CompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null)
+	public CompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null, float bloomOpacity = 0.08f)
 	{
 		Position = position;
 		Velocity = velocity;
@@ -164,6 +166,8 @@ public class CompositeSmoke : Particle
 			_variant = Main.rand.Next(HorizontalFrames);
 		else
 			_variant = 0;
+
+		_bloomOpacity = bloomOpacity;
 	}
 
 	public override void Update()
@@ -177,7 +181,7 @@ public class CompositeSmoke : Particle
 		Velocity *= 0.98f;
 
 		if (_addLight)
-			Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
+			Lighting.AddLight(Position, Color.ToVector3() * (1f - Progress));
 
 		_action?.Invoke(this);
 	}
@@ -218,7 +222,7 @@ public class CompositeSmoke : Particle
 			fadeOut = 1f - (progress - 0.5f) / 0.5f;
 
 		if (_addBloom)
-			spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.Additive() * 0.08f * fadeOut, Rotation, bloom.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
+			spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.Additive() * _bloomOpacity * fadeOut, Rotation, bloom.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
 	}
 }
 
@@ -230,7 +234,7 @@ public class AttachedCompositeSmoke : CompositeSmoke
 	internal Entity Parent;
 	internal Vector2 _offset;
 
-	public AttachedCompositeSmoke(Entity parent, Vector2 offset, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null) : base(Vector2.Zero, velocity, color, maxTime, addLight, addBloom, extraUpdateAction)
+	public AttachedCompositeSmoke(Entity parent, Vector2 offset, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null, float bloomOpacity = 0.08f) : base(Vector2.Zero, velocity, color, maxTime, addLight, addBloom, extraUpdateAction, bloomOpacity)
 	{
 		Parent = parent;
 		_offset = offset;
@@ -256,7 +260,7 @@ public class AttachedCompositeSmoke : CompositeSmoke
 
 public class SmallCompositeSmoke : CompositeSmoke
 {
-	public SmallCompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null) : base(position, velocity, color, maxTime, addLight, addBloom, extraUpdateAction)
+	public SmallCompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null, float bloomOpacity = 0.08f) : base(position, velocity, color, maxTime, addLight, addBloom, extraUpdateAction, bloomOpacity)
 	{
 
 	}

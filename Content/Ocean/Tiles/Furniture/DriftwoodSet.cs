@@ -10,14 +10,11 @@ public class DriftwoodSet : ModSystem
 {
 	public override void Load() => ILoadItem.PostAutoloadItems += LoadDriftwoodFurniture;
 
-	private static void LoadDriftwoodFurniture()
-	{
-		LoadFurnitureSet(typeof(DriftwoodSet).Namespace + ".Driftwood", AllArgs(DustID.t_BorealWood, Color.Orange.ToVector3())
-			- new ChestTile()
-			- new SofaTile(),
-			AutoContent.ItemType<Driftwood>()
-		);
-	}
+	private static void LoadDriftwoodFurniture() => LoadFurnitureSet(typeof(DriftwoodSet).Namespace + ".Driftwood", AllArgs(DustID.t_BorealWood, new(Color.Orange.ToVector3(), true))
+		- nameof(ChestTile)
+		- nameof(SofaTile),
+		AutoContent.ItemType<Driftwood>()
+	);
 
 	public override void PostSetupContent() => SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", SpiritReforgedMod.Instance.Find<ModItem>("DriftwoodWorkBenchItem").Type);
 }

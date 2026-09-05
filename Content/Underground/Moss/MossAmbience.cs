@@ -16,7 +16,7 @@ public sealed class MossAmbience : GlobalTile
 	public static readonly Dictionary<int, Color> ColorByMoss = [];
 
 	public static Color LerpedWaterTint { get; private set; }
-	private static Color ActiveWaterTint;
+	public static Color ActiveWaterTint { get; private set; }
 
 	private static bool TryFindColorChunk(int x, int y, int depth, out Color topColor, out Color bottomColor)
 	{
@@ -106,22 +106,7 @@ public sealed class MossAmbience : GlobalTile
 
 	private static void DrawAbovePlayer(On_Main.orig_DrawInfernoRings orig, Main self)
 	{
-		foreach (IParticle particle in OverPlayers.Particles)
-		{
-			if (particle is FloatingMoss floatingMoss)
-				floatingMoss.drawOutline = true; //Set to outline mode
-		}
-
 		OverPlayers.Draw(Main.spriteBatch);
-
-		foreach (IParticle particle in OverPlayers.Particles)
-		{
-			if (particle is FloatingMoss floatingMoss)
-				floatingMoss.drawOutline = false; //Set to non-outline mode
-		}
-
-		OverPlayers.Draw(Main.spriteBatch);
-
 		orig(self);
 	}
 
@@ -427,22 +412,18 @@ public class FloatingMoss(int style) : ABasicParticle
 		Color variableColor = MossAmbience.LerpedWaterTint;
 		Texture2D texture = Texture.Value;
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-		Rectangle source = texture.Frame(FRAME_COUNT, 2, _style, drawOutline ? 1 : 0, 0, -2);
+		Rectangle source = texture.Frame(FRAME_COUNT, 1, _style, 0, -2, 0);
 		Vector2 position = LocalPosition + settings.AnchorPosition - Main.screenPosition + new Vector2(0, 2);
 
 		Vector3 hsl = Main.rgbToHsl(variableColor);
 
-		if (variableColor != Color.White)
+		if (MossAmbience.ActiveWaterTint != Color.White)
 			(hsl.Y, hsl.Z) = (1, 0.5f);
 
 		variableColor = Main.hslToRgb(hsl);
 
 		spritebatch.Draw(texture, position, source, variableColor * _opacity, Rotation, source.Size() / 2, Scale, default, 0);
-
-		if (!drawOutline)
-		{
-			spritebatch.Draw(bloom, position, null, variableColor.Additive() * _opacity * 0.1f, Rotation, bloom.Size() / 2, Scale * 0.2f, default, 0);
-			Lighting.AddLight(LocalPosition, MossAmbience.LerpedWaterTint.ToVector3() * 0.3f * _opacity);
-		}
+		spritebatch.Draw(bloom, position, null, variableColor.Additive() * _opacity * 0.1f, Rotation, bloom.Size() / 2, Scale * 0.2f, default, 0);
+		Lighting.AddLight(LocalPosition, MossAmbience.LerpedWaterTint.ToVector3() * 0.3f * _opacity);
 	}
 }

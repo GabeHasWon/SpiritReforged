@@ -51,3 +51,9 @@ Purifier: {
 	Flavor: 邪恶退散；在我纯净的锋芒下化为灰烬。
 	Description: 以长棍法杖和摩诃迦罗面具在盐滩开始游戏（如果可行）。
 }
+
+Enchanter: {
+	DisplayName: 附魔师
+	Flavor: 好哇！想要更多火光吗？让我们从一簇火花开始吧！
+	Description: 以60个闪耀之尘、3个彩蜡和魔石法师时装与附魔师NPC一同开始游戏。
+}

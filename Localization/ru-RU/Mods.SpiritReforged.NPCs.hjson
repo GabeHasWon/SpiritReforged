@@ -65,7 +65,7 @@ Pelican: {
 
 TinyCrab: {
 	DisplayName: Бледный краб
-	Entry: Эти крошечные крабы куда дружелюбнее своих крупных сородичей. Жизнь в тёмных глубинах лишила их окраски, поскольку солнечный свет туда почти не попадает.
+	Entry: Эти крошечные крабы куда дружелюбнее своих крупных сородичей. Из-за отсутствия солнечного света на дне океана их тела со временем обесцветились.
 }
 
 Tubeworm: {
@@ -90,12 +90,12 @@ GoldGar: {
 
 OceanSlime: {
 	DisplayName: Кокосовый слизень
-	Entry: Смотрите над головой! Эти хитрые слизни прячутся на побережье, маскируясь под знакомый всем фрукт.
+	Entry: Берегите голову! Эти хитрые слизни прячутся на побережье, маскируясь под знакомый всем фрукт.
 }
 
 DiverZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Кто бы мог подумать, что в кислородных баллонах реально должен быть кислород?
+	Entry: Кто бы мог подумать, что кислородные баллоны реально нужно было наполнять кислородом?
 }
 
 KelpZombie: {
@@ -105,7 +105,7 @@ KelpZombie: {
 
 SailorZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Несмотря на своё текущее положение, в своё время он управлял роскошным круизным лайнером. Вам бы стоило его однажды осмотреть.
+	Entry: Несмотря на своё текущее положение, в своё время он управлял роскошным круизным лайнером. Вам стоило бы однажды прокатиться на таком.
 }
 
 TridentZombie: {
@@ -434,7 +434,7 @@ DunceCrab: {
 
 Wheezer: {
 	DisplayName: Пыхтельник
-	Entry: Пыхтельники — крайне ядовитые родственники саламандры, отличающиеся невероятной агрессивностью. Как ни странно, их любимая еда — нежный падуб, что идёт в разрез с их плотоядными наклонностями.
+	Entry: Пыхтельники — крайне ядовитые родственники саламандры, отличающиеся невероятно агрессивными повадками. Как это ни странно для плотоядного животного, их любимая еда — нежный падуб.
 }
 
 WorldFrog: {
@@ -453,8 +453,10 @@ WorldFrog: {
 	}
 
 	Reports: {
-		CavesAndClubs_0: Фокус-фокус, грусть прочь гони — в пещерах есть теперь что найти!
+		CavesAndClubs_0: Фокус-покус, грусть прочь гони — в пещерах есть теперь что найти!
 		CavesAndClubs_1: Абра-кадабра, в пещеры ступай — с новыми горшками там не скучай!
+		Spellbound_0: Зачарования скорей наложи на столах — их ты найдёшь в подземных домах!
+		Spellbound_1: Зеркалом теперь насладишься сполна — никакая дорога с ним не страшна!
 	}
 }
 
@@ -550,7 +552,7 @@ Scarabeus: {
 	DisplayName: Скарабеус
 	Title: Гребенчатый идол
 	Entry: Из-за своего величественного вида и переливающегося окраса, этот гигантский жук некогда почитался древними жителями Зиккурата. Он остаётся здесь по сей день, ожидая своих подношений.
-	SpawnInfo: Используйте любой самоцвет на [i:SpiritReforged/ScarabAltarItem] древнем алтаре в Зиккурате.
+	SpawnInfo: Используйте любой самоцвет днём на [i:SpiritReforged/ScarabAltarItem] древнем алтаре в Зиккурате.
 }
 
 TinyGrub: {
@@ -574,13 +576,13 @@ VeiledZombie: {
 }
 
 Cricket: {
-	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
 	DisplayName: Сверчок
+	Entry: В тёмное время суток подобными насекомыми кишит вся трава под ногами. Именно они и придают ночи её характерный звук.
 }
 
 GoldCricket: {
-	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
 	DisplayName: Золотой сверчок
+	Entry: Поговаривают, что золотые сверчки приносят удачу. Кто-то может сказать, что это из-за того, что их можно хорошо продать, но другие скажут: нет... конечно же не поэтому.
 }
 
 BeetleTownPet: {
@@ -691,87 +693,94 @@ BeetleTownPet: {
 }
 
 Enchanter: {
-	// DisplayName: Enchanter
-	// Entry: Perpetually tired but kind at heart, the Enchanter deals with various spells and magicks. If some weapons or tools need a little more spice, just ask!
+	DisplayName: Чародей
+	Entry: Добрейшей души чудаковатый рунописец, что проводит одну бессонную ночь за другой, возясь со всевозможными заклинаниями и зачарованиями. Если вдруг захочется добавить своему оружию некую изюминку — вы знаете, к кому обращаться!
 
 	Names: {
-		// 0: Albion
-		// 1: Bertilak
-		// 2: Eango
-		// 3: Enki
-		// 4: Gil
-		// 5: Heka
-		// 6: Ilmarinen
-		// 7: Itani
-		// 8: Kokabiel
-		// 9: Mallyck
-		// 10: Mazdak
-		// 11: Morrigan
-		// 12: Myrrdin
-		// 13: Oeti
-		// 14: Ose
-		// 15: Sulyvahn
-		// 16: Tethra
-		// 17: Themisto
-		// 18: Vorv
-		// 19: Ywain
+		0: Альбион
+		1: Бертилак
+		2: Йэнго
+		3: Энки
+		4: Гил
+		5: Хека
+		6: Ильмаринен
+		7: Итани
+		8: Кокабьель
+		9: Малик
+		10: Маздак
+		11: Морриган
+		12: Мирдин
+		13: Ойти
+		14: Оcэй
+		15: Саливан
+		16: Тэтра
+		17: Тэмисто
+		18: Ворв
+		19: Ивэйн
 	}
 
 	TownNPCMood: {
-		// Content: I take a moment and feel... all is well.
-		// NoHome: I don't imagine you've got a place for me to rest my weary bones?
-		// FarFromHome: I am quite far for from my workspace, and my bed. May we return home soon?
-		// LoveSpace: This town is very quaint. Enough people to have a nice chin-wag, but not so many it becomes overwhelming.
-		// DislikeCrowded: I am finding it difficult to concentrate with all this hubbub.
-		// HateCrowded: There are far too many people living here. I haven't gotten a good night's sleep in days.
-		// LoveNPC: "{NPCName}'s hot chocolate is to die for! Oh and his parlor tricks, they're delightful!"
-		// LikeNPC: I don't know what kind of magic {NPCName} uses to light up the sky like that, but it looks spectacular! Shame about the noise though, I had a headache for three days after...
-		// DislikeNPC: "{NPCName}'s idea of 'improving' your gear is barbaric! How is denting it with a hammer supposed to help?!"
-		// HateNPC: I swear, if {NPCName} tells one more of his stories about slaughtering kobolds at afternoon tea, I'll turn him into a sheep!
-		// LikeBiome: Here above the clouds, I feel so much more attuned to the flows of magick. Not to mention the view!
-		// DislikeBiome: Bees produce such high-quality wax, but oh why must they sting me so? I'm covered head to toe in welts!
-		// LikeNPC_Princess: "{NPCName} is such a sweet little girl, but I can scarcely keep up with her. How can such a small body contain so much energy?"
-		// Princess_LovesNPC: "{NPCName}'s magic is unlike any I've seen before! I wonder what its source may be?"
+		Content: Делаю вдох глубокий... да, всё хорошо.
+		NoHome: Думается мне, нет местечка у тебя, где мог бы дух я свой перевести после дня тяжёлого?
+		FarFromHome: Далековато я забрёл от своего рабочего стола да лежанки любимой. Не отведёшь ли ты меня домой?
+		LoveSpace: Спокойненький тут городишко, однако. Побалаболить есть тут с кем, но не слишком много, по душе мне такое.
+		DislikeCrowded: Галдёж такой вокруг, как же на работе своей сосредоточиться мне?
+		HateCrowded: Проживает здесь людей уж слишком много. Уже которую ночь уснуть нормально не могу.
+		LoveNPC: "{NPCName} варит шоколад горячий, что пальчики оближешь! А какие фокусы показывает он, ох, это надо видеть!"
+		LikeNPC: Понятия я не имею, какой магией {NPCName} всё небо цветами красивыми заливает, но получается всегда изящно очень! Однако шумная она соседка всё же, голова моя на целых три дня разболелась однажды после её очередной вечеринки...
+		DislikeNPC: "{NPCName} и понятия не имеет, как снаряжение твоё улучшать. Как дикарь из пещеры молоточком стукает по нему, да и только! Ну скажи мне, чем такое «улучшение» помочь вообще может?!"
+		HateNPC: Клянусь, если {NPCName} за нашим чаепитием следующим опять трепаться начнёт, как он кобольдов истреблял, то я заколдую его и превращу во всамделишного барана!
+		LikeBiome: Здесь, над облаками, потоки магии я чувствую как никогда прежде. А виды отсюда какие чудесные открываются!
+		DislikeBiome: Пчёлы делают превосходный по качеству воск, но бог ты мой, как же больно они жалятся! С головы до ног меня искусали уже всего!
+		LikeNPC_Princess: "{NPCName} — очаровашка та ещё, но мне едва ли сил хватает с ней так часто играть. И как в таком маленьком ребёнке умещается столько энергии?"
+		Princess_LovesNPC: "{NPCName} пользуется удивительной магией, я такую ещё не видела! Вот это да! Интересно, как он ей научился?"
 	}
 
 	Dialogue: {
 		Idle: {
-			// 0: Do stop to smell the roses from time to time. Rest is good for you!
-			// 1: It's easy to lose track of time when you are snout deep in a good tome.
-			// 2: Have you come to learn about the wondrous properties of wax?
-			// 3: Would you like a cup of tea? I have black, green, herbal, chamomile, berry, citrus...
-			// 4: Greetings! What can I enchant for you today?
+			0: Порой остановиться нужно и розы понюхать. Отдыхать от работы полезно, знаешь ли!
+			1: Легко потерять времени счёт, когда погружаешься с головой в книгу интереснейшую.
+			2: Неужели захотелось тебе наконец узнать о всех чудесных свойствах воска?
+			3: Чаю хочешь? У меня тут есть чёрный, зелёный, травяной, ромашковый, ягодный, цитрусовый...
+			4: Приветствую! Что же мне для тебя зачаровать надобно на сей раз?
 		}
 
 		IdleNight: {
-			// 0: The moon is high, and my candles burn brighter than ever!
-			// 1: Fireflies dot the sky like small, dancing flames. There is magic everywhere we look.
-			// 2: It's far beyond my second bedtime. I kindly request you make this quick.
+			0: Луна только взошла, а свечи мои уже горят ярче, чем когда-либо прежде!
+			1: Усыпано всё небо светлячками, как малюсенькими огоньками игривыми. Магия окружает нас повсюду — нужно лишь разглядеть её уметь.
+			2: Давно пора мне спать ложиться, так постарайся же сильно не задерживать меня.
 		}
 
 		BloodMoon: {
-			// 0: I cannot sleep on a night such as this. When I close my eyes, all I see is red.
-			// 1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
+			0: Уснуть я не могу никак в такую-то ночь. Глаза закрываю — мерещится один лишь красный цвет. Ужас какой.
+			1: Свечи мои горят багровым — не к добру это. Что-то поистине ужасное этой ночью пробудилось.
 		}
 
 		Rain: {
-			// 0: There's nothing quite like the sound of rain pattering against the windows.
-			// 1: I'm not going outside again. I only just got my hat dry from last time!
+			0: Очень по душе мне слышать, как капли дождевые по окнам стучат.
+			1: Больше я на улицу не высунусь. Только-только шляпа моя высохла после прогулки в погоду такую.
 		}
 
 		Graveyard: {
-			// 0: I usually like it quiet, but the air is completely still. It's unnerving.
-			// 1: I can't shake the feeling that something is watching me.
+			0: Так-то люблю я тишину, но не гробовую же! Не по себе мне в месте этом.
+			1: Не могу избавиться от чувства, что следит за мной кто-то.
 		}
 
-		// Thunderstorm: It's a perfect time to huddle around the fireplace and share spooky stories!
-		// Eclipse: How am I meant to know when to put on afternoon tea when its neither day nor night?
-		// Party: Your human festivities are fascinating, if a bit... raucous for my tastes. I might have to excuse myself soon.
-		// Goblin: You can stick seals on many things, but {0} keeps asking me to enchant his various inventions. It typically doesn't end well...
-		// Golfer: "{0} always invites me to play golf with the others, but I always find myself dozing off... I don't have the heart to reject his invitations."
-		// Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
-		// WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
+		Thunderstorm: Прекрасное времечко, чтобы собраться у камина всем уютно да порассказывать друг другу истории страшные!
+		Eclipse: Сейчас ни день, ни ночь, так как же понять, когда состоится полуденное чаепитие?
+		Party: Праздники у вас, людей, замечательные, хоть и... шумноватые весьма. Придётся мне уйти пораньше, пожалуй.
+		Goblin: Глифы наложить можно много на что, но почему-то когда {0} просит меня его изобретения зачаровать, то ничем хорошим это зачастую не заканчивается...
+		Golfer: "{0} постоянно в гольф зовёт меня играть с остальными, но я каждый раз просто засыпаю посреди разговора... Не могу же я просто сказать ему, что не хочу."
+		Stylist: "{0} предложила намазать чешуйки мои воском пчелиным, а я взял и согласился. И зачем это надо было? Я же теперь блещу, как рыба пойманная!"
+		WitchDoctor: "{0} весь из себя загадочный такой, я бы хотел узнать его получше. Может... ты нас друг с другом познакомишь как-нибудь?"
 	}
+
+	Census.SpawnCondition:
+		'''
+
+		Необходимо иметь [i:SpiritReforged/ChromaticWax] хроматический воск или
+		зачарованный предмет в инвентаре, либо убить любого босса
+		'''
 }
 
-// SealedKnight.DisplayName: Sealed Knight
+SealedKnight.DisplayName: Опечатанный рыцарь

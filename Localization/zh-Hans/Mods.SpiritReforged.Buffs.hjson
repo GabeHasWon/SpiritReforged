@@ -149,26 +149,26 @@ ScarabMountBuff: {
 }
 
 DivineStrike: {
-	// DisplayName: Divine Strike
-	// Description: Your next attack is empowered
+	DisplayName: 神圣惩击
+	Description: 你的下一次攻击被强化了
 }
 
 RotDebuff: {
-	// DisplayName: Rotting [{0}]
-	// Description: "'Your skin is turning green'"
+	DisplayName: 腐化 [{0}]
+	Description: “你的皮肤变绿了”
 }
 
 SanguineStackingBuff: {
-	// DisplayName: Sanguine Curse
-	// Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
+	DisplayName: 染血能量 [{0}]
+	Description: 伤害增加{0}%
 }
 
 BlazeDebuff: {
-	// DisplayName: Blazing
-	// Description: This is fine!
+	DisplayName: 点燃
+	Description: 这很好！
 }
 
 RageGlyphBuff: {
-	// DisplayName: Rage Glyph Buff
-	// Description: Mods.SpiritReforged.Buffs.RageGlyphBuff.Description
+	DisplayName: 狂怒伤害 [{0}]
+	Description: 存储的伤害：{0}
 }

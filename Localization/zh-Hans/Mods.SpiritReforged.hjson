@@ -25,8 +25,8 @@ Conditions: {
 	InSaltFlats: 于盐滩
 	IsPrickly: 有刺
 	InZiggurat: 于庙塔
-	// InSpace: In Space
-	// NotSnow: Not in the Snow
+	InSpace: 于太空
+	NotSnow: 不位于雪原
 }
 
 Misc: {
@@ -37,8 +37,11 @@ Misc: {
 	}
 
 	Enchantment: {
-		// PlaceToEnchant: Place an item here to enchant
-		// Enchant: Enchant
+		PlaceToEnchant: 将物品放置于此以附魔
+		Enchant: 附魔
+		Cost: "{0} [c/{1}:彩蜡]"
+		Clear: 移除附魔
+		Random: 随机附魔
 	}
 
 	NoStock: 无库存
@@ -59,15 +62,15 @@ DamageSources: {
 GameTips: {
 	# Release
 	ReforgedTip0: 常备食物，以备不时之需！
-	ReforgedTip1: 蝴蝶偶尔会藏在地下树丛里。
+	ReforgedTip1: 偶尔可以在地下树丛中发现藏匿的蝴蝶。
 	ReforgedTip2: 善用图钉！在大地图的左下角查看图钉库存。
 	ReforgedTip3: 捕虫网无法捕获平原动物。
 	ReforgedTip4: 背包。你现在有更多空间了。
-	ReforgedTip5: 深邃如墨的海洋中有着许多有用的东西。
+	ReforgedTip5: 海洋深处有许多有趣的东西。
 	ReforgedTip6: 星草在黑夜中带来一丝慰藉。
-	ReforgedTip7: 云茎只生长在云层之下。
-	ReforgedTip8: 需要高度时，可站上金合欢树顶。
-	ReforgedTip9: 海洋上漂浮着随机物品；记得查看！
+	ReforgedTip7: 云茎只生长在云层之下。别忘了抬头看！
+	ReforgedTip8: 需要高度时，你可以站在金合欢树上。
+	ReforgedTip9: 有时会有东西被海洋冲上海岸；记得查看！
 	# Caves & Clubs
 	ReforgedTip10: 你脚下的洞穴里点缀着许多罐子！睁大眼睛留意着点。
 	ReforgedTip11: 棍棒能提供强力且集中的单体伤害。
@@ -78,15 +81,15 @@ GameTips: {
 	ReforgedTip15: 琥珀中藏着秘密！或许你能在其中发现一些奖励……
 	ReforgedTip16: 在沙漠废墟中行走时请多加小心！有些地面可能没有你想象的那么牢固。
 	# Spellbound
-	// ReforgedTip17: Glyphs provide your weapons with powerful effects which transform how they are used!
-	// ReforgedTip18: Chromatic Wax can be found in pots, crates, and as loot for defeating certain enemies.
-	// ReforgedTip19: The Enchanter can imbue your weapon with an array of unique Glyphs. Try them all!
+	ReforgedTip17: 雕文能为你的武器提供强大的效果，改变它们的使用方式！
+	ReforgedTip18: 彩蜡可以在罐子和板条箱中找到，也作为击败特定敌人的战利品获得。
+	ReforgedTip19: 附魔师可以用一系列独特的雕文为你的武器附魔。全部都试一遍吧！
 }
 
 Emotes: {
 	CartographerEmote.Command: cartographer
 	HikerEmote.Command: hiker
-	// EnchanterEmote.Command: enchanteremote
+	EnchanterEmote.Command: enchanteremote
 }
 
 InfoDisplays: {
@@ -119,4 +122,4 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
-// DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
+DamageClasses.HybridDamageClass.DisplayName: 混合伤害

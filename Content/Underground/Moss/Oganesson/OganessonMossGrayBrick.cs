@@ -19,7 +19,7 @@ public class OganessonMossGrayBrick : GrassTile
 
 		RegisterItemDrop(ItemID.GrayBrick);
 		AddMapEntry(new Color(220, 220, 220));
-		this.Merge(TileID.Stone, TileID.GrayBrick);
+		TileMethods.Merge(Type, TileID.Stone, TileID.GrayBrick);
 
 		DustType = ModContent.DustType<OganessonMossDust>();
 		HitSound = SoundID.Grass;

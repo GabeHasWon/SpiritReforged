@@ -16,7 +16,7 @@ public class ButterflyStaff : ModItem
 	}
 	public override void SetDefaults()
 	{
-		Item.damage = 14;
+		Item.damage = 12;
 		Item.width = 40;
 		Item.height = 40;
 		Item.value = Item.buyPrice(0, 10, 0, 0);

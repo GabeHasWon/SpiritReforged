@@ -11,7 +11,7 @@ public class OnFire : DoTExtension
 	public static readonly Asset<Texture2D> BurningHealth = ModContent.Request<Texture2D>(VanillaTextures + "FireHealthBar");
     public static readonly Asset<Texture2D> Flame = ModContent.Request<Texture2D>(VanillaTextures + "SmallFlame");
 
-    public override BuffSettings Settings => new(0.2f * VanillaScaling, (int)(500 * VanillaMaximum), false, FireScaling);
+    public override BuffSettings Settings => new(Category.Fire);
 
     public override void Load()
     {
@@ -60,7 +60,7 @@ public class OnFire : DoTExtension
 				{
 					LocalPosition = NPC.Center,
 					Velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(),
-					Scale = new Vector2(1) * Main.rand.NextFloat(0.2f, 0.8f),
+					Scale = Vector2.One * Main.rand.NextFloat(0.2f, 0.8f),
 					AccelerationPerFrame = new(0, -0.01f)
 				});
     }
@@ -68,7 +68,8 @@ public class OnFire : DoTExtension
     public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options)
     {
         float progress = (float)npc.life / npc.lifeMax;
-        float fadeout = MathHelper.Min(BuffTime / 30f, 1);
+
+		float fadeout = MathHelper.Min(BuffTime / 30f, 1);
         float lightness = 1f; //options.Lightness;
         float flameScale = options.Scale * Math.Min(fadeout, progress * 10) * 0.6f;
 
@@ -76,11 +77,13 @@ public class OnFire : DoTExtension
         Rectangle bounds = new(0, 0, Math.Max((int)(front.Width * progress), 0), front.Height);
         Vector2 endPosition = options.Position + new Vector2(front.Width * progress, 8) * options.Scale;
 
+		Color outlineColor = Color.Red.Additive(150) * lightness;
+
         //Draw outline
-        DrawFlame(endPosition + new Vector2(2, 0), flameScale, Color.Red.Additive(150) * lightness);
-        DrawFlame(endPosition + new Vector2(0, 2), flameScale, Color.Red.Additive(150) * lightness);
-        DrawFlame(endPosition + new Vector2(-2, 0), flameScale, Color.Red.Additive(150) * lightness);
-        DrawFlame(endPosition + new Vector2(0, -2), flameScale, Color.Red.Additive(150) * lightness);
+        DrawFlame(endPosition + new Vector2(2, 0), flameScale, outlineColor);
+        DrawFlame(endPosition + new Vector2(0, 2), flameScale, outlineColor);
+        DrawFlame(endPosition + new Vector2(-2, 0), flameScale, outlineColor);
+        DrawFlame(endPosition + new Vector2(0, -2), flameScale, outlineColor);
 
         HealthBarHook.DrawSimpleBar(spriteBatch, front, options.Position, bounds, options.Scale, Color.White * fadeout * lightness);
 

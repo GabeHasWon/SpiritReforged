@@ -25,8 +25,8 @@ Conditions: {
 	InSaltFlats: В солончаковых равнинах
 	IsPrickly: Со стактусов с розовым цветком
 	InZiggurat: В Зиккурате
-	// InSpace: In Space
-	// NotSnow: Not in the Snow
+	InSpace: В космосе
+	NotSnow: Не в тундре
 }
 
 Misc: {
@@ -37,8 +37,15 @@ Misc: {
 	}
 
 	Enchantment: {
-		// PlaceToEnchant: Place an item here to enchant
-		// Enchant: Enchant
+		PlaceToEnchant:
+			'''
+			Поместите сюда предмет,
+			чтобы зачаровать его
+			'''
+		Enchant: Зачаровать
+		Cost: "{0} [c/{1}:{^0:хроматический воск;хроматических воска;хроматических восков}]"
+		Clear: Снять зачарование
+		Random: Случайное зачарование
 	}
 
 	NoStock: Нет в наличии
@@ -63,10 +70,10 @@ GameTips: {
 	ReforgedTip2: Булавки очень полезны! Проверьте свои булавки в левом нижнем углу карты.
 	ReforgedTip3: Животных саванны нельзя поймать сачком.
 	ReforgedTip4: Рюкзаки. Теперь у вас больше места для вещей!
-	ReforgedTip5: В тёмных глубинах океана сокрыто множество сокровищ.
+	ReforgedTip5: В глубинах океана можно найти много интересного.
 	ReforgedTip6: Под покровом ночи свечение звёздной травы дарит приятное облегчение.
-	ReforgedTip7: Облачник всегда растёт рядом с облаками.
-	ReforgedTip8: Вы можете запрыгнуть на кроны акаций, если вы хотите забраться повыше.
+	ReforgedTip7: Облачник всегда растёт под облаками. Не забывай поглядывать наверх!
+	ReforgedTip8: Вы можете стоять на кронах акаций, если вы хотите забраться повыше.
 	ReforgedTip9: Иногда на поверхность океана всплывают случайные предметы — проверяйте его почаще!
 	# Caves & Clubs
 	ReforgedTip10: В пещерах полно различных горшков! Смотрите внимательно!
@@ -74,19 +81,19 @@ GameTips: {
 	# Sunscorched
 	ReforgedTip12: Легенды говорят об одном древнем алтаре, принимающем подношения в виде самоцветов...
 	ReforgedTip13: Будьте осторожны, исследуя Зиккурат! Сюрпризы прячутся в каждом углу.
-	ReforgedTip14: Подземные оазисы — хорошее место для отдыха от опасности пустынных пещер.
+	ReforgedTip14: Подземные оазисы — хорошее место для отдыха от опасностей пустынных пещер.
 	ReforgedTip15: Янтарь полон секретов! Быть может,  внутри них вы найдёте что-нибудь интересное...
 	ReforgedTip16: Будьте бдительны, исследуя руины в пустыне! Иногда пол оказывается не таким прочным, как на первый взгляд.
 	# Spellbound
-	// ReforgedTip17: Glyphs provide your weapons with powerful effects which transform how they are used!
-	// ReforgedTip18: Chromatic Wax can be found in pots, crates, and as loot for defeating certain enemies.
-	// ReforgedTip19: The Enchanter can imbue your weapon with an array of unique Glyphs. Try them all!
+	ReforgedTip17: Глифы могут наделить ваше оружие уникальными эффектами, меняющими подход к боёвке!
+	ReforgedTip18: Хроматический воск можно найти в горшках и ящиках, а также получить с некоторых врагов.
+	ReforgedTip19: Чародей может наделить эффектом одного из множества уникальных глифов. Попробуйте их все!
 }
 
 Emotes: {
 	CartographerEmote.Command: cartographer
 	HikerEmote.Command: hiker
-	// EnchanterEmote.Command: enchanteremote
+	EnchanterEmote.Command: enchanteremote
 }
 
 InfoDisplays: {
@@ -119,4 +126,4 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
-// DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
+DamageClasses.HybridDamageClass.DisplayName: ед. гибридного урона

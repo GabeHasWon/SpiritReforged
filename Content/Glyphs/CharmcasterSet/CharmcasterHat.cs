@@ -3,7 +3,11 @@ namespace SpiritReforged.Content.Glyphs.CharmcasterSet;
 [AutoloadEquip(EquipType.Head)]
 public class CharmcasterHat : ModItem
 {
-	public override void SetStaticDefaults() => ArmorIDs.Head.Sets.DrawHatHair[Item.headSlot] = true;
+	public override void SetStaticDefaults()
+	{
+		ArmorIDs.Head.Sets.DrawHatHair[Item.headSlot] = true;
+		ArmorIDs.Head.Sets.IsTallHat[Item.headSlot] = true;
+	}
 
 	public override void SetDefaults()
 	{
@@ -11,7 +15,6 @@ public class CharmcasterHat : ModItem
 		Item.height = 30;
 		Item.value = Item.buyPrice(0, 5, 0, 0);
 		Item.rare = ItemRarityID.White;
-
 		Item.vanity = true;
 	}
 }

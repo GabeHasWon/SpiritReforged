@@ -4,7 +4,11 @@ namespace SpiritReforged.Content.Underground.Tiles;
 
 public class Candlewick : ModTile, ILoadItem
 {
-	void ILoadItem.SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.buyPrice(copper: 10);
+	void ILoadItem.SetItemDefaults(ModItem modItem)
+	{
+		modItem.Item.value = Item.buyPrice(copper: 10);
+		modItem.Item.tileBoost = 3;
+	}
 
 	public override void SetStaticDefaults()
 	{

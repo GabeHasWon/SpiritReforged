@@ -90,9 +90,9 @@ CascadeLeggings: {
 	Tooltip: 15% de aumento de movimento na água
 }
 
-JellyfishStaff: {
-	DisplayName: Cajado de Água-Viva
-	Tooltip: Invoca uma água-viva pequenininha para lutar por você!
+JellyfishJamJar: {
+	DisplayName: Jarro de Águas-Vivas Festejantes
+	Tooltip: Invoca Águas-Vivas pequenininhas para lutarem por você!
 }
 
 Lifesaver: {
@@ -2103,8 +2103,8 @@ SunEarrings: {
 	DisplayName: Brinco da Dançarina Solar
 	Tooltip:
 		'''
-		   Aumenta a mana máxima em 20
-		7% de aumento no dano por magia
+		Aumenta a mana máxima em 20
+		   7% de aumento no dano por magia
 		'''
 }
 
@@ -2598,7 +2598,7 @@ ZigguratTorchItem: {
 }
 
 SwordStandMahoganyItem: {
-	DisplayName: Sporte de Espada de Mógno
+	DisplayName: Suporte de Espada de Mógno
 	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
 }
 
@@ -2854,7 +2854,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Garras Serrilhadas
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -2967,22 +2967,22 @@ AdornedBow: {
 }
 
 BagOScarabs: {
-	DisplayName: Bolsa do Tesouro (Escarabeus)
+	DisplayName: Bolsa do Tesouro (Escaravelhaos)
 	Tooltip: ""
 }
 
 ScarabMask: {
-	DisplayName: Máscara do Escarabeus
+	DisplayName: Máscara da Escaravelhaos
 	Tooltip: ""
 }
 
 ScarabRelic: {
-	DisplayName: Relíquia do Escarabeus
+	DisplayName: Relíquia da Escaravelhaos
 	Tooltip: ""
 }
 
 ScarabTrophy: {
-	DisplayName: Troféu do Escarabeus
+	DisplayName: Troféu da Escaravelhaos
 	Tooltip: ""
 }
 
@@ -2997,7 +2997,7 @@ SpaceHeater: {
 }
 
 ScarabMusicBox: {
-	DisplayName: Caixinha de Música (Escarabeus)
+	DisplayName: Caixinha de Música (Escaravelhaos)
 	Tooltip: ""
 
 	Toggle: {
@@ -3142,205 +3142,367 @@ SaltGraveMarkerItem: {
 }
 
 NotSunItemIcon: {
-	// DisplayName: Not Sun Item Icon
-	// Tooltip: ""
+	DisplayName: Ícone de Item (Não-Solar)
+	Tooltip: ""
 }
 
 ChromaticWax: {
-	// DisplayName: Chromatic Wax
-	// Tooltip: Can be exchanged for magical glyphs
-	// Gain: The enchanted weapon will gain: [c/{0}:{1}]
-	// Target: Can only be applied to weapons
-	// RightClick: Hold this glyph and right-click the item you want to enchant
+	DisplayName: Cera Cromática
+	Tooltip: Pode ser trocada por glifos mágicos
+	Gain: O encantamento que sua irá ganhar vai ser: [c/{0}:{1}]
+	Target: Pode ser aplicado apenas em armas
+	RightClick: Segure este glifo e clique com o botão direito do mouse sobre a arma que você quer encantar
 }
 
 BlazeGlyph: {
-	// DisplayName: Blaze Glyph
-	/* Tooltip:
+	DisplayName: Glifo das Chamas
+	Tooltip:
 		'''
-		Dealing damage sets you ablaze
-		up to +40% damage and +20% critical strike chance depending on lost hp
-		''' */
-	// Effect: Blazing
-	// Death: "{0} was consumed by Rage..."
+		Dar dano faz você começar a queimar
+		Aumento de 25% de aumento nos danos e 10% na chance de ataques críticos
+		'''
+	Effect: Chamas
+	Death: "{0} foi consumido pela raiva..."
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		Fem: Piromaníaco
+		Neutral: Piromaníaca
+		Plural: Piromaníacos
+	}
 }
 
 RadiantGlyph: {
-	// DisplayName: Radiant Glyph
-	// Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
-	// Effect: Radiant
+	DisplayName: Glifo da Fortitude
+	Tooltip: Cria uma energia enquanto você não está atacando, deixando seu próximo ataque mais forte
+	Effect: Fortitude
+
+	Gendered: {
+		Fem: Forte
+		Neutral: Forte
+		Plural: Fortes
+	}
 }
 
 StormGlyph: {
-	// DisplayName: Storm Glyph
-	/* Tooltip:
+	DisplayName: Glifo da Tempestade
+	Tooltip:
 		'''
-		Can only be applied to weapons that fire projectiles
-		Increases projectile velocity
-		Projectiles occasionally create powerful bursts of wind
-		''' */
-	// Effect: Billowed
+		Pode ser aplicado apenas em armas que lançam projéteis
+		Aumenta a velocidade de projéteis
+		Projéteis ocasionalmente irão lançar fortes rajadas de vento
+		'''
+	Effect: Brisante
+
+	Gendered: {
+		Fem: Brisada
+		Neutral: Brisado
+		Plural: Brisados
+	}
 }
 
 MoonlightGlyph: {
-	// DisplayName: Moonlight Glyph
-	/* Tooltip:
+	DisplayName: Glifo do Luar
+	Tooltip:
 		'''
-		Converts 20% of the item's damage into magic damage
-		Increases damage the lower your mana is
-		Damaging enemies leeches mana
-		''' */
-	// Effect: Dazzling
+		Converte 20% do dano do seu item em danos por magia
+		Quanto menos mana você tem, mais forte seus ataques ficarão
+		Atacar inimigos irá absorver mana
+		'''
+	Effect: Deslumbrante
+
+	Gendered: {
+		Fem: Deslumbrada
+		Neutral: Deslumbrado
+		Plural: Deslumbrados
+	}
 }
 
 RotGlyph: {
-	// DisplayName: Rot Glyph
-	/* Tooltip:
+	DisplayName: Glifo da Podridão
+	Tooltip:
 		'''
-		Attacks inflict a contagious blight
-		This blight can be inflicted on to you by enemies suffering from it
-		''' */
-	// Effect: Blighted
+		Ataques lançam uma praga contagiosa
+		Essa praga pode ser transmitida para você a partir inimigos que sofrem dela
+		'''
+	Effect: Assolado
+
+	Gendered: {
+		Fem: Assolada
+		Neutral: Assolado
+		Plural: Assolados
+	}
 }
 
 ShockGlyph: {
-	// DisplayName: Shock Glyph
-	// Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
-	// Effect: Shocking
+	DisplayName: Glifo Elétrico
+	Tooltip: Ataques críticos irão causar 25% a mais de dano e lançar raios
+	Effect: Eletrizante
+
+	Gendered: {
+		Fem: Eletrizante
+		Neutral: Eletrizante
+		Plural: Eletrizantes
+	}
 }
 
 BeeGlyph: {
-	// DisplayName: Bee Glyph
-	/* Tooltip:
+	DisplayName: Glifo de Abelha
+	Tooltip:
 		'''
-		Converts 20% of the item's damage into summon damage
-		Hitting enemies tags them
-		Tagged enemies release bees when struck by minions
-		''' */
-	// Effect: Buzzing
+		Converte 20% do dano do item em danos por invocação
+		Acertar inimigos irá dar foco neles
+		Inimigos focados lançam abelhas ao serem atingidos por lacaios
+		'''
+	Effect: Zumbido
+
+	Gendered: {
+		Fem: Zumbido
+		Neutral: Zumbido
+		Plural: Zumbidos
+	}
 }
 
 SanguineGlyph: {
-	// DisplayName: Sanguine Glyph
-	/* Tooltip:
+	DisplayName: Glifo Sangrento
+	Tooltip:
 		'''
-		20% reduced damage
-		Attacks gain lifesteal that increases as your health decreases
-		Stealing life grants stacks of a decaying damage buff
-		''' */
-	// Effect: Leeching
+		20% de redução nos danos
+		Ataques sugam vida dos inimigos, efeito que fica mais forte quando você está mais perto de morrer
+		Roubar vida irá te dar níveis de redução de ano
+		'''
+	Effect: Sanguessuga
+
+	Gendered: {
+		Fem: Sanguessuga
+		Neutral: Sanguessuga
+		Plural: Sanguessugas
+	}
 }
 
 PrefixVoucher: {
-	// DisplayName: "{0} Prefix Voucher"
-	/* Tooltip:
+	DisplayName: Comprovante de Prefixo {0}
+	Tooltip:
 		'''
-		Can be used on items with <right>
-		Applies [c/{0}:{1}]
-		''' */
+		Pode ser usado nos seus itens com <right>
+		Aplica [c/{0}:{1}]
+		'''
+	AccessoryTooltip: Pode ser usado em acessórios com o botão direito
+	WeaponTooltip: Pode ser usado em armas com o botão direito
 }
 
 EnchantedStamp: {
-	// DisplayName: Enchanted Stamp
-	/* Tooltip:
+	DisplayName: Carimbo Encantado
+	Tooltip:
 		'''
-		Unlocks an ability toggle to the left of the inventory
-		When enabled occasionally grants glyph effects to crafted, looted and reforged items
-		''' */
-	// Active: Enchantment on
-	// Inactive: Enchantment off
+		Desbloqueia uma opção para desativar ou ativar suas habilidades no canto do inventário
+		Quando ativado, ocasionalmente irá dar efeitos de glifos em itens criados, reforjados, e saqueados
+		'''
+	Active: Encantamento ativado
+	Inactive: Encantamento desativado
 }
 
 CelestialStamp: {
-	// DisplayName: Celestial Stamp
-	/* Tooltip:
+	DisplayName: Carimbo Celestial
+	Tooltip:
 		'''
-		Unlocks an ability toggle to the left of the inventory
-		When enabled occasionally grants glyph effects to crafted, looted and reforged items
-		Additionally allows items to receive prefixes and glyph effects simultaneously
-		''' */
-	// Active: Enchantment on
-	// Inactive: Enchantment off
+		Desbloqueia uma opção para desativar ou ativar suas habilidades no canto do inventário
+		Quando ativado, ocasionalmente irá dar efeitos de glifos em itens criados, reforjados, e saqueados
+		Adicionalmente deixa que seus itens possam ter um prefixo e um glifo neles ao mesmo tempo
+		'''
 }
 
 RageGlyph: {
-	// DisplayName: Rage Glyph
-	// Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
-	// Effect: Wrathful
+	DisplayName: Glifo da Fúria
+	Tooltip: Dano em excesso que você inflige ao matar, ou que você leva, será guardado para o próximo ataque
+	Effect: Vingativo
+
+	Gendered: {
+		Fem: Vingativa
+		Neutral: Vingativo
+		Plural: Vingativos
+	}
 }
 
 CharmcasterHat: {
-	// DisplayName: Charmcaster's Hat
-	// Tooltip: ""
+	DisplayName: Chapéu do Mestre dos Feitiços
+	Tooltip: ""
 }
 
 CharmcasterLeggings: {
-	// DisplayName: Charmcaster's Leggings
-	// Tooltip: ""
+	DisplayName: Calças do Mestre dos Feitiços
+	Tooltip: ""
 }
 
 CharmcasterRobe: {
-	// DisplayName: Charmcaster's Robe
-	// Tooltip: ""
+	DisplayName: Roupão do Mestre dos Feitiços
+	Tooltip: ""
 }
 
 VoidGlyph: {
-	// DisplayName: Void Glyph
-	/* Tooltip:
+	DisplayName: Glifo do Vazio
+	Tooltip:
 		'''
-		Attacks inflict stacks of Void Collapse
-		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
-		''' */
-	// Effect: Null
+		Ataques infligem níveis de Colapso do Vazio
+		Colapso do Vazio cria um singularidade ameaçadora que após chegar em um certo nível, reduz a defesa inimiga
+		'''
+	Effect: Vazio
+
+	Gendered: {
+		Fem: Vazia
+		Neutral: Vazio
+		Plural: Vazios
+	}
 }
 
 GlitterPurse: {
-	// DisplayName: Glitter Purse
-	// Tooltip: Permanently increases the item capacity of backpacks
-	// StatusText: Your backpacks grow larger
+	DisplayName: Bolsa de Glitter
+	Tooltip: Permanentemente aumenta a capacidade das mochilas
+	StatusText: Suas mochilas se expandem
 }
 
 MariglowSeedPouch: {
-	// DisplayName: Mariglow Seed Pouch
-	// Tooltip: Scatters seeds which sprout into mariglow on sand
+	DisplayName: Saquinho de Sementes de Calêndula Solar
+	Tooltip: Lança um punhado de sementes que fazem Calêndulas Solares brotarem na areia
 }
 
 DisplayCaseItem: {
-	// DisplayName: Display Case
-	// Tooltip: <right> to place accessory in case
+	DisplayName: Caixa Demonstrativa
+	Tooltip: <right> para colocar um acessório na caixa
 }
 
 SkyPylonItem: {
-	// DisplayName: Space Pylon
-	// Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+	DisplayName: Pilar do Espaço
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
 CandlewickItem: {
-	// DisplayName: Candlewick Rope
-	// Tooltip: Can be climbed on
+	DisplayName: Pavio de Vela
+	Tooltip: ""
 }
 
 WaxBlockItem: {
-	// DisplayName: Wax Block
-	// Tooltip: ""
+	DisplayName: Bloco de Cera
+	Tooltip: ""
 }
 
 WaxPotItem: {
-	// DisplayName: Wax Pot
-	// Tooltip: ""
+	DisplayName: Vaso de Cera
+	Tooltip: ""
 }
 
 EnchantedMirrorItem: {
-	// DisplayName: Mirror of Return
-	// Tooltip: <right> to teleport home and create a portal
+	DisplayName: Espelho do Retorno
+	Tooltip: <right> para voltar para casa e criar um portal
 }
 
 MirrorItem: {
-	// DisplayName: Mirror
-	// Tooltip: ""
+	DisplayName: Espelho
+	Tooltip: ""
 }
 
 EnchantedWorkbenchItem: {
-	// DisplayName: Enchanted Workbench
-	// Tooltip: ""
+	DisplayName: Mesa de Encantamento
+	Tooltip: ""
+}
+
+CandlewickCoil: {
+	DisplayName: Rolo de Corda de Pavio de Vela
+	Tooltip: Arremessa um pavio que pode ser usado em escalada
+}
+
+CandleBathtubItem: {
+	DisplayName: Banheira de Vela
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: Cama de Vela
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: Estante de Vela
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Candelabro de Vela
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Vela de Vela
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Cadeira de Vela
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Lustre de Vela
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Baú de Vela
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Porta de Vela
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Cômoda de Vela
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Lâmpada de Vela
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Lanterna de Vela
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Pia de Vela
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Sofá de Vela
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Mesa de Vela
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Privada de Vela
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Bancada de Trabalho de Vela
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Relógio de Vela
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Piano de Vela
+	Tooltip: ""
 }

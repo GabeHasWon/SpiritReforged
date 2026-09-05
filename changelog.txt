@@ -1,13 +1,4 @@
-v0.2.1.3
-- Allowed the Generation Configuration menu to select folders of presets alongside individual presets
-- Added clarification "no sun" to Scarabeus Altar when hovered at night to show it's not usable
-- Added cross-mod, weak reference support for the Generation Configuration system (more to be explained in a dedicated GitHub wiki page)
-- Improved stability of cross-mod Gen Config functionality (notably with type safety)
-- Allowed the mod to export XML docs of its documentation for use in crossmod
-	This is primarily for cross-mod Gen Config, do not expect consistent or useful docs
-- Added the creating mod's icon to the Gen Configuration page - so our pages will have the Reforged small icon in the top right corner, for example
-- Fixed the Scarabeus spawn intro pan playing from massive distances
-- Made Ocean/Seaside crates drop Driftwood (33.33% chance, 6 - 12)
-- Made "common" fishing attempts have a chance to fish up Driftwood (33.33% chance, 2 - 5)
-- Fixed Drywood Chair map color being incorrect
-- Fixed Drywood Chair map name being incorrect
+v0.2.2.5
+- Fixed vanity fish in the ocean being much faster than they should be
+- Fixed? an issue with Prefix Voucher hanging some worlds. Maybe. Please?
+- Fixed visual offset issue for Stargrass trees

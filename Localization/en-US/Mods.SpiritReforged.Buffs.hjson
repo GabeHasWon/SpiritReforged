@@ -159,8 +159,8 @@ RotDebuff: {
 }
 
 SanguineStackingBuff: {
-	DisplayName: Sanguine Curse
-	Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
+	DisplayName: Sanguine Energy [{0}]
+	Description: Damage increased by {0}%
 }
 
 BlazeDebuff: {
@@ -169,6 +169,6 @@ BlazeDebuff: {
 }
 
 RageGlyphBuff: {
-	DisplayName: Rage Glyph Buff
-	Description: Mods.SpiritReforged.Buffs.RageGlyphBuff.Description
+	DisplayName: Wrathful Damage [{0}]
+	Description: Stored damage: {0}
 }

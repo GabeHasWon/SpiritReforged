@@ -1,4 +1,4 @@
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
@@ -6,7 +6,7 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.Desert.Silk;
 
 [AutoloadEquip(EquipType.Legs)]
-public class SilkSirwal : EquippableItem
+public class SilkSirwal : ModItem, IFlagged
 {
 	public static int AltEquipSlot { get; private set; }
 	public override void Load()
@@ -19,7 +19,7 @@ public class SilkSirwal : EquippableItem
 
 		PlayerEvents.OnPostUpdateRunSpeeds += static (p) =>
 		{
-			if (p.HasEquip<SilkSirwal>() && !p.mount.Active && p.velocity.Y == 0) //Only apply while grounded
+			if (p.HasFlag<SilkSirwal>() && !p.mount.Active && p.velocity.Y == 0) //Only apply while grounded
 				p.runAcceleration += 0.2f;
 		};
 	}
@@ -34,7 +34,7 @@ public class SilkSirwal : EquippableItem
 		Item.defense = 3;
 	}
 
-	public override void UpdateEquippable(Player player)
+	public override void UpdateEquip(Player player)
 	{
 		if (player.velocity.Y == 0) //Only apply while grounded
 			player.moveSpeed += 0.1f;

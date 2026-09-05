@@ -2,6 +2,7 @@
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.Utilities;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon;
 
@@ -35,8 +36,7 @@ public static class Placer
 	/// <returns> Whether the tile at the given coordinates is generally replaceable and safe to be cleared. Useful for random plant growth. </returns>
 	public static bool IsReplaceable(int i, int j)
 	{
-		var tile = Main.tile[i, j];
-
+		Tile tile = Main.tile[i, j];
 		if (!tile.HasTile)
 			return true;
 
@@ -133,7 +133,7 @@ public static class Placer
 				int i = a.Coords.X;
 				int j = a.Coords.Y;
 
-				TileExtensions.GetTopLeft(ref i, ref j);
+				(i, j) = Helpers.GetTopLeft(i, j);
 
 				if (TileEntity.ByPosition.TryGetValue(new Point16(i, j), out var value) && value is T valueOfType)
 				{
@@ -160,7 +160,7 @@ public static class Placer
 				int i = a.Coords.X;
 				int j = a.Coords.Y;
 
-				TileExtensions.GetTopLeft(ref i, ref j);
+				(i, j) = Helpers.GetTopLeft(i, j);
 				NetMessage.SendTileSquare(-1, i, j, data.Width, data.Height);
 			}
 		}

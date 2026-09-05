@@ -3,6 +3,7 @@ using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Content.Aether.Items;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 
@@ -27,7 +28,10 @@ public abstract class BackpackItem : ModItem
 				_items = Enumerable.Repeat(new Item(), count).ToArray(); //Elongate the array
 
 				for (int i = 0; i < _items.Length; i++)
-					_items[i] = preScale[i].Clone();
+				{
+					if (i < preScale.Length)
+						_items[i] = preScale[i].Clone();
+				}
 			}
 
 			return _items;
@@ -36,8 +40,27 @@ public abstract class BackpackItem : ModItem
 	}
 
 	private Item[] _items;
+
 	/// <summary> The number slots this backpack has by default. </summary>
 	protected int slotCount;
+
+	public int UsedSlotCount(Player player) => slotCount 
+		+ ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+
+	/// <summary>
+	/// Solely used to make sure _items isn't copied between instances when spawned by the Hiker.
+	/// </summary>
+	internal void EnsureNewItemArray(Player player)
+	{
+		int length = _items?.Length ?? UsedSlotCount(player);
+		_items = new Item[length];
+		
+		for (int i = 0; i < length; ++i)
+		{
+			_items[i] = new Item(0);
+			_items[i].TurnToAir();
+		}
+	}
 
 	public override ModItem Clone(Item newEntity)
 	{
@@ -81,14 +104,21 @@ public abstract class BackpackItem : ModItem
 
 	public override void NetSend(BinaryWriter writer)
 	{
+		writer.Write((byte)Items.Length); //Write the length of the array
+
 		foreach (Item item in Items)
 			ItemIO.Send(item, writer, true);
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		foreach (Item item in Items)
-			ItemIO.Receive(item, reader, true); 
+		int length = reader.ReadByte(); //Read the length of the array
+		List<Item> items = [];
+
+		for (int i = 0; i < length; i++)
+			items.Add(ItemIO.Receive(reader, true));
+
+		Items = items.ToArray();
 	}
 
 	public override void SaveData(TagCompound tag)
@@ -99,7 +129,7 @@ public abstract class BackpackItem : ModItem
 		{
 			Item item = Items[i];
 
-			if (item != null && !item.IsAir) //Don't bother saving air
+			if (item?.IsAir == false) //Don't bother saving air
 				packCompound["item" + i] = ItemIO.Save(item);
 		}
 
@@ -126,6 +156,10 @@ public abstract class BackpackItem : ModItem
 				if (packCompound.TryGet(item.Key, out TagCompound value))
 				{
 					int index = int.Parse(item.Key[item.Key.Length - 1].ToString()); //The last value in the key is always an integer corresponding to the slot
+
+					while (index > loaded.Count)
+						loaded.Add(new()); //Fill the empty space to ensure index is consistent
+
 					loaded.Add(ItemIO.Load(value));
 				}
 			}

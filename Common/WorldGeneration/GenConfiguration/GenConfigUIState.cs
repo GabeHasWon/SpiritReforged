@@ -56,11 +56,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	{
 		base.Update(gameTime);
 
-		Vector2 textSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, warningText.Text, new Vector2(1));
-		TextScale(warningText) = MathF.Min(1, 770 / textSize.X);
-		warningText.Recalculate();
-		warningText.TextColor = Color.Lerp(Color.OrangeRed, Color.Transparent, 1 - Math.Clamp(warningTimer / 120f, 0, 1));
-		warningTimer--;
+		if (warningText is not null)
+		{
+			Vector2 textSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, warningText.Text, new Vector2(1));
+			TextScale(warningText) = MathF.Min(1, 770 / textSize.X);
+			warningText.Recalculate();
+			warningText.TextColor = Color.Lerp(Color.OrangeRed, Color.Transparent, 1 - Math.Clamp(warningTimer / 120f, 0, 1));
+			warningTimer--;
+		}
 
 		if (updatePage)
 		{
@@ -983,7 +986,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		string[] paths = name.Split('/');
 
 		// Get page if it's not passed in
-		page ??= GenConfigLoader.PagesByModAndName[paths[0] + "/" + paths[1]];
+
+		if (page is null)
+		{
+			if (GenConfigLoader.PagesByModAndName.TryGetValue(paths[0] + "/" + paths[1], out var newPage))
+				page = newPage;
+			else
+				return false;
+		}
 
 		if (paths[0] != page.Mod.Name || paths[1] != page.PageInfo.PageName)
 		{

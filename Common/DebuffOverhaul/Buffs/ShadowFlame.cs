@@ -6,7 +6,7 @@ public class ShadowFlame : DoTExtension
 {
     public static readonly Asset<Texture2D> ShadowFlameHealth = ModContent.Request<Texture2D>(VanillaTextures + "ShadowFlameHealthBar");
 
-	public override BuffSettings Settings => new(0.5f * VanillaScaling, (int)(2000 * VanillaMaximum), false, FireScaling);
+	public override BuffSettings Settings => new(Category.Fire);
 
     public override void Load() => BuffHandler.Register(this, BuffID.ShadowFlame);
 
@@ -22,19 +22,19 @@ public class ShadowFlame : DoTExtension
         Vector2 endPosition = options.Position + new Vector2(front.Width * progress, 8) * options.Scale;
 
         //Draw outline
-        DrawFlame(endPosition + new Vector2(2, 0), flameScale, Color.Red.Additive(150) * lightness);
-        DrawFlame(endPosition + new Vector2(0, 2), flameScale, Color.Red.Additive(150) * lightness);
-        DrawFlame(endPosition + new Vector2(-2, 0), flameScale, Color.Red.Additive(150) * lightness);
-        DrawFlame(endPosition + new Vector2(0, -2), flameScale, Color.Red.Additive(150) * lightness);
+        DrawFlame(spriteBatch, endPosition + new Vector2(2, 0), flameScale, Color.Red.Additive(150) * lightness);
+        DrawFlame(spriteBatch, endPosition + new Vector2(0, 2), flameScale, Color.Red.Additive(150) * lightness);
+        DrawFlame(spriteBatch, endPosition + new Vector2(-2, 0), flameScale, Color.Red.Additive(150) * lightness);
+        DrawFlame(spriteBatch, endPosition + new Vector2(0, -2), flameScale, Color.Red.Additive(150) * lightness);
 
         HealthBarHook.DrawSimpleBar(spriteBatch, front, options.Position, bounds, options.Scale, Color.White * fadeout * lightness);
 
         //Draw base
         for (int i = 0; i < 3; i++)
-            DrawFlame(endPosition + Main.rand.NextVector2Unit() * Main.rand.NextFloat(2), flameScale, Color.White.Additive() * lightness);
+            DrawFlame(spriteBatch, endPosition + Main.rand.NextVector2Unit() * Main.rand.NextFloat(2), flameScale, Color.White.Additive() * lightness);
     }
 
-    private static void DrawFlame(Vector2 position, float scale, Color color)
+    private static void DrawFlame(SpriteBatch spriteBatch, Vector2 position, float scale, Color color)
     {
         const int frames = 4;
         Main.instance.LoadProjectile(ProjectileID.DesertDjinnCurse);
@@ -45,6 +45,6 @@ public class ShadowFlame : DoTExtension
         Vector2 finalScale = new Vector2(1, 1.2f + (float)Math.Sin(unit / 4f) * 0.2f) * scale;
         Vector2 origin = new(source.Width / 2, source.Height);
 
-        Main.spriteBatch.Draw(flame, position, source, color, 0, origin, finalScale, default, 0);
+		spriteBatch.Draw(flame, position, source, color, 0, origin, finalScale, default, 0);
     }
 }

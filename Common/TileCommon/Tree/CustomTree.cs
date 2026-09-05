@@ -164,7 +164,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		while (Framing.GetTileSafely(i, j + 1).TileType == Type)
 			j++; //Move to the base of the tree
 
-		if (ShakeableTreetops.Contains(FindSegment(i, j)) && TileExtensions.ShakeTree(i, j))
+		if (ShakeableTreetops.Contains(FindSegment(i, j)) && TileMethods.ShakeTree(i, j))
 		{
 			while (Framing.GetTileSafely(i, j - 1).TileType == Type)
 				j--;
@@ -224,12 +224,12 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 	public virtual void DrawTreeBody(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
 		Tile tile = Main.tile[i, j];
 		Rectangle source = new(tile.TileFrameX, 0, FrameSize - 2, FrameSize - 4);
-		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		return;

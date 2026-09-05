@@ -26,6 +26,10 @@ internal class TextureColorCache
 
 		if (data.Length != 0)
 			ColorCache.Add(texture, data);
+		//Fallback
+		else
+			data = [Color.Black];
+
 		return data;
 	}
 

@@ -15,7 +15,7 @@ public class CelestialStamp : ModItem
 		public override string HoverTexture => Texture + "_Hover";
 
 		public override bool Active() => Main.LocalPlayer.TryGetModPlayer(out CelestialStampPlayer mPlayer) && mPlayer.usedCelestialStamp;
-		public override string DisplayValue() => Language.GetTextValue("Mods.SpiritReforged.Items.CelestialStamp." + (CurrentState == InactiveState ? "Inactive" : "Active"));
+		public override string DisplayValue() => Language.GetTextValue("Mods.SpiritReforged.Items.EnchantedStamp." + (CurrentState == InactiveState ? "Inactive" : "Active"));
 		public override bool Draw(SpriteBatch spriteBatch, ref BuilderToggleDrawParams drawParams)
 		{
 			if (CurrentState == InactiveState)

@@ -1,13 +1,17 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Items.Pearl;
 
 public class PearlStringTile : ModTile, IAutoloadRubble
 {
+	private static readonly int[] _sandyTypes = [TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand];
+
 	public IAutoloadRubble.RubbleData Data => new(ModContent.ItemType<PearlString>(), IAutoloadRubble.RubbleSize.Small);
 
 	public override void SetStaticDefaults()
@@ -17,18 +21,17 @@ public class PearlStringTile : ModTile, IAutoloadRubble
 		Main.tileNoFail[Type] = true;
 
 		TileID.Sets.CanDropFromRightClick[Type] = true;
-		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, static (i, j) => Lighting.GetColor(i, j) * 2f);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.CoordinateHeights = [16];
-		TileObjectData.newTile.Origin = new(1, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-		TileObjectData.newTile.AnchorValidTiles = [TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand];
+		TileObjectData.newTile.AnchorValidTiles = _sandyTypes;
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(100, 100, 120));
 		RegisterItemDrop(ModContent.ItemType<PearlString>());
-		SolidBottomTile.TileTypes.Add(Type);
+		TileMethods.Merge(Type, _sandyTypes);
 
 		DustType = DustID.Sand;
 	}
@@ -46,7 +49,7 @@ public class PearlStringTile : ModTile, IAutoloadRubble
 
 	public override bool CreateDust(int i, int j, ref int type)
 	{
-		var tile = Framing.GetTileSafely(i, j);
+		Tile tile = Main.tile[i, j];
 		type = (tile.TileFrameY / 18) switch
 		{
 			1 => DustID.Corruption,
@@ -58,57 +61,48 @@ public class PearlStringTile : ModTile, IAutoloadRubble
 		return true;
 	}
 
-	public override void PostTileFrame(int i, int j, int up, int down, int left, int right, int upLeft, int upRight, int downLeft, int downRight)
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		int type = Framing.GetTileSafely(i, j + 1).TileType;
+		Tile tile = Main.tile[i, j];
+		Tile left = Framing.GetTileSafely(i - 1, j);
+		Tile right = Framing.GetTileSafely(i + 1, j);
+		Tile up = Framing.GetTileSafely(i, j - 1);
+		Tile down = Framing.GetTileSafely(i, j + 1);
 
-		switch (type)
+		tile.TileFrameX %= 36; //Reset frame
+		tile.TileFrameY = 0;
+
+		for (int x = 0; x < _sandyTypes.Length; x++) //Select a matching sand style
 		{
-			case TileID.Sand:
-				Framing.GetTileSafely(i, j).TileFrameY = 0;
-				break;
+			int mergeType = _sandyTypes[x];
+			if (down.TileType == mergeType)
+				tile.TileFrameY += (short)(18 * x);
 
-			case TileID.Ebonsand:
-				Framing.GetTileSafely(i, j).TileFrameY = 18;
-				break;
-
-			case TileID.Crimsand:
-				Framing.GetTileSafely(i, j).TileFrameY = 36;
-				break;
-
-			case TileID.Pearlsand:
-				Framing.GetTileSafely(i, j).TileFrameY = 54;
-				break;
+			if (up.TileType == mergeType) //Upward frame adjustment
+				tile.TileFrameX += 72;
+			else if (left.TileType == mergeType || right.TileType == mergeType) //Side frame adjustment
+				tile.TileFrameX += 36;
 		}
+
+		return true;
 	}
 
-	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
+	public override void NearbyEffects(int i, int j, bool closer)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
-			return false;
-
-		var t = Framing.GetTileSafely(i, j);
-
-		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, 16);
-		var offset = Lighting.LegacyEngine.Mode > 1 && Main.GameZoomTarget == 1 ? Vector2.Zero : Vector2.One * 12;
-		var position = (new Vector2(i, j) + offset) * 16 - Main.screenPosition;
-
-		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-		spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, position, source, color * 2, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
-
-		var rect = new Rectangle(i * 16, j * 16, 16, 16);
-		if (!Main.gamePaused && Main.rand.NextBool(50) && Main.LocalPlayer.Distance(rect.Center()) < 100) //Nearby dust effects
+		if (closer && !Main.gamePaused && TileDrawing.IsVisible(Main.tile[i, j]))
 		{
-			var dustPos = Main.rand.NextVector2FromRectangle(rect);
+			Rectangle region = new(i * 16, j * 16, 16, 16);
+			if (Main.rand.NextBool(50) && Main.LocalPlayer.DistanceSQ(region.Center()) < 100 * 100)
+			{
+				Vector2 dustPos = Main.rand.NextVector2FromRectangle(region);
 
-			var dust = Dust.NewDustPerfect(dustPos, DustID.SilverCoin, Scale: .2f);
-			dust.noGravity = true;
-			dust.velocity = Vector2.Zero;
-			dust.noLightEmittence = true;
+				var dust = Dust.NewDustPerfect(dustPos, DustID.SilverCoin, Scale: .2f);
+				dust.noGravity = true;
+				dust.velocity = Vector2.Zero;
+				dust.noLightEmittence = true;
 
-			ParticleHandler.SpawnParticle(new Particles.GlowParticle(dustPos, Vector2.Zero, Main.DiscoColor * .8f, Color.Black, .75f, 50));
+				ParticleHandler.SpawnParticle(new Particles.GlowParticle(dustPos, Vector2.Zero, Main.DiscoColor * 0.8f, Color.Black, 0.75f, 50));
+			}
 		}
-
-		return false;
 	}
 }

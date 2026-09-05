@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Content.Desert.NPCs.ZombieVariants;
 using SpiritReforged.Content.Forest.Cloud.Items;
-using SpiritReforged.Content.Ocean.Items.JellyfishStaff;
+using SpiritReforged.Content.Ocean.Items.JellyMinion;
 using SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 using SpiritReforged.Content.Savanna.NPCs.ZombieVariants;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -14,7 +14,7 @@ internal class ThoriumGlobalNPC : GlobalNPC
 {
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Thorium.Enabled;
 
-	public override void SetDefaults(NPC entity)
+	public override void SetStaticDefaults()
 	{
 		//Repellents
 		var thorium = CrossMod.Thorium.Instance;
@@ -28,16 +28,13 @@ internal class ThoriumGlobalNPC : GlobalNPC
 			ModContent.NPCType<KelpZombie>(),
 			ModContent.NPCType<SailorZombie>(),
 			ModContent.NPCType<TridentZombie>(),
-			ModContent.NPCType<TumbleZombie>(),
 			ModContent.NPCType<CactusZombie>(),
 			ModContent.NPCType<TumbleZombie>(),
 			ModContent.NPCType<VeiledZombie>()
 		];
 
 		foreach (int zombieNPC in zombieTypes)
-		{
 			thorium.Call("AddZombieRepellentNPCID", zombieNPC, true);
-		}
 
 		int[] bugTypes =
 		[
@@ -45,9 +42,7 @@ internal class ThoriumGlobalNPC : GlobalNPC
 		];
 
 		foreach (int bugNPC in bugTypes)
-		{
-			thorium.Call("AddZombieRepellentNPCID", bugNPC, true);
-		}
+			thorium.Call("AddInsectRepellentNPCID", bugNPC, true);
 	}
 
 	public override void ModifyNPCLoot(NPC npc, NPCLoot npcLoot)
@@ -56,7 +51,7 @@ internal class ThoriumGlobalNPC : GlobalNPC
 			npcLoot.AddCommon(ItemID.Leather, 1, 5, 10);
 
 		if (CrossMod.Thorium.TryFind("ManofWar", out ModNPC bigJellyfish) && npc.type == bigJellyfish.Type)
-			npcLoot.AddCommon(ModContent.ItemType<JellyfishStaff>(), 50);
+			npcLoot.AddCommon(ModContent.ItemType<JellyfishJamJar>(), 50);
 	}
 
 	public override void ModifyShop(NPCShop shop)

@@ -5,7 +5,7 @@ using Terraria.ModLoader.Core;
 
 namespace SpiritReforged.Common.Multiplayer;
 
-/// <summary> Denotes a static method than can be synced using <see cref="MultiplayerLoader.Send"/>. </summary>
+/// <summary> Denotes a public static method than can be synced using <see cref="MultiplayerLoader.Send"/>. </summary>
 /// <param name="Relay"> Whether the method will automatically be called back on other clients. Only has an effect if <see cref="MultiplayerLoader.Send"/> is called on a multiplayer client. </param>
 [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
 internal class NetSyncedAttribute(bool Relay = false) : Attribute
@@ -18,7 +18,9 @@ internal partial class MultiplayerLoader : ILoadable
 	public static readonly Dictionary<byte, PacketData> PacketTypes = [];
 	private static readonly Dictionary<byte, MethodInfo> NetMethods = [];
 
+	/// <summary> A list of write behaviours for respective types. Must contain types equal to <see cref="ReadSigns"/>. </summary>
 	private static readonly Dictionary<Type, Action<ModPacket, object>> WriteSigns = [];
+	/// <summary> A list of read behaviours for respective types. Must contain types equal to <see cref="WriteSigns"/>. </summary>
 	private static readonly Dictionary<Type, Func<BinaryReader, object>> ReadSigns = [];
 
 	/// <summary> Loads all data definitions into static lookups. Must be ordered consistently between clients. </summary>
@@ -26,6 +28,7 @@ internal partial class MultiplayerLoader : ILoadable
 	{
 		byte count = 0;
 
+		#region sign registration
 		//Add supported signs for ModPacket
 		WriteSigns.Add(typeof(bool), static (modPacket, argument) => modPacket.Write((bool)argument));
 		WriteSigns.Add(typeof(int), static (modPacket, argument) => modPacket.Write((int)argument));
@@ -41,15 +44,21 @@ internal partial class MultiplayerLoader : ILoadable
 		ReadSigns.Add(typeof(Vector2), static (binaryReader) => binaryReader.ReadVector2());
 		ReadSigns.Add(typeof(Player), static (binaryReader) => Main.player[binaryReader.ReadUInt16()]);
 		ReadSigns.Add(typeof(NPC), static (binaryReader) => Main.npc[binaryReader.ReadUInt16()]);
+		#endregion
 
 		foreach (Type type in AssemblyManager.GetLoadableTypes(mod.Code))
 		{
 			if (!type.IsAbstract && type.IsSubclassOf(typeof(PacketData))) //Register PacketData
 				PacketTypes.Add(count++, (PacketData)Activator.CreateInstance(type));
 
-			foreach (MethodInfo methodInfo in type.GetMethods()) //Register net methods
+			AddNetMethods(ref count, type.GetMethods(BindingFlags.Static| BindingFlags.Public)); //Register net methods
+		}
+
+		static void AddNetMethods(ref byte count, MethodInfo[] methods)
+		{
+			foreach (MethodInfo methodInfo in methods)
 			{
-				if (methodInfo.IsStatic && methodInfo.GetCustomAttribute(typeof(NetSyncedAttribute)) is NetSyncedAttribute netSyncedAttribute)
+				if (methodInfo.GetCustomAttribute(typeof(NetSyncedAttribute)) is NetSyncedAttribute netSyncedAttribute)
 					NetMethods.Add(count++, methodInfo);
 			}
 		}

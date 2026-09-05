@@ -61,7 +61,7 @@ public class VoidNPC : GlobalNPC
 		}
 
 		//Still run application effects if the singularity has not been created (for non-owning clients specifically on first application)
-		if (!Main.dedServ && collapse.Stacks < MAX_STACKS && result is SingularityResult.Created or SingularityResult.Found or SingularityResult.NotCreated)
+		if (!Main.dedServ && (collapse == null || collapse.Stacks < MAX_STACKS) && result is SingularityResult.Created or SingularityResult.Found or SingularityResult.NotCreated)
 		{
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * pitchMultiplier }, target.Center);
 			SoundEngine.PlaySound(Wisp.Hit with { Volume = 2f, Pitch = -0.1f * pitchMultiplier }, target.Center);
