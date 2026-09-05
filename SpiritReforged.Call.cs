@@ -101,8 +101,8 @@ public partial class SpiritReforgedMod : Mod
 	//A list of all mod calls accessible by method name
 	#region calls
 	[ModCall]
-	private static void AddCustomDoT(int buffType, float scalability, int damageLimit, bool stackable, Action scalingBehaviour = null, Action<SpriteBatch, NPC, Color, Vector2, float, float> onPostDraw = null)
-		=> BuffHandler.Register(new CustomDoT(scalability, damageLimit, stackable, scalingBehaviour, onPostDraw), buffType);
+	private static void AddCustomDoT(int buffType, int category, Action<SpriteBatch, NPC, Color, Vector2, float, float> onPostDraw = null)
+		=> BuffHandler.Register(new CustomDoT((DoTExtension.Category)category, onPostDraw), buffType);
 
 	[ModCall]
 	private static bool WorldHasEcotone(string ecotoneName) => EcotoneSurfaceMapping.ContainsEcotone(ecotoneName);
