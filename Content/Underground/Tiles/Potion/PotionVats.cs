@@ -177,7 +177,10 @@ public class PotionVats : PotTile, ICutAttempt
 
 		PlayerKnockback(center, 120);
 
-		if (Main.netMode != NetmodeID.MultiplayerClient && Entity(i, j, true) is VatSlot slot && !slot.item.IsAir)
+		i -= frameX / 18 % 2;
+		j -= frameY / 18 % 5;
+
+		if (Main.netMode != NetmodeID.MultiplayerClient && TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity ent) && ent is VatSlot slot && !slot.item.IsAir)
 		{
 			int potion = slot.item.type;
 			Projectile.NewProjectile(new EntitySource_TileBreak(i, j), center, Vector2.Zero, ModContent.ProjectileType<BuffAura>(), 0, 0, -1, potion);
