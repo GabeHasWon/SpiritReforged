@@ -18,8 +18,6 @@ public class GraniteBody : ModItem
 
 	public override void SetStaticDefaults()
 	{
-		//Mod.Call("AddCustomDoT", BuffID.AmmoBox, 1, 10, true); //DEBUG - REMOVE
-
 		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.GraniteGolem, NPCID.GraniteFlyer), ItemDropRule.Common(Type, 21)));
 
 		ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<GraniteLegs>();
