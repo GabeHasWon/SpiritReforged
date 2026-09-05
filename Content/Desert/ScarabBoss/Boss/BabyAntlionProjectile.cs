@@ -1,17 +1,10 @@
-using Microsoft.CodeAnalysis;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using System.Security.Cryptography;
 using Terraria.Audio;
-using Terraria.GameContent.Drawing;
-using Terraria.Graphics.CameraModifiers;
-using static Terraria.GameContent.PlayerEyeHelper;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 

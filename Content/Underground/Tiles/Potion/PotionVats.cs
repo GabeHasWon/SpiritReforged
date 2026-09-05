@@ -180,6 +180,7 @@ public class PotionVats : PotTile, ICutAttempt
 		i -= frameX / 18 % 2;
 		j -= frameY / 18 % 5;
 
+		// We can't use Entity() here as the frameX/Y values are invalid on the tile, obtain manually
 		if (Main.netMode != NetmodeID.MultiplayerClient && TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity ent) && ent is VatSlot slot && !slot.item.IsAir)
 		{
 			int potion = slot.item.type;
