@@ -78,7 +78,7 @@ GildedScarabBuff: {
 	Description: Defesa aumentada em {0}
 }
 
-PoolNoodleBubbleBuff: {
+Bubbled: {
 	DisplayName: Buff de Bolhas de Macarrão de Piscina
 	Description: Você encontrou o Codex Secreto do Lore dos Espíritos... Fique ligado para nosso superboss Darksteel, a Estrela Caída!
 }

@@ -2,7 +2,6 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
@@ -51,12 +50,13 @@ public partial class ShockGlyph : GlyphItem
 		Item.maxStack = Item.CommonMaxStack;
 		settings = new(Color.Yellow);
 	}
+
 	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
 		MoRHelper.OverrideElement(item, MoRHelper.Thunder);
-
 		base.OnApplyGlyph(item, context);
 	}
+
 	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Thunder, -1);
 
 	public override void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters)
@@ -137,7 +137,6 @@ public partial class ShockGlyph : GlyphItem
 	{
 		// We need to check the sample item because if an item has a glyph applied no prefixes can be applied, thus wrongly returning false here
 		Item sampleItem = ContentSamples.ItemsByType[item.type];
-
 		bool prefix = sampleItem.CanApplyPrefix(PrefixID.Zealous);
 
 		return base.CanApplyGlyph(item) && !item.CountsAsClass(DamageClass.Summon) && !item.CountsAsClass(DamageClass.SummonMeleeSpeed) && prefix;

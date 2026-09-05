@@ -78,7 +78,7 @@ GildedScarabBuff: {
 	Description: Защита увеличена на {0} ед.
 }
 
-PoolNoodleBubbleBuff: {
+Bubbled: {
 	DisplayName: Пузырь нудла
 	Description: Вы познали древнюю тайну истории Spirit... Ждите встречи с нашим супербоссом — Тёмной Сталью, Падшей звездой!
 }
