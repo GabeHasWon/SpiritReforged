@@ -23,17 +23,19 @@ internal class DecrepitMummy : ModNPC
 		public string GetConditionDescription() => string.Empty;
 	}
 
-	public static readonly SoundStyle[] MummyMoan = [
-	SoundID.Zombie3 with
-	{
-		Pitch = 0.5f,
-		PitchVariance = 0.25f
-	},
-	SoundID.Zombie4 with
-	{
-		Pitch = 0.5f,
-		PitchVariance = 0.25f
-	}];
+	public static readonly SoundStyle[] MummyMoan = 
+	[
+		SoundID.Zombie3 with
+		{
+			Pitch = 0.5f,
+			PitchVariance = 0.25f
+		},
+		SoundID.Zombie4 with
+		{
+			Pitch = 0.5f,
+			PitchVariance = 0.25f
+		}
+	];
 
 	public float LifeProgress => 1f - NPC.life / (float)NPC.lifeMax;
 	public ref float Style => ref NPC.ai[0];
@@ -70,6 +72,10 @@ internal class DecrepitMummy : ModNPC
 	{
 		Style = Main.rand.Next(3);
 		NPC.netUpdate = true;
+
+		if ((CrossMod.Spooky.Enabled || Main.halloween) && Main.rand.NextBool(4))
+			Style = 3;
+
 	}
 
 	public override void AI()
