@@ -3531,3 +3531,8 @@ CandlePianoItem: {
 	DisplayName: Свечное пианино
 	Tooltip: ""
 }
+
+ChromaticWaxShaderDummy: {
+	// DisplayName: Chromatic Wax Shader Dummy
+	// Tooltip: ""
+}

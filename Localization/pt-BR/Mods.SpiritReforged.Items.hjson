@@ -3506,3 +3506,8 @@ CandlePianoItem: {
 	DisplayName: Piano de Vela
 	Tooltip: ""
 }
+
+ChromaticWaxShaderDummy: {
+	// DisplayName: Chromatic Wax Shader Dummy
+	// Tooltip: ""
+}
