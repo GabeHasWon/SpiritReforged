@@ -3519,3 +3519,8 @@ CandlePianoItem: {
 	DisplayName: 蜡钢琴
 	Tooltip: ""
 }
+
+ChromaticWaxShaderDummy: {
+	// DisplayName: Chromatic Wax Shader Dummy
+	// Tooltip: ""
+}
