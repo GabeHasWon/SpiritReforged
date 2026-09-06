@@ -6,16 +6,19 @@ using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Crossmod.Spooky.SpookyForest.Plants;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
-using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass;
+
+#nullable enable
 
 internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 {
 	internal class StarscareGlowEffects : ILoadable, IPostDrawTree
 	{
-		private static Asset<Texture2D> _topTex;
-		private static Asset<Texture2D> _branchTex;
+		private static Asset<Texture2D> _topTex = null!;
+		private static Asset<Texture2D> _branchTex = null!;
+
+		bool ILoadable.IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 		public void Load(Mod mod)
 		{
@@ -29,8 +32,10 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 
 	internal class StarscareGlowGreenEffects : ILoadable, IPostDrawTree
 	{
-		private static Asset<Texture2D> _topTex;
-		private static Asset<Texture2D> _branchTex;
+		private static Asset<Texture2D> _topTex = null!;
+		private static Asset<Texture2D> _branchTex = null!;
+
+		bool ILoadable.IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 		public void Load(Mod mod)
 		{
@@ -49,9 +54,9 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 		Spooky_StarscareGreen
 	}
 
-	private static Asset<Texture2D> _baseTexture;
-	private static Asset<Texture2D> _topTexture;
-	private static Asset<Texture2D> _branchTexture;
+	private static Asset<Texture2D> _baseTexture = null!;
+	private static Asset<Texture2D> _topTexture = null!;
+	private static Asset<Texture2D> _branchTexture = null!;
 
 	public override void Load()
 	{
@@ -110,16 +115,17 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 		_ => throw new Exception("How did you get here?")
 	};
 
-	private static void DrawGlow(int i, int j, SpriteBatch spriteBatch, Texture2D trunkTexture, Texture2D topsTexture, Texture2D branchTexture)
+	private static void DrawGlow(int i, int j, SpriteBatch spriteBatch, Texture2D? trunkTexture, Texture2D topsTexture, Texture2D branchTexture)
 	{
 		Tile tile = Main.tile[i, j];
 		var frame = new Rectangle(tile.TileFrameX, tile.TileFrameY, 16, 16);
 
 		double lerp = Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 5f + Main.GlobalTimeWrappedHourly) * 0.25f;
 		Color color = (Color.White * (0.3f - (float)lerp)).Additive();
-
 		Vector2 baseDrawPos = new Vector2(i + 1, j + 2) * 16f - Main.screenPosition;
-		spriteBatch.Draw(_baseTexture.Value, baseDrawPos, frame, color);
+
+		if (trunkTexture is not null)
+			spriteBatch.Draw(trunkTexture, baseDrawPos, frame, color);
 
 		if (tile.TileFrameY < 198)
 			return;
@@ -133,12 +139,11 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			if (!WorldGen.GetCommonTreeFoliageData(i, j, 0, ref treeFrame, ref _, out _, out int topTextureFrameWidth3, out int topTextureFrameHeight3))
 				return;
 
-			Texture2D treeTopTexture = _topTexture.Value;
 			Vector2 drawPos = baseDrawPos - new Vector2(8, 16);
 			float rotation = 0f;
 
 			if (tile.WallType <= WallID.None)
-				rotation = Main.instance.TilesRenderer.GetWindCycle(i + 1, j + 2, WindTileRenderer.TreeWindCounter - MathHelper.PiOver4);
+				rotation = Main.instance.TilesRenderer.GetWindCycle(i + 1, j + 2, WindTileRenderer.TreeWindCounter);
 
 			drawPos.X += rotation * 2f;
 			drawPos.Y += Math.Abs(rotation) * 2f;
@@ -146,7 +151,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			var source = new Rectangle(treeFrame * (topTextureFrameWidth3 + 2), 0, topTextureFrameWidth3, topTextureFrameHeight3);
 			var origin = new Vector2(topTextureFrameWidth3 / 2, topTextureFrameHeight3);
 
-			Main.spriteBatch.Draw(treeTopTexture, drawPos, source, color, rotation * 0.08f, origin, 1f, SpriteEffects.None, 0f);
+			Main.spriteBatch.Draw(topsTexture, drawPos, source, color, rotation * 0.08f, origin, 1f, SpriteEffects.None, 0f);
 		}
 		else
 		{
@@ -155,7 +160,6 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 			if (!WorldGen.GetCommonTreeFoliageData(i, j, -1, ref treeFrame, ref _, out _, out int _, out int _))
 				return;
 
-			Texture2D treeBranchTexture = _branchTexture.Value;
 			Vector2 position = baseDrawPos;
 			float rotation = 0f;
 
@@ -173,7 +177,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 				var origin = new Vector2(40f, 24f);
 				var source = new Rectangle(0, treeFrame * 42, 40, 40);
 
-				Main.spriteBatch.Draw(treeBranchTexture, position, source, color, rotation * 0.06f, origin, 1f, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(branchTexture, position, source, color, rotation * 0.06f, origin, 1f, SpriteEffects.None, 0f);
 			}
 			else if (tile.TileFrameX == 66)
 			{
@@ -183,7 +187,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 				var origin = new Vector2(0f, 30f);
 				var source = new Rectangle(42, treeFrame * 42, 40, 40);
 
-				Main.spriteBatch.Draw(treeBranchTexture, position, source, color, rotation * 0.06f, origin, 1f, SpriteEffects.None, 0f);
+				Main.spriteBatch.Draw(branchTexture, position, source, color, rotation * 0.06f, origin, 1f, SpriteEffects.None, 0f);
 			}
 		}
 	}

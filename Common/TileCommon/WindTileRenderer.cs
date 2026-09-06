@@ -64,9 +64,9 @@ public sealed class WindTileRenderer : GlobalTile
 	/// All <see cref="TileDrawing.TileCounterType"/>s are automatically handled when set. </summary>
 	public static readonly ObservableCollection<TileDrawing.TileCounterType?> TileDrawInWind = new(TileID.Sets.Factory.CreateCustomSet<TileDrawing.TileCounterType?>(null));
 
-	public static double TreeWindCounter { get; private set; }
-	public static double GrassWindCounter { get; private set; }
-	public static double SunflowerWindCounter { get; private set; }
+	public static double TreeWindCounter => Main.instance.TilesRenderer._treeWindCounter;
+	public static double GrassWindCounter => Main.instance.TilesRenderer._grassWindCounter;
+	public static double SunflowerWindCounter => Main.instance.TilesRenderer._sunflowerWindCounter;
 
 	public override void Load() => On_TileDrawing.Update += UpdateClients;
 
@@ -78,12 +78,12 @@ public sealed class WindTileRenderer : GlobalTile
 		{
 			WindGrid.Update();
 
-			double num = Math.Abs(Main.WindForVisuals);
-			num = Utils.GetLerpValue(0.08f, 1.2f, (float)num, clamped: true);
+			//double num = Math.Abs(Main.WindForVisuals);
+			//num = Utils.GetLerpValue(0.08f, 1.2f, (float)num, clamped: true);
 
-			TreeWindCounter += 0.0041666666666666666 + 0.0041666666666666666 * num * 2.0;
-			GrassWindCounter += 0.0055555555555555558 + 0.0055555555555555558 * num * 4.0;
-			SunflowerWindCounter += 0.002380952380952 + 0.0023809523809523810 * num * 5.0;
+			//TreeWindCounter += 0.0041666666666666666 + 0.0041666666666666666 * num * 2.0;
+			//GrassWindCounter += 0.0055555555555555558 + 0.0055555555555555558 * num * 4.0;
+			//SunflowerWindCounter += 0.002380952380952 + 0.0023809523809523810 * num * 5.0;
 		}
 	}
 
