@@ -27,7 +27,7 @@ public abstract class ShotgunItem(ShotgunStats stats) : ModItem
 
 	}
 
-	public sealed override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		Item ammoItem = source.AmmoItemIdUsed > 0 ? ContentSamples.ItemsByType[source.AmmoItemIdUsed] : null;
 

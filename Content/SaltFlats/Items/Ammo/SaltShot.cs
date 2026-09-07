@@ -20,8 +20,10 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.SaltFlats.Items.Ammo;
 public class SaltShot : ShotgunAmmoItem
 {
-	static void Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
+	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
 	{
+		var spawnedProjectiles = new List<Projectile>();
+
 		for (int i = 0; i < shotCount; i++)
 		{
 			Vector2 spreadDir = direction;
@@ -29,7 +31,9 @@ public class SaltShot : ShotgunAmmoItem
 			if (spreadAmount > 0f && i != 0) // no spread on first shot
 				spreadDir = direction.RotatedByRandom(spreadAmount);
 
-			Projectile.NewProjectile(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<SaltShotProjectile>(), damage, knockback, player.whoAmI);
+			var p = Projectile.NewProjectileDirect(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<SaltShotProjectile>(), damage, knockback, player.whoAmI);
+
+			spawnedProjectiles.Add(p);
 
 			for (int x = 0; x < 2; x++)
 			{
@@ -48,6 +52,8 @@ public class SaltShot : ShotgunAmmoItem
 				Dust.NewDustPerfect(position, DustID.WhiteTorch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 2f), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
 			}
 		}
+
+		return spawnedProjectiles;
 	}
 
 	public SaltShot() : base(Behavior, 4, .55f, 18.5f) { }

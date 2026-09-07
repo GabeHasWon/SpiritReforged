@@ -15,8 +15,10 @@ public class DragonsBreath : ShotgunAmmoItem
 {
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type)));
 
-	static void Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
+	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
 	{
+		var spawnedProjectiles = new List<Projectile>();
+
 		for (int i = 0; i < shotCount; i++)
 		{
 			Vector2 spreadDir = direction;
@@ -24,7 +26,9 @@ public class DragonsBreath : ShotgunAmmoItem
 			if (spreadAmount > 0f && i != 0) // no spread on first shot
 				spreadDir = direction.RotatedByRandom(spreadAmount);
 
-			Projectile.NewProjectile(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<DragonsBreathProjectile>(), damage, knockback, player.whoAmI);
+			var p = Projectile.NewProjectileDirect(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<DragonsBreathProjectile>(), damage, knockback, player.whoAmI);
+
+			spawnedProjectiles.Add(p);
 
 			for (int x = 0; x < 6; x++)
 				Dust.NewDustPerfect(position, DustID.Torch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 2f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
@@ -52,9 +56,11 @@ public class DragonsBreath : ShotgunAmmoItem
 				ParticleHandler.SpawnParticle(new GlowParticle(position, velo, Color.Orange, 0.3f, 30, 1, (particle) => particle.Velocity *= 0.935f));
 			}
 		}
+
+		return spawnedProjectiles;
 	}
 
-	public DragonsBreath() : base(Behavior, 7, .7f, 15f) { }
+	public DragonsBreath() : base(Behavior, 7, .6f, 15f) { }
 
 	public override void SafeSetDefaults()
 	{
@@ -143,7 +149,7 @@ public class DragonsBreathProjectile : ModProjectile
 					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 					Vector2 velocity = Main.rand.NextVector2Circular(12f, 12f);
 
-					ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, tileCollide: false));
+					ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, false, false));
 				}
 
 				static void SparkUpdate(Particle p)
@@ -196,6 +202,7 @@ public class DragonsBreathProjectile : ModProjectile
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		float strength = Projectile.penetrate / 5f;
+		strength *= 0.65f;
 
 		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/FireBulletHit") with { Volume = 0.1f + 0.66f * strength, PitchVariance = 0.2f }, target.Center);
 
@@ -214,7 +221,7 @@ public class DragonsBreathProjectile : ModProjectile
 			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 			Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f) * strength;
 
-			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1.35f, Main.rand.Next(30, 60), SparkUpdate));
+			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1.35f, Main.rand.Next(30, 60), SparkUpdate, false));
 		}
 		
 		for (int i = 0; i < Math.Max(1, (int)(3 * strength)); i++)
@@ -230,7 +237,7 @@ public class DragonsBreathProjectile : ModProjectile
 			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 			Vector2 velocity = Main.rand.NextVector2Circular(15f, 15f) * strength;
 
-			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate));
+			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, false));
 		}
 
 		for (int i = 0; i < Math.Max(1, (int)(6 * strength)); i++)

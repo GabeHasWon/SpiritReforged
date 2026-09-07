@@ -19,6 +19,11 @@ public class VertexTrail : BaseTrail
 	/// </summary>
 	public float WidthMultiplier { get; set; }
 
+	/// <summary>
+	/// If not null, the trail will override its original color with this color
+	/// </summary>
+	public ITrailColor OverrideColor = null;
+
 	private readonly ITrailCap _trailCap;
 	private readonly ITrailColor _trailColor;
 	private readonly ITrailPosition _trailPosition;
@@ -160,7 +165,7 @@ public class VertexTrail : BaseTrail
 			Vector2 normal = CurveNormal(_points, i);
 			Vector2 clockwise = _points[i] + normal * thisPointsWidth;
 			Vector2 cclockwise = _points[i] - normal * thisPointsWidth;
-			Color color = _trailColor.GetColourAt(currentDistance, trailLength, _points, _points[0]) * Opacity;
+			Color color = (OverrideColor is not null ? OverrideColor : _trailColor).GetColourAt(currentDistance, trailLength, _points, _points[0]) * Opacity;
 
 			AddVertex(clockwise, color, Vector2.UnitX * i);
 			AddVertex(prevClockwise, previousColor, Vector2.UnitX * (i - 1));

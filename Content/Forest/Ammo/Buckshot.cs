@@ -10,8 +10,10 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.Forest.Ammo;
 public class Buckshot : ShotgunAmmoItem
 {
-	static void Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
+	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
 	{
+		var spawnedProjectiles = new List<Projectile>();
+
 		for (int i = 0; i < shotCount; i++)
 		{
 			Vector2 spreadDir = direction;
@@ -21,7 +23,8 @@ public class Buckshot : ShotgunAmmoItem
 
 			PreNewProjectile.New(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI, preSpawnAction: (projectile) =>
 			{
-				(projectile.ModProjectile as ShotProjectile).BaseColor = new(255, 90, 0); // tint bullets slightly more red
+				(projectile.ModProjectile as ShotProjectile).BaseColor = new(255, 130, 0); // tint bullets slightly more red
+				spawnedProjectiles.Add(projectile);
 			});
 
 			for (int x = 0; x < 2; x++)
@@ -29,6 +32,8 @@ public class Buckshot : ShotgunAmmoItem
 
 			Dust.NewDustPerfect(position + direction * speed, DustID.Smoke, direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
 		}
+
+		return spawnedProjectiles;
 	}
 
 	public Buckshot() : base(Behavior, 9, .65f, 13f) { }

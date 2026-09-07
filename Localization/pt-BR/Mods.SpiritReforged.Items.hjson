@@ -3574,3 +3574,8 @@ DragonsBreath: {
 	// DisplayName: Dragons Breath
 	// Tooltip: ""
 }
+
+Gryphon: {
+	// DisplayName: Gryphon
+	// Tooltip: ""
+}

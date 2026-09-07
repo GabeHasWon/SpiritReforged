@@ -22,8 +22,10 @@ public class Shot : ShotgunAmmoItem
 {
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type)));
 
-	static void Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
+	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
 	{
+		var spawnedProjectiles = new List<Projectile>();
+
 		for (int i = 0; i < shotCount; i++)
 		{
 			Vector2 spreadDir = direction;
@@ -31,13 +33,16 @@ public class Shot : ShotgunAmmoItem
 			if (spreadAmount > 0f && i != 0) // no spread on first shot
 				spreadDir = direction.RotatedByRandom(spreadAmount);
 
-			Projectile.NewProjectile(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI);
+			var p = Projectile.NewProjectileDirect(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI);
+			spawnedProjectiles.Add(p);
 
 			for (int x = 0; x < 3; x++)
 				Dust.NewDustPerfect(position, DustID.Torch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 3f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
 
 			Dust.NewDustPerfect(position + direction * speed, DustID.Smoke, direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
 		}
+
+		return spawnedProjectiles;
 	}
 
 	public Shot() : base(Behavior, 6, .4f, 12.5f) { }

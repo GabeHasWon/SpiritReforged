@@ -15,7 +15,21 @@ public class ShotgunAmmoType : ModItem
 	public override string Texture => AssetLoader.EmptyTexture;
 }
 
-public delegate void ShootBehavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback);
+/// <summary>
+/// The shoot behavior of the ammo item
+/// </summary>
+/// <param name="item">The item using the ammo</param>
+/// <param name="player">The player using the ammo</param>
+/// <param name="source">Passed in from ModItem.Shoot</param>
+/// <param name="position">Where the projectiles will be spawned</param>
+/// <param name="direction">The direction of the projectiles velocity</param>
+/// <param name="shotCount">The amount of shots to shoot</param>
+/// <param name="spreadAmount">The max spread of the shots</param>
+/// <param name="speed">The speed of the shots</param>
+/// <param name="damage">The damage of the shots</param>
+/// <param name="knockback">The knockback of the shots</param>
+/// <returns>A list of the projectiles spawned</returns>
+public delegate List<Projectile> ShootBehavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback);
 
 /// <summary>
 /// The behavior of shotgun shell ammo is completely contained in the ammo class, so any shotgun that uses the ammo does the same thing.
