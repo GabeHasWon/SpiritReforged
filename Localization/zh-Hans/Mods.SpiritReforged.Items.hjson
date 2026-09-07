@@ -3677,3 +3677,13 @@ Claymore: {
 	// DisplayName: Claidheamh-Mor
 	// Tooltip: ""
 }
+
+HiveSmasher: {
+	// DisplayName: Hive Smasher
+	// Tooltip: Releases a swarm of angry wasps
+}
+
+Bellringer: {
+	// DisplayName: Bellringer
+	// Tooltip: Creates a shockwave on impact
+}
