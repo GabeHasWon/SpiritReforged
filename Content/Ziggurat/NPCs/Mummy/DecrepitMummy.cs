@@ -75,7 +75,6 @@ internal class DecrepitMummy : ModNPC
 
 		if ((CrossMod.Spooky.Enabled || Main.halloween) && Main.rand.NextBool(4))
 			Style = 3;
-
 	}
 
 	public override void AI()
