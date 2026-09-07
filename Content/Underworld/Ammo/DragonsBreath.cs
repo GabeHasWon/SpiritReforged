@@ -197,6 +197,8 @@ public class DragonsBreathProjectile : ModProjectile
 	{
 		float strength = Projectile.penetrate / 5f;
 
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/FireBulletHit") with { Volume = 0.1f + 0.66f * strength, PitchVariance = 0.2f }, target.Center);
+
 		Projectile.damage = (int)(Projectile.damage * 0.66f);
 		if (Projectile.damage < 3)
 			Projectile.damage = 3;
@@ -229,6 +231,27 @@ public class DragonsBreathProjectile : ModProjectile
 			Vector2 velocity = Main.rand.NextVector2Circular(15f, 15f) * strength;
 
 			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate));
+		}
+
+		for (int i = 0; i < Math.Max(1, (int)(6 * strength)); i++)
+		{
+			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(25f, 25f);
+			Vector2 velocity = Main.rand.NextVector2Circular(15f, 15f) * strength;
+
+			Dust.NewDustPerfect(pos, DustID.Torch, velocity, 0, default, Main.rand.NextFloat(3f) * strength).noGravity = true;
+		}
+
+		for (int i = 0; i < Math.Max(1, (int)(2 * strength)); i++)
+		{
+			Vector2 position = target.Center + Main.rand.NextVector2Circular(15f, 15f);
+			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(2f);
+			Color[] colors = [new Color(255, 220, 150, 120), new Color(255, 150, 0, 100), new Color(255, 50, 0, 100)];
+
+			ParticleHandler.SpawnParticle(new FireParticle(position, velocity, colors, 1.5f, Main.rand.NextFloat(0.05f, 0.1f), EaseBuilder.EaseQuadIn, 30 + Main.rand.Next(50))
+			{
+				ColorLerpExponent = 2.5f,
+				Layer = ParticleLayer.BelowProjectile
+			});
 		}
 
 		static void SparkUpdate(Particle p)

@@ -63,6 +63,8 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 		}
 	}
 
+	bool spawnedReloadDust = false;
+
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type, Condition.DownedEyeOfCthulhu)));
 
 	public override void SafeSetDefaults()
@@ -100,6 +102,8 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 			ParticleHandler.SpawnParticle(new EmberParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
 		}
+
+		spawnedReloadDust = false;
 	}
 
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
@@ -133,7 +137,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 				barrelRot += MathHelper.Lerp(maxRotation, 0, lerp);
 			}
 			
-			var barrelData = new DrawData(barrel, drawData.position + new Vector2(36 * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation), null, drawData.color, barrelRot, barrel.Size() / 2f, drawData.scale, flip, 0f);
+			var barrelData = new DrawData(barrel, drawData.position + new Vector2(31 * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation), null, drawData.color, barrelRot, barrel.Size() / 2f, drawData.scale, flip, 0f);
 
 			drawInfo.DrawDataCache.Add(handleData);
 			drawInfo.DrawDataCache.Add(barrelData);
@@ -165,6 +169,26 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 				float lerper = (animProgress - 0.75f) / 0.25f;
 				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(-8f, -2f, EaseFunction.EaseCircularInOut.Ease(lerper));
 			}
+		}
+
+		if (animProgress > 0.2f && item.ModItem is Pepperbox pepperbox && !pepperbox.spawnedReloadDust)
+		{
+			Vector2 breakPosition = itemPosition + new Vector2(12f, -8f).RotatedBy(itemRotation);
+			Vector2 breakVelocity = -Vector2.UnitY - Vector2.UnitX * player.direction;
+
+			for (int i = 0; i < 2; i++)
+			{
+				Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
+
+				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.5f, 45, false, false)
+				{
+					Layer = ParticleLayer.AbovePlayer
+				});
+			}
+
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition);
+
+			pepperbox.spawnedReloadDust = true;
 		}
 
 		ItemVisualHelpers.CleanHoldStyle(player, itemRotation, itemPosition, itemSize, itemOrigin, true, false, true);

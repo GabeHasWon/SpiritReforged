@@ -52,7 +52,7 @@ public class MagazineGlobalItem : GlobalItem
 	// testing UI
 	public override void SetDefaults(Item entity)
 	{
-		switch (entity.type)
+		/*switch (entity.type)
 		{
 			case ItemID.TheUndertaker:
 				ActivateMagazine(entity, null, new MagazineData(0, 1, 20, 120), Vector2.Zero, Vector2.Zero, MagazineReloadType.EntireMagazine, MagazineUIType.Bullet, false);
@@ -77,7 +77,7 @@ public class MagazineGlobalItem : GlobalItem
 			case ItemID.DemonBow:
 				ActivateMagazine(entity, null, new MagazineData(0, 1, 15, 120), Vector2.Zero, Vector2.Zero, MagazineReloadType.OneAtATime, MagazineUIType.Bow, false);
 				break;
-		}
+		}*/
 	}
 
 	/// Animation methods for the custom use style. If null, default will be used, unless <see cref="_useCustomUseStyle"/> is false
