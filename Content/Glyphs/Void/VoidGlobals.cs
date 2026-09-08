@@ -50,7 +50,7 @@ public class VoidNPC : GlobalNPC
 	public static void AddVoidStack(Player owner, NPC target, int damageDealt)
 	{
 		float pitchMultiplier = 1;
-		SingularityResult result = TryGetSingularity(owner, target, out SingularCollapse collapse, owner.whoAmI == Main.myPlayer);
+		SingularityResult result = TryGetSingularity(owner, target, out SingularCollapse collapse, owner.whoAmI == Main.myPlayer && owner.ownedProjectileCounts[ModContent.ProjectileType<SingularCollapse>()] <= 0);
 
 		if (result is SingularityResult.Created or SingularityResult.Found && collapse.Stacks < MAX_STACKS)
 		{
@@ -61,7 +61,7 @@ public class VoidNPC : GlobalNPC
 		}
 
 		//Still run application effects if the singularity has not been created (for non-owning clients specifically on first application)
-		if (!Main.dedServ && collapse.Stacks < MAX_STACKS && result is SingularityResult.Created or SingularityResult.Found or SingularityResult.NotCreated)
+		if (!Main.dedServ && (collapse == null || collapse.Stacks < MAX_STACKS) && result is SingularityResult.Created or SingularityResult.Found or SingularityResult.NotCreated)
 		{
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse with { Volume = 2f, Pitch = 0.1f * pitchMultiplier }, target.Center);
 			SoundEngine.PlaySound(Wisp.Hit with { Volume = 2f, Pitch = -0.1f * pitchMultiplier }, target.Center);

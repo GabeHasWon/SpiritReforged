@@ -110,18 +110,22 @@ public static class MoRHelper
 	{
 		if (!CrossMod.Redemption.Enabled)
 			return;
+
+		sbyte realId = checked((sbyte)overrideID);
+
 		if (entity is Item item)
-			redemption.Call("elementOverrideItem", item, elementID, overrideID);
+			redemption.Call("elementOverrideItem", item, elementID, realId);
 		else if (entity is NPC npc)
-			redemption.Call("elementOverrideNPC", npc, elementID, overrideID);
+			redemption.Call("elementOverrideNPC", npc, elementID, realId);
 		else if (entity is Projectile proj)
-			redemption.Call("elementOverrideProj", proj, elementID, overrideID);
+			redemption.Call("elementOverrideProj", proj, elementID, realId);
 	}
 
 	public static void OverrideElementMultiplier(NPC npc, int elementID, float value = 1, bool dontSetMultipliers = false)
 	{
 		if (!CrossMod.Redemption.Enabled)
 			return;
+
 		redemption.Call("elementMultiplier", npc, elementID, value, dontSetMultipliers);
 	}
 

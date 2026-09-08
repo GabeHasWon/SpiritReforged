@@ -26,7 +26,7 @@ public class DisplayCase : SingleSlotTile<DisplayCase.DisplayCaseSlot>, ILoadIte
 
 		public void Draw(Point topLeft, SpriteBatch spriteBatch)
 		{
-			Vector2 position = topLeft.ToWorldCoordinates(16, 16) - Main.screenPosition + TileExtensions.TileOffset;
+			Vector2 position = topLeft.ToWorldCoordinates(16, 16) - Main.screenPosition + TileMethods.TileOffset;
 			Color lightColor = Lighting.GetColor(new Point(topLeft.X + 1, topLeft.Y));
 			Point innerDimensions = new(20, 20);
 

@@ -27,7 +27,7 @@ Records: {
 	Scrying: Revela uma larga porção do mapa ao ser destruído.
 	Biome: Contém uma variedade maior de saque em relação aos vasos comuns.
 	Boulder: Vai girando até bater no chão quando incomodado.
-	// Wax: Imbued with potent magical energies.
+	Wax: Cheia de energia mágica poderosa.
 }
 
 FablesGraves: {
@@ -47,5 +47,3 @@ DustyTomb.MapEntry: Túmulo Empoirado
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: Musgo de Oganessônio
 RadonMoss.MapEntry: Musgo de Radônio
-// EnchantedAnvil.MapEntry: Enchanted Anvil
-// EnchantedWorkbench.MapEntry: Enchanted Workbench

@@ -96,7 +96,8 @@ public class Enchanter : ModNPC
 		NPC.Happiness
 			.SetNPCAffection(NPCID.Wizard, AffectionLevel.Love)
 			.SetNPCAffection(NPCID.PartyGirl, AffectionLevel.Like)
-			.SetNPCAffection(NPCID.DD2Bartender, AffectionLevel.Dislike)
+			.SetNPCAffection(NPCID.GoblinTinkerer, AffectionLevel.Dislike)
+			.SetNPCAffection(NPCID.DD2Bartender, AffectionLevel.Hate)
 			.SetBiomeAffection<SkyShoppingBiome>(AffectionLevel.Like)
 			.SetBiomeAffection<JungleBiome>(AffectionLevel.Dislike);
 	}
@@ -115,6 +116,8 @@ public class Enchanter : ModNPC
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Sky");
 
 	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
+
+	public override bool CanGoToStatue(bool toKingStatue) => true;
 
 	public override bool CanTownNPCSpawn(int numTownNPCs)
 	{
@@ -151,8 +154,11 @@ public class Enchanter : ModNPC
 	{
 		WeightedRandom<string> options = new();
 
-		for (int i = 0; i < 3; ++i)
-			options.Add(this.GetLocalizedValue("Dialogue.Idle." + i));
+		if (Main.dayTime)
+		{
+			for (int i = 0; i < 4; ++i)
+				options.Add(this.GetLocalizedValue("Dialogue.Idle." + i));
+		}
 
 		if (!Main.dayTime)
 		{
@@ -160,11 +166,29 @@ public class Enchanter : ModNPC
 				options.Add(this.GetLocalizedValue("Dialogue.IdleNight." + i));
 		}
 
-		if (Main.bloodMoon)
+		if (Main.raining)
+		{
+			for (int i = 0; i < 2; ++i)
+				options.Add(this.GetLocalizedValue("Dialogue.Rain." + i), 1.2f);
+		}
+
+			if (Main.bloodMoon)
 		{
 			for (int i = 0; i < 2; ++i)
 				options.Add(this.GetLocalizedValue("Dialogue.BloodMoon." + i), 1.2f);
 		}
+
+		if (Main.LocalPlayer.ZoneGraveyard)
+		{
+			for (int i = 0; i < 2; ++i)
+				options.Add(this.GetLocalizedValue("Dialogue.Graveyard." + i), 1.2f);
+		}
+
+		if (Main.eclipse)
+				options.Add(this.GetLocalizedValue("Dialogue.Eclipse."), 1.2f);
+
+		if (Main.IsItStorming)
+			options.Add(this.GetLocalizedValue("Dialogue.Thunderstorm."), 1.2f);
 
 		if (BirthdayParty.PartyIsUp)
 			options.Add(this.GetLocalizedValue("Dialogue.Party"), 1.2f);
@@ -174,6 +198,12 @@ public class Enchanter : ModNPC
 
 		if (NPC.FindFirstNPC(NPCID.Golfer) is { } ind2 and not -1)
 			options.Add(this.GetLocalization("Dialogue.Golfer").Format(Main.npc[ind2].GivenName));
+
+		if (NPC.FindFirstNPC(NPCID.Stylist) is { } ind3 and not -1)
+			options.Add(this.GetLocalization("Dialogue.Golfer").Format(Main.npc[ind3].GivenName));
+
+		if (NPC.FindFirstNPC(NPCID.WitchDoctor) is { } ind4 and not -1)
+			options.Add(this.GetLocalization("Dialogue.Golfer").Format(Main.npc[ind4].GivenName));
 
 		return options.Get();
 	}
@@ -191,12 +221,15 @@ public class Enchanter : ModNPC
 
 	public override void AddShops() => new NPCShop(Type)
 		.Add<EnchantedStamp>()
-		.Add<Flarepowder>(Condition.NotBloodMoon, Condition.PreHardmode)
+		.Add(ItemID.MagicMirror, Condition.DownedEowOrBoc, ShopConditions.NotInSnow)
+		.Add(ItemID.IceMirror, Condition.DownedEowOrBoc, Condition.InSnow)
+		.Add<Flarepowder>()
 		.Add<VexpowderBlue>(Condition.CorruptWorld, Condition.BloodMoonOrHardmode)
 		.Add<VexpowderRed>(Condition.CrimsonWorld, Condition.BloodMoonOrHardmode)
-		.Add(ItemID.PeaceCandle, Condition.NotBloodMoon, Condition.PreHardmode)
+		.Add(new Item(ItemID.PeaceCandle) { shopCustomPrice = Item.buyPrice(0, 0, 90, 0) }, Condition.NotBloodMoon)
 		.Add(ItemID.WaterCandle, Condition.NotBloodMoon, Condition.Hardmode)
 		.Add(ItemID.ShadowCandle, Condition.BloodMoon)
+		.Add(new Item(ItemID.Teacup) { shopCustomPrice = Item.buyPrice(0, 0, 10, 0) })
 		.Add<CharmcasterHat>()
 		.Add<CharmcasterRobe>()
 		.Add<CharmcasterLeggings>()

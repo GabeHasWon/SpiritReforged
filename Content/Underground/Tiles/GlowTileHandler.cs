@@ -5,9 +5,12 @@ namespace SpiritReforged.Content.Underground.Tiles;
 public class GlowTileHandler : ILoadable
 {
 	private static readonly Dictionary<Rectangle, Color> GlowPoints = [];
+
 	/// <summary> Adds a fancy glow effect at the given tile region. Normally called in <see cref="ModBlockType.PreDraw"/>. </summary>
 	/// <param name="r"> The tile coordinate area to draw at. </param>
-	public static void AddGlowPoint(Rectangle r, Color color = default) => GlowPoints.Add(r, color);
+	/// <param name="color"> The glow's color. </param>
+	public static void AddGlowPoint(Rectangle r, Color color = default) => GlowPoints.TryAdd(r, color);
+
 	/// <inheritdoc cref="AddGlowPoint(Rectangle, Color)"/>
 	public static void AddGlowPoint(Rectangle r, Color color = default, float proximity = 200)
 	{

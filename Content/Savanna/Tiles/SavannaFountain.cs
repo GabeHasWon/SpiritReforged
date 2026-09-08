@@ -70,7 +70,7 @@ public class SavannaFountain : ModTile, ILoadItem
 
 	private void ToggleTile(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		for (int x = i; x < i + 2; x++)
 		{

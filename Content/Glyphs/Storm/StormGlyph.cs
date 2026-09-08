@@ -1,4 +1,4 @@
-using SpiritReforged.Common;
+/*using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
@@ -147,12 +147,12 @@ public class StormGlyph : GlyphItem
 
 		public override void ModifyShootStats(Item item, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
 		{
-			/*if (item.GetGlyph().ItemType == ModContent.ItemType<StormGlyph>()) ModContent.ItemType<StormGlyph>() equals zero when unloaded
+			if (item.GetGlyph().ItemType == ModContent.ItemType<StormGlyph>()) ModContent.ItemType<StormGlyph>() equals zero when unloaded
 			{
 				// projectiles get an extra update when they do the wind burst (double speed)
 				if (cooldown > 0)
 					velocity *= 1.5f;
-			}*/
+			}
 		}
 
 		public override bool Shoot(Item item, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -179,7 +179,7 @@ public class StormGlyph : GlyphItem
 				{
 					SoundEngine.PlaySound(Whoosh, position);
 				}
-			}*/
+			}
 
 			return true;
 		}
@@ -735,4 +735,4 @@ public class StormGlyphShaderData(Asset<Effect> shader, string shaderPass) : Arm
 
 		Apply();
 	}
-}
+}*/

@@ -101,9 +101,7 @@ public class FingerGunArmManager : ModPlayer
 		if (!IsFingerGunHeld(Player) || !Player.ItemAnimationActive)
 			return;
 
-		// This gets either the current player's mouse or the latest netsynced version. This is the most consistent way to get another player's mouse,
-		// and tends to look almost 1:1 unless you really stare at it.
-		Vector2 mouse = Main.myPlayer == Player.whoAmI ? Main.MouseWorld : PlayerMouseHandler.MouseByWhoAmI[Player.whoAmI];
+		Vector2 mouse = PlayerMouseHandler.GetMouse(Player.whoAmI);
 
 		if (Player.ItemAnimationJustStarted && !Main.dedServ) // Spawn these here instead of in ModifyShootStats since this runs on all clients
 		{
@@ -123,9 +121,6 @@ public class FingerGunArmManager : ModPlayer
 				ParticleHandler.SpawnParticle(fire);
 			}
 		}
-
-		if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer == Player.whoAmI)
-			new PlayerMouseHandler.ShareMouseData((byte)Player.whoAmI, Main.MouseWorld).Send();
 
 		float animProgress = Player.itemAnimation / (float)Player.itemAnimationMax;
 		int signDirection = Math.Sign(mouse.X - Player.Center.X);

@@ -48,7 +48,7 @@ public abstract class TileGridOverlay
 	public virtual void RenderTileTarget(SpriteBatch spriteBatch) => PrepareDefault.Invoke(spriteBatch, tileTarget, () =>
 	{
 		foreach (var pt in _grid)
-			TileExtensions.DrawSingleTile(pt.X, pt.Y, true, Vector2.Zero);
+			TileMethods.DrawSingleTile(pt.X, pt.Y, true, Vector2.Zero);
 	});
 
 	public abstract void RenderOverlayTarget(SpriteBatch spriteBatch);

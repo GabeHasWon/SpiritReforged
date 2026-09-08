@@ -27,6 +27,7 @@ UI: {
 	Create: 保存为自定义预设
 	CantSave: （你无法保存默认预设）
 	Load: 加载自定义预设
+	LoadFolder: 加载预设文件夹
 	HoverDescription: 打开以配置来自魂灵新魄的世界生成的具体方面。
 	FailedToLoad: 预设不适用于此页面。预期页面：{0}
 	ConfigNotice:
@@ -35,7 +36,8 @@ UI: {
 		显示的值是游戏中随机取值时实际使用的范围。
 		'''
 	LoadError: 在加载（{0}）预设时发生了一个错误。请在Discord报告该错误（并查看client.log）：
-	Duplicate: （重复的预设未被添加）
+	Duplicate: （重复的预设未被添加 - {0}）
+	From: 来自
 }
 
 Pages: {
@@ -387,8 +389,8 @@ Pages: {
 			}
 
 			WaxScale: {
-				// DisplayName: WaxScale
-				// Tooltip: WaxScale
+				DisplayName: "[i:SpiritReforged/WaxPotItem] 蜡罐比例"
+				Tooltip: 蜡罐尝试生成的次数的倍率。
 			}
 		}
 
@@ -475,18 +477,18 @@ Pages: {
 			}
 
 			EnchantedWorkbenchChance: {
-				// DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Houses) Workbench Chance"
-				// Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] （房屋）工作台几率"
+				Tooltip: 地下小屋中附魔工作台生成的几率的分母（1/x）。
 			}
 
 			DisplayCaseChance: {
-				// DisplayName: "[i:SpiritReforged/DisplayCaseItem] (Houses) Display Case Chance"
-				// Tooltip: The denominator (1/x) of the chance for a Display Case to spawn in an underground house.
+				DisplayName: "[i:SpiritReforged/DisplayCaseItem] （房屋）展示柜几率"
+				Tooltip: 地下小屋中展示柜生成的几率的分母（1/x）。
 			}
 
 			MirrorRate: {
-				// DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] (Decor) Mirror Rate"
-				// Tooltip: The multiplier to the maximum amount of Mirrors of Return that spawn in a world.
+				DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] （装饰）镜子比率"
+				Tooltip: 世界中生成的返回之镜的最大数量的倍率。
 			}
 		}
 
@@ -637,6 +639,71 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/LapisDresserItem] 梳妆台战利品数量"
 				Tooltip: 梳妆台中物品数量的范围值。
 			}
+
+			DebrisMinimum: {
+				// DisplayName: "[i:3271] (Ruins) Debris Minimum"
+				// Tooltip: The minimum number of random debris to generate.
+			}
+
+			DebrisRange: {
+				// DisplayName: "[i:3271] (Ruins) Debris Range"
+				// Tooltip: The range of random debris to generate.
+			}
+
+			TopPlatChance: {
+				// DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Top Platform Chance"
+				// Tooltip: The chance for platforms to appear at the top of a structure.
+			}
+
+			BottomPlatChance: {
+				// DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Bottom Platform Chance"
+				// Tooltip: The chance for platforms to appear at the bottom of a structure.
+			}
+
+			FlagpoleChance: {
+				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Chance"
+				// Tooltip: The chance for flagpoles to generate.
+			}
+
+			FlagpoleCountMinimum: {
+				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Minimum"
+				// Tooltip: The minimum number of flagpoles to generate.
+			}
+
+			FlagpoleCountRange: {
+				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Range"
+				// Tooltip: The range of flagpoles to generate.
+			}
+
+			FlagpoleHeightMin: {
+				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Minimum"
+				// Tooltip: The minimum height of flagpoles.
+			}
+
+			FlagpoleHeightRange: {
+				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Range"
+				// Tooltip: The height range of flagpoles.
+			}
+
+			PotMultiplier: {
+				// DisplayName: "[i:SpiritReforged/PotsDesertItem] (Ruins) Pot Multiplier"
+				// Tooltip: A multiplier for the number of pots to generate.
+			}
+
+			ChestChance: {
+				// DisplayName: "[i:4267] (Ruins) Chest Chance"
+				// Tooltip: The chance for a chest to generate.
+			}
+
+			UncommonPotChance: {
+				// DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] (Ruins) Uncommon Pot Chance"
+				// Tooltip: The chance for uncommon pots to generate.
+			}
+
+			AbovegroundPillarChance: {
+				// DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] (Ruins) Aboveground Pillar Chance"
+				// Tooltip: The chance for additional pillars to generate.
+			}
 		}
 
 		Presets: {
@@ -683,8 +750,8 @@ Pages: {
 			}
 
 			GlowflowerChance: {
-				DisplayName: "[i:4045] （绿洲）发光花几率"
-				Tooltip: 发光花被放置的几率。
+				DisplayName: "[i:4045] （绿洲）光盏几率"
+				Tooltip: 光盏被放置的几率。
 			}
 
 			PineappleChance: {

@@ -1,5 +1,5 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
@@ -11,7 +11,7 @@ using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
-public class VolcanicWhetstone : EquippableItem
+public class VolcanicWhetstone : ModItem, IFlagged
 {
 	public sealed class WhetstoneSpark : ModProjectile, IDrawPixelated
 	{
@@ -95,7 +95,7 @@ public class VolcanicWhetstone : EquippableItem
 	{
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Player.HasEquip<VolcanicWhetstone>() && hit.Crit && SharpeningStone.SweetspotBonusPlayer.HoldingRapier(Player))
+			if (Player.HasFlag<VolcanicWhetstone>() && hit.Crit && SharpeningStone.SweetspotBonusPlayer.HoldingRapier(Player))
 			{
 				int damage = (int)(Player.HeldItem.damage * 0.8f);
 

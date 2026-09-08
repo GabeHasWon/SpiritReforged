@@ -25,27 +25,31 @@ static partial class ShaderHelpers
 		effect.Projection = projection;
 	}
 
-	public static void SetEffectMatrices(ref Effect effect, bool useUiMatrix = false)
+	public static void SetEffectMatrices(ref Effect effect, bool useUiMatrix = false, bool pixelTargetActive = false)
 	{
-		GetWorldViewProjection(out Matrix view, out Matrix projection, useUiMatrix);
+		GetWorldViewProjection(out Matrix view, out Matrix projection, useUiMatrix, pixelTargetActive);
 
 		if (effect.HasParameter("WorldViewProjection"))
 			effect.Parameters["WorldViewProjection"].SetValue(view * projection);
 	}
 
-	public static void GetWorldViewProjection(out Matrix view, out Matrix projection, bool useUiMatrix = false)
+	public static void GetWorldViewProjection(out Matrix view, out Matrix projection, bool useUiMatrix = false, bool pixelTargetActive = false)
 	{
-		view = useUiMatrix ? Main.UIScaleMatrix : Main.GameViewMatrix.TransformationMatrix;
-
-		if (IDrawPixelated.PrimitiveDrawing)
+		view = Main.GameViewMatrix.TransformationMatrix;
+		if (pixelTargetActive)
 			view = Matrix.Identity;
+		else if (useUiMatrix)
+			view = Main.UIScaleMatrix;
 
-		GetProjection(out projection);
+		GetProjection(pixelTargetActive, out projection);
 	}
 
-	public static void GetProjection(out Matrix projection)
+	public static void GetProjection(bool pixelTargetActive, out Matrix projection)
 	{
-		projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+		if(pixelTargetActive)
+			projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
+		else
+			projection = Matrix.CreateOrthographicOffCenter(0, Main.graphics.GraphicsDevice.Viewport.Width, Main.graphics.GraphicsDevice.Viewport.Height, 0, 0, 1);
 
 		/*
 		int width = Main.graphics.GraphicsDevice.Viewport.Width;

@@ -1,10 +1,10 @@
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 
 namespace SpiritReforged.Content.Forest.Rapiers;
 
-public class SharpeningStone : EquippableItem
+public class SharpeningStone : ModItem, IFlagged
 {
 	public sealed class SweetspotBonusPlayer : ModPlayer
 	{

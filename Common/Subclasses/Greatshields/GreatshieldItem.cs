@@ -1,72 +1,114 @@
-﻿using SpiritReforged.Common.PlayerCommon;
-using Terraria;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.PlayerCommon;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Subclasses.Greatshields;
 
-internal abstract class GreatshieldItem : ModItem
+public abstract class GreatshieldItem : ModItem
 {
-	internal class GreatshieldHitbox : ModProjectile
+	public readonly record struct ShieldInfo(int ShieldHealth, int DelayTime)
 	{
-		public override string Texture => "Terraria/Images/Projectile_0";
-
-		private Player Owner => Main.player[Projectile.owner];
-
-		public override void SetDefaults()
-		{
-			Projectile.Size = new Vector2(44);
-			Projectile.timeLeft = 60;
-			Projectile.aiStyle = -1;
-			Projectile.friendly = true;
-			Projectile.hostile = false;
-			Projectile.penetrate = -1;
-			Projectile.tileCollide = false;
-			Projectile.localNPCHitCooldown = -1;
-			Projectile.usesLocalNPCImmunity = true;
-		}
-
-		public override void AI()
-		{
-			if (Owner.ItemTimeIsZero)
-			{
-				Projectile.Kill();
-				return;
-			}
-
-			float rotation = Owner.AngleTo(PlayerMouseHandler.GetMouse(Owner.whoAmI));
-			GreatshieldLayer.GetShieldAnimationData(Owner, rotation, out float factor);
-			Projectile.Center = Owner.Center + new Vector2(26 * factor, 0).RotatedBy(rotation);
-		}
-
-		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-		{
-			modifiers.HitDirectionOverride = Owner.direction;
-			modifiers.Knockback *= 2;
-		}
+		/// <summary> Gets the final shield health value modified by <paramref name="player"/> stats. </summary>
+		public readonly int GetShieldHealth(Player player) => player.TryGetModPlayer(out GreatshieldPlayer shieldPlayer) ? (int)shieldPlayer.ShieldHealthStat.ApplyTo(ShieldHealth) : ShieldHealth;
 	}
 
-	public static Dictionary<int, Asset<Texture2D>> ShieldToHeldTexture = [];
+	/// <summary> Contains shield held textures by item type. </summary>
+	private static readonly Dictionary<int, Asset<Texture2D>> TextureByType = [];
 
-	public override void SetStaticDefaults() => ShieldToHeldTexture.Add(Type, ModContent.Request<Texture2D>(Texture + "_Held"));
+	public Texture2D HeldTexture => TextureByType[Type].Value;
+	public ShieldInfo Info { get; private set; }
+	public enum DrawLayer { FrontArm, BackArm }
 
-	public virtual void ModifyLayerDrawing(ref DrawData data) { }
+	public virtual DrawLayer Layer { get; private set; } = DrawLayer.FrontArm;
+
+	public override void SetStaticDefaults() => TextureByType.Add(Type, ModContent.Request<Texture2D>(Texture + "_Held"));
+
+	public sealed override void SetDefaults()
+	{
+		Item.DamageType = ModContent.GetInstance<GreatshieldClass>();
+		Item.useTime = Item.useAnimation = 30;
+		Item.UseSound = SoundID.Item1;
+		Item.noMelee = true;
+		Item.noUseGraphic = true;
+		Item.useStyle = -1;
+		Item.shootSpeed = 1;
+
+		Info = SetInfo();
+	}
+
+	public abstract ShieldInfo SetInfo();
+
+	public virtual void OnBlockDamage(Player player, Player.HurtInfo info) { }
+
+	public override bool? UseItem(Player player)
+	{
+		if (player.altFunctionUse == 2 && player.TryGetModPlayer(out GreatshieldPlayer shieldPlayer))
+		{
+			shieldPlayer.Blocking = true; //Start blocking
+			return true;
+		}
+
+		return null;
+	}
+
+	public override bool AltFunctionUse(Player player) => true;
+
+	public override bool CanShoot(Player player) => player.altFunctionUse != 2;
+
+	public virtual void DrawShield(ref PlayerDrawSet drawInfo, bool guarding)
+	{
+		const int jump_frame = 5;
+
+		Player player = drawInfo.drawPlayer;
+		Texture2D texture = HeldTexture;
+		Color color = Lighting.GetColor(player.Center.ToTileCoordinates());
+		SpriteEffects effects = drawInfo.playerEffect;
+
+		Vector2 offhand = GetOffhand(player, out int frame) + new Vector2(9 * player.direction, 3);
+		Vector2 halfSize = player.Size / 2;
+
+		float rotation = drawInfo.rotation;
+		if (guarding)
+		{
+			rotation = player.AngleTo(PlayerMouseHandler.GetMouse(player.whoAmI)) + (player.direction == -1 ? MathHelper.Pi : 0);
+			player.bodyFrame.Y = 0;
+		}
+		else if (frame == jump_frame)
+		{
+			rotation -= 0.3f * player.direction;
+		}
+
+		Vector2 position = drawInfo.Position + halfSize + (offhand - halfSize).RotatedBy(rotation) - Main.screenPosition;
+		if (guarding)
+		{
+			float scale = 1f + EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 30f) * 0.3f;
+			drawInfo.DrawDataCache.Add(new(texture, position.Floor(), null, color * (1f - (scale - 1f) / 0.4f), rotation, texture.Size() / 2, scale, effects, 0));
+		}
+
+		drawInfo.DrawDataCache.Add(new(texture, position.Floor(), null, color, rotation, texture.Size() / 2, 1, effects, 0));
+	}
+
+	public static Vector2 GetOffhand(Player player, out int frame)
+	{
+		Vector2 offhand = Main.OffsetsPlayerOffhand[frame = player.bodyFrame.Y / player.bodyFrame.Height];
+
+		if (player.direction != 1)
+			offhand.X = player.width - offhand.X;
+
+		if (player.gravDir != 1f)
+			offhand.Y -= player.height;
+
+		return offhand;
+	}
 
 	public override void HoldItem(Player player)
 	{
-		if (Main.myPlayer == player.whoAmI)
+		if (player.TryGetModPlayer(out GreatshieldPlayer shieldPlayer) && shieldPlayer.Blocking) //Blocking
 		{
-			player.ChangeDir(Math.Sign(Main.MouseWorld.X - player.Center.X));
-			
-			float rotation = player.AngleTo(PlayerMouseHandler.GetMouse(player.whoAmI)) + MathHelper.PiOver2 + MathHelper.Pi;
+			Vector2 mouse = PlayerMouseHandler.GetMouse(player.whoAmI);
 
-			GreatshieldLayer.GetShieldAnimationData(player, rotation, out float factor);
-			player.SetCompositeArmBack(true, factor switch 
-			{
-				< 0 => Player.CompositeArmStretchAmount.None,
-				< 0.3f => Player.CompositeArmStretchAmount.Quarter,
-				< 0.6f => Player.CompositeArmStretchAmount.ThreeQuarters,
-				_ => Player.CompositeArmStretchAmount.Full
-			}, rotation);
+			player.ChangeDir(Math.Sign(mouse.X - player.Center.X));
+			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, player.AngleTo(mouse) - MathHelper.PiOver2);
 		}
 	}
 }

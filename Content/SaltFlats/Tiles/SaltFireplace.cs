@@ -63,7 +63,7 @@ public class SaltFireplace : ModTile, ILoadItem
 
 	public override void HitWire(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		short frameAdjustment = (short)(!OnFire(i, j) ? -FullFrameHeight : FullFrameHeight);
 
 		for (int x = i; x < i + 3; x++)

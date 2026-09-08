@@ -10,7 +10,6 @@ using System.IO;
 using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Common.Multiplayer;
-using Terraria.Chat;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -51,7 +50,7 @@ public partial class ShockGlyph
 		}
 	}
 
-	public class ShockGlyphLightningBolt : ModProjectile, LightningSystem.ILightningProjectile
+	public class ShockGlyphLightningBolt : ModProjectile, ShockGlyphLightningSystem.IDrawLightning
 	{
 		public override string Texture => AssetLoader.EmptyTexture;
 
@@ -67,9 +66,7 @@ public partial class ShockGlyph
 
 		public float Progress => 1f - Projectile.timeLeft / 40f;
 
-		public bool Invalid { get; set; }
 		public bool Dying;
-
 		public Vector2 startPos;
 
 		private VertexTrail[] _trails;
@@ -77,32 +74,20 @@ public partial class ShockGlyph
 		public override void SetDefaults()
 		{
 			Projectile.Size = new Vector2(64);
-
 			Projectile.DamageType = DamageClass.Generic;
-
 			Projectile.hostile = false;
 			Projectile.friendly = true;
-
 			Projectile.tileCollide = false;
-
 			Projectile.timeLeft = 40;
 			Projectile.extraUpdates = 5;
-
 			Projectile.penetrate = 1;
 			Projectile.stopsDealingDamageAfterPenetrateHits = true;
-
-			// TODO: Balance Adjustments here
 			Projectile.ArmorPenetration = Main.hardMode ? 20 : 10;
 		}
 
 		public override bool? CanHitNPC(NPC target) => target.whoAmI == TargetWhoAmI;
 
-		public override void OnKill(int timeLeft) 
-		{
-			Invalid = true;
-			LightningSystem.projectiles.Remove(this);
-		}
-		
+		public override void OnKill(int timeLeft) => ShockGlyphLightningSystem.DrawQueue.Remove(this);
 
 		public override void AI()
 		{
@@ -121,10 +106,10 @@ public partial class ShockGlyph
 
 					for (int i = 0; i < 3; i++)
 					{
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
 							Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
 
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
 							Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
 
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
@@ -143,14 +128,13 @@ public partial class ShockGlyph
 					for (int i = 0; i < 5; i++)
 					{
 						Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<YellowElectricDust>(), Main.rand.NextVector2CircularEdge(7f, 7f) * Main.rand.NextFloat(0.9f, 1.1f), 0, default, 0.65f).noGravity = true;
-
 						Dust.NewDustPerfect(Projectile.Center, DustID.Electric, Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.9f, 1.1f), 0, default, 0.65f).noGravity = true;
 					}
 
 					static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
 				}
 
-				LightningSystem.projectiles.Add(this);
+				ShockGlyphLightningSystem.DrawQueue.Add(this);
 				if (!Main.dedServ && _trails == null)
 					CreateTrail();
 
@@ -161,7 +145,6 @@ public partial class ShockGlyph
 					ScreenshakeHelper.Shake(Projectile.Center, Main.rand.NextVector2Circular(1f, 1f), 1, 4, 10);
 
 					Projectile.netUpdate = true;
-
 					Delay = 10 * Main.rand.Next(7);
 				}
 
@@ -175,7 +158,6 @@ public partial class ShockGlyph
 			}
 
 			Color color = Color.Yellow * 0.66f;
-
 			float progress = EaseFunction.EaseCircularInOut.Ease(Progress);
 
 			if (Dying)
@@ -191,14 +173,14 @@ public partial class ShockGlyph
 					{
 						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(5f);
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
 					}
 
 					if (Main.rand.NextBool(25))
 					{
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
 						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 5f);
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
 					}
 				}
 
@@ -225,8 +207,6 @@ public partial class ShockGlyph
 
 		public static void LightningHit(NPC target, int damageDone, bool crit)
 		{
-			Main.NewText(Main.LocalPlayer.whoAmI);
-
 			var rect = target.getRect();
 
 			int damage = Math.Max(damageDone, 1);
@@ -240,10 +220,10 @@ public partial class ShockGlyph
 
 			for (int i = 0; i < 2; i++)
 			{
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+				ParticleHandler.SpawnParticle(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
 					Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
 
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+				ParticleHandler.SpawnParticle(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
 					Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
 
 				Vector2 pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);

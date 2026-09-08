@@ -1,4 +1,4 @@
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using Terraria.DataStructures;
@@ -6,7 +6,7 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.Forest.Rapiers;
 
 [AutoloadEquip(EquipType.Face)]
-public class DuelistRose : EquippableItem
+public class DuelistRose : ModItem, IFlagged
 {
 	public class RosePetal : ModGore
 	{
@@ -76,7 +76,7 @@ public class DuelistRose : EquippableItem
 	/// <summary> Activates the effects of the accessory. Should be placed in a relevant OnHitNPC method. </summary>
 	public static void ApplyEffect(Player player, NPC target, NPC.HitInfo hit)
 	{
-		if (player.HasEquip<DuelistRose>())
+		if (player.HasFlag<DuelistRose>())
 		{
 			target.AddBuff(ModContent.BuffType<OffBalance>(), 300);
 

@@ -31,6 +31,7 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(Type, 10));
 		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(Type, 10));
 	}
+
 	public override void SetDefaults()
 	{
 		Item.damage = 14;
@@ -58,8 +59,11 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 		const float secondaryArc = 5;
 
 		if (player.altFunctionUse == 0) //Primary function
+		{
 			if (_swingArc == secondaryArc) //Primary attacks following a secondary are always uppercuts
+			{
 				_swingArc = -4.2f;
+			}
 			else
 			{
 				float oldSwingArc = _swingArc;
@@ -69,8 +73,11 @@ public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 				if (_swingArc == 0)
 					velocity = velocity.RotatedByRandom(0.5f);
 			}
+		}
 		else //Secondary function
+		{
 			_swingArc = secondaryArc;
+		}
 
 		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc, source, player.altFunctionUse - 1);
 		return false;
@@ -131,7 +138,23 @@ public class CeremonialDaggerSwing : SwungProjectile
 		base.AI();
 
 		if (Stab && Counter == 1)
+		{
 			ParticleHandler.SpawnParticle(new BasicNoiseCone(Projectile.Center - Projectile.velocity * 30, Projectile.velocity * 3, 20, new(75, 150)).SetColors(Color.SandyBrown, new Color(200, 160, 90)).SetIntensity(2));
+
+			var owner = Main.player[Projectile.owner];
+			Player.CompositeArmStretchAmount amount = (int)(Progress * 4f) switch
+			{
+				1 => Player.CompositeArmStretchAmount.ThreeQuarters,
+				2 => Player.CompositeArmStretchAmount.Quarter,
+				3 => Player.CompositeArmStretchAmount.None,
+				_ => Player.CompositeArmStretchAmount.Full
+			};
+
+			GetRotation(out float armRotation, out var stretch);
+
+			owner.SetCompositeArmFront(true, amount, armRotation);
+			Projectile.Center = owner.GetFrontHandPosition(amount, armRotation);
+		}
 
 		if (AltFunction && Main.rand.NextBool())
 		{
@@ -171,23 +194,25 @@ public class CeremonialDaggerSwing : SwungProjectile
 
 	public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (AltFunction)
-			if (target.HasBuff(BuffID.Bleeding))
-			{
-				modifiers.SetCrit();
-				target.RemoveBuff(BuffID.Bleeding);
-				Vector2 hitPos = target.Hitbox.ClosestPointInRect(Projectile.Center);
+		if (!AltFunction)
+			return;
 
-				for (int i = 0; i < 10; i++)
-					Dust.NewDustPerfect(hitPos + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());
+		if (target.HasBuff(BuffID.Bleeding))
+		{
+			modifiers.SetCrit();
+			target.RemoveBuff(BuffID.Bleeding);
+			Vector2 hitPos = target.Hitbox.ClosestPointInRect(Projectile.Center);
 
-				SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 0.7f, Pitch = 0.7f }, Projectile.Center);
-			}
-			else
-			{
-				modifiers.Knockback += 1;
-				modifiers.DisableCrit();
-			}
+			for (int i = 0; i < 10; i++)
+				Dust.NewDustPerfect(hitPos + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10), DustID.Blood, Main.rand.NextVector2Unit());
+
+			SoundEngine.PlaySound(SoundID.DD2_WitherBeastDeath with { Volume = 0.7f, Pitch = 0.7f }, Projectile.Center);
+		}
+		else
+		{
+			modifiers.Knockback += 1;
+			modifiers.DisableCrit();
+		}
 	}
 
 	public override bool PreDraw(ref Color lightColor)

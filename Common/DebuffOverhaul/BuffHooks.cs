@@ -14,21 +14,21 @@ public sealed class BuffDetours : ILoadable
 
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
-			int npcIndex = reader.ReadInt32();
+			int npcIndex = reader.ReadInt32(); //Read the npc index to sync
 			NPC npc = Main.npc[npcIndex];
 
 			if (npc.TryGetGlobalNPC(out ExtendedBuffGlobalNPC globalNPC))
 			{
 				globalNPC.buffByType.Clear();
-				int count = reader.ReadByte();
+				byte count = reader.ReadByte(); //Read the number of extensions
 
 				for (int c = 0; c < count; c++)
 				{
-					int type = reader.ReadByte();
+					ushort type = reader.ReadUInt16(); //Read the buff type
 					if (BuffExtension.BuffHandler.FromType(type, npc) is BuffExtension b)
 					{
 						globalNPC.buffByType.Add(type, b);
-						globalNPC.buffByType[type].NetReceive(reader);
+						globalNPC.buffByType[type].NetReceive(reader); //Read the associated buff data
 					}
 				}
 			}
@@ -36,16 +36,16 @@ public sealed class BuffDetours : ILoadable
 
 		public override void OnSend(ModPacket modPacket)
 		{
-			modPacket.Write(_npcIndex);
+			modPacket.Write(_npcIndex); //Write the npc index to sync
 			NPC npc = Main.npc[_npcIndex];
 
 			if (npc.TryGetGlobalNPC(out ExtendedBuffGlobalNPC globalNPC))
 			{
-				modPacket.Write((byte)globalNPC.buffByType.Count);
+				modPacket.Write((byte)globalNPC.buffByType.Count); //Write the number of extensions
 				foreach (int type in globalNPC.buffByType.Keys)
 				{
-					modPacket.Write((byte)type);
-					globalNPC.buffByType[type].NetSend(modPacket);
+					modPacket.Write((ushort)type); //Write the buff type
+					globalNPC.buffByType[type].NetSend(modPacket); //Write the associated buff data
 				}
 			}
 		}
@@ -59,8 +59,9 @@ public sealed class BuffDetours : ILoadable
         On_NPC.AddBuff += AddExtension; //NPC hooks
         On_NPC.DelBuff += DelExtension;
 		On_NPC.UpdateNPC_BuffApplyVFX += DisableVFX;
+		//On_NPC.UpdateNPC_BuffSetFlags += SetExtensionFlags;
 
-        HealthBarHook.PostDrawHealthBar += DrawExtensionHealthBars;
+		HealthBarHook.PostDrawHealthBar += DrawExtensionHealthBars;
 
         //Handle DoT combat text
         On_CombatText.NewText_Rectangle_Color_string_bool_bool += DisableDoT;
@@ -83,41 +84,43 @@ public sealed class BuffDetours : ILoadable
 		}
     }
 
-    private static void AddExtension(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
-    {
-        if (!self.buffImmune[type] && self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
+	/*private static void SetExtensionFlags(On_NPC.orig_UpdateNPC_BuffSetFlags orig, NPC self, bool lowerBuffTime)
+	{
+		orig(self, lowerBuffTime);
+
+		for (int i = 0; i < NPC.maxBuffs; i++)
 		{
-			if (global.buffByType.TryGetValue(type, out BuffExtension extension)) //The buff extension is already present, reapply
-			{
-				extension.ApplyTo(self, true);
-			}
-			else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b) //The buff extension is not present, newly apply
-			{
-				global.buffByType.Add(type, b);
-				global.buffByType[type].ApplyTo(self, false);
-			}
+			int type = self.buffType[i];
 
-			if (Main.netMode == NetmodeID.Server)
-				new SyncExtensionData(self.whoAmI).Send();
+			if (type != 0 && self.TryGetGlobalNPC(out ExtendedBuffGlobalNPC global))
+				global.AddExtension(self, type); //Activate buff extensions when necessary
 		}
+	}*/
 
-        orig(self, type, time, quiet);
-    }
+	private static void AddExtension(On_NPC.orig_AddBuff orig, NPC self, int type, int time, bool quiet)
+    {
+		if (self.TryGetGlobalNPC(out ExtendedBuffGlobalNPC global))
+			global.AddExtension(self, type);
+
+		orig(self, type, time, quiet);
+
+		if (!quiet && Main.netMode == NetmodeID.Server)
+			new SyncExtensionData(self.whoAmI).Send();
+	}
 
     private static void DelExtension(On_NPC.orig_DelBuff orig, NPC self, int buffIndex)
     {
         int type = self.buffType[buffIndex];
-
         orig(self, buffIndex);
 
-        if (self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
-            global.buffByType.Remove(type);
-    }
+		if (self.TryGetGlobalNPC(out ExtendedBuffGlobalNPC global))
+			global.RemoveExtension(self, type);
+	}
 
 	private static void DisableVFX(On_NPC.orig_UpdateNPC_BuffApplyVFX orig, NPC self)
 	{
 		bool doDefault = true;
-		if (self.TryGetGlobalNPC<ExtendedBuffGlobalNPC>(out var global))
+		if (self.TryGetGlobalNPC(out ExtendedBuffGlobalNPC global))
 		{
 			foreach (int type in global.buffByType.Keys)
 			{
@@ -152,9 +155,39 @@ public sealed class ExtendedBuffGlobalNPC : GlobalNPC
     /// <summary> Buff extension data indexed by buff ID. </summary>
     public readonly Dictionary<int, BuffExtension> buffByType = [];
 
-    public override void UpdateLifeRegen(NPC npc, ref int damage)
+	public void AddExtension(NPC npc, int type)
+	{
+		if (npc.buffImmune[type])
+			return;
+
+		if (buffByType.TryGetValue(type, out BuffExtension extension)) //The buff extension is already present, reapply
+		{
+			extension.ApplyTo(npc, true);
+		}
+		else if (BuffExtension.BuffHandler.FromType(type) is BuffExtension b) //The buff extension is not present, newly apply
+		{
+			buffByType.Add(type, b);
+			buffByType[type].ApplyTo(npc, false);
+		}
+	}
+
+	public void RemoveExtension(NPC npc, int type) => buffByType.Remove(type);
+
+	public override void UpdateLifeRegen(NPC npc, ref int damage)
     {
+		List<int> queuedForRemoval = [];
         foreach (int type in buffByType.Keys)
-            buffByType[type].UpdateLifeRegen(ref damage);
-    }
+		{
+			BuffExtension extension = buffByType[type];
+
+			if (!npc.HasBuff(extension.Type))
+				queuedForRemoval.Add(type); //Remove (if BuffDetours.DelExtension does not catch it)
+			else
+				extension.UpdateLifeRegen(ref damage); //Update life regen
+		}
+
+		foreach (int type in queuedForRemoval)
+			buffByType.Remove(type); //Remove all queued buff extensions
+
+	}
 }

@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
@@ -31,29 +32,13 @@ public class RadiantGlyph : GlyphItem
 		}
 	}
 
-	public sealed class RadiantGlobalItem : GlobalItem
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
-		public override bool InstancePerEntity => true;
+		MoRHelper.OverrideElement(item, MoRHelper.Holy);
 
-		public int timeInWorld;
-
-		public override void UpdateInventory(Item item, Player player)
-		{
-			if (timeInWorld > 0)
-				timeInWorld = 0;
-		}
-
-		public override void Update(Item item, ref float gravity, ref float maxFallSpeed)
-		{
-			if (Main.dayTime && item.GetGlyph().ItemType == ModContent.ItemType<RadiantGlyph>())
-			{
-				if (timeInWorld < 180)
-					timeInWorld++;
-				else if (timeInWorld > 0)
-					timeInWorld -= 3;
-			}
-		}
+		base.OnApplyGlyph(item, context);
 	}
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Holy, -1);
 
 	public override void SetStaticDefaults()
 	{

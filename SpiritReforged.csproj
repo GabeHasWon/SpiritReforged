@@ -5,6 +5,7 @@
     <AssemblyName>SpiritReforged</AssemblyName>
     <LangVersion>12.0</LangVersion>
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
   <ItemGroup>
 	  <Reference Include="NPCUtils">

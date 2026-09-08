@@ -94,6 +94,23 @@ SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
 SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
+Firefall.DisplayName: 火瀑
+WindBurstProjectile.DisplayName: 风爆
+SingularCollapse.DisplayName: 奇点
+ShockGlyphLightningBolt.DisplayName: 闪电矢
+MariglowSeed.DisplayName: 光盏种子
+RageHit.DisplayName: 愤怒一击
+MirrorReturnPortal.DisplayName: 返回之镜传送门
+// GreatshieldHitbox.DisplayName: Greatshield Hitbox
+// OverloaderExplosion.DisplayName: Overloader Explosion
+// StoneshieldBash.DisplayName: Stoneshield Bash
+// ScutumBash.DisplayName: Scutum Bash
+// FirewallBash.DisplayName: Firewall Bash
+// KiteShieldSwing.DisplayName: Kite Shield Swing
+// RhosRyddBash.DisplayName: Rhos Rydd Bash
+// RoromaraugiSwing.DisplayName: Roromaraugi Swing
+// ShotProjectile.DisplayName: Shot Projectile
+// ClockworkCog.DisplayName: Clockwork Cog
 // RadiantEnergy.DisplayName: Radiant Energy
 // SlicingGust.DisplayName: Slicing Gust
 // ZephyrWave.DisplayName: Zephyr Wave

@@ -7,7 +7,10 @@ internal class NPCShopHelper : GlobalNPC
 
 	/// <param name="Condition"> The condition required for the given shop to have this entry. Usually used for checking for the right NPC. </param>
 	/// <param name="Entry"> The actual shop entry. </param>
-	public readonly record struct ConditionalEntry(Func<NPCShop, bool> Condition, NPCShop.Entry Entry);
+	public readonly record struct ConditionalEntry(Func<NPCShop, bool> Condition, NPCShop.Entry Entry)
+	{
+		public static ConditionalEntry FromNPC(int type, NPCShop.Entry entry) => new(npc => npc.NpcType == type, entry);
+	}
 
 	private static readonly List<ConditionalEntry> EntriesToAdd = [];
 	private static readonly HashSet<TravelDelegate> TravelEntriesToAdd = [];

@@ -15,7 +15,7 @@ internal interface IGenRange
 /// Defines a range for a <see cref="IGenerationPage"/> config (int).<br/>
 /// When defining a <see cref="GenConfigurableAttribute"/> on a field of this type, use strings ("0 0") for their minimum and maximum. Two values, one space between them.
 /// </summary>
-internal class GenRange(int min, int range, bool upperBoundInclusive = true) : IGenRange
+public class GenRange(int min, int range, bool upperBoundInclusive = true) : IGenRange
 {
 	public static readonly GenRange Empty = new(0, 0);
 
@@ -55,7 +55,7 @@ internal class GenRange(int min, int range, bool upperBoundInclusive = true) : I
 /// Defines a range for a <see cref="IGenerationPage"/> config (float).
 /// When defining a <see cref="GenConfigurableAttribute"/> on a field of this type, use strings ("0 0") for their minimum and maximum. Two values, one space between them.
 /// </summary>
-internal class GenRangeF(float min, float range) : IGenRange
+public class GenRangeF(float min, float range) : IGenRange
 {
 	public static readonly GenRangeF Empty = new(0, 0);
 

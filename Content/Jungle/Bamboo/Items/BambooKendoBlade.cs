@@ -2,6 +2,7 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using System.Linq;
@@ -10,7 +11,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Items;
 
-public class BambooKendoBlade : ModItem, IDashSword
+public class BambooKendoBlade : ModItem, IDrawHeld
 {
 	private float swingArc;
 	private static Asset<Texture2D> HeldTexture;
@@ -45,10 +46,7 @@ public class BambooKendoBlade : ModItem, IDashSword
 	public override void HoldItem(Player player)
 	{
 		if (!player.ItemAnimationActive)
-		{
-			player.GetModPlayer<DashSwordPlayer>().holdingSword = true;
 			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, -1.1f * player.direction);
-		}
 	}
 
 	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
@@ -56,7 +54,9 @@ public class BambooKendoBlade : ModItem, IDashSword
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (player.altFunctionUse == 2)
+		{
 			Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<KendoBladeLunge>(), (int)(damage * 2.25f), knockback, player.whoAmI);
+		}
 		else
 		{
 			float oldSwingArc = swingArc;
@@ -69,9 +69,11 @@ public class BambooKendoBlade : ModItem, IDashSword
 		return false;
 	}
 
+	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 20).AddTile(TileID.WorkBenches).Register();
+
 	public void DrawHeld(ref PlayerDrawSet info)
 	{
-		if (!HeldTexture.IsLoaded)
+		if (info.drawPlayer.ItemAnimationActive || !HeldTexture.IsLoaded)
 			return;
 
 		var texture = HeldTexture;
@@ -80,13 +82,11 @@ public class BambooKendoBlade : ModItem, IDashSword
 		var center = info.drawPlayer.MountedCenter;
 		var drawPos = new Vector2((int)(center.X - Main.screenPosition.X), (int)(center.Y + 6 * info.drawPlayer.gravDir - Main.screenPosition.Y + info.drawPlayer.gfxOffY));
 
-		float rotation = -.15f * info.drawPlayer.direction + info.drawPlayer.fullRotation + MathHelper.Pi;
+		float rotation = -0.15f * info.drawPlayer.direction + info.drawPlayer.fullRotation + MathHelper.Pi;
 		var color = Lighting.GetColor((int)info.drawPlayer.Center.X / 16, (int)info.drawPlayer.Center.Y / 16);
 
 		info.DrawDataCache.Add(new DrawData(texture.Value, drawPos, frame, color, rotation, new Vector2(30), 1, info.playerEffect, 0));
 	}
-
-	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<StrippedBamboo>(), 20).AddTile(TileID.WorkBenches).Register();
 }
 
 public class KendoBladeSwing : ModProjectile
@@ -237,13 +237,12 @@ public class KendoBladeLunge : ModProjectile
 
 	public override void AI()
 	{
-		var owner = Main.player[Projectile.owner];
-		var mp = owner.GetModPlayer<DashSwordPlayer>();
-		mp.SetDashCooldown(40);
+		Player owner = Main.player[Projectile.owner];
+		DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
 
 		if (Counter < DashDuration) //Ongoing dash
 		{
-			mp.dashing = true;
+			mp.SetDash(40);
 			float quote = Counter / DashDuration;
 
 			if (Counter + 1 == DashDuration)
@@ -287,8 +286,6 @@ public class KendoBladeLunge : ModProjectile
 			dust.noGravity = true;
 			dust.noLightEmittence = true;
 		}
-		else
-			mp.dashing = false;
 
 		if (Counter > DashDuration + StrikeDelay)
 		{
@@ -397,7 +394,7 @@ public class KendoBladeLunge : ModProjectile
 		}
 
 		trail = TextureAssets.Projectile[874].Value;
-		Main.EntitySpriteDraw(trail, owner.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, (lightColor with { A = 0 }) * opacity, 
+		Main.EntitySpriteDraw(trail, owner.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, (lightColor with { A = 0 }) * opacity,
 			angle, trail.Frame().Left(), new Vector2(1f / trail.Width * owner.Distance(lastPosition), .25f), SpriteEffects.None, 0);
 		#endregion
 

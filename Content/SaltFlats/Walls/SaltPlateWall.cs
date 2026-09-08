@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.SaltFlats.Walls;
 
 public class SaltPlateWall : ModWall, ILoadItem
 {
-	public void AddItemRecipes(ModItem item)
+	void ILoadItem.AddItemRecipes(ModItem item)
 	{
 		int block = AutoContent.ItemType<SaltPlate>();
 		int wall = AutoContent.ItemType<SaltPlateWall>();

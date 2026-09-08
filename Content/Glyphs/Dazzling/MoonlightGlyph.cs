@@ -2,6 +2,7 @@ using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
@@ -67,7 +68,7 @@ public class MoonlightGlyph : GlyphItem
 		}
 
 		[NetSynced(true)]
-		private static void MoonlightHitEffects(NPC target, Player owner, int damageDone, bool crit)
+		public static void MoonlightHitEffects(NPC target, Player owner, int damageDone, bool crit)
 		{
 			if (Main.dedServ)
 				return;
@@ -162,8 +163,11 @@ public class MoonlightGlyph : GlyphItem
 			.AddSubClass(new(item.DamageType, 0.8f))
 			.AddSubClass(new(DamageClass.Magic, 0.2f));
 
+		MoRHelper.OverrideElement(item, MoRHelper.Arcane);
+
 		base.OnApplyGlyph(item, context);
 	}
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Arcane, -1);
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{

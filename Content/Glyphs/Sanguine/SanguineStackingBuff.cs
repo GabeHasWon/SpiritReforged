@@ -20,9 +20,9 @@ public partial class SanguineGlyph
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (player.GetModPlayer<SanguinePlayer>().stacks.Count > 0)
+			if (player.GetModPlayer<SanguinePlayer>().storedHealth >= 1)
 			{
-				player.buffTime[buffIndex] = player.GetModPlayer<SanguinePlayer>().stacks.OrderBy(s => s.timer).Last().timer; //Find the stack with the greatest timer
+				player.buffTime[buffIndex] = 2;
 			}
 			else
 			{
@@ -33,17 +33,15 @@ public partial class SanguineGlyph
 
 		public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 		{
-			var stacks = Main.LocalPlayer.GetModPlayer<SanguinePlayer>().stacks;
+			float storedHP = Main.LocalPlayer.GetModPlayer<SanguinePlayer>().storedHealth;
 
-			int count = stacks.Count;
+			int count = (int)storedHP;
 
-			buffName = "Sanguine Energy [" + count + "]";
+			buffName = Language.GetTextValue("Mods.SpiritReforged.Buffs.SanguineStackingBuff.DisplayName", count);
 
-			float damage = 0;
-			foreach (SanguineStack stack in stacks)
-				damage += stack.damageBonus;
+			float damage = storedHP * SanguinePlayer.HEALTH_DAMAGE_RATE;
 
-			tip = "Damage increased by " + Math.Round(damage * 100, 2) + "%";
+			tip = Language.GetTextValue("Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description", Math.Round(damage * 100, 2));
 
 			rare = ItemRarityID.Red;
 		}
@@ -52,9 +50,7 @@ public partial class SanguineGlyph
 		{
 			var mp = Main.LocalPlayer.GetModPlayer<SanguinePlayer>();
 
-			var stacks = mp.stacks;
-
-			int count = stacks.Count;
+			int count = (int)mp.storedHealth;
 
 			float lerp = mp.lifestealCooldown / 20f;
 

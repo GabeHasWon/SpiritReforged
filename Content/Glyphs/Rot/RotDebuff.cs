@@ -3,7 +3,6 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
@@ -18,7 +17,7 @@ public class RotDebuff : ModBuff
 {
 	public class BlightExtension : DoTExtension
 	{
-		public override BuffSettings Settings => new(0.1f, 500);
+		public override BuffSettings Settings => new(/*0.06f, 500, true,*/ Category.Poison);
 
 		public override void PostDrawHealthBar(SpriteBatch spriteBatch, NPC npc, HealthBarHook.Options options)
 		{
@@ -103,21 +102,42 @@ public class RotDebuff : ModBuff
 		public override void UpdateBadLifeRegen()
 		{
 			if (Player.HasBuff<RotDebuff>())
-				Player.lifeRegen = Math.Min(Player.lifeRegen, 0) - (blightStacks + 1) * 3;
+			{
+				Player.lifeRegen = Math.Min(Player.lifeRegen, 0) - 4 * (blightStacks + 1);
+				Player.lifeRegenTime = 0;
+			}
 			else
+			{
 				blightStacks = 0;
+			}
 		}
 	}
 
-	public sealed class RotSpreadNPC : GlobalNPC
+	public sealed class RotNPC : GlobalNPC
 	{
+		public override bool InstancePerEntity => true;
+
+		public int blightStacks;
+
 		public override void DrawEffects(NPC npc, ref Color drawColor)
 		{
 			int buffType = ModContent.BuffType<RotDebuff>();
 			if (npc.HasBuff(buffType))
 			{
-				float intensity = MathHelper.Min((float)npc.buffTime[npc.FindBuffIndex(buffType)] / StackTime, 1);
+				float intensity = MathHelper.Min((float)npc.buffTime[npc.FindBuffIndex(buffType)] / STACK_TIME, 1);
 				drawColor = Color.Lerp(drawColor, Color.Lerp(drawColor, new Color(241, 255, 16), (float)Math.Abs(Math.Sin(Main.GlobalTimeWrappedHourly * 2f))), intensity);
+			}
+		}
+
+		public override void UpdateLifeRegen(NPC npc, ref int damage)
+		{
+			if (npc.HasBuff<RotDebuff>())
+			{
+				npc.lifeRegen -= 4 * blightStacks;
+			}
+			else
+			{
+				blightStacks = 0;
 			}
 		}
 
@@ -134,7 +154,8 @@ public class RotDebuff : ModBuff
 		}
 	}
 
-	public const int StackTime = 60;
+	public const int STACK_TIME = 60;
+	public const int MAX_STACKS = 20;
 
 	private static int GetDisplayStacks(int buffTime) => (int)Math.Min(buffTime / 20f, Main.LocalPlayer.TryGetModPlayer(out RotPlayer rotPlayer) ? (rotPlayer.blightStacks + 1) : 1);
 
@@ -149,18 +170,29 @@ public class RotDebuff : ModBuff
 
 	public override bool ReApply(Player player, int time, int buffIndex)
 	{
-		const int maxTime = 600;
-		player.buffTime[buffIndex] = Math.Min(player.buffTime[buffIndex] + time / 2, maxTime);
+		const int max_time = 600;
+		player.buffTime[buffIndex] = Math.Min(player.buffTime[buffIndex] + time / 2, max_time);
 
 		if (player.TryGetModPlayer(out RotPlayer rotPlayer))
-			rotPlayer.blightStacks++;
+			rotPlayer.blightStacks = Math.Min(rotPlayer.blightStacks + 1, MAX_STACKS);
 
 		return true;
 	}
 
-	public override void Update(Player player, ref int buffIndex) => Update(player, 0);
+	public override bool ReApply(NPC npc, int time, int buffIndex)
+	{
+		const int max_time = 600;
+		npc.buffTime[buffIndex] = Math.Min(npc.buffTime[buffIndex] + time / 2, max_time);
 
-	public override void Update(NPC npc, ref int buffIndex) => Update(npc, npc.TryGetBuffExtension(Type, out DoTExtension extension) ? extension.damagePerSecond / 500f : 0);
+		if (npc.TryGetGlobalNPC(out RotNPC rotNPC))
+			rotNPC.blightStacks = Math.Min(rotNPC.blightStacks + 1, MAX_STACKS);
+
+		return true;
+	}
+
+	public override void Update(Player player, ref int buffIndex) => UpdateBlight(player, 0);
+
+	public override void Update(NPC npc, ref int buffIndex) => UpdateBlight(npc, npc.TryGetGlobalNPC(out RotNPC rotNPC) ? rotNPC.blightStacks / STACK_TIME : 0);
 
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 	{
@@ -181,9 +213,9 @@ public class RotDebuff : ModBuff
 		Utils.DrawBorderString(spriteBatch, GetDisplayStacks(buffTime).ToString(), drawParams.Position + new Vector2(25, 20), drawColor, scale);
 	}
 
-	private static void Update(Entity entity, float intensity)
+	private static void UpdateBlight(Entity entity, float intensity)
 	{
-		if (Main.rand.NextFloat() > intensity)
+		if (Main.dedServ || Main.rand.NextFloat() > intensity)
 			return;
 
 		for (int i = 0; i < 2; i++)
@@ -236,26 +268,27 @@ public class RotDebuff : ModBuff
 
 		foreach (NPC npc in possibleVectors)
 		{
-			bool hasBuff = npc.HasBuff(buffType);
-
-			if (Main.netMode != NetmodeID.MultiplayerClient)
-				npc.AddBuff(buffType, 180); //Prevent potential redundant application
-
-			if (Main.dedServ || hasBuff)
-				continue;
-
-			SoundEngine.PlaySound(RotGlyph.BlightImpact, npc.Center);
-			Vector2 center = npc.Center;
-
-			for (int i = 0; i < 8; i++)
+			if (npc != null)
 			{
-				ParticleHandler.SpawnParticle(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
+				bool hasBuff = npc.HasBuff(buffType);
+				npc.AddBuff(buffType, 180);
 
-				ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
-				{ Layer = ParticleLayer.BelowNPC });
+				if (Main.dedServ || hasBuff)
+					continue;
 
-				ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate)
-				{ Layer = ParticleLayer.BelowNPC });
+				SoundEngine.PlaySound(RotGlyph.BlightImpact, npc.Center);
+				Vector2 center = npc.Center;
+
+				for (int i = 0; i < 8; i++)
+				{
+					ParticleHandler.SpawnParticle(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
+
+					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
+					{ Layer = ParticleLayer.BelowNPC });
+
+					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate)
+					{ Layer = ParticleLayer.BelowNPC });
+				}
 			}
 		}
 

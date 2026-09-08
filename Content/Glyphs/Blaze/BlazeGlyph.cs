@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
@@ -14,6 +15,12 @@ namespace SpiritReforged.Content.Glyphs.Blaze;
 
 public class BlazeGlyph : GlyphItem
 {
+	public const float MAX_CRIT_BONUS = 20f; // the critical strike chance bonus when the player is at 1hp
+	public const float MIN_CRIT_BONUS = 5f; // the critical strike chance bonus when the player is at full hp
+
+	public const float MAX_DAMAGE_BONUS = 0.4f; // the damage bonus when the player is at 1hp
+	public const float MIN_DAMAGE_BONUS = 0.1f; // the damage bonus when the player is at full hp
+
 	public sealed class BlazePlayer : ModPlayer
 	{
 		public override void UpdateBadLifeRegen()
@@ -23,7 +30,7 @@ public class BlazeGlyph : GlyphItem
 				if (Player.lifeRegen > 0)
 					Player.lifeRegen = 0;
 
-				Player.lifeRegen -= (int)Math.Max(6, Player.statLife * 0.1f);
+				Player.lifeRegen -= 8 + (int)(Player.statLife * 0.075f);
 			}
 		}
 
@@ -181,7 +188,7 @@ public class BlazeGlyph : GlyphItem
 		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
 		if (!Main.dedServ)
 		{
-			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
+			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWaxShaderDummy>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
 			GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
 		}			
 	}
@@ -196,11 +203,12 @@ public class BlazeGlyph : GlyphItem
 
 	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
-		item.damage += (int)Math.Round(item.damage * 0.25f);
-		item.crit += 10;
+		MoRHelper.OverrideElement(item, MoRHelper.Fire);
 
 		base.OnApplyGlyph(item, context);
 	}
+
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Fire, -1);
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
@@ -209,7 +217,7 @@ public class BlazeGlyph : GlyphItem
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 8f) * 4;
 			DrawData item = input;
 			item.position += offset;
-			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWax>());
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWaxShaderDummy>());
 
 			drawInfo.DrawDataCache.Add(item);
 		}
@@ -328,6 +336,8 @@ public class BlazeGlyph : GlyphItem
 		}
 	}
 
+	public override void ModifyGlyphedItemCrit(Player player, ref float crit) => crit += MathHelper.Lerp(MIN_CRIT_BONUS, MAX_CRIT_BONUS, 1f - player.statLife / (float)player.statLifeMax2);
+	public override void ModifyGlyphedItemDamage(Player player, ref StatModifier damage) => damage += MathHelper.Lerp(MIN_DAMAGE_BONUS, MAX_DAMAGE_BONUS, 1f - player.statLife / (float)player.statLifeMax2);
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (Main.dedServ)
