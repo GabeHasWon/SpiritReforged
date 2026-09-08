@@ -188,7 +188,7 @@ public class BlazeGlyph : GlyphItem
 		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
 		if (!Main.dedServ)
 		{
-			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
+			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWaxShaderDummy>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
 			GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
 		}			
 	}
@@ -217,7 +217,7 @@ public class BlazeGlyph : GlyphItem
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 8f) * 4;
 			DrawData item = input;
 			item.position += offset;
-			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWax>());
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWaxShaderDummy>());
 
 			drawInfo.DrawDataCache.Add(item);
 		}

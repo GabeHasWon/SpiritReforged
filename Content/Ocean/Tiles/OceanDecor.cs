@@ -72,7 +72,11 @@ public class OceanDecor1x2 : ModTile, IAutoloadRubble
 		yield return new Item(ItemID.Coral, 1);
 	}
 
-	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) => Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
+	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+	{
+		if (WorldGen.InWorld(i, j, Main.offLimitBorderTiles))
+			Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
+	}
 
 	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) => TileMethods.DrawSingleTile(i, j, true, Vector2.Zero);
 }

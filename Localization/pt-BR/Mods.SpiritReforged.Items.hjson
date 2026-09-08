@@ -3517,6 +3517,11 @@ CandlePianoItem: {
 	Tooltip: ""
 }
 
+ChromaticWaxShaderDummy: {
+	// DisplayName: Chromatic Wax Shader Dummy
+	// Tooltip: ""
+}
+
 ScrapPickup: {
 	// DisplayName: Scrap
 	/* Tooltip:

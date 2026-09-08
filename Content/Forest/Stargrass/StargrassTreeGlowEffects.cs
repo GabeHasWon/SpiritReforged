@@ -96,7 +96,7 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 				return;
 
 			Texture2D treeBranchTexture = _branchTexture.Value;
-			Vector2 position = baseDrawPos;
+			Vector2 position = baseDrawPos - new Vector2(16, 32);
 			float rotation = 0f;
 
 			if (tile.WallType <= WallID.None)

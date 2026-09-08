@@ -20,4 +20,6 @@ public class GoldDivingBeetle : DivingBeetle, IGoldCritter, ItemEvents.IQuickRec
 			item.rare = ItemRarityID.Orange;
 		}
 	);
+
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => base.SpawnChance(spawnInfo) * 0.05f;
 }

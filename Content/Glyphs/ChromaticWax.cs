@@ -17,7 +17,6 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -25,6 +24,14 @@ using Terraria.ModLoader.IO;
 using static SpiritReforged.Content.Glyphs.CelestialStamp;
 
 namespace SpiritReforged.Content.Glyphs;
+
+/// <summary>
+/// Empty item used solely to register the appropriate shader.
+/// </summary>
+public class ChromaticWaxShaderDummy : ModItem
+{
+	public override string Texture => base.Texture.Replace("ShaderDummy", "");
+}
 
 [FromClassic("Glyph")]
 public class ChromaticWax : ModItem
