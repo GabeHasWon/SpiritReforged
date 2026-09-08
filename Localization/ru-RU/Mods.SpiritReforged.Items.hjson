@@ -3614,3 +3614,8 @@ GameHuntingKit: {
 	// DisplayName: Game Hunting Kit
 	// Tooltip: ""
 }
+
+Slug: {
+	// DisplayName: Slug
+	// Tooltip: ""
+}

@@ -232,8 +232,6 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 				var shotgunPlayer = Owner.GetModPlayer<ShotgunPlayer>();
 
-				Main.NewText(shotgunPlayer.shotgunStats._spreadMultiplier);
-
 				List<Projectile> spawnedProjectiles = ammo._behavior.Invoke(gryphon.Item, Owner, new Terraria.DataStructures.EntitySource_ItemUse_WithAmmo(Owner, gryphon.Item, ammoItem.type, "SpiritReforged: Gryphon Shoot"), position, direction,
 					shotgunPlayer.ModifyShotCount(ammo._shotCount, shotgunStats._additionalShots, shotgunStats._shotMultiplier),
 					shotgunPlayer.ModifySpread(MathHelper.Lerp(ammo._spreadAmount, ammo._spreadAmount * 0.2f, ChargeProgress), shotgunStats._additionalSpread, shotgunStats._spreadMultiplier),
