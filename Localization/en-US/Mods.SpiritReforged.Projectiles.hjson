@@ -100,7 +100,7 @@ SingularCollapse.DisplayName: Singularity
 ShockGlyphLightningBolt.DisplayName: Lightning Bolt
 MariglowSeed.DisplayName: Mariglow Seed
 RageHit.DisplayName: Rage Hit
-MirrorReturnPortal.DisplayName: Mirror of Return Portal
+MirrorReturnPortal.DisplayName: Mirror Return Portal
 GreatshieldHitbox.DisplayName: Greatshield Hitbox
 OverloaderExplosion.DisplayName: Overloader Explosion
 StoneshieldBash.DisplayName: Stoneshield Bash
@@ -111,7 +111,5 @@ RhosRyddBash.DisplayName: Rhos Rydd Bash
 RoromaraugiSwing.DisplayName: Roromaraugi Swing
 ShotProjectile.DisplayName: Shot Projectile
 ClockworkCog.DisplayName: Clockwork Cog
-MirrorReturnPortal.DisplayName: Mirror Return Portal
-GreatshieldHitbox.DisplayName: Greatshield Hitbox
 CinderWave.DisplayName: Cinder Wave
 WhetstoneSpark.DisplayName: Whetstone Spark

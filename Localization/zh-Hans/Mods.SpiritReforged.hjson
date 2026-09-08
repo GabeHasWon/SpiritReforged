@@ -123,15 +123,9 @@ EcotoneEdges: {
 }
 
 DamageClasses: {
-	HybridDamageClass.DisplayName: 混合伤害
-	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
-	// WrenchClass.DisplayName: "{$LegacyTooltip.53}"
-	// MagazineDamageClass.DisplayName: "{$LegacyTooltip.3}"
-	// ShotgunClass.DisplayName: "{$LegacyTooltip.3}"
-}
-DamageClasses: {
 	// HybridDamageClass.DisplayName: Hybrid Damage Class
 	// GreatshieldClass.DisplayName: Greatshield Class
+	// WrenchClass.DisplayName: Wrench Class
 }
 
 // GreatshieldClass_Class.DisplayName: greatshieldclass damage
