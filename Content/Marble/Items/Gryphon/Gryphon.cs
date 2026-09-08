@@ -12,6 +12,7 @@ using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Marble.Items.Gryphon;
 // TODO: Obtainment
+// This equates to +150% spread, before any charging, works in favor of the weapon though.
 public class Gryphon() : ShotgunItem(new(spreadMultiplier: 1.5f))
 {
 	public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<GryphonHoldout>()] <= 0;
@@ -116,10 +117,11 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 		if (!Main.dedServ && _trails is not null)
 		{
+			// Two trails that converge on the same point from opposing starting rotations
 			List<Vector2> cache = [];
 
 			Vector2 start = ArmPosition + new Vector2(16f, -8f * Owner.direction).RotatedBy(Projectile.rotation);
-			Vector2 end = start + new Vector2(MathHelper.Lerp(8, 32, ChargeProgress), 0).RotatedBy(Projectile.rotation);
+			Vector2 end = start + new Vector2(MathHelper.Lerp(8, 32, ChargeProgress), 0).RotatedBy(Projectile.rotation + MathHelper.Lerp(-1, 0, EaseBuilder.EaseQuadInOut.Ease(ChargeProgress)));
 
 			for (int i = 0; i < MAX_POINTS; i++)
 			{
@@ -129,6 +131,20 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 			}
 
 			cache.Add(start);
+
+			List<Vector2> cache2 = [];
+
+			start = ArmPosition + new Vector2(16f, -8f * Owner.direction).RotatedBy(Projectile.rotation);
+			end = start + new Vector2(MathHelper.Lerp(8, 32, ChargeProgress), 0).RotatedBy(Projectile.rotation + MathHelper.Lerp(1, 0, EaseBuilder.EaseQuadInOut.Ease(ChargeProgress)));
+
+			for (int i = 0; i < MAX_POINTS; i++)
+			{
+				float step = i / (float)MAX_POINTS;
+
+				cache2.Add(Vector2.Lerp(start, end, step));
+			}
+
+			cache2.Add(start);
 
 			foreach (VertexTrail trail in _trails)
 			{
@@ -142,7 +158,7 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 					trail.OverrideColor = null;
 
 				trail.Update();
-				trail._points = cache;
+				trail._points = _trails[0] == trail ? cache : cache2;
 			}
 		}
 	}
@@ -215,6 +231,8 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 					direction = position.DirectionTo(Main.MouseWorld);
 
 				var shotgunPlayer = Owner.GetModPlayer<ShotgunPlayer>();
+
+				Main.NewText(shotgunPlayer.shotgunStats._spreadMultiplier);
 
 				List<Projectile> spawnedProjectiles = ammo._behavior.Invoke(gryphon.Item, Owner, new Terraria.DataStructures.EntitySource_ItemUse_WithAmmo(Owner, gryphon.Item, ammoItem.type, "SpiritReforged: Gryphon Shoot"), position, direction,
 					shotgunPlayer.ModifyShotCount(ammo._shotCount, shotgunStats._additionalShots, shotgunStats._shotMultiplier),
@@ -355,6 +373,7 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 		_trails =
 		[
+			new VertexTrail(new GradientTrail(new Color(32, 197, 242, 150), Color.White.Additive(), EaseFunction.EaseQuarticInOut), tCap, tPos, tShader, 6, MAX_POINTS, trailWidthFunction: factor => 4),
 			new VertexTrail(new GradientTrail(new Color(32, 197, 242, 150), Color.White.Additive(), EaseFunction.EaseQuarticInOut), tCap, tPos, tShader, 6, MAX_POINTS, trailWidthFunction: factor => 4),
 		];
 	}

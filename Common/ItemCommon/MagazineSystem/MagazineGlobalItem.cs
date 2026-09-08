@@ -535,6 +535,7 @@ public class MagazineGlobalItem : GlobalItem
 		}
 	}
 
+	// Unsure how needed all of this is, but some of it is needed for animation syncing
 	public override GlobalItem Clone(Item from, Item to)
 	{
 		var clone = (MagazineGlobalItem)base.Clone(from, to);

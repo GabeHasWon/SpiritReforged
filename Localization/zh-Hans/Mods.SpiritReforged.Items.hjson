@@ -3597,3 +3597,8 @@ Heirloom: {
 	// DisplayName: Heirloom
 	// Tooltip: ""
 }
+
+GameHuntingKit: {
+	// DisplayName: Game Hunting Kit
+	// Tooltip: ""
+}
