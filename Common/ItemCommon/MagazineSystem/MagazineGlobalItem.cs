@@ -3,6 +3,7 @@ using SpiritReforged.Content.Aether.Items;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using static AssGen.Assets;
 using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
@@ -117,7 +118,7 @@ public class MagazineGlobalItem : GlobalItem
 
 	// used to automatically reload after a period of not doing anything.
 	private int _reloadIdleTimer;
-	private int _maxReloadIdleTimer = 60;
+	private int _maxReloadIdleTimer = 360;
 
 	// because we have to manually interrupt item time to cancel a reload, we store a seperate timer to ensure proper behavior.
 	private int reloadCancelCooldown;
@@ -212,23 +213,28 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
-			_reloadIdleTimer = 0;
-
-			var mp = player.GetModPlayer<MagazinePlayer>();
-
-			MagazinePlayer.Fire(item);
-
-			_currentMagazine.AmmoUsed++;
-
-			int magazineSize = mp.GetMagazineSize(_magazineData._magazineSize);
-
-			if (_currentMagazine.AmmoUsed == magazineSize)
-				ActivateReload(player, item, magazineSize);
+			Fire(item, player);
 
 			return null;
 		}
 
 		return null;
+	}
+
+	public void Fire(Item item, Player player)
+	{
+		_reloadIdleTimer = 0;
+
+		var mp = player.GetModPlayer<MagazinePlayer>();
+
+		MagazinePlayer.Fire(item);
+
+		_currentMagazine.AmmoUsed++;
+
+		int magazineSize = mp.GetMagazineSize(_magazineData._magazineSize);
+
+		if (_currentMagazine.AmmoUsed == magazineSize)
+			ActivateReload(player, item, magazineSize);
 	}
 
 	void ActivateReload(Player player, Item item, int ammoUsed)
@@ -475,7 +481,11 @@ public class MagazineGlobalItem : GlobalItem
 				else if (ReloadType == MagazineReloadType.EntireMagazine)
 				{
 					if (_currentMagazine.ReloadTimer == 0)
+					{
+						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f });
+						MagazinePlayer.UnempowerAllShots();
 						_currentMagazine.AmmoUsed = 0;
+					}
 				}
 
 				if (_currentMagazine.ReloadTimer == 0)

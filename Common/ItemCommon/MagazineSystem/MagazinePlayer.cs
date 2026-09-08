@@ -221,6 +221,14 @@ public class MagazinePlayer : ModPlayer
 		if (empoweredCount < 0)
 			empoweredCount = 0;
 	}
+
+	/// <summary>
+	/// Resets the empowered shots to zero.
+	/// </summary>
+	public static void UnempowerAllShots()
+	{
+		empoweredCount = 0;
+	}
 	#endregion
 }
 

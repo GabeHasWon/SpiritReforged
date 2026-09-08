@@ -55,4 +55,11 @@ public abstract class ShotgunItem(ShotgunStats stats) : ModItem
 	/// For any behavior that should happen on top of ammo shooting behavior.
 	/// </summary>
 	public virtual void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, ShotgunAmmoItem ammo, int damage, float knockback) { }
+
+	public override ModItem Clone(Item newEntity)
+	{
+		(newEntity.ModItem as ShotgunItem).shotgunStats = shotgunStats;
+
+		return newEntity.ModItem;
+	}
 }
