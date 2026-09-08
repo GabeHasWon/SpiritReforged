@@ -20,9 +20,18 @@ using static SpiritReforged.Common.ItemCommon.MagazineSystem.MagazineGlobalItem;
 namespace SpiritReforged.Content.Underworld.Heirloom;
 public class Heirloom() : ShotgunItem(new())
 {
+	const int MAX_ARM_PULLBACK_TIMER = 15;
+
 	// For reload animation
-	public bool spawnedReloadDust = false;
-	public bool playedClickSound = false;
+	// Each reload animation has 4 "keyframes" in which dust, sound effects, etc are played / spawned
+	// This array keeps track of them and is reset upon firing
+	public bool[] playedReloadEffects = new bool[4];
+
+	/// <summary>
+	/// When greater than zero, it will interpolate from a fully extended arm to a non extended arm, <see cref="MAX_ARM_PULLBACK_TIMER"/>
+	/// </summary>
+	public int armPullbackTimer;
+
 	public ShotgunAmmoItem lastUsedAmmo;
 
 	// Only let the player use the alternate use when at full magazine
@@ -50,8 +59,7 @@ public class Heirloom() : ShotgunItem(new())
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		spawnedReloadDust = false;
-		playedClickSound = false;
+		playedReloadEffects = new bool[4];
 
 		if (player.altFunctionUse == 2)
 		{
@@ -127,7 +135,7 @@ public class Heirloom() : ShotgunItem(new())
 
 		for (int i = 0; i < 4; i++)
 		{
-			ParticleHandler.SpawnParticle(new SmokeCloud(barrelPosition + Main.rand.NextVector2Circular(8, 8), velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.Black * 0.33f, Main.rand.NextFloat(0.05f, 0.15f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(60), true)
+			ParticleHandler.SpawnParticle(new SmokeCloud(barrelPosition + Main.rand.NextVector2Circular(8, 8), velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.Black * 0.4f, Main.rand.NextFloat(0.07f, 0.15f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(60), true)
 			{
 				Pixellate = true,
 				PixelDivisor = 3
@@ -223,7 +231,7 @@ public class Heirloom() : ShotgunItem(new())
 
 		if (item.ModItem is Heirloom heirloom)
 		{
-			if (animProgress > 0.2f && !heirloom.spawnedReloadDust)
+			if (animProgress > 0.2f && !heirloom.playedReloadEffects[0])
 			{
 				Vector2 breakPosition = itemPosition + new Vector2(12f, 2f).RotatedBy(itemRotation);
 				Vector2 breakVelocity = -Vector2.UnitY - Vector2.UnitX * player.direction;
@@ -249,14 +257,30 @@ public class Heirloom() : ShotgunItem(new())
 
 				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition);
 
-				heirloom.spawnedReloadDust = true;
+				heirloom.playedReloadEffects[0] = true;
 			}
-			
-			if (animProgress > 0.9f && !heirloom.playedClickSound)
+
+			if (animProgress > 0.55f && !heirloom.playedReloadEffects[1])
+			{
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f });
+
+				heirloom.armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
+				heirloom.playedReloadEffects[1] = true;
+			}
+
+			if (animProgress > 0.7f && !heirloom.playedReloadEffects[2])
+			{
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f });
+
+				heirloom.armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
+				heirloom.playedReloadEffects[2] = true;
+			}
+
+			if (animProgress > 0.9f && !heirloom.playedReloadEffects[3])
 			{
 				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), player.Center);
 
-				heirloom.playedClickSound = true;
+				heirloom.playedReloadEffects[3] = true;
 			}
 		}
 
@@ -310,6 +334,31 @@ public class Heirloom() : ShotgunItem(new())
 			}
 		}
 
+		if (item.ModItem is not null and Heirloom heirloom)
+		{
+			if (heirloom.armPullbackTimer > 0)
+			{
+				float interpolant = 1f - heirloom.armPullbackTimer / (float)MAX_ARM_PULLBACK_TIMER;
+
+				int armType = (int)MathHelper.Lerp(0, 3, interpolant);
+
+				// Because why would Player.CompositeArmStretchAmount be in order?
+				switch (armType)
+				{
+					case 0:
+						frontStretch = Player.CompositeArmStretchAmount.Full; break;
+					case 1:
+						frontStretch = Player.CompositeArmStretchAmount.ThreeQuarters; break;
+					case 2:
+						frontStretch = Player.CompositeArmStretchAmount.Quarter; break;
+					case 3:
+						frontStretch = Player.CompositeArmStretchAmount.None; break;
+				}
+
+				heirloom.armPullbackTimer--;
+			}	
+		}
+
 		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rotation);
 		player.SetCompositeArmFront(true, frontStretch, frontArmRotation);
 	}
@@ -318,9 +367,9 @@ public class Heirloom() : ShotgunItem(new())
 	{
 		var newItem = newEntity.ModItem as Heirloom;
 
-		newItem.spawnedReloadDust = spawnedReloadDust;
+		newItem.playedReloadEffects = playedReloadEffects;
 		newItem.lastUsedAmmo = lastUsedAmmo;
-		newItem.playedClickSound = playedClickSound;
+		newItem.armPullbackTimer = armPullbackTimer;
 
 		return newEntity.ModItem;
 	}

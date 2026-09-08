@@ -482,7 +482,8 @@ public class MagazineGlobalItem : GlobalItem
 				{
 					if (_currentMagazine.ReloadTimer == 0)
 					{
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f });
+						// TODO: Replace this
+						SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f });
 						MagazinePlayer.UnempowerAllShots();
 						_currentMagazine.AmmoUsed = 0;
 					}
