@@ -23,6 +23,9 @@
 	  <Reference Include="ILLogger">
 		  <HintPath>lib\ILLogger.dll</HintPath>
 	  </Reference>
+	  <Reference Include="TilePlacementTag">
+	    <HintPath>lib\TilePlacementTag.dll</HintPath>
+	  </Reference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Localization\ru-RU\" />

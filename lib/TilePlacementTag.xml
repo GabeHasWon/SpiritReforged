@@ -1,0 +1,148 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>TilePlacementTag</name>
+    </assembly>
+    <members>
+        <member name="T:TilePlacementTag.PlayerDataTools">
+            <summary>
+            Tooling to make <see cref="T:TilePlacementTag.PlayerPlacedData"/> easier to use.
+            </summary>
+        </member>
+        <member name="M:TilePlacementTag.PlayerDataTools.PlayerTile(Terraria.Tile)">
+            <inheritdoc cref="P:TilePlacementTag.PlayerPlacedData.PlayerTile"/>
+        </member>
+        <member name="M:TilePlacementTag.PlayerDataTools.PlayerWall(Terraria.Tile)">
+            <inheritdoc cref="P:TilePlacementTag.PlayerPlacedData.PlayerWall"/>
+        </member>
+        <member name="M:TilePlacementTag.PlayerDataTools.SetPlayerTile(System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Sets a player-placed tag for the tile at x, y.
+            </summary>
+            <param name="i">X position in tile coordinates.</param>
+            <param name="j">Y position in tile coordinates.</param>
+            <param name="value">Whether the tag is true/false.</param>
+            <param name="synced">If the value is synced automatically. Does nothing in singleplayer.</param>
+        </member>
+        <member name="M:TilePlacementTag.PlayerDataTools.SetPlayerWall(System.Int32,System.Int32,System.Boolean,System.Boolean)">
+            <summary>
+            Sets a player-placed tag for the wall at x, y.
+            </summary>
+            <param name="i">X position in tile coordinates.</param>
+            <param name="j">Y position in tile coordinates.</param>
+            <param name="value">Whether the tag is true/false.</param>
+            <param name="synced">If the value is synced automatically. Does nothing in singleplayer.</param>
+        </member>
+        <member name="T:TilePlacementTag.PlayerPlacedData">
+            <summary>
+            Simply checks if the tile has been placed by a player. By default, no tile is placed by the player.
+            </summary>
+        </member>
+        <member name="P:TilePlacementTag.PlayerPlacedData.PlayerTile">
+            <summary>
+            Whether this tile was player-placed.
+            </summary>
+        </member>
+        <member name="P:TilePlacementTag.PlayerPlacedData.PlayerWall">
+            <summary>
+            Whether this wall was player-placed.
+            </summary>
+        </member>
+        <member name="P:TilePlacementTag.PlayerPlacedData.Item(System.Int32)">
+            <summary>
+            Internal utility to set/get the bit flag.
+            </summary>
+        </member>
+        <member name="F:TilePlacementTag.PlayerPlacedData.PlayerPlacedByte">
+            <summary>
+            Contains both tags. Format: XXXX_XXWT
+            </summary>
+        </member>
+        <member name="M:TilePlacementTag.PlayerPlacedData.#ctor">
+            <summary>
+            Default ctor.
+            </summary>
+        </member>
+        <member name="M:TilePlacementTag.PlayerPlacedData.Clear">
+            <summary>
+            Clears the current data (sets <see cref="F:TilePlacementTag.PlayerPlacedData.PlayerPlacedByte"/> to 0).
+            </summary>
+        </member>
+        <member name="T:TilePlacementTag.TilePlacementTagMod">
+            <summary>
+            Mod implementation, containing only the netcode used for the mod.
+            </summary>
+        </member>
+        <member name="T:TilePlacementTag.TilePlacementTagMod.MessageId">
+            <summary>
+            Simple message ID enumeration for the mod's packets.
+            </summary>
+        </member>
+        <member name="F:TilePlacementTag.TilePlacementTagMod.MessageId.RequestPlayerData">
+            <summary>
+            Sends a packet requesting a section's tile placement tag values (Client -> Server). Unused, but can work if implemented externally.
+            </summary>
+        </member>
+        <member name="F:TilePlacementTag.TilePlacementTagMod.MessageId.SendPlayerPlacedData">
+            <summary>
+            Sends a packet containing the placement tag values (Server -> Client).
+            </summary>
+        </member>
+        <member name="F:TilePlacementTag.TilePlacementTagMod.MessageId.SyncIndividualTile">
+            <summary>
+            Sends a packet containing an individual tile's placement tag values (Client -> Server -> Client).
+            </summary>
+        </member>
+        <member name="M:TilePlacementTag.TilePlacementTagMod.Load">
+            <inheritdoc/>
+        </member>
+        <member name="M:TilePlacementTag.TilePlacementTagMod.SendSyncIndividualTile(System.Int32,System.Int32,System.Byte)">
+            <summary>
+            Sends the <see cref="F:TilePlacementTag.TilePlacementTagMod.MessageId.SyncIndividualTile"/> packet.
+            </summary>
+        </member>
+        <member name="M:TilePlacementTag.TilePlacementTagMod.GetPacket(TilePlacementTag.TilePlacementTagMod.MessageId,System.Int32)">
+            <summary>
+            Helper method for getting the mod's packet alongside a <see cref="T:TilePlacementTag.TilePlacementTagMod.MessageId"/>.
+            </summary>
+        </member>
+        <member name="M:TilePlacementTag.TilePlacementTagMod.HandlePacket(System.IO.BinaryReader,System.Int32)">
+            <summary>
+            Handles the mod's three packets.
+            </summary>
+        </member>
+        <member name="T:TilePlacementTag.TileTagConfig">
+            <summary>
+            Configuration for the mod.
+            </summary>
+        </member>
+        <member name="T:TilePlacementTag.TileTagConfig.HighlightMode">
+            <summary>
+            Definition for which highlight mode the player is using.
+            </summary>
+        </member>
+        <member name="F:TilePlacementTag.TileTagConfig.HighlightMode.All">
+            <summary>
+            Show all tiles and walls.
+            </summary>
+        </member>
+        <member name="F:TilePlacementTag.TileTagConfig.HighlightMode.OnlyPlayer">
+            <summary>
+            Show only player-placed tiles and walls.
+            </summary>
+        </member>
+        <member name="F:TilePlacementTag.TileTagConfig.HighlightMode.OnlyNatural">
+            <summary>
+            Show only natural tiles and walls.
+            </summary>
+        </member>
+        <member name="P:TilePlacementTag.TileTagConfig.Mode">
+            <inheritdoc/>
+        </member>
+        <member name="P:TilePlacementTag.TileTagConfig.DisplayMode">
+            <summary>
+            How the client has chosen to display the Nature Potion's overlay.
+            </summary>
+        </member>
+    </members>
+</doc>
