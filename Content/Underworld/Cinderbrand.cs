@@ -1,4 +1,5 @@
 using SpiritReforged.Common;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
@@ -80,7 +81,6 @@ public class Cinderbrand : ModItem
 		public enum MoveType { Lunge, Stance, Wave }
 
 		public MoveType Move { get => (MoveType)Projectile.ai[0]; set => Projectile.ai[0] = (int)value; }
-		public int FlourishDirection => (int)Projectile.ai[1];
 
 		public override string Texture => ModContent.GetInstance<Cinderbrand>().Texture;
 		public override LocalizedText DisplayName => ModContent.GetInstance<Cinderbrand>().DisplayName;
@@ -103,7 +103,7 @@ public class Cinderbrand : ModItem
 
 			if (!Main.dedServ && Move is MoveType.Lunge or MoveType.Wave)
 			{
-				_motionCone ??= (BasicNoiseCone)new BasicNoiseCone(Projectile.Center + Projectile.velocity * 10, Projectile.velocity, 20, new(50, 150)).SetColors(Color.White.Additive(50), Color.Orange).SetIntensity(3).AttachTo(Projectile);
+				_motionCone ??= (BasicNoiseCone)new BasicNoiseCone(Projectile.Center + Projectile.velocity * 10, Projectile.velocity, 20, new(50, 150)).SetColors(Color.Orange.Additive(50), Color.OrangeRed).SetIntensity(3).AttachTo(Projectile);
 
 				_motionCone.Position += _motionCone.Velocity; //Update activity
 				_motionCone.Update();
@@ -169,7 +169,7 @@ public class Cinderbrand : ModItem
 			}
 			else
 			{
-				return base.GetRotation(out armRotation, out stretch) + MathHelper.PiOver4;
+				return base.GetRotation(out armRotation, out stretch) + MathHelper.PiOver4 + EaseFunction.EaseCubicIn.Ease(Progress) * 0.2f;
 			}
 		}
 
@@ -210,7 +210,7 @@ public class Cinderbrand : ModItem
 			}
 
 			if (mult > 0)
-				DrawStar(lightColor, 0.8f, mult);
+				DrawStar(lightColor, 0.8f, mult, Color.Red);
 
 			return false;
 		}
@@ -222,14 +222,14 @@ public class Cinderbrand : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 14;
-		Item.knockBack = 3;
-		Item.useTime = Item.useAnimation = 18;
+		Item.damage = 30;
+		Item.knockBack = 2.5f;
+		Item.useTime = Item.useAnimation = 20;
 		Item.DamageType = DamageClass.Melee;
 		Item.width = Item.height = 46;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.value = Item.sellPrice(gold: 1);
-		Item.rare = ItemRarityID.Blue;
+		Item.rare = ItemRarityID.Orange;
 		Item.UseSound = RapierProjectile.DefaultSwing;
 		Item.shoot = ModContent.ProjectileType<CinderbrandSwing>();
 		Item.shootSpeed = 1f;
@@ -252,5 +252,5 @@ public class Cinderbrand : ModItem
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips) => tooltips.RemoveAll(static x => x.Mod == "Terraria" && x.Name == "CritChance"); //Remove the line indicating crit chance
 
-	public override void AddRecipes() => CreateRecipe().AddRecipeGroup(RecipeGroupID.Wood, 4).AddIngredient(ItemID.SilverBar, 6).AddTile(TileID.Anvils).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.HellstoneBar, 8).AddIngredient(ItemID.Bone, 14).AddTile(TileID.Anvils).Register();
 }

@@ -56,13 +56,13 @@ public abstract class RapierProjectile : SwungProjectile
 		return Projectile.Center.DistanceSQ(target.Hitbox.ClosestPointInRect(Projectile.Center)) > reach * reach;
 	}
 
-	public void DrawStar(Color lightColor, float scale, float intensity)
+	public void DrawStar(Color lightColor, float scale, float intensity, Color? outline = null)
 	{
 		Main.instance.LoadProjectile(ProjectileID.RainbowRodBullet);
 		Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 		Vector2 position = GetEndPosition() - Main.screenPosition;
 
-		Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.SteelBlue).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * scale * intensity, default);
+		Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(outline ?? Color.SteelBlue).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * scale * intensity, default);
 		Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.White).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * 0.8f * scale * intensity, default);
 	}
 
