@@ -3,6 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Greatbows.Greatarrows;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -87,7 +88,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 	private bool _hitNPC = false;
 	private int _prismaticTimer = 50;
 
-	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.friendly && entity.DamageType == DamageClass.Ranged;
+	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.ModProjectile is GreatarrowProjectile;
 
 	public override void AI(Projectile Projectile)
 	{
@@ -216,7 +217,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 		int type = ModContent.ProjectileType<AdornedFlash>();
 		var p = Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Zero, type, (int)(projectile.damage * 0.66f), 0f, projectile.owner, target.whoAmI);
 
-		p.rotation = projectile.velocity.ToRotation();
+		p.rotation = projectile.oldVelocity.ToRotation();
 		p.spriteDirection = projectile.direction;
 
 		for (int i = 0; i < 4; i++)
@@ -261,6 +262,8 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 		static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
 
 		_hitNPC = true; // only make flash effect once;
+
+		projectile.Kill();
 	}
 
 	public override void OnKill(Projectile projectile, int timeLeft)

@@ -1,7 +1,9 @@
+using Mono.Cecil;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Content.Forest.Greatbows.Greatarrows;
 using System.IO;
 using Terraria.Audio;
 
@@ -174,7 +176,7 @@ public abstract class BaseChargeBow : ModProjectile
 			ArrowSound();
 		}
 
-		var p = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), player.Center, _direction * speed, type, damage, knockBack, Projectile.owner);
+		var p = Projectile.NewProjectileDirect(Projectile.GetSource_FromThis(), player.Center, _direction * speed, type, damage, knockBack, Projectile.owner, Charge, perfectShot ? 1 : 0);
 		ModifyFiredProj(p, Charge == 1, perfectShot);
 
 		OnShoot(perfectShot);

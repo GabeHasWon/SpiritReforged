@@ -3566,3 +3566,8 @@ SuperExtendoMags: {
 	// DisplayName: Super Extendo Mags
 	// Tooltip: ""
 }
+
+Greatarrow: {
+	// DisplayName: Greatarrow
+	// Tooltip: ""
+}

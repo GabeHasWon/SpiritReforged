@@ -20,7 +20,7 @@ public class AdornedBowHeld : BaseChargeBow
 	public override void SetStringDrawParams(out float stringLength, out float maxDrawback, out Vector2 stringOrigin, out Color stringColor)
 	{
 		stringLength = 48;
-		maxDrawback = 10;
+		maxDrawback = 20;
 		stringOrigin = new Vector2(5, 31);
 		stringColor = Color.LightCyan;
 	}
@@ -30,9 +30,7 @@ public class AdornedBowHeld : BaseChargeBow
 		if (fullCharge)
 		{
 			projectile.GetGlobalProjectile<AdornedBowGlobalProjectile>().active = true;
-
-			if(perfectShot)
-				projectile.extraUpdates++;
+			projectile.penetrate--;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient) // Force an update, netUpdate may be blocked by netSpam since the projectile was just spawned
 				NetMessage.SendData(MessageID.SyncProjectile, -1, -1, null, projectile.whoAmI);

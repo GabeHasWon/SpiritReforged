@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Content.Forest.Greatbows.Greatarrows;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ItemCommon.Abstract;
@@ -34,7 +35,7 @@ public abstract class BaseGreatbowItem : ModItem
 		Item.autoReuse = false;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.shootSpeed = 10;
-		Item.useAmmo = AmmoID.Arrow;
+		Item.useAmmo = ModContent.ItemType<Greatarrow>();
 		Item.shoot = ProjType;
 
 		SafeSetDefaults();
