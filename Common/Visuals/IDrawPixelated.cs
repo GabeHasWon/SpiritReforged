@@ -53,10 +53,12 @@ public interface IDrawPixelated
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
 
 				graphics.BlendState = BlendState.AlphaBlend; //Required for prims
+				DrawingPixelated = true;
 
 				foreach (IDrawPixelated iDrawPixelated in pixelQueue)
 					iDrawPixelated.DrawPixelated(spriteBatch);
 
+				DrawingPixelated = false;
 				spriteBatch.End();
 				graphics.SetRenderTarget(null);
 			}
@@ -77,6 +79,9 @@ public interface IDrawPixelated
 			orig(self);
 		}
 	}
+
+	/// <summary> Whether pixelated effects are currently being drawn via <see cref="DrawPixelated"/>. </summary>
+	public static bool DrawingPixelated { get; private set; }
 
 	public void DrawPixelated(SpriteBatch spriteBatch);
 
