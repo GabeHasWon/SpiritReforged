@@ -3527,6 +3527,6 @@ ChromaticWaxShaderDummy: {
 }
 
 WaxPlatformItem: {
-	// DisplayName: Wax Platform Item
-	// Tooltip: ""
+	DisplayName: 蜡平台
+	Tooltip: ""
 }
