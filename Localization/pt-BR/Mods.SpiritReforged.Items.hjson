@@ -3751,5 +3751,9 @@ EstocSabreDuo: {
 
 Bladesong: {
 	// DisplayName: Bladesong
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Sweetspot hits create a spectral blade that strikes after a delay
+		<right> to parry, rapidly striking nearby enemies
+		''' */
 }

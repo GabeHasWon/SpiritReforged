@@ -5,6 +5,7 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -13,18 +14,87 @@ namespace SpiritReforged.Content.Forest.Rapiers;
 
 public class Bladesong : ModItem
 {
+	public class BladesongMimic : ModProjectile
+	{
+		public int TargetWhoAmI
+		{
+			get => (int)Projectile.ai[0];
+			set => Projectile.ai[0] = value;
+		}
+
+		public ref float Counter => ref Projectile.ai[1];
+
+		public override string Texture => ModContent.GetInstance<Bladesong>().Texture;
+
+		public override LocalizedText DisplayName => ModContent.GetInstance<Bladesong>().DisplayName;
+
+		public override void SetDefaults()
+		{
+			Projectile.friendly = true;
+			Projectile.tileCollide = false;
+			Projectile.ignoreWater = true;
+			Projectile.DamageType = DamageClass.MeleeNoSpeed;
+
+			Projectile.scale = 0;
+			Projectile.Opacity = 0;
+		}
+
+		public override void AI()
+		{
+			if (Main.npc[TargetWhoAmI] is NPC target && target.active)
+			{
+				Projectile.rotation = Projectile.AngleTo(target.Center);
+				if (++Counter > 30)
+				{
+					Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(target.Center) * 10, 0.1f);
+
+					if (!Main.dedServ && Counter == 31)
+					{
+						Vector2 position = Projectile.Center - Projectile.velocity * 30;
+						ParticleHandler.SpawnParticle(new BasicNoiseCone(position, Projectile.velocity, 20, new(80, 150)).SetColors(Color.White.Additive(50), Color.Cyan.Additive()).SetIntensity(3).AttachTo(Projectile));
+					}
+
+					if (Main.rand.NextBool(3))
+						ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center + Main.rand.NextVector2Circular(20, 20), Projectile.velocity * 0.5f, Color.Cyan, 0.2f, 20, 0.1f));
+				}
+				else
+				{
+					Projectile.Center = Vector2.Lerp(Projectile.Center, target.Center - Projectile.velocity * 90, 0.1f);
+				}
+			}
+
+			Projectile.Opacity = Math.Min(Projectile.Opacity + 0.05f, 1);
+			Projectile.scale = Math.Min(Projectile.scale + 0.03f, 0.75f);
+		}
+
+		public override bool? CanDamage() => (Counter > 30) ? null : false;
+
+		public override bool PreDraw(ref Color lightColor)
+		{
+			Texture2D texture = TextureAssets.Projectile[Type].Value;
+			Vector2 origin = new(texture.Width - Projectile.width / 2, 0 - Projectile.height / 2);
+
+			DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+				Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition + offset, null, Projectile.GetAlpha(Color.Cyan).Additive(100), Projectile.rotation + MathHelper.PiOver4, origin, Projectile.scale, 0));
+
+			Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition - Projectile.velocity * 2, null, Projectile.GetAlpha(Color.Cyan).Additive(), Projectile.rotation + MathHelper.PiOver4, origin, Projectile.scale, 0);
+			Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(Color.White), Projectile.rotation + MathHelper.PiOver4, origin, Projectile.scale, 0);
+
+			return false;
+		}
+	}
+
 	public class BladesongSwing : RapierProjectile, FreeDodgePlayer.IImmuneTo
 	{
-		public enum MoveType { Swing, Vanish }
+		public enum MoveType { Swing, Stance, Vanish }
 
 		public MoveType Move { get => (MoveType)Projectile.ai[0]; set => Projectile.ai[0] = (int)value; }
 
-		public override float SwingTime => (Move == MoveType.Vanish) ? FreeDodgeTime : base.SwingTime * 1.5f;
+		public override float SwingTime => (Move is MoveType.Stance or MoveType.Vanish) ? FreeDodgeTime : base.SwingTime * 1.5f;
 
 		public override string Texture => ModContent.GetInstance<Bladesong>().Texture;
-		public override LocalizedText DisplayName => ModContent.GetInstance<Bladesong>().DisplayName;
 
-		private BasicNoiseCone _motionCone;
+		public override LocalizedText DisplayName => ModContent.GetInstance<Bladesong>().DisplayName;
 
 		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicInOut, 78, 12, 18, 15);
 
@@ -34,46 +104,43 @@ public class Bladesong : ModItem
 			const float start_swing = 0.1f;
 			const float end_swing = 0.7f;
 
-			if (Counter == 10)
-				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
-
 			base.AI();
 
-			if (Progress >= end_swing)
-				Projectile.scale *= 0.97f;
-
-			if (Progress is > start_swing and < end_swing)
+			if (Move == MoveType.Swing)
 			{
-				Player owner = Main.player[Projectile.owner];
-				float progress = (Progress - start_swing) / (end_swing - start_swing);
-				Projectile.Center = owner.Center + Projectile.velocity.RotatedBy((progress - 0.5f) * SwingDirection) * reach * EaseFunction.EaseCircularOut.Ease(EaseFunction.EaseSine.Ease(progress));
+				if (Counter == 10)
+					SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
 
-				owner.SetCompositeArmFront(false, 0, 0);
+				if (Progress >= end_swing)
+					Projectile.scale *= 0.97f;
 
-				if (!Main.dedServ)
+				if (Progress is > start_swing and < end_swing)
 				{
-					Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Electric, Scale: 0.5f);
-					dust.noGravity = true;
-					dust.velocity = Projectile.velocity * 3;
+					Player owner = Main.player[Projectile.owner];
+					float progress = (Progress - start_swing) / (end_swing - start_swing);
+					Projectile.Center = owner.Center + Projectile.velocity.RotatedBy((progress - 0.5f) * SwingDirection) * reach * EaseFunction.EaseCircularOut.Ease(EaseFunction.EaseSine.Ease(progress));
 
-					if (Main.rand.NextBool())
-						ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center, Projectile.velocity * Main.rand.NextFloat(3f), Color.Cyan, 20));
+					owner.SetCompositeArmFront(false, 0, 0);
 
-					if (Main.rand.NextBool(3))
-						ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, Projectile.velocity * Main.rand.NextFloat(3f), Color.White, 25));
+					if (!Main.dedServ)
+					{
+						Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Electric, Scale: 0.5f);
+						dust.noGravity = true;
+						dust.velocity = Projectile.velocity * 3;
+
+						if (Main.rand.NextBool())
+							ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center, Projectile.velocity * Main.rand.NextFloat(3f), Color.Cyan, 20));
+
+						if (Main.rand.NextBool(3))
+							ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, Projectile.velocity * Main.rand.NextFloat(3f), Color.White, 25));
+					}
 				}
 			}
-
-			/*if (!Main.dedServ && Move == MoveType.Swing && Counter == 1)
-			{
-				Vector2 position = Projectile.Center - Projectile.velocity * 8;
-				ParticleHandler.SpawnParticle(_motionCone = (BasicNoiseCone)new BasicNoiseCone(position, Projectile.velocity, 14, new(50, 150)).SetColors(Color.White.Additive(100), Color.SteelBlue).SetIntensity(2).AttachTo(Projectile));
-			}*/
 		}
 
 		public bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
 		{
-			if (Move != MoveType.Vanish)
+			if (Move != MoveType.Stance)
 				return false;
 
 			if (!Main.dedServ)
@@ -98,7 +165,7 @@ public class Bladesong : ModItem
 			Counter = 0;
 
 			Projectile.timeLeft++;
-			Move = MoveType.Swing;
+			Move = MoveType.Vanish;
 
 			Player owner = Main.player[Projectile.owner];
 			owner.velocity -= Projectile.velocity * 8;
@@ -113,7 +180,21 @@ public class Bladesong : ModItem
 			return true;
 		}
 
-		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch) => base.GetRotation(out armRotation, out stretch) + MathHelper.PiOver4 + Math.Max((Progress - 0.7f) / 0.3f, 0) * SwingDirection;
+		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
+		{
+			if (Move == MoveType.Stance)
+			{
+				float value = GetAbsoluteAngle();
+				armRotation = value - MathHelper.PiOver2;
+				stretch = Player.CompositeArmStretchAmount.Full;
+
+				return value + ((Projectile.direction == -1) ? MathHelper.Pi + MathHelper.PiOver2 : MathHelper.Pi);
+			}
+			else
+			{
+				return base.GetRotation(out armRotation, out stretch) + MathHelper.PiOver4 + Math.Max((Progress - 0.7f) / 0.3f, 0) * SwingDirection;
+			}
+		}
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
@@ -125,7 +206,7 @@ public class Bladesong : ModItem
 					ParticleHandler.SpawnParticle(new EmberParticle(GetEndPosition(), Projectile.velocity.RotatedByRandom(0.5f) * magnitude * -5f, Color.PaleVioletRed, 0.4f * (1f - magnitude), 30, 3));
 				}
 
-				_motionCone?.SetColors(Color.White.Additive(100), Color.PaleVioletRed);
+				Projectile.NewProjectile(Projectile.GetSource_OnHit(target), target.Center, Main.rand.NextVector2CircularEdge(1, 1), ModContent.ProjectileType<BladesongMimic>(), Projectile.damage, Projectile.knockBack, Projectile.owner, target.whoAmI);
 			}
 
 			if (Move == MoveType.Swing)
@@ -172,7 +253,7 @@ public class Bladesong : ModItem
 			Main.EntitySpriteDraw(smear, position, source, color, rotation, new Vector2(source.Width, source.Height / 2), 0.75f, effects, 0);
 		}
 
-		public override bool? CanDamage() => null;
+		public override bool? CanDamage() => (Move == MoveType.Stance) ? false : null;
 	}
 
 	private int _swingDirection = 1;
@@ -181,7 +262,7 @@ public class Bladesong : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.DefaultToSpear(ModContent.ProjectileType<BladesongSwing>(), 1f, 30);
+		Item.DefaultToSpear(ModContent.ProjectileType<BladesongSwing>(), 1f, 25);
 		Item.SetShopValues(ItemRarityColor.LightRed4, Item.sellPrice(gold: 3));
 		Item.damage = 50;
 		Item.knockBack = 3;
@@ -194,8 +275,8 @@ public class Bladesong : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		BladesongSwing.MoveType moveType = (player.altFunctionUse == 2) ? BladesongSwing.MoveType.Vanish : BladesongSwing.MoveType.Swing;
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, 5 * _swingDirection, source, (int)moveType);
+		BladesongSwing.MoveType moveType = (player.altFunctionUse == 2) ? BladesongSwing.MoveType.Stance : BladesongSwing.MoveType.Swing;
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, (player.altFunctionUse == 2) ? 0 : 5 * _swingDirection, source, (int)moveType);
 
 		_swingDirection = -_swingDirection;
 		return false;
