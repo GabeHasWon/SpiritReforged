@@ -53,10 +53,12 @@ public interface IDrawPixelated
 			{
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
 				graphics.BlendState = BlendState.AlphaBlend; //Required for prims
+				DrawingPixelated = true;
 
 				foreach (IDrawPixelated iDrawPixelated in pixelQueue)
 					iDrawPixelated.DrawPixelated(spriteBatch);
 
+				DrawingPixelated = false;
 				spriteBatch.End();
 			}
 
@@ -79,8 +81,8 @@ public interface IDrawPixelated
 		}
 	}
 
-	/// <summary> Sets the view to <see cref="Matrix.Identity"/> when drawing primitives. </summary>
-	public static bool PrimitiveDrawing { get; set; }
+	/// <summary> Whether pixelated effects are currently being drawn via <see cref="DrawPixelated"/>. </summary>
+	public static bool DrawingPixelated { get; private set; }
 
 	public void DrawPixelated(SpriteBatch spriteBatch);
 

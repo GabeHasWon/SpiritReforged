@@ -1,3 +1,6 @@
+using Terraria;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Common.PrimitiveRendering;
@@ -25,28 +28,29 @@ static partial class ShaderHelpers
 		effect.Projection = projection;
 	}
 
-	public static void SetEffectMatrices(ref Effect effect, bool useUiMatrix = false, bool pixelTargetActive = false)
+	public static void SetEffectMatrices(ref Effect effect, bool useUiMatrix = false)
 	{
-		GetWorldViewProjection(out Matrix view, out Matrix projection, useUiMatrix, pixelTargetActive);
+		GetWorldViewProjection(out Matrix view, out Matrix projection, useUiMatrix);
 
 		if (effect.HasParameter("WorldViewProjection"))
 			effect.Parameters["WorldViewProjection"].SetValue(view * projection);
 	}
 
-	public static void GetWorldViewProjection(out Matrix view, out Matrix projection, bool useUiMatrix = false, bool pixelTargetActive = false)
+	public static void GetWorldViewProjection(out Matrix view, out Matrix projection, bool useUiMatrix = false)
 	{
 		view = Main.GameViewMatrix.TransformationMatrix;
-		if (pixelTargetActive)
+
+		if (IDrawPixelated.DrawingPixelated) //Effects are pixelated, apply the appropriate matrix
 			view = Matrix.Identity;
 		else if (useUiMatrix)
 			view = Main.UIScaleMatrix;
 
-		GetProjection(pixelTargetActive, out projection);
+		GetProjection(out projection);
 	}
 
-	public static void GetProjection(bool pixelTargetActive, out Matrix projection)
+	public static void GetProjection(out Matrix projection)
 	{
-		if(pixelTargetActive)
+		if (IDrawPixelated.DrawingPixelated)
 			projection = Matrix.CreateOrthographicOffCenter(0, Main.screenWidth, Main.screenHeight, 0, 0, 1);
 		else
 			projection = Matrix.CreateOrthographicOffCenter(0, Main.graphics.GraphicsDevice.Viewport.Width, Main.graphics.GraphicsDevice.Viewport.Height, 0, 0, 1);
