@@ -1,5 +1,4 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -37,12 +36,11 @@ public class SanguineBlood : Particle, IDrawPixelated
 		Velocity = Vector2.Normalize(Vector2.Lerp(Velocity, (-Position).SafeNormalize(Vector2.Zero) * velocityLength, 0.01f)) * Velocity.Length();
 		Position = Vector2.Lerp(Position, Vector2.Zero, magnetFactor);
 
-		if(TimeActive == MaxTime / 2)
+		if (TimeActive == MaxTime / 2)
 		{
-			for(int i = 0; i < 2; i++)
+			for (int i = 0; i < 2; i++)
 			{
 				Vector2 stickyBloodPos = _owner.MountedCenter + Main.rand.NextVector2Square(-20, 20);
-
 				ParticleHandler.SpawnParticle(new StickyBloodParticle(stickyBloodPos, stickyBloodPos.DirectionFrom(_owner.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(30, 40), 0.1f));
 			}
 
@@ -62,14 +60,11 @@ public class SanguineBlood : Particle, IDrawPixelated
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
-	{
-	}
-
 	public void DrawPixelated(SpriteBatch spriteBatch)
 	{
-		Effect effect = SpiritReforgedMod.Instance.Assets.Request<Effect>("Assets/Shaders/BloodTrail", AssetRequestMode.ImmediateLoad).Value;
+		Effect effect = AssetLoader.LoadedShaders["BloodTrail"].Value;
 		Texture2D uTex = AssetLoader.LoadedTextures["swirlNoise2"].Value;
+
 		effect.Parameters["uTexture"].SetValue(uTex);
 		effect.Parameters["uTexture2"].SetValue(AssetLoader.LoadedTextures["GlowTrail"].Value);
 		effect.Parameters["scroll"].SetValue(-Progress);
@@ -91,13 +86,13 @@ public class SanguineBlood : Particle, IDrawPixelated
 		}
 
 		effect.Parameters["repeats"].SetValue(5f * stripLength / uTex.Width);
-
-		var strip = new PrimitiveStrip
+		PrimitiveStrip strip = new()
 		{
 			Color = Lighting.GetColor(vertices[0].ToTileCoordinates()),
 			Width = 12 * Scale,
 			PositionArray = vertices
 		};
-		PrimitiveRenderer.DrawPrimitiveShape(strip, effect, pixelTargetActive: true);
+
+		PrimitiveRenderer.DrawPrimitiveShape(strip, effect);
 	}
 }
