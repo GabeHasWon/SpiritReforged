@@ -3525,3 +3525,8 @@ ChromaticWaxShaderDummy: {
 	DisplayName: Chromatic Wax Shader Dummy
 	Tooltip: Hello all cheat mod users!
 }
+
+WaxPlatformItem: {
+	DisplayName: Wax Platform
+	Tooltip: ""
+}

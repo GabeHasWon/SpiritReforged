@@ -3537,3 +3537,8 @@ ChromaticWaxShaderDummy: {
 	DisplayName: Chromatic Wax Shader Dummy
 	Tooltip: Привет всем пользователям чит-панелей!
 }
+
+WaxPlatformItem: {
+	// DisplayName: Wax Platform Item
+	// Tooltip: ""
+}

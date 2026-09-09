@@ -1,5 +1,7 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using System.Diagnostics;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using TileHelper.Common;
@@ -8,6 +10,8 @@ namespace SpiritReforged.Content.Ocean.Tiles;
 
 public class OceanDecor1x2 : ModTile, IAutoloadRubble
 {
+	private static bool _stopRecursion = false;
+
 	public virtual IAutoloadRubble.RubbleData Data => new(ItemID.Coral, IAutoloadRubble.RubbleSize.Small);
 
 	public override void SetStaticDefaults()
@@ -72,9 +76,18 @@ public class OceanDecor1x2 : ModTile, IAutoloadRubble
 		yield return new Item(ItemID.Coral, 1);
 	}
 
-	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) => Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
+	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+	{
+		if (!_stopRecursion)
+			Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
+	}
 
-	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) => TileMethods.DrawSingleTile(i, j, true, Vector2.Zero);
+	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
+	{
+		_stopRecursion = true;
+		TileMethods.DrawSingleTile(i, j, true, Vector2.Zero);
+		_stopRecursion = false;
+	}
 }
 
 public class OceanDecor2x2 : OceanDecor1x2
