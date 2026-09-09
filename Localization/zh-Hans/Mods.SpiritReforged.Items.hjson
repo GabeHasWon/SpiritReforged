@@ -3761,3 +3761,8 @@ EstocSabreDuo: {
 	// DisplayName: Sabre & Estoc
 	// Tooltip: ""
 }
+
+Bladesong: {
+	// DisplayName: Bladesong
+	// Tooltip: ""
+}

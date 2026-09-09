@@ -38,7 +38,9 @@ internal class Recipes : ModSystem
 		RecipeGroup.RegisterGroup("CopperBars", BaseGroup(ItemID.CopperBar, [ItemID.CopperBar, ItemID.TinBar]));
 		RecipeGroup.RegisterGroup("SilverBars", BaseGroup(ItemID.SilverBar, [ItemID.SilverBar, ItemID.TungstenBar]));
 		RecipeGroup.RegisterGroup("GoldBars", BaseGroup(ItemID.GoldBar, [ItemID.GoldBar, ItemID.PlatinumBar]));
-		RecipeGroup.RegisterGroup("Tier3HMBar", BaseGroup(ItemID.AdamantiteBar, [ItemID.AdamantiteBar, ItemID.TitaniumBar]));
+		RecipeGroup.RegisterGroup("Tier1HMBars", BaseGroup(ItemID.CobaltBar, [ItemID.CobaltBar, ItemID.PalladiumBar]));
+		RecipeGroup.RegisterGroup("Tier2HMBars", BaseGroup(ItemID.MythrilBar, [ItemID.MythrilBar, ItemID.OrichalcumBar]));
+		RecipeGroup.RegisterGroup("Tier3HMBars", BaseGroup(ItemID.AdamantiteBar, [ItemID.AdamantiteBar, ItemID.TitaniumBar]));
 		RecipeGroup.RegisterGroup("PHMEvilMaterial", BaseGroup(ItemID.ShadowScale, [ItemID.ShadowScale, ItemID.TissueSample]));
 		RecipeGroup.RegisterGroup("EvilMaterial", BaseGroup(ItemID.CursedFlame, [ItemID.CursedFlame, ItemID.Ichor]));
 		RecipeGroup.RegisterGroup("Shells", BaseGroup(ItemID.Seashell, [ItemID.Seashell, ItemID.TulipShell, ItemID.JunoniaShell, ItemID.LightningWhelkShell]));
