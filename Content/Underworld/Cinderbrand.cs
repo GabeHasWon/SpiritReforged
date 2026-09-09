@@ -215,12 +215,7 @@ public class Cinderbrand : ModItem
 			return false;
 		}
 
-		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
-		{
-			IDrawPixelated.PrimitiveDrawing = true;
-			_motionCone?.CustomDraw(spriteBatch);
-			IDrawPixelated.PrimitiveDrawing = false;
-		}
+		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => _motionCone?.CustomDraw(spriteBatch);
 	}
 
 	public override void SetStaticDefaults() => SpiritSets.IsSword[Type] = true;
