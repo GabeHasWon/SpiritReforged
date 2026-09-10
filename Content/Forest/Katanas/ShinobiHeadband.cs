@@ -1,10 +1,10 @@
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.PlayerCommon;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
 [AutoloadEquip(EquipType.Face)]
-public class ShinobiHeadband : EquippableItem
+public class ShinobiHeadband : ModItem, IFlagged
 {
 	public sealed class ShinobiHeadbandPlayer : ModPlayer
 	{
@@ -12,7 +12,7 @@ public class ShinobiHeadband : EquippableItem
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (Player.HasEquip<ShinobiHeadband>() && proj.whoAmI == Player.heldProj && ++_hitCount >= 3)
+			if (Player.HasFlag<ShinobiHeadband>() && proj.whoAmI == Player.heldProj && ++_hitCount >= 3)
 			{
 				_hitCount = 0;
 				Player.GetModPlayer<DashSwordPlayer>().internalCooldown = 0;

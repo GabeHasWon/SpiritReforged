@@ -88,4 +88,10 @@ public class Chain
 				segment.Draw(sB, texture, texture.Frame(), scale);
 		}
 	}
+
+	public void Draw(SpriteBatch sB, Texture2D texture, Rectangle source, float scale = 1)
+	{
+		foreach (var segment in Segments)
+			segment.Draw(sB, texture, source, scale);
+	}
 }

@@ -1,13 +1,12 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.PlayerCommon;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
 [AutoloadEquip(EquipType.Waist)]
-public class RoninSheath : EquippableItem
+public class RoninSheath : ModItem, IFlagged
 {
 	public const float Cooldown = 0.15f;
 	public const float Damage = 0.2f;
@@ -34,7 +33,7 @@ public class RoninSheath : EquippableItem
 
 		public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.HeldItem);
 
-		public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) => drawInfo.drawPlayer.HasEquip<RoninSheath>();
+		public override bool GetDefaultVisibility(PlayerDrawSet drawInfo) => drawInfo.drawPlayer.HasFlag<RoninSheath>();
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
@@ -47,7 +46,7 @@ public class RoninSheath : EquippableItem
 	{
 		public override void ModifyWeaponDamage(Item item, ref StatModifier damage)
 		{
-			if (Player.HasEquip<RoninSheath>() && SpiritSets.IsKatana[Player.HeldItem.type])
+			if (Player.HasFlag<RoninSheath>() && SpiritSets.IsKatana[Player.HeldItem.type])
 				damage *= Damage + 1;
 		}
 	}

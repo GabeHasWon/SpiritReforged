@@ -10,8 +10,22 @@ public interface IDrawHeld
 
 		protected override void Draw(ref PlayerDrawSet drawInfo)
 		{
-			if (drawInfo.drawPlayer.HeldItem.ModItem is IDrawHeld iHeld)
+			Item heldItem = drawInfo.drawPlayer.HeldItem;
+			if (heldItem.type < ItemID.Count) //A vanilla item
+			{
+				foreach (var global in heldItem.EntityGlobals)
+				{
+					if (global is IDrawHeld iHeld)
+					{
+						iHeld.DrawHeld(ref drawInfo);
+						return;
+					}
+				}
+			}
+			else if (heldItem.ModItem is IDrawHeld iHeld)
+			{
 				iHeld.DrawHeld(ref drawInfo);
+			}
 		}
 	}
 
