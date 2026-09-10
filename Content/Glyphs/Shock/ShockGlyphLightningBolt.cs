@@ -9,12 +9,48 @@ using Terraria.Audio;
 using System.IO;
 using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Content.Dusts;
+using SpiritReforged.Common.Multiplayer;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
 public partial class ShockGlyph
 {
-	public class ShockGlyphLightningBolt : ModProjectile, LightningSystem.ILightningProjectile
+	private class ShockPacket : PacketData
+	{
+		private readonly bool _crit;
+		private readonly short _npc;
+		private readonly int _damage;
+
+		public ShockPacket() : base() { }
+
+		public ShockPacket(short npc, int damage, bool crit)
+		{
+			_npc = npc;
+			_damage = damage;
+			_crit = crit;
+		}
+
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			short npc = reader.ReadInt16();
+			bool crit = reader.ReadBoolean();
+			int damage = reader.ReadInt32();
+
+			if (Main.netMode == NetmodeID.Server)
+				new ShockPacket(npc, damage, crit).Send(-1, whoAmI);
+			else if (Main.netMode == NetmodeID.MultiplayerClient)
+				ShockGlyphLightningBolt.LightningHit(Main.npc[npc], damage, crit);
+		}
+
+		public override void OnSend(ModPacket modPacket)
+		{
+			modPacket.Write(_npc);
+			modPacket.Write(_crit);
+			modPacket.Write(_damage);
+		}
+	}
+
+	public class ShockGlyphLightningBolt : ModProjectile, ShockGlyphLightningSystem.IDrawLightning
 	{
 		public override string Texture => AssetLoader.EmptyTexture;
 
@@ -30,9 +66,7 @@ public partial class ShockGlyph
 
 		public float Progress => 1f - Projectile.timeLeft / 40f;
 
-		public bool Invalid { get; set; }
 		public bool Dying;
-
 		public Vector2 startPos;
 
 		private VertexTrail[] _trails;
@@ -40,32 +74,20 @@ public partial class ShockGlyph
 		public override void SetDefaults()
 		{
 			Projectile.Size = new Vector2(64);
-
 			Projectile.DamageType = DamageClass.Generic;
-
 			Projectile.hostile = false;
 			Projectile.friendly = true;
-
 			Projectile.tileCollide = false;
-
 			Projectile.timeLeft = 40;
 			Projectile.extraUpdates = 5;
-
 			Projectile.penetrate = 1;
 			Projectile.stopsDealingDamageAfterPenetrateHits = true;
-
-			// TODO: Balance Adjustments here
 			Projectile.ArmorPenetration = Main.hardMode ? 20 : 10;
 		}
 
 		public override bool? CanHitNPC(NPC target) => target.whoAmI == TargetWhoAmI;
 
-		public override void OnKill(int timeLeft) 
-		{
-			Invalid = true;
-			LightningSystem.projectiles.Remove(this);
-		}
-		
+		public override void OnKill(int timeLeft) => ShockGlyphLightningSystem.DrawQueue.Remove(this);
 
 		public override void AI()
 		{
@@ -77,15 +99,54 @@ public partial class ShockGlyph
 
 			if (!Initialized)
 			{
-				LightningSystem.projectiles.Add(this);
+				if (Projectile.ai[2] == 1 && !Main.dedServ)
+				{
+					SoundEngine.PlaySound(ElectricSting, Projectile.Center);
+					SoundEngine.PlaySound(ElectricZap, Projectile.Center);
 
-				startPos = Projectile.Center;
-				Projectile.netUpdate = true;
+					for (int i = 0; i < 3; i++)
+					{
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+							Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
 
-				Delay = 10 * Main.rand.Next(7);
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+							Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
 
+						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+						Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
+
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+
+						pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
+						velocity = Main.rand.NextVector2Circular(4f, 4f);
+
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+					}
+
+					for (int i = 0; i < 5; i++)
+					{
+						Dust.NewDustPerfect(Projectile.Center, ModContent.DustType<YellowElectricDust>(), Main.rand.NextVector2CircularEdge(7f, 7f) * Main.rand.NextFloat(0.9f, 1.1f), 0, default, 0.65f).noGravity = true;
+						Dust.NewDustPerfect(Projectile.Center, DustID.Electric, Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.9f, 1.1f), 0, default, 0.65f).noGravity = true;
+					}
+
+					static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
+				}
+
+				ShockGlyphLightningSystem.DrawQueue.Add(this);
 				if (!Main.dedServ && _trails == null)
 					CreateTrail();
+
+				startPos = Projectile.Center;
+
+				if (Main.myPlayer == Projectile.owner)
+				{
+					ScreenshakeHelper.Shake(Projectile.Center, Main.rand.NextVector2Circular(1f, 1f), 1, 4, 10);
+
+					Projectile.netUpdate = true;
+					Delay = 10 * Main.rand.Next(7);
+				}
 
 				Initialized = true;
 			}
@@ -97,7 +158,6 @@ public partial class ShockGlyph
 			}
 
 			Color color = Color.Yellow * 0.66f;
-
 			float progress = EaseFunction.EaseCircularInOut.Ease(Progress);
 
 			if (Dying)
@@ -113,25 +173,23 @@ public partial class ShockGlyph
 					{
 						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(5f);
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
 					}
 
 					if (Main.rand.NextBool(25))
 					{
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
 						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 5f);
-						ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+						ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
 					}
 				}
 
 				Projectile.Center = Vector2.Lerp(startPos, Main.npc[TargetWhoAmI].Center, Progress) + Main.rand.NextVector2CircularEdge(11f, 11f) * MathHelper.Lerp(0.4f, 1f, 1f - Progress);
 			}
 
-			if (Projectile.timeLeft == 1 && !Dying && Main.myPlayer == Projectile.owner)
+			if (Projectile.timeLeft == 1 && !Dying)
 			{
 				Dying = true;
-				Projectile.netUpdate = true;
-
 				Projectile.timeLeft = 200;
 				Projectile.Center = Main.npc[TargetWhoAmI].Center + Main.npc[TargetWhoAmI].velocity;
 			}
@@ -141,26 +199,31 @@ public partial class ShockGlyph
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				new ShockPacket((short)target.whoAmI, damageDone, hit.Crit).Send();
+
+			LightningHit(target, damageDone, hit.Crit);
+		}
+
+		public static void LightningHit(NPC target, int damageDone, bool crit)
+		{
 			var rect = target.getRect();
 
 			int damage = Math.Max(damageDone, 1);
 
-			int idx = CombatText.NewText(rect, Color.White, damage, hit.Crit);
-
-			if (Main.netMode == NetmodeID.MultiplayerClient)
-				NetMessage.SendData(MessageID.CombatTextInt, number: (int)Color.White.PackedValue, number2: rect.X, number3: rect.Y, number4: damage);
+			int idx = CombatText.NewText(rect, Color.White, damage, crit);
 
 			ColoredCombatText.AddCombatText(idx, Color.Cyan, Color.DarkCyan);
-			
+
 			if (Main.dedServ)
 				return;
 
 			for (int i = 0; i < 2; i++)
 			{
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+				ParticleHandler.SpawnParticle(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
 					Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
 
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+				ParticleHandler.SpawnParticle(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
 					Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
 
 				Vector2 pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);

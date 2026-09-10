@@ -3,6 +3,7 @@ using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
@@ -28,6 +29,20 @@ internal class BackpackPlayer : ModPlayer
 	private BackpackState _state = BackpackState.None;
 	private BackpackState _oldState = BackpackState.None;
 
+	/// <summary>
+	/// Whether the given player has the given item in the inventory or in a worn backpack.
+	/// </summary>
+	public static bool HasItemInInventoryOrBackpack(Player player, int id)
+	{
+		if (player.HasItem(id))
+			return true;
+
+		if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			return player.HasItem(id, back.Items);
+
+		return false;
+	}
+
 	#region detours
 	public override void Load()
 	{
@@ -36,6 +51,18 @@ internal class BackpackPlayer : ModPlayer
 		On_Player.TakeUnityPotion += CheckBackpacksForWormholePot;
 		On_Player.HasUnityPotion += AddUnityPotionCheck;
 		On_Player.QuickBuff += On_Player_QuickBuff;
+		On_Player.HasItemInAnyInventory += AddBackpackCheck;
+	}
+
+	private bool AddBackpackCheck(On_Player.orig_HasItemInAnyInventory orig, Player self, int type)
+	{
+		if (orig(self, type))
+			return true;
+
+		if (self.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			return self.HasItem(type, back.Items);
+
+		return false;
 	}
 
 	private bool AddUnityPotionCheck(On_Player.orig_HasUnityPotion orig, Player self)

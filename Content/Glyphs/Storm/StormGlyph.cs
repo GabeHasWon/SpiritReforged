@@ -1,4 +1,4 @@
-using SpiritReforged.Common;
+/*using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
@@ -503,6 +503,10 @@ public class StormGlyph : GlyphItem
 			GameShaders.Armor.BindShader(Type, new StormGlyphShaderData(AssetLoader.LoadedShaders["GlyphShader"], "mainPass"));
 	}
 
+	// rest in piece storm glyph
+	// TODO: reimplement
+	public override bool IsLoadingEnabled(Mod mod) => false;
+
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 28;
@@ -731,4 +735,4 @@ public class StormGlyphShaderData(Asset<Effect> shader, string shaderPass) : Arm
 
 		Apply();
 	}
-}
+}*/

@@ -1,12 +1,12 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Botanist.Tiles;
 
-public class Wheatgrass : ModTile, ICutAttempt, ISwayTile
+public class Wheatgrass : ModTile, ICutAttempt, WindTileRenderer.IDrawInWind
 {
 	public const int Styles = 9;
 
@@ -39,31 +39,30 @@ public class Wheatgrass : ModTile, ICutAttempt, ISwayTile
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		var t = Main.tile[i, j];
-		var texture = TextureAssets.Tile[Type].Value;
-		int sourceHeight = (t.TileFrameY == 18) ? 18 : 16;
+		Tile tile = Main.tile[i, j];
+		int sourceHeight = (tile.TileFrameY == 18) ? 18 : 16;
 
 		for (int x = 0; x < 3; x++)
 		{
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(-4 + x * 4, 0);
-			var source = new Rectangle((t.TileFrameX + 54 * x) % (18 * Styles), t.TileFrameY, 16, sourceHeight);
-			var effects = ((i + x) % 2 == 0) ? SpriteEffects.FlipHorizontally : default;
+			Vector2 offset = new(-4 + x * 4, 0);
+			Rectangle source = new((tile.TileFrameX + 54 * x) % (18 * Styles), tile.TileFrameY, 16, sourceHeight);
+			SpriteEffects effects = ((i + x) % 2 == 0) ? SpriteEffects.FlipHorizontally : 0;
 
-			spriteBatch.Draw(texture, position + offset, source, Lighting.GetColor(i, j), rotation, origin, 1, effects, 0);
+			spriteBatch.Draw(Helpers.GetTileTextureValue(tile), position + offset, source, Lighting.GetColor(i, j), rotation, origin, 1, effects, 0);
 		}
 	}
 
-	public float Physics(Point16 topLeft)
+	float WindTileRenderer.IDrawInWind.GetWindStrength(int i, int j)
 	{
-		var data = TileObjectData.GetTileData(Framing.GetTileSafely(topLeft));
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, TileSwaySystem.SunflowerWindCounter);
+		if (TileObjectData.GetTileData(Framing.GetTileSafely(i, j)) is TileObjectData tileObjectData)
+		{
+			float rotation = WorldGen.InAPlaceWithWind(i, j, tileObjectData.Width, tileObjectData.Height) ? Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.SunflowerWindCounter) : 0f;
+			return (rotation + WindTileRenderer.GetHighestWindGridPushComplex(i, j, tileObjectData.Width, tileObjectData.Height, 30, 2f, 1, true)) * 1.5f;
+		}
 
-		if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, data.Width, data.Height))
-			rotation = 0f;
-
-		return (rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, data.Width, data.Height, 30, 2f, 1, true)) * 1.5f;
+		return 0f;
 	}
 
 	public bool OnCutAttempt(int i, int j)

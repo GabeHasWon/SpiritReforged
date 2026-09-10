@@ -3,6 +3,7 @@ using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Content.Aether.Items;
 using System.IO;
 using System.Linq;
+using Terraria;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 
@@ -12,21 +13,19 @@ public abstract class BackpackItem : ModItem
 {
 	protected override bool CloneNewInstances => true;
 
-	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(SlotCount);
-
-	/// <summary> The absolute number of slots this backpack has. </summary> //Check gameMenu to assist with LoadData
-	public int SlotCount => slotCount + ((Main.gameMenu || Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(Items.Length);
 
 	public Item[] Items
 	{
 		get
 		{
-			_items ??= Enumerable.Repeat(new Item(), SlotCount).ToArray();
+			int count = slotCount + ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+			_items ??= Enumerable.Repeat(new Item(), count).ToArray();
 
-			if (_items.Length != SlotCount) //SlotCount has changed, readjust the array and preserve contents
+			if (_items.Length < count) //Length has increased, resize the array and preserve contents
 			{
 				var preScale = (Item[])_items.Clone();
-				_items = Enumerable.Repeat(new Item(), SlotCount).ToArray();
+				_items = Enumerable.Repeat(new Item(), count).ToArray(); //Elongate the array
 
 				for (int i = 0; i < _items.Length; i++)
 				{
@@ -37,11 +36,31 @@ public abstract class BackpackItem : ModItem
 
 			return _items;
 		}
+		set => _items = value;
 	}
 
 	private Item[] _items;
+
 	/// <summary> The number slots this backpack has by default. </summary>
 	protected int slotCount;
+
+	public int UsedSlotCount(Player player) => slotCount 
+		+ ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+
+	/// <summary>
+	/// Solely used to make sure _items isn't copied between instances when spawned by the Hiker.
+	/// </summary>
+	internal void EnsureNewItemArray(Player player)
+	{
+		int length = _items?.Length ?? UsedSlotCount(player);
+		_items = new Item[length];
+		
+		for (int i = 0; i < length; ++i)
+		{
+			_items[i] = new Item(0);
+			_items[i].TurnToAir();
+		}
+	}
 
 	public override ModItem Clone(Item newEntity)
 	{
@@ -77,7 +96,7 @@ public abstract class BackpackItem : ModItem
 		if (!BackpackUISlot.CanClickItem(player.GetModPlayer<BackpackPlayer>().backpack))
 			return;
 
-		var oldPack = player.GetModPlayer<BackpackPlayer>().backpack;
+		Item oldPack = player.GetModPlayer<BackpackPlayer>().backpack;
 
 		player.GetModPlayer<BackpackPlayer>().backpack = Item.Clone();
 		Item.SetDefaults(oldPack.type);
@@ -85,14 +104,21 @@ public abstract class BackpackItem : ModItem
 
 	public override void NetSend(BinaryWriter writer)
 	{
-		foreach (var item in Items)
+		writer.Write((byte)Items.Length); //Write the length of the array
+
+		foreach (Item item in Items)
 			ItemIO.Send(item, writer, true);
 	}
 
 	public override void NetReceive(BinaryReader reader)
 	{
-		foreach (var item in Items)
-			ItemIO.Receive(item, reader, true);
+		int length = reader.ReadByte(); //Read the length of the array
+		List<Item> items = [];
+
+		for (int i = 0; i < length; i++)
+			items.Add(ItemIO.Receive(reader, true));
+
+		Items = items.ToArray();
 	}
 
 	public override void SaveData(TagCompound tag)
@@ -103,7 +129,7 @@ public abstract class BackpackItem : ModItem
 		{
 			Item item = Items[i];
 
-			if (item != null && !item.IsAir) //Don't bother saving air
+			if (item?.IsAir == false) //Don't bother saving air
 				packCompound["item" + i] = ItemIO.Save(item);
 		}
 
@@ -124,16 +150,21 @@ public abstract class BackpackItem : ModItem
 		}
 		else //New loading
 		{
+			List<Item> loaded = [];
 			foreach (var item in packCompound)
 			{
 				if (packCompound.TryGet(item.Key, out TagCompound value))
 				{
 					int index = int.Parse(item.Key[item.Key.Length - 1].ToString()); //The last value in the key is always an integer corresponding to the slot
-					
-					if (index < Items.Length)
-						Items[index] = ItemIO.Load(value);
+
+					while (index > loaded.Count)
+						loaded.Add(new()); //Fill the empty space to ensure index is consistent
+
+					loaded.Add(ItemIO.Load(value));
 				}
 			}
+
+			Items = loaded.ToArray(); //Load all items regardless of normal slot limit
 		}
 	}
 }

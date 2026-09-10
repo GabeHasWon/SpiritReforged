@@ -27,7 +27,7 @@ Records: {
 	Scrying: 被破坏时能揭示大片地图。
 	Biome: 比常见的罐子包含更多种类的战利品。
 	Boulder: 受到扰动时会沿着地面滚动。
-	// Wax: Imbued with potent magical energies.
+	Wax: 注入了强效魔法能量。
 }
 
 FablesGraves: {
@@ -47,5 +47,3 @@ DustyTomb.MapEntry: 尘埃陵墓
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: 「气奥」苔藓
 RadonMoss.MapEntry: 氡苔藓
-// EnchantedAnvil.MapEntry: Enchanted Anvil
-// EnchantedWorkbench.MapEntry: Enchanted Workbench

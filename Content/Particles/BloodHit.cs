@@ -1,12 +1,11 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
-using static SpiritReforged.Content.Glyphs.Radiant.RadiantGlyph;
 
 namespace SpiritReforged.Content.Particles;
 public class BloodHit : Particle
 {
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-	public override ParticleLayer DrawLayer => ParticleLayer.BelowNPC;
+	public override ParticleLayer DrawLayer => ParticleLayer.AboveNPC;
 
 	public readonly int variant;
 	private readonly Entity Parent;

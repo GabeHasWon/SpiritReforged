@@ -27,7 +27,7 @@ Records: {
 	Scrying: При разрушении открывает небольшую часть карты.
 	Biome: Содержит больше разнообразной добычи, чем обычные горшки.
 	Boulder: Покатится по земле, если его задеть.
-	// Wax: Imbued with potent magical energies.
+	Wax: Полон могущественной магической энергии.
 }
 
 FablesGraves: {
@@ -47,5 +47,3 @@ DustyTomb.MapEntry: Запылившийся гроб
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: "{$Items.OganessonMossItem.DisplayName}"
 RadonMoss.MapEntry: "{$Items.RadonMossItem.DisplayName}"
-// EnchantedAnvil.MapEntry: Enchanted Anvil
-// EnchantedWorkbench.MapEntry: Enchanted Workbench

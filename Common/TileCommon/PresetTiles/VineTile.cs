@@ -1,14 +1,11 @@
 ﻿using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
-using static Terraria.GameContent.Drawing.TileDrawing;
+using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class VineTile : ModTile, ISwayTile
+public abstract class VineTile : ModTile
 {
-	public int Style => (int)TileCounterType.Vine;
-
 	public override void SetStaticDefaults()
 	{
 		Main.tileBlockLight[Type] = true;
@@ -17,8 +14,8 @@ public abstract class VineTile : ModTile, ISwayTile
 		Main.tileLavaDeath[Type] = true;
 
 		TileID.Sets.IsVine[Type] = true;
-		TileID.Sets.VineThreads[Type] = true;
 		TileID.Sets.ReplaceTileBreakDown[Type] = true;
+		WindTileRenderer.TileDrawInWind[Type] = TileDrawing.TileCounterType.Vine;
 
 		HitSound = SoundID.Grass;
 		DustType = DustID.Grass;

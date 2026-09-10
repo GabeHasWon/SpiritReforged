@@ -12,12 +12,14 @@ public abstract class GrassTile : ModTile
 		Main.tileBlockLight[Type] = true;
 		Main.tileBlendAll[Type] = true;
 
-		this.Merge(DirtType, TileID.Grass);
-		this.AnchorSelfTo(TileID.Sunflower);
 		TileID.Sets.Grass[Type] = true;
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 		TileID.Sets.NeedsGrassFramingDirt[Type] = DirtType;
 		TileID.Sets.NeedsGrassFraming[Type] = true;
+
+		TileMethods.Merge(DirtType, TileID.Grass);
+		if (TileObjectData.GetTileData(TileID.Sunflower, 0) is TileObjectData data && data.AnchorValidTiles != null)
+			data.AnchorValidTiles = [.. data.AnchorValidTiles, Type]; //Allow sunflowers to anchor to this type
 	}
 
 	public override bool CanExplode(int i, int j)

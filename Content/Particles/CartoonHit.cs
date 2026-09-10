@@ -27,7 +27,6 @@ public class CartoonHit : Particle
 
 		float rotation = Rotation - MathHelper.PiOver2;
 
-		//spriteBatch.Draw(texture, Position - Main.screenPosition + new Vector2(2).RotatedBy(rotation), source, Color.White * 0.5f * (1f - Progress), rotation, source.Size() / 2, Scale, 0, 0);
-		spriteBatch.Draw(texture, Position - Main.screenPosition, source, Color.White * (1f - Progress), rotation, source.Size() / 2, Scale, 0, 0);
+		spriteBatch.Draw(texture, Position - Main.screenPosition, source, Color.White, rotation, source.Size() / 2, Scale * (1f - Progress), 0, 0);
 	}
 }

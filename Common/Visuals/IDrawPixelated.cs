@@ -1,43 +1,67 @@
-﻿using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals.RenderTargets;
 
 namespace SpiritReforged.Common.Visuals;
 
 public interface IDrawPixelated
 {
-	public sealed class PixelatedDrawSystem : ModSystem
+	public sealed class PixelatedDrawLoader : ILoadable
 	{
 		public static readonly EasyTarget PixelTarget = new(new Vector2(0.5f));
 
-		public override void Load()
+		void ILoadable.Load(Mod mod)
 		{
 			TargetSetup.DrawIntoRendertargets += SetupPixelTarget;
 			On_Main.DrawItems += DrawPixelTarget;
 		}
 
-		private static void SetupPixelTarget() //TODO: DEACTIVATE WHEN NOT IN USE
+		void ILoadable.Unload() { }
+
+		private static void SetupPixelTarget()
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-			graphics.SetRenderTarget(PixelTarget.Value);
-			graphics.Clear(Color.Transparent);
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
-
-			graphics.BlendState = BlendState.AlphaBlend; //Required for prims
-
+			List<IDrawPixelated> pixelQueue = []; //Setup queue
 			foreach (Item item in Main.ActiveItems)
 			{
 				if (item.ModItem is IDrawPixelated iDrawPixelated)
-					iDrawPixelated.DrawPixelated(spriteBatch);
+					pixelQueue.Add(iDrawPixelated);
 			}
 
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
 				if (projectile.ModProjectile is IDrawPixelated iDrawPixelated)
-					iDrawPixelated.DrawPixelated(spriteBatch);
+					pixelQueue.Add(iDrawPixelated);
 			}
 
-			spriteBatch.End();
+			foreach (Particle.Particle particle in ParticleHandler.Particles)
+			{
+				if (particle is null || particle.TimeActive > particle.MaxTime)
+					continue;
+
+				if (particle is IDrawPixelated iDrawPixelated)
+				{
+					pixelQueue.Add(iDrawPixelated);
+				}
+			}
+
+			graphics.SetRenderTarget(PixelTarget.Value);
+			graphics.Clear(Color.Transparent);
+
+			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
+			{
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
+				graphics.BlendState = BlendState.AlphaBlend; //Required for prims
+				DrawingPixelated = true;
+
+				foreach (IDrawPixelated iDrawPixelated in pixelQueue)
+					iDrawPixelated.DrawPixelated(spriteBatch);
+
+				DrawingPixelated = false;
+				spriteBatch.End();
+			}
+
 			graphics.SetRenderTarget(null);
 		}
 
@@ -57,8 +81,8 @@ public interface IDrawPixelated
 		}
 	}
 
-	/// <summary> Sets the view to <see cref="Matrix.Identity"/> when drawing primitives. </summary>
-	public static bool PrimitiveDrawing { get; set; }
+	/// <summary> Whether pixelated effects are currently being drawn via <see cref="DrawPixelated"/>. </summary>
+	public static bool DrawingPixelated { get; private set; }
 
 	public void DrawPixelated(SpriteBatch spriteBatch);
 

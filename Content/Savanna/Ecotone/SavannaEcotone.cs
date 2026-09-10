@@ -181,7 +181,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 				return true;
 			}
 		}
-		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Jungle") && EcotoneSurfaceMapping.OnSurface(x), false) is EcotoneSurfaceMapping.EcotoneEntry entry
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Jungle") && EcotoneSurfaceMapping.OnSurface(x), true) is EcotoneSurfaceMapping.EcotoneEntry entry
 			&& !entry.Definition.Ecotone)
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
@@ -263,7 +263,10 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 				if (depth >= 0)
 				{
 					if ((depth < 15 || tile.WallType == WallID.None) && !InvalidWall(tile.WallType) && !InvalidWall(Main.tile[x, y + 1].WallType) && !Main.wallDungeon[tile.WallType])
+					{
 						tile.HasTile = true;
+						tile.LiquidAmount = 0;
+					}
 
 					if (tile.HasTile && !SavannaGenSets.SavannaCanReplace[tile.TileType] && !TileID.Sets.Ore[tile.TileType])
 						continue; //Can this tile be replaced by type?

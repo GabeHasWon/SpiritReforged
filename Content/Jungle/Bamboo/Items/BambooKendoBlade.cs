@@ -394,7 +394,7 @@ public class KendoBladeLunge : ModProjectile
 		}
 
 		trail = TextureAssets.Projectile[874].Value;
-		Main.EntitySpriteDraw(trail, owner.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, (lightColor with { A = 0 }) * opacity, 
+		Main.EntitySpriteDraw(trail, owner.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY), null, (lightColor with { A = 0 }) * opacity,
 			angle, trail.Frame().Left(), new Vector2(1f / trail.Width * owner.Distance(lastPosition), .25f), SpriteEffects.None, 0);
 		#endregion
 

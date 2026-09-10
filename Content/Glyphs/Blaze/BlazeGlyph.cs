@@ -1,6 +1,8 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
@@ -13,6 +15,12 @@ namespace SpiritReforged.Content.Glyphs.Blaze;
 
 public class BlazeGlyph : GlyphItem
 {
+	public const float MAX_CRIT_BONUS = 20f; // the critical strike chance bonus when the player is at 1hp
+	public const float MIN_CRIT_BONUS = 5f; // the critical strike chance bonus when the player is at full hp
+
+	public const float MAX_DAMAGE_BONUS = 0.4f; // the damage bonus when the player is at 1hp
+	public const float MIN_DAMAGE_BONUS = 0.1f; // the damage bonus when the player is at full hp
+
 	public sealed class BlazePlayer : ModPlayer
 	{
 		public override void UpdateBadLifeRegen()
@@ -22,7 +30,7 @@ public class BlazeGlyph : GlyphItem
 				if (Player.lifeRegen > 0)
 					Player.lifeRegen = 0;
 
-				Player.lifeRegen -= (int)Math.Max(6, Player.statLife * 0.1f);
+				Player.lifeRegen -= 8 + (int)(Player.statLife * 0.075f);
 			}
 		}
 
@@ -41,13 +49,19 @@ public class BlazeGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
-				target.AddBuff(BuffID.OnFire, 90);
-
 				if (!Player.HasBuff<BlazeDebuff>())
-					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
+					BlazeHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
+				target.AddBuff(BuffID.OnFire, 90);
 				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
-				SpawnHitEffects(target.Hitbox.ClosestPointInRect(Player.Center), target.DirectionTo(Player.Center).ToRotation());
+
+				Vector2 position = target.Hitbox.ClosestPointInRect(Player.Center);
+				float rotation = target.DirectionTo(Player.Center).ToRotation();
+
+				BlazeHitEffects(position, rotation, 1f);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(BlazeHitEffects), -1, -1, position, rotation, 1f);
 			}
 		}
 
@@ -56,17 +70,27 @@ public class BlazeGlyph : GlyphItem
 			if (proj.GetGlyph().ItemType == ModContent.ItemType<BlazeGlyph>())
 			{
 				if (!Player.HasBuff<BlazeDebuff>())
-					SpawnHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
+					BlazeHitEffects(Player.Center, -MathHelper.PiOver2, 1.5f);
 
 				target.AddBuff(BuffID.OnFire, 90);
-
 				Player.AddBuff(ModContent.BuffType<BlazeDebuff>(), 60);
-				SpawnHitEffects(proj.Center, proj.DirectionTo(Player.Center).ToRotation());
+
+				Vector2 position = proj.Center;
+				float rotation = proj.DirectionTo(Player.Center).ToRotation();
+
+				BlazeHitEffects(position, rotation, 1f);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(BlazeHitEffects), -1, -1, position, rotation, 1f);
 			}
 		}
 
-		public void SpawnHitEffects(Vector2 position, float angle, float scale = 1f)
+		[NetSynced(true)]
+		public static void BlazeHitEffects(Vector2 position, float angle, float scale = 1f)
 		{
+			if (Main.dedServ)
+				return;
+
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
 
 			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.DarkOrange.Additive(), 0.3f * scale, 30, 0)
@@ -93,7 +117,7 @@ public class BlazeGlyph : GlyphItem
 					dust.fadeIn = 1.1f;
 				dust.noLightEmittence = true;
 
-				var particle = new EmberParticle(position, Main.rand.NextVector2Circular(1f, 1f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
+				EmberParticle particle = new(position, Main.rand.NextVector2Circular(1f, 1f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
 				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
 				ParticleHandler.SpawnParticle(particle);
 
@@ -107,20 +131,14 @@ public class BlazeGlyph : GlyphItem
 						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.15f, PitchVariance = 0.15f }, position);
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.15f, 0.15f * scale, EaseFunction.EaseQuadOut, 60, false)
-					{
-						Layer = ParticleLayer.BelowNPC
-					});
+					{ Layer = ParticleLayer.BelowNPC });
 
 					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.2f, 0.1f * scale, EaseFunction.EaseQuadOut, 60, false)
-					{
-						Layer = ParticleLayer.BelowNPC
-					});
+					{ Layer = ParticleLayer.BelowNPC });
 				}
 
 				ParticleHandler.SpawnParticle(new FireParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f) * scale, EaseFunction.EaseQuadOut, 40)
-				{
-					Layer = ParticleLayer.BelowNPC
-				});
+				{ Layer = ParticleLayer.BelowNPC });
 			}
 		}
 	}
@@ -139,26 +157,25 @@ public class BlazeGlyph : GlyphItem
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (!Main.dedServ)
+			if (Main.dedServ)
+				return;
+
+			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
+
+			if (Main.rand.NextBool())
 			{
-				Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
+				EmberParticle particle = new(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
+				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
 
-				if (Main.rand.NextBool())
-				{
-					var particle = new EmberParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
-					particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
-					ParticleHandler.SpawnParticle(particle);
-				}
-
-				if (Main.rand.NextBool(6))
-					ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40)
-					{
-						Layer = ParticleLayer.BelowNPC
-					});
-
-				if (Main.rand.NextBool(4))
-					Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
+				ParticleHandler.SpawnParticle(particle);
 			}
+
+			if (Main.rand.NextBool(6))
+				ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40)
+				{ Layer = ParticleLayer.BelowNPC });
+
+			if (Main.rand.NextBool(4))
+				Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
 		}
 	}
 
@@ -171,7 +188,7 @@ public class BlazeGlyph : GlyphItem
 		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
 		if (!Main.dedServ)
 		{
-			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
+			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWaxShaderDummy>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
 			GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
 		}			
 	}
@@ -186,11 +203,12 @@ public class BlazeGlyph : GlyphItem
 
 	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
-		item.damage += (int)Math.Round(item.damage * 0.25f);
-		item.crit += 10;
+		MoRHelper.OverrideElement(item, MoRHelper.Fire);
 
 		base.OnApplyGlyph(item, context);
 	}
+
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Fire, -1);
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
@@ -199,7 +217,7 @@ public class BlazeGlyph : GlyphItem
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 8f) * 4;
 			DrawData item = input;
 			item.position += offset;
-			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWax>());
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWaxShaderDummy>());
 
 			drawInfo.DrawDataCache.Add(item);
 		}
@@ -318,6 +336,8 @@ public class BlazeGlyph : GlyphItem
 		}
 	}
 
+	public override void ModifyGlyphedItemCrit(Player player, ref float crit) => crit += MathHelper.Lerp(MIN_CRIT_BONUS, MAX_CRIT_BONUS, 1f - player.statLife / (float)player.statLifeMax2);
+	public override void ModifyGlyphedItemDamage(Player player, ref StatModifier damage) => damage += MathHelper.Lerp(MIN_DAMAGE_BONUS, MAX_DAMAGE_BONUS, 1f - player.statLife / (float)player.statLifeMax2);
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		if (Main.dedServ)

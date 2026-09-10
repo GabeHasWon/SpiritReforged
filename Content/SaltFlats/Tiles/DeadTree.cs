@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -58,16 +57,16 @@ public class DeadTree : CustomTree
 		Tile left = Framing.GetTileSafely(i - 1, j);
 		Tile top = Framing.GetTileSafely(i, j - 1);
 
-		if (top.HasTileType(Type))
+		if (top.Active(Type))
 		{
-			if (left.HasTileType(Type) && right.HasTileType(Type))
+			if (left.Active(Type) && right.Active(Type))
 				tile.TileFrameX = 14 * FrameSize;
-			else if (right.HasTileType(Type))
+			else if (right.Active(Type))
 				tile.TileFrameX = 12 * FrameSize;
-			else if (left.HasTileType(Type))
+			else if (left.Active(Type))
 				tile.TileFrameX = 13 * FrameSize;
 		}
-		else if (!left.HasTileType(Type) && !right.HasTileType(Type) && tile.TileFrameX >= FrameSize * 15)
+		else if (!left.Active(Type) && !right.Active(Type) && tile.TileFrameX >= FrameSize * 15)
 		{
 			WorldGen.KillTile(i, j);
 		}
@@ -77,12 +76,12 @@ public class DeadTree : CustomTree
 
 	public override void DrawTreeBody(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
 		Tile tile = Main.tile[i, j];
 		Rectangle source = new(tile.TileFrameX, 0, FrameSize - 2, FrameSize - 4);
-		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		return;
@@ -92,11 +91,11 @@ public class DeadTree : CustomTree
 	{
 		const int frameHeight = 20; //The total height of all trunk frames
 
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
-		float rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, TileSwaySystem.TreeWindCounter) * 0.05f;
+		float rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, WindTileRenderer.TreeWindCounter) * 0.05f;
 		int tileFrameX = i;
 
 		if (FindSegment(i, j) is SegmentType.LeafyTop) //Draw treetops

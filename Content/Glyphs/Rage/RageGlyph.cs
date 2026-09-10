@@ -2,11 +2,11 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using System;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Shaders;
@@ -21,9 +21,11 @@ public class RageGlyph : GlyphItem
 
 		public override void Update(Player player, ref int buffIndex)
 		{
-			if (player.GetModPlayer<RagePlayer>().overflowDamage > 0)
-				// find the stack with the most timer and use that for the time display
+			if (player.GetModPlayer<RagePlayer>().OverflowDamage > 0)
+			{
+				// find the stack with the greatest timer and use that for the time display
 				player.buffTime[buffIndex] = player.GetModPlayer<RagePlayer>().overflowDecayTimer;
+			}
 			else
 			{
 				player.DelBuff(buffIndex);
@@ -33,10 +35,10 @@ public class RageGlyph : GlyphItem
 
 		public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 		{
-			int dmg = Main.LocalPlayer.GetModPlayer<RagePlayer>().overflowDamage;
+			int dmg = Main.LocalPlayer.GetModPlayer<RagePlayer>().OverflowDamage;
 
-			buffName = "Wrathful Damage [" + dmg + "]";
-			tip = $"Stored damage: {dmg}";
+			buffName = Language.GetTextValue("Mods.SpiritReforged.Buffs.RageGlyphBuff.DisplayName", dmg);
+			tip = Language.GetTextValue("Mods.SpiritReforged.Buffs.RageGlyphBuff.Description", dmg);
 			rare = ItemRarityID.Red;
 		}
 
@@ -45,7 +47,7 @@ public class RageGlyph : GlyphItem
 			RagePlayer mp = Main.LocalPlayer.GetModPlayer<RagePlayer>();
 			float lerp = mp.fadeInTimer / 20f;
 			float scale = MathHelper.Lerp(0.8f, 1f, lerp);
-			string text = mp.overflowDamage.ToString();
+			string text = mp.OverflowDamage.ToString();
 
 			var drawColor = Color.Lerp(Color.Red, Color.OrangeRed, lerp);
 			Vector2 shake = Main.rand.NextVector2Circular(0.5f, 0.5f) * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.5f);
@@ -56,21 +58,34 @@ public class RageGlyph : GlyphItem
 
 	public sealed class RagePlayer : ModPlayer
 	{
-		// what percentage of overflow damage should be stored
-		public const float OVERFLOW_DAMAGE_MULT = 2f;
-		public const float DAMAGE_TAKEN_MULT = 1f;
+		public static readonly Asset<Texture2D> RageIcon = DrawHelpers.RequestLocal<RagePlayer>("RageGlyph_Icon", false);
 
-		public bool activateOverflow;
-		public int overflowDamage;
+		public const float OVERFLOW_DAMAGE_MULT = 2.25f;
+		public const float DAMAGE_TAKEN_MULT = 1.5f;
+		public const int OVERFLOW_DECAY_MAX = 600;
+
+		public int OverflowDamage
+		{
+			get => Math.Min(_overflowDamage, Main.hardMode ? 2500 : 500);
+			set
+			{
+				if (value != 0)
+					overflowDecayTimer = OVERFLOW_DECAY_MAX;
+
+				_overflowDamage = value;
+			}
+		}
+
 		public int overflowDecayTimer;
-		// we need to cache npc life before every hit in case they die (to calculate rage overflow damage)
-		// target.life would be always 0 in OnHitNPC
-		private int _npcLifeBeforeDeath;
 
 		// drawing
 		public int fadeOutTimer;
 		public int fadeInTimer;
+
 		private List<Vector2> _oldPositions;
+		private int _overflowDamage;
+
+		public static bool CanActivateRage(NPC npc) => npc.chaseable && npc.lifeMax > 5 && !npc.dontTakeDamage && !npc.immortal && !npc.friendly;
 
 		public override void Load() => On_Main.DrawCachedProjs += DrawRage;
 
@@ -79,8 +94,7 @@ public class RageGlyph : GlyphItem
 			orig(self, projCache, startSpriteBatch);
 
 			SpriteBatch sb = Main.spriteBatch;
-
-			var rageIcon = ModContent.Request<Texture2D>("SpiritReforged/Content/Glyphs/Rage/RageGlyphAnger").Value;
+			Texture2D rageIcon = RageIcon.Value;
 
 			if (startSpriteBatch)
 				sb.BeginDefault();
@@ -88,7 +102,7 @@ public class RageGlyph : GlyphItem
 			if (projCache.Equals(Main.instance.DrawCacheProjsOverPlayers))
 				foreach (Player player in Main.ActivePlayers)
 				{
-					if (!player.TryGetModPlayer(out RagePlayer ragePlayer) || ragePlayer.overflowDamage <= 0 && ragePlayer.fadeOutTimer <= 0)
+					if (!player.TryGetModPlayer(out RagePlayer ragePlayer) || ragePlayer.OverflowDamage <= 0 && ragePlayer.fadeOutTimer <= 0)
 						continue;
 
 					float scale = 1f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.5f);
@@ -133,16 +147,18 @@ public class RageGlyph : GlyphItem
 		{
 			if (Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
 			{
-				overflowDamage += (int)(info.Damage * DAMAGE_TAKEN_MULT);
-				overflowDecayTimer = 600;
+				OverflowDamage += (int)(info.Damage * DAMAGE_TAKEN_MULT);
 
-				SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, Player.Center);
-				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Player.Center);
-
-				for (int i = 0; i < 7; i++)
+				if (!Main.dedServ)
 				{
-					ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
-					ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+					SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, Player.Center);
+					SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, Player.Center);
+
+					for (int i = 0; i < 7; i++)
+					{
+						ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+						ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+					}
 				}
 			}
 		}
@@ -156,14 +172,9 @@ public class RageGlyph : GlyphItem
 				fadeInTimer--;
 
 			if (overflowDecayTimer > 0)
-			{
 				overflowDecayTimer--;
-			}
-			else if (overflowDamage > 0)
-			{
-				overflowDamage = 0;
+			else if (OverflowDamage > 0)
 				Clear();
-			}
 
 			if (!Main.dedServ)
 			{
@@ -184,7 +195,7 @@ public class RageGlyph : GlyphItem
 			//if (Player.HeldItem.GetGlyph().ItemType != ModContent.ItemType<RageGlyph>() && overflowDamage > 0)
 			//	Clear();
 
-			if (!Main.dedServ && overflowDamage > 0)
+			if (!Main.dedServ && OverflowDamage > 0)
 			{
 				float scale = 1f + 0.15f * (float)Math.Sin(Main.GlobalTimeWrappedHourly * 3.5f);
 
@@ -200,89 +211,87 @@ public class RageGlyph : GlyphItem
 		{
 			_oldPositions.Clear();
 			fadeOutTimer = 10;
-			overflowDamage = 0;
-			activateOverflow = false;
-			_npcLifeBeforeDeath = 0;
-		}
-
-		public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
-		{
-			if (item.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
-				_npcLifeBeforeDeath = target.life;
-		}
-
-		public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
-		{
-			if (proj.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
-				_npcLifeBeforeDeath = target.life;
+			OverflowDamage = 0;
 		}
 
 		public override void OnHitNPCWithItem(Item item, NPC target, NPC.HitInfo hit, int damageDone)
 		{
 			if (item.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
-				HitEffects(target, damageDone);
+			{
+				RageHitEffects(target, Player);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player);
+			}
 		}
 
 		public override void OnHitNPCWithProj(Projectile proj, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			// Rage hits can't proc rage
 			if (proj.type != ModContent.ProjectileType<RageHit>() && proj.GetGlyph().ItemType == ModContent.ItemType<RageGlyph>())
-				HitEffects(target, damageDone);
+			{
+				RageHitEffects(target, Player);
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+					MultiplayerLoader.Send(nameof(RageHitEffects), -1, -1, target, Player);
+			}
 		}
 
-		public void HitEffects(NPC target, int damageDone)
+		[NetSynced(true)]
+		public static void RageHitEffects(NPC target, Player owner)
 		{
-			if (!target.chaseable || target.lifeMax <= 5 || target.dontTakeDamage || target.friendly)
+			if (!owner.TryGetModPlayer(out RagePlayer ragePlayer))
 				return;
 
-			// Cap overflow damage to 2500 in hardmode and 500 in pre-hardmode
-			overflowDamage = (int)MathHelper.Min(Main.hardMode ? 2500 : 500, overflowDamage);
+			int overDamage = target.life * -1;
 
 			if (target.life > 0)
 			{
-				if (overflowDamage > 0)
+				if (ragePlayer.OverflowDamage > 0)
 				{
 					SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, target.Center);
-					Projectile.NewProjectile(target.GetSource_OnHurt(Player), target.Center, Vector2.Zero, ModContent.ProjectileType<RageHit>(), overflowDamage, 3f, Player.whoAmI, target.whoAmI);
 
-					overflowDamage = 0;
+					if (owner.whoAmI == Main.myPlayer)
+						Projectile.NewProjectile(target.GetSource_OnHurt(owner), target.Center, Vector2.Zero, ModContent.ProjectileType<RageHit>(), ragePlayer.OverflowDamage, 3f, owner.whoAmI, target.whoAmI);
+
+					ragePlayer.OverflowDamage = 0;
 				}
 			}
-			else if (_npcLifeBeforeDeath - damageDone < 0)
+			else if (overDamage > 0 && CanActivateRage(target))
 			{
 				// whatever was leftover from the hit, ie negative is what we store as extra damage
-				overflowDamage += (int)((_npcLifeBeforeDeath - damageDone) * -1 * OVERFLOW_DAMAGE_MULT);
-				overflowDecayTimer = 600;
+				ragePlayer.OverflowDamage += (int)(overDamage * OVERFLOW_DAMAGE_MULT);
 
-				ParticleHandler.SpawnParticle(new LightBurst(target.Center, 0f, Color.Red.Additive(), 0.3f, 25));
-
-				SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, target.Center);
-				SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, target.Center);
-
-				fadeInTimer = 20;
-
-				for (int i = 0; i < 4; i++)
+				if (!Main.dedServ)
 				{
-					Vector2 pos = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
-					Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(1f, 3f);
+					ParticleHandler.SpawnParticle(new LightBurst(target.Center, 0f, Color.Red.Additive(), 0.3f, 25));
 
-					ParticleHandler.SpawnParticle(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f), 30));
-					ParticleHandler.SpawnQueuedParticle(new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f), 30), 1);
+					SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, target.Center);
+					SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, target.Center);
+
+					ragePlayer.fadeInTimer = 20;
+
+					for (int i = 0; i < 4; i++)
+					{
+						Vector2 pos = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
+						Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(1f, 3f);
+
+						ParticleHandler.SpawnParticle(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f), 30));
+						ParticleHandler.SpawnQueuedParticle(new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f), 30), 1);
+					}
+
+					for (int i = 0; i < 7; i++)
+					{
+						ParticleHandler.SpawnParticle(new SmokeCloud(owner.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+						ParticleHandler.SpawnParticle(new SmokeCloud(owner.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+					}
 				}
 
-				for (int i = 0; i < 7; i++)
-				{
-					ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
-				}
-
-				if (!Player.HasBuff<RageGlyphBuff>())
-					Player.AddBuff(ModContent.BuffType<RageGlyphBuff>(), 60);
+				if (!owner.HasBuff<RageGlyphBuff>())
+					owner.AddBuff(ModContent.BuffType<RageGlyphBuff>(), 60);
 			}
 		}
 
-		internal class RageHit : ModProjectile
+		public sealed class RageHit : ModProjectile
 		{
 			public override string Texture => AssetLoader.EmptyTexture;
 
@@ -327,30 +336,23 @@ public class RageGlyph : GlyphItem
 
 			public override bool PreDraw(ref Color lightColor)
 			{
-				var starNonPreMult = TextureAssets.Projectile[79].Value;
-
+				Texture2D starNonPreMult = TextureAssets.Projectile[79].Value;
 				float progress = EaseFunction.EaseCircularIn.Ease(Progress / 0.5f);
+
 				if (Progress > 0.5f)
 					progress = EaseFunction.EaseCircularOut.Ease(1f - (Progress - 0.5f) / 0.5f);
 
-				Main.spriteBatch.Draw(starNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Red.Additive(), 0f, starNonPreMult.Size() / 2f, 0.75f * progress, 0f, 0f);
-
-				Main.spriteBatch.Draw(starNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Black * 0.5f, 0f, starNonPreMult.Size() / 2f, 0.66f * progress, 0f, 0f);
-
+				Main.EntitySpriteDraw(starNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Red.Additive(), 0f, starNonPreMult.Size() / 2f, 0.75f * progress, 0f);
+				Main.EntitySpriteDraw(starNonPreMult, Projectile.Center - Main.screenPosition, null, Color.Black * 0.5f, 0f, starNonPreMult.Size() / 2f, 0.66f * progress, 0f);
 				return false;
 			}
 
-			public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
-			{
-				modifiers.HideCombatText();
-			}
+			public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers) => modifiers.HideCombatText();
 
 			public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 			{
-				var rect = target.getRect();
-
+				Rectangle rect = target.getRect();
 				int damage = Math.Max(damageDone, 1);
-
 				int idx = CombatText.NewText(rect, Color.White, damage, hit.Crit);
 				
 				if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -380,17 +382,13 @@ public class RageGlyph : GlyphItem
 					int dir = Main.rand.NextBool() ? -1 : 1;
 
 					ParticleHandler.SpawnParticle(new LightFlash(target, Vector2.Zero, Color.DarkRed, Color.OrangeRed, new Vector2(0.3f, 0.75f) * Main.rand.NextFloat(0.75f, 1.25f), 30 + Main.rand.Next(5, 40), rot, dir)
-					{
-						Layer = ParticleLayer.BelowSolid,
-					});
+					{ Layer = ParticleLayer.BelowSolid });
 
 					rot = Main.rand.NextFloat(6.28f);
 					dir = Main.rand.NextBool() ? -1 : 1;
 
 					ParticleHandler.SpawnParticle(new LightFlash(target, Vector2.Zero, Color.DarkOrange, Color.Red, new Vector2(0.35f, 0.75f) * Main.rand.NextFloat(1f, 1.5f), 20 + Main.rand.Next(5, 40), rot, dir)
-					{
-						Layer = ParticleLayer.BelowSolid,
-					});
+					{ Layer = ParticleLayer.BelowSolid });
 
 					ParticleHandler.SpawnParticle(new TriangleParticle(target.Center, Main.rand.NextVector2CircularEdge(3f, 3f), Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.6f, 0.9f), 35));
 				}
@@ -504,26 +502,24 @@ public class RageGlyph : GlyphItem
 
 	public override void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed)
 	{
-		if (Main.rand.NextBool(100))
+		if (!Main.dedServ && Main.rand.NextBool(100))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-
 			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(0.5f);
 
 			ParticleHandler.SpawnParticle(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f), 30)
-			{
-				Layer = ParticleLayer.AboveItem
-			});
+			{ Layer = ParticleLayer.AboveItem });
 
 			ParticleHandler.SpawnQueuedParticle(new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f), 30)
-			{
-				Layer = ParticleLayer.AboveItem
-			}, 3);
+			{ Layer = ParticleLayer.AboveItem }, 3);
 		}
 	}
 
 	public override void GlyphShootEffects(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (Main.dedServ)
+			return;
+
 		Vector2 normalized = velocity.SafeNormalize(Vector2.One);
 		Vector2 pos = position + normalized * item.width;
 
@@ -538,10 +534,9 @@ public class RageGlyph : GlyphItem
 
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
-		if (Main.rand.NextBool(9 + 8 * projectile.extraUpdates))
+		if (!Main.dedServ && Main.rand.NextBool(9 + 8 * projectile.extraUpdates))
 		{
 			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
-
 			Vector2 vel = projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
 
 			ParticleHandler.SpawnParticle(new TriangleParticle(pos, vel, Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.4f, 0.6f), 30));
