@@ -3539,6 +3539,6 @@ ChromaticWaxShaderDummy: {
 }
 
 WaxPlatformItem: {
-	// DisplayName: Wax Platform Item
+	// DisplayName: Wax Platform
 	// Tooltip: ""
 }
