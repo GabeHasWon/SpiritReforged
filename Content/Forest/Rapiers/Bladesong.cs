@@ -4,6 +4,9 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -34,6 +37,7 @@ public class Bladesong : ModItem
 			Projectile.tileCollide = false;
 			Projectile.ignoreWater = true;
 			Projectile.DamageType = DamageClass.MeleeNoSpeed;
+			Projectile.stopsDealingDamageAfterPenetrateHits = true;
 
 			Projectile.scale = 0;
 			Projectile.Opacity = 0;
@@ -41,16 +45,17 @@ public class Bladesong : ModItem
 
 		public override void AI()
 		{
-			if (Main.npc[TargetWhoAmI] is NPC target && target.active)
+			if (Projectile.penetrate > 0 && Main.npc[TargetWhoAmI] is NPC target && target.active)
 			{
 				Projectile.rotation = Projectile.AngleTo(target.Center);
 				if (++Counter > 30)
 				{
-					Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(target.Center) * 10, 0.1f);
+					float minusCounter = Counter - 30;
+					Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(target.Center) * minusCounter, 0.1f * minusCounter);
 
 					if (!Main.dedServ && Counter == 31)
 					{
-						Vector2 position = Projectile.Center - Projectile.velocity * 30;
+						Vector2 position = Projectile.Center - Vector2.Normalize(Projectile.velocity) * 60;
 						ParticleHandler.SpawnParticle(new BasicNoiseCone(position, Projectile.velocity, 20, new(80, 150)).SetColors(Color.White.Additive(50), Color.Cyan.Additive()).SetIntensity(3).AttachTo(Projectile));
 					}
 
@@ -61,10 +66,17 @@ public class Bladesong : ModItem
 				{
 					Projectile.Center = Vector2.Lerp(Projectile.Center, target.Center - Projectile.velocity * 90, 0.1f);
 				}
-			}
 
-			Projectile.Opacity = Math.Min(Projectile.Opacity + 0.05f, 1);
-			Projectile.scale = Math.Min(Projectile.scale + 0.03f, 0.75f);
+				Projectile.Opacity = Math.Min(Projectile.Opacity + 0.05f, 1);
+				Projectile.scale = Math.Min(Projectile.scale + 0.03f, 0.75f);
+			}
+			else
+			{
+				Projectile.velocity *= 0.9f;
+
+				if ((Projectile.Opacity -= 0.05f) < 0)
+					Projectile.Kill();
+			}
 		}
 
 		public override bool? CanDamage() => (Counter > 30) ? null : false;
@@ -90,13 +102,13 @@ public class Bladesong : ModItem
 
 		public MoveType Move { get => (MoveType)Projectile.ai[0]; set => Projectile.ai[0] = (int)value; }
 
-		public override float SwingTime => (Move is MoveType.Stance or MoveType.Vanish) ? FreeDodgeTime : base.SwingTime * 1.5f;
+		public override float SwingTime => (Move == MoveType.Stance) ? FreeDodgeTime : base.SwingTime * 1.5f;
 
 		public override string Texture => ModContent.GetInstance<Bladesong>().Texture;
 
 		public override LocalizedText DisplayName => ModContent.GetInstance<Bladesong>().DisplayName;
 
-		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicInOut, 78, 12, 18, 15);
+		public override IConfiguration SetConfiguration() => new RapierConfiguration(EaseFunction.EaseCubicInOut, 82, 12, 18, 15);
 
 		public override void AI()
 		{
@@ -106,78 +118,90 @@ public class Bladesong : ModItem
 
 			base.AI();
 
-			if (Move == MoveType.Swing)
+			if (Move != MoveType.Swing)
+				return;
+
+			if (!Main.dedServ && Counter == 10)
 			{
-				if (Counter == 10)
-					SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
+				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
+				SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { Pitch = 0.5f }, Projectile.Center);
 
-				if (Progress >= end_swing)
-					Projectile.scale *= 0.97f;
+				ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One);
+				Vector2 offset = new Vector2(GetConfig<RapierConfiguration>().Reach, 0).RotatedBy(-MathHelper.PiOver4 + 0.25f * SwingDirection);
 
-				if (Progress is > start_swing and < end_swing)
+				TrailSystem.ProjectileRenderer.CreateTrail(Projectile, new VertexTrail(new StandardColorTrail(Color.Cyan.Additive()), new TriangleCap(), new ProjectileOffsetTrailPosition(Projectile, offset), tShader, 15, 40));
+				TrailSystem.ProjectileRenderer.CreateTrail(Projectile, new VertexTrail(new StandardColorTrail(Color.White.Additive()), new TriangleCap(), new ProjectileOffsetTrailPosition(Projectile, offset), tShader, 5, 30));
+			}
+
+			if (Progress >= end_swing)
+			{
+				Projectile.scale *= 0.97f;
+				TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
+			}
+
+			if (Progress is > start_swing and < end_swing) //Floating in the air
+			{
+				float progress = (Progress - start_swing) / (end_swing - start_swing);
+				Player owner = Main.player[Projectile.owner];
+				Vector2 velocity = Projectile.velocity.RotatedBy((progress - 0.5f) * SwingDirection);
+
+				Projectile.Center = owner.Center + velocity * reach * EaseFunction.EaseCircularOut.Ease(EaseFunction.EaseSine.Ease(progress));
+				owner.SetCompositeArmFront(false, 0, 0);
+
+				if (!Main.dedServ)
 				{
-					Player owner = Main.player[Projectile.owner];
-					float progress = (Progress - start_swing) / (end_swing - start_swing);
-					Projectile.Center = owner.Center + Projectile.velocity.RotatedBy((progress - 0.5f) * SwingDirection) * reach * EaseFunction.EaseCircularOut.Ease(EaseFunction.EaseSine.Ease(progress));
+					Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Electric, Scale: 0.5f);
+					dust.noGravity = true;
+					dust.velocity = velocity * 3;
 
-					owner.SetCompositeArmFront(false, 0, 0);
+					if (Main.rand.NextBool())
+						ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center, velocity * Main.rand.NextFloat(3f), new Color(100, 255, 255), 20));
 
-					if (!Main.dedServ)
-					{
-						Dust dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Electric, Scale: 0.5f);
-						dust.noGravity = true;
-						dust.velocity = Projectile.velocity * 3;
-
-						if (Main.rand.NextBool())
-							ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center, Projectile.velocity * Main.rand.NextFloat(3f), Color.Cyan, 20));
-
-						if (Main.rand.NextBool(3))
-							ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, Projectile.velocity * Main.rand.NextFloat(3f), Color.White, 25));
-					}
+					if (Main.rand.NextBool(3))
+						ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, velocity * Main.rand.NextFloat(3f), Color.LightBlue, 25));
 				}
 			}
 		}
 
 		public bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
 		{
-			if (Move != MoveType.Stance)
+			if (Move == MoveType.Stance)
+			{
+				Player owner = Main.player[Projectile.owner];
+				if (!Main.dedServ)
+				{
+					ParticleHandler.SpawnParticle(new ImpactLinePrim(owner.Center, Vector2.Zero, Color.PaleVioletRed.Additive() * 0.5f, new Vector2(0.5f, 1) * 2.5f, 10, 0) { Rotation = MathHelper.PiOver2, NoLight = true });
+					for (int i = 0; i < 3; i++)
+					{
+						ParticleHandler.SpawnParticle(new CompositeSmoke(Main.rand.NextVector2FromRectangle(owner.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(3f), Color.LightBlue, 40));
+						ParticleHandler.SpawnParticle(new EmberParticle(Main.rand.NextVector2FromRectangle(owner.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(3f), Color.Cyan, Color.PaleVioletRed, 0.5f, 30, 2));
+					}
+
+					SoundEngine.PlaySound(SoundID.Research with { Pitch = 0.9f }, Projectile.Center);
+					SoundEngine.PlaySound(SoundID.Item35, Projectile.Center);
+				}
+
+				Counter = 0;
+				Move = MoveType.Vanish;
+
+				Projectile.timeLeft++;
+				Projectile.Opacity = 0;
+
+				owner.SetImmuneTimeForAllTypes((int)SwingTime + 10);
+				owner.opacityForAnimation = 0;
+
+				return true;
+			}
+			else
+			{
 				return false;
-
-			if (!Main.dedServ)
-			{
-				Vector2 position = Projectile.Center + Projectile.velocity * (GetConfig<RapierConfiguration>().Reach - 12);
-
-				if (damageSource.TryGetCausingEntity(out Entity entity))
-					position = entity.Center;
-
-				float rotation = Projectile.AngleTo(position) + Main.rand.NextFloat(-1f, 1f);
-
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(position, Vector2.Zero, Color.PaleVioletRed.Additive() * 0.5f, new Vector2(0.5f, 1) * 2.5f, 5, 0) { Rotation = rotation, NoLight = true });
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(position, Vector2.Zero, Color.SteelBlue.Additive(), new Vector2(0.3f, 1) * 2, 5, 0) { Rotation = rotation, NoLight = true });
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(position, Vector2.Zero, Color.White.Additive(), new Vector2(0.3f, 1) * 1.5f, 5, 0) { Rotation = rotation, NoLight = true });
-				ParticleHandler.SpawnParticle(new LightBurst(position, 0, Color.PaleVioletRed.Additive(), 0.4f, 10) { noLight = true });
-
-				SoundEngine.PlaySound(SoundID.Research with { Pitch = 0.9f }, Projectile.Center);
-				SoundEngine.PlaySound(SoundID.Item35, Projectile.Center);
 			}
+		}
 
-			SwingArc = 3; //Initiate a swing
-			Counter = 0;
-
-			Projectile.timeLeft++;
-			Move = MoveType.Vanish;
-
-			Player owner = Main.player[Projectile.owner];
-			owner.velocity -= Projectile.velocity * 8;
-			owner.SetImmuneTimeForAllTypes(30);
-
-			if (Projectile.owner == Main.myPlayer)
-			{
-				Projectile.velocity = Projectile.DirectionTo(Main.MouseWorld);
-				Projectile.netUpdate = true;
-			}
-
-			return true;
+		public override void OnKill(int timeLeft)
+		{
+			if (Move == MoveType.Vanish)
+				Main.player[Projectile.owner].opacityForAnimation = 1;
 		}
 
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
@@ -213,26 +237,24 @@ public class Bladesong : ModItem
 				DuelistRose.ApplyEffect(Main.player[Projectile.owner], target, hit);
 		}
 
+		public override bool? CanDamage() => (Move is MoveType.Stance or MoveType.Vanish) ? false : null;
+
 		public override bool PreDraw(ref Color lightColor)
 		{
 			int direction = Projectile.spriteDirection * Math.Sign(SwingArc);
 			float progress = Progress - 0.2f;
-			float rotation = Projectile.rotation - MathHelper.PiOver4 - 0.5f * direction + progress * SwingDirection * 2;
+			float smearRotation = Projectile.rotation - MathHelper.PiOver4 - 0.5f * direction + progress * SwingDirection * 2;
 			SpriteEffects effects = (direction == -1) ? SpriteEffects.FlipVertically : default;
 
 			if (Move == MoveType.Swing)
 			{
-				DrawCustomSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Cyan)).Additive() * 0.5f, (int)(progress * 20f), rotation, effects: effects);
-				DrawCustomSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.LightBlue)).Additive() * 0.7f * (1f - progress), (int)(progress * 30f), rotation, effects: effects);
+				DrawCustomSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.Cyan)).Additive() * 0.2f, (int)(progress * 20f), smearRotation, effects: effects);
+				DrawCustomSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.LightBlue)).Additive() * 0.3f * (1f - progress), (int)(progress * 30f), smearRotation, effects: effects);
 			}
 
-			DrawHeld(Projectile.GetAlpha(Color.LightBlue).Additive() * 0.5f, new Vector2(0, TextureAssets.Projectile[Type].Value.Height) - new Vector2(-5, 5), Projectile.rotation);
-			DrawHeld(Projectile.GetAlpha(lightColor), new Vector2(0, TextureAssets.Projectile[Type].Value.Height), Projectile.rotation);
-
-			if (Move == MoveType.Swing)
-			{
-				DrawCustomSmear(Projectile.GetAlpha(lightColor.MultiplyRGB(Color.White)).Additive() * 0.8f * progress, Math.Max((int)(progress * 30f), 2), rotation, effects: effects);
-			}
+			float rotation = GetRotation(out _, out _); //More accurate than getting Projectile.rotation
+			DrawHeld(Projectile.GetAlpha(Color.LightBlue).Additive() * 0.5f, new Vector2(0, TextureAssets.Projectile[Type].Value.Height) - new Vector2(-5, 5), rotation);
+			DrawHeld(Projectile.GetAlpha(lightColor), new Vector2(0, TextureAssets.Projectile[Type].Value.Height), rotation);
 
 			float mult = 1f - Progress;
 			if (mult > 0)
@@ -252,8 +274,6 @@ public class Bladesong : ModItem
 
 			Main.EntitySpriteDraw(smear, position, source, color, rotation, new Vector2(source.Width, source.Height / 2), 0.75f, effects, 0);
 		}
-
-		public override bool? CanDamage() => (Move == MoveType.Stance) ? false : null;
 	}
 
 	private int _swingDirection = 1;

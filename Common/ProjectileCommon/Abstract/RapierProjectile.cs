@@ -62,8 +62,8 @@ public abstract class RapierProjectile : SwungProjectile
 		Texture2D star = TextureAssets.Projectile[ProjectileID.RainbowRodBullet].Value;
 		Vector2 position = GetEndPosition() - Main.screenPosition;
 
-		Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(outline ?? Color.SteelBlue).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * scale * intensity, default);
-		Main.EntitySpriteDraw(star, position, null, lightColor.MultiplyRGB(Color.White).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * 0.8f * scale * intensity, default);
+		Main.EntitySpriteDraw(star, position, null, Projectile.GetAlpha(lightColor).MultiplyRGB(outline ?? Color.SteelBlue).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * scale * intensity, default);
+		Main.EntitySpriteDraw(star, position, null, Projectile.GetAlpha(lightColor).MultiplyRGB(Color.White).Additive() * intensity, 0, star.Size() / 2, Projectile.scale * 0.8f * scale * intensity, default);
 	}
 
 	/*//Adapted from MotionNoiseCone.cs
