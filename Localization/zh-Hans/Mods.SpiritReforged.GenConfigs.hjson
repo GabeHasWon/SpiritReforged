@@ -702,7 +702,7 @@ Pages: {
 
 			AbovegroundPillarChance: {
 				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] （废墟）立地岩柱几率"
-				Tooltip: 额外的岩柱生成的几率。 
+				Tooltip: 额外的岩柱生成的几率。
 			}
 		}
 
