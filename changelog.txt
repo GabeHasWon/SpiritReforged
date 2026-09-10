@@ -5,3 +5,4 @@ v0.2.2.6
 - Added Verdant's Aquamarine to the Graverobber's Loot Bag drop pool if it's enabled
 - Made Chromatic Wax not count as a dye item
 - Fixed issue where ocean decor would overflow the container array for special drawing points in certain scenarios
+- Updated Russian, Chinese and Portuguese localization
