@@ -1,21 +1,24 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
-public class Katana : GlobalItem, IDrawHeld
+public class Katana : ModItem, IDrawHeld
 {
 	public sealed class KatanaSwing : SwungProjectile, IDrawPixelated
 	{
 		public bool Secondary { get => Projectile.ai[0] == 1; set => Projectile.ai[0] = value ? 1 : 0; }
 
-		public override string Texture => "Terraria/Images/Item_" + ItemID.Katana;
+		public override string Texture => ModContent.GetInstance<Katana>().Texture;
 
-		public override LocalizedText DisplayName => Lang.GetItemName(ItemID.Katana);
+		public override LocalizedText DisplayName => ModContent.GetInstance<Katana>().DisplayName;
+
+		public override float SwingTime => Secondary ? base.SwingTime * 2 : base.SwingTime;
 
 		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseQuarticOut, 72, 25);
 
@@ -23,13 +26,18 @@ public class Katana : GlobalItem, IDrawHeld
 
 		public override void AI()
 		{
-			if (Secondary)
+			base.AI();
+			if (Secondary) //Leap
 			{
+				Player owner = Main.player[Projectile.owner];
+				if (Counter == 1)
+				{
+					owner.velocity += Projectile.velocity * 8;
+					owner.velocity.Y -= 6;
+				}
 
-			}
-			else
-			{
-				base.AI();
+				DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
+				mp.SetDash(30);
 			}
 		}
 
@@ -68,30 +76,32 @@ public class Katana : GlobalItem, IDrawHeld
 		}
 	}
 
-	public override bool InstancePerEntity => true;
+	public override string Texture => "Terraria/Images/Item_" + ItemID.Katana;
 
 	public static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<Katana>("Katana_Held", false);
 	private float _swingArc;
 
-	public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == ItemID.Katana;
-
-	public override void SetStaticDefaults() => SpiritSets.IsSword[ItemID.Katana] = SpiritSets.IsKatana[ItemID.Katana] = true;
-
-	public override void SetDefaults(Item entity)
+	public override void SetStaticDefaults()
 	{
-		int animationTime = entity.useAnimation;
-		entity.DefaultToSpear(ModContent.ProjectileType<KatanaSwing>(), 1, animationTime);
+		SpiritSets.IsSword[Type] = SpiritSets.IsKatana[Type] = true;
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.Katana;
 	}
 
-	public override void HoldItem(Item item, Player player)
+	public override void SetDefaults()
+	{
+		Item.CloneDefaults(ItemID.Katana);
+		Item.DefaultToSpear(ModContent.ProjectileType<KatanaSwing>(), 1, Item.useAnimation);
+	}
+
+	public override void HoldItem(Player player)
 	{
 		if (!player.ItemAnimationActive)
 			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Quarter, -0.35f * player.direction);
 	}
 
-	public override bool AltFunctionUse(Item item, Player player) => true;
+	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
 
-	public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		_swingArc = _swingArc switch
 		{
@@ -100,7 +110,8 @@ public class Katana : GlobalItem, IDrawHeld
 			_ => 3f
 		};
 
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc, source, player.altFunctionUse - 1);
+		float arc = (player.altFunctionUse == 2) ? 8 : _swingArc;
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, arc, source, player.altFunctionUse - 1);
 		return false;
 	}
 

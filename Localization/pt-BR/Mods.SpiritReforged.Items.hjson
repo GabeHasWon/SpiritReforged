@@ -3712,3 +3712,13 @@ Onimaru: {
 	// DisplayName: Onimaru
 	// Tooltip: <right> to step forward and unleash a powerful swing
 }
+
+Muramasa: {
+	// DisplayName: Muramasa
+	// Tooltip: <right> to change stance, empowering you briefly
+}
+
+Katana: {
+	// DisplayName: Katana
+	// Tooltip: <right> to perform a leaping slash
+}

@@ -34,7 +34,7 @@ public class AfterimagePlayer : ModPlayer
 	private readonly Player[] _playerStateCache = new Player[30];
 	private float _manaEase;
 
-	public static BlendState AdditiveNoAlpha = new BlendState
+	public static BlendState AdditiveNoAlpha = new()
 	{
 		AlphaBlendFunction = BlendFunction.Add,
 		ColorBlendFunction = BlendFunction.Add,
@@ -60,8 +60,7 @@ public class AfterimagePlayer : ModPlayer
 	{
 		sb.Begin(SpriteSortMode.Immediate, AdditiveNoAlpha, camera.Sampler, DepthStencilState.None, camera.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-		var afterimager = drawPlayer.GetModPlayer<AfterimagePlayer>();
-
+		AfterimagePlayer afterimager = drawPlayer.GetModPlayer<AfterimagePlayer>();
 		float manaStrength = (afterimager._duplicateDelay > 0) ? 1 : (afterimager._manaEase / ManaThreshold);
 		float mult = MathHelper.Clamp(drawPlayer.position.DistanceSQ(position) / 1000f, 0, 1) * manaStrength;
 
@@ -69,10 +68,10 @@ public class AfterimagePlayer : ModPlayer
 
 		for (int a = 0; a < TrailLength; a++)
 		{
-			Player p = afterimager._playerStateCache[29 - a];
-			if(p != null) 
-				self.DrawPlayer(camera, p, afterimager._positionCache[29 - a], drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - a / (float)TrailLength, 1);
+			int cachePosition = 29 - a;
 
+			if (afterimager._playerStateCache[cachePosition] is Player cache) 
+				self.DrawPlayer(camera, cache, afterimager._positionCache[cachePosition], drawPlayer.fullRotation, drawPlayer.fullRotationOrigin, 1f - a / (float)TrailLength, 1);
 		}
 
 		for (int i = 0; i < 3; i++)

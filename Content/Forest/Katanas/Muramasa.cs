@@ -3,10 +3,10 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.VerletChains;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
 using Terraria.Audio;
@@ -15,7 +15,7 @@ using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
-public class Muramasa : GlobalItem, IDrawHeld
+public class Muramasa : ModItem, IDrawHeld
 {
 	public sealed class	MuramasaEnchantPlayer : ModPlayer
 	{
@@ -27,8 +27,6 @@ public class Muramasa : GlobalItem, IDrawHeld
 
 	public sealed class WaterWave : ModProjectile
 	{
-		public const int TIME_LEFT_MAX = 100;
-
 		public override string Texture => "Terraria/Images/Projectile_" + ProjectileID.DD2SquireSonicBoom;
 
 		public override void SetDefaults()
@@ -73,19 +71,31 @@ public class Muramasa : GlobalItem, IDrawHeld
 
 	public sealed class MuramasaSwing : SwungProjectile, IDrawPixelated
 	{
-		public enum State { Swing, EnchantedSwing, Enchant, RemoveEnchantment }
-
-		public State UseState
+		[Flags]
+		public enum EnchantedState
 		{
-			get => (State)Projectile.ai[0];
+			None = 0,
+			Active = 1, //Whether the enchantment is currently active
+			Toggle = 2 //Whether the state is being toggled
+		}
+
+		public EnchantedState State
+		{
+			get => (EnchantedState)Projectile.ai[0];
 			set => Projectile.ai[0] = (int)value;
 		}
 
-		public override string Texture => "Terraria/Images/Item_" + ItemID.Muramasa;
+		public DoubleTapPlayer.Direction StepDirection
+		{
+			get => (DoubleTapPlayer.Direction)Projectile.ai[1];
+			set => Projectile.ai[1] = (int)value;
+		}
 
-		public override LocalizedText DisplayName => Lang.GetItemName(ItemID.Muramasa);
+		public override string Texture => ModContent.GetInstance<Muramasa>().Texture;
 
-		public override float SwingTime => (UseState == State.EnchantedSwing) ? base.SwingTime * 2 : base.SwingTime;
+		public override LocalizedText DisplayName => ModContent.GetInstance<Muramasa>().DisplayName;
+
+		public override float SwingTime => (State.HasFlag(EnchantedState.Active) && !State.HasFlag(EnchantedState.Toggle)) ? base.SwingTime * 2 : base.SwingTime;
 
 		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseQuarticOut, 84, 25);
 
@@ -96,9 +106,13 @@ public class Muramasa : GlobalItem, IDrawHeld
 			if (Main.dedServ)
 				return;
 
-			if (UseState == State.Enchant)
+			Player owner = Main.player[Projectile.owner];
+			DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
+
+			if (State.HasFlag(EnchantedState.Toggle | EnchantedState.Active))
 			{
-				if (Counter == 5)
+				mp.SetDash(40);
+				if (Counter == 5) //Break the lock
 				{
 					for (int i = 0; i < 10; i++)
 						Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Gold);
@@ -107,13 +121,27 @@ public class Muramasa : GlobalItem, IDrawHeld
 					SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact with { Pitch = 0.5f }, Projectile.Center);
 				}
 			}
-			else if (UseState == State.RemoveEnchantment)
+			else if (State.HasFlag(EnchantedState.Toggle))
 			{
-				if (Counter == 5)
+				mp.SetDash(40);
+				if (Counter == 5) //Repair the lock
 					SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact with { Pitch = -0.5f }, Projectile.Center);
 			}
-			else if (UseState == State.EnchantedSwing)
+			else if (State.HasFlag(EnchantedState.Active))
 			{
+				
+				if (Progress > 0.5f)
+				{
+					owner.velocity *= 0.9f;
+				}
+				else
+				{
+					owner.velocity += DoubleTapPlayer.ConvertDirection(StepDirection) * 0.5f;
+					owner.velocity.Y -= owner.gravity; //Neutralize gravity
+
+					owner.armorEffectDrawShadow = true;
+				}
+
 				if (Counter == 5)
 					SoundEngine.PlaySound(Wisp.Death with { Pitch = 0.9f, Volume = 0.4f }, Projectile.Center);
 
@@ -125,12 +153,12 @@ public class Muramasa : GlobalItem, IDrawHeld
 			}
 		}
 
-		public override bool? CanDamage() => (UseState is State.Swing or State.EnchantedSwing) ? null : false;
+		public override bool? CanDamage() => State.HasFlag(EnchantedState.Toggle) ? false : null;
 
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch)
 		{
 			float value = base.GetRotation(out armRotation, out stretch);
-			if (UseState is State.Enchant or State.RemoveEnchantment)
+			if (State.HasFlag(EnchantedState.Toggle))
 			{
 				return value - ((Projectile.direction == -1) ? MathHelper.PiOver2 : MathHelper.Pi);
 			}
@@ -149,7 +177,7 @@ public class Muramasa : GlobalItem, IDrawHeld
 				DrawHeld(lightColor * (1f - i / 3f) * 0.8f, new Vector2(0, (effects == SpriteEffects.FlipVertically) ? 0 : TextureAssets.Projectile[Type].Value.Height), rotation, effects);
 			}
 
-			if (UseState == State.EnchantedSwing)
+			if (State.HasFlag(EnchantedState.Active))
 			{
 				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
 					DrawHeld(Color.Cyan.Additive() * (1f - Progress), new Vector2(0, (effects == SpriteEffects.FlipVertically) ? 0 : TextureAssets.Projectile[Type].Value.Height) + offset, Projectile.rotation, effects));
@@ -180,7 +208,7 @@ public class Muramasa : GlobalItem, IDrawHeld
 
 				IDrawPixelated.PixelateDrawPosition(ref smearDrawPosition);
 
-				if (UseState == State.EnchantedSwing)
+				if (State.HasFlag(EnchantedState.Active))
 				{
 					DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
 						spriteBatch.Draw(smear, smearDrawPosition + offset * 0.45f, source, Projectile.GetAlpha(lightColor.MultiplyRGB(Color.DodgerBlue)).Additive(), rotation, origin, 0.45f, effects, 0));
@@ -198,7 +226,7 @@ public class Muramasa : GlobalItem, IDrawHeld
 		}
 	}
 
-	public override bool InstancePerEntity => true;
+	public override string Texture => "Terraria/Images/Item_" + ItemID.Muramasa;
 
 	public static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<Muramasa>("Muramasa_Held", false);
 	private float _swingArc;
@@ -260,17 +288,19 @@ public class Muramasa : GlobalItem, IDrawHeld
 	}
 	#endregion
 
-	public override bool AppliesToEntity(Item entity, bool lateInstantiation) => entity.type == ItemID.Muramasa;
-
-	public override void SetStaticDefaults() => SpiritSets.IsSword[ItemID.Muramasa] = SpiritSets.IsKatana[ItemID.Muramasa] = true;
-
-	public override void SetDefaults(Item entity)
+	public override void SetStaticDefaults()
 	{
-		int animationTime = entity.useAnimation;
-		entity.DefaultToSpear(ModContent.ProjectileType<MuramasaSwing>(), 1, animationTime);
+		SpiritSets.IsSword[Type] = SpiritSets.IsKatana[Type] = true;
+		ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.Muramasa;
 	}
 
-	public override void HoldItem(Item item, Player player)
+	public override void SetDefaults()
+	{
+		Item.CloneDefaults(ItemID.Muramasa);
+		Item.DefaultToSpear(ModContent.ProjectileType<MuramasaSwing>(), 1, Item.useAnimation);
+	}
+
+	public override void HoldItem(Player player)
 	{
 		if (!player.ItemAnimationActive)
 		{
@@ -282,40 +312,65 @@ public class Muramasa : GlobalItem, IDrawHeld
 			ApplyChainPhysics(player, player.GetFrontHandPosition(0, player.compositeFrontArm.rotation));
 	}
 
-	public override bool AltFunctionUse(Item item, Player player) => true;
+	public override bool AltFunctionUse(Player player) => player.GetModPlayer<DashSwordPlayer>().HasDashCharge;
 
-	public override bool? UseItem(Item item, Player player)
+	public override bool? UseItem(Player player)
 	{
-		if (player.altFunctionUse == 2 && player.TryGetModPlayer(out MuramasaEnchantPlayer empowerPlayer))
-			empowerPlayer.enchanted = !empowerPlayer.enchanted; //Toggle empowered status
+		if (player.altFunctionUse == 2 && player.TryGetModPlayer(out MuramasaEnchantPlayer enchantPlayer))
+			enchantPlayer.enchanted = !enchantPlayer.enchanted; //Toggle empowered status
 
 		return null;
 	}
 
-	public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		_swingArc = _swingArc switch
-		{
-			3f => 5f,
-			5f => -5f,
-			_ => 3f
-		};
+		MuramasaSwing.EnchantedState state = MuramasaSwing.EnchantedState.None;
+		DoubleTapPlayer.Direction direction = (player.direction == 1) ? DoubleTapPlayer.Direction.Left : DoubleTapPlayer.Direction.Right;
 
-		float arc = _swingArc;
-		bool empowered = player.TryGetModPlayer(out MuramasaEnchantPlayer empowerPlayer) && empowerPlayer.enchanted;
-		MuramasaSwing.State useState = empowered ? MuramasaSwing.State.EnchantedSwing : MuramasaSwing.State.Swing;
+		bool enchanted = player.TryGetModPlayer(out MuramasaEnchantPlayer enchantPlayer) && enchantPlayer.enchanted;
+		bool secondary = player.altFunctionUse == 2;
 
-		if (player.altFunctionUse == 2)
+		if (player.controlUp) //Get a step direction
+			direction = DoubleTapPlayer.Direction.Up;
+
+		if (player.controlRight)
+			direction = DoubleTapPlayer.Direction.Right;
+
+		if (player.controlDown)
+			direction = DoubleTapPlayer.Direction.Down;
+
+		if (player.controlLeft)
+			direction = DoubleTapPlayer.Direction.Left;
+
+		if (enchanted)
 		{
-			useState = empowered ? MuramasaSwing.State.Enchant : MuramasaSwing.State.RemoveEnchantment;
-			arc = 0;
+			if (!secondary) //Empowered attack
+				Projectile.NewProjectile(source, position, velocity * 15, ModContent.ProjectileType<WaterWave>(), damage, knockback, player.whoAmI);
+
+			state |= MuramasaSwing.EnchantedState.Active;
+			_swingArc = _swingArc switch
+			{
+				5f => -5f,
+				_ => 5f
+			};
 		}
-		else if (empowered)
+		else
 		{
-			Projectile.NewProjectile(source, position, velocity * 15, ModContent.ProjectileType<WaterWave>(), damage, knockback, player.whoAmI);
+			_swingArc = _swingArc switch
+			{
+				3f => 5f,
+				5f => -5f,
+				_ => 3f
+			};
 		}
 
-		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, arc, source, (int)useState);
+		if (secondary) //Toggle empowerement
+		{
+			state |= MuramasaSwing.EnchantedState.Toggle;
+			_swingArc = 0;
+		}
+
+		SwungProjectile.Spawn(position, velocity, type, damage, knockback, player, _swingArc, source, (int)state, (int)direction);
 		return false;
 	}
 
@@ -342,7 +397,7 @@ public class Muramasa : GlobalItem, IDrawHeld
 				drawinfo.DrawDataCache.Add(new DrawData(texture, drawPos, _lockSource, color, rotation, lockOrigin, 1, drawinfo.playerEffect, 0));
 			}
 		}
-		else if (!empowered)
+		else if (!empowered) //Draw chain and lock
 		{
 			Chain chain = GetChain(drawinfo.drawPlayer);
 			chain.Draw(Main.spriteBatch, HeldTexture.Value, _chainSource);
