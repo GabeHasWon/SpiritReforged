@@ -157,7 +157,7 @@ internal class DhampirNPC : ModNPC
 		int direction = MathF.Sign(Target.Center.X - NPC.Center.X);
 		NPC.direction = NPC.spriteDirection = -direction;
 
-		_tracker.Update(NPC, Color.White, NPC.collideY, TrackerTime % 6 == 0);
+		_tracker.Update(NPC, Color.White, NPC.collideY, TrackerTime % 5 == 0);
 
 		if (State == DhampirState.Waiting)
 		{
@@ -370,7 +370,7 @@ internal class DhampirNPC : ModNPC
 		{
 			if (Reflections.DrawingReflection)
 			{
-				_tracker.Draw(TextureAssets.Npc[Type].Value, false, screenPos, Vector2.Zero, FadeTracker.TrailDrawMode.Fade);
+				_tracker.Draw(TextureAssets.Npc[Type].Value, false, screenPos, Vector2.Zero, FadeTracker.TrailDrawMode.Fade, SpriteEffects.None, 0.5f);
 
 				DrawSelf(spriteBatch, screenPos, drawColor, NPC.Opacity);
 				return false;

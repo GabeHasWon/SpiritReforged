@@ -42,7 +42,7 @@ internal class FadeTracker(int length)
 			Instances.RemoveAt(length - 1);
 	}
 
-	public void Draw(Texture2D texture, bool useCenter, Vector2 screenPos, Vector2 origin, TrailDrawMode mode, SpriteEffects flipEffects = SpriteEffects.None)
+	public void Draw(Texture2D texture, bool useCenter, Vector2 screenPos, Vector2 origin, TrailDrawMode mode, SpriteEffects flip = SpriteEffects.None, float opacityModifier = 1f)
 	{
 		if (Instances.Count == 0)
 			return;
@@ -55,8 +55,8 @@ internal class FadeTracker(int length)
 				continue;
 
 			Vector2 position = useCenter ? instance.Center : instance.Position;
-			Color color = Lighting.GetColor(position.ToTileCoordinates(), instance.DrawColor);
-			instance.Effects ^= flipEffects;
+			Color color = Lighting.GetColor(position.ToTileCoordinates(), instance.DrawColor) * opacityModifier;
+			instance.Effects ^= flip;
 
 			if (mode == TrailDrawMode.Fade)
 				color *= 1 - i / (float)Instances.Count;
