@@ -1,4 +1,6 @@
 v0.2.2.6
+- Added Wax Platforms
+
 - Fixed visual offset in stargrass tree branch glowmasks
 - Made Foreground Red Sandstone Brick Wall only merge with the any Red Sandstone tile so it's consistent between mid-game and reframing on world entry
 - Expanded the Generation Configuration UI + some of its buttons substantially to allow more space for translation and text
@@ -6,3 +8,13 @@ v0.2.2.6
 - Made Chromatic Wax not count as a dye item
 - Fixed issue where ocean decor would overflow the container array for special drawing points in certain scenarios
 - Updated Russian, Chinese and Portuguese localization
+- Made some minor changes to how variant items (such as Kelp) work
+- Added Census compatibility for the Beetle town pet
+- Fixed Gold Diving Beetles not spawning
+- Allowed Gold Diving Beetles to craft into Golden Delights
+- Fixed Scarabeus despawning in the Savanna and Salt Flats
+- Fixed aim issues with Adorned Bow
+- Added some items to the Spirit Classic aliasing system: 
+	Adorned Bow, Royal Khopesh, Scarab Pendant, Scarab Food <-> Bulb Rattle, Radiant Cane <-> Sun Staff, Hero's Memorial Statue <-> A Hero's Memorial, Charmcaster set, Pirate Chest, Carrot Cake
+- Fixed normal and Golden Brine Shrimp being crafted into food by hand instead of @ a cooking pot
+- Fixed issue that stopped potion vats from applying their potion effects
