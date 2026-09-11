@@ -3532,6 +3532,17 @@ CandlePianoItem: {
 	Tooltip: ""
 }
 
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Привет всем пользователям чит-панелей!
+}
+
+WaxPlatformItem: {
+	// DisplayName: Wax Platform
+	// Tooltip: ""
+}
+
 PinSpookyFarms: {
 	// DisplayName: Fetid Farms Pin
 	// Tooltip: ""

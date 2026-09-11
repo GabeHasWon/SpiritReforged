@@ -1,6 +1,6 @@
-﻿using SpiritReforged.Content.Glyphs;
-using SpiritReforged.Content.Forest.Relics;
+﻿using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
+using SpiritReforged.Content.Glyphs;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ItemCommon;
@@ -53,11 +53,12 @@ public static class ItemMethods
 
 	public static void DrawInWorld(this Item item, Color light, float rotation = 0, float scale = 1, Texture2D texture = null)
 	{
-		Main.GetItemDrawFrame(item.type, out var newTexture, out var frame);
-		texture ??= newTexture;
-		Vector2 position = item.Bottom - new Vector2(0, frame.Height / 2) - Main.screenPosition; //Do some odd math because of how visual and item rectangles relate
+		texture ??= TextureAssets.Item[item.type].Value;
 
-		Main.EntitySpriteDraw(texture, position, frame, item.GetAlpha(light), rotation, frame.Size() / 2f, scale, default, 0);
+		Rectangle source = (Main.itemAnimations[item.type] != null) ? Main.itemAnimations[item.type].GetFrame(texture) : texture.Frame();
+		Vector2 position = item.Bottom - new Vector2(0, source.Height / 2) - Main.screenPosition; //Do some odd math because of how visual and item rectangles relate
+
+		Main.EntitySpriteDraw(texture, position, source, item.GetAlpha(light), rotation, source.Size() / 2f, scale, default, 0);
 	}
 
 	//public static void DrawInWorld(this ItemDrawParams parameters) => Main.EntitySpriteDraw(parameters.Texture, parameters.Position, parameters.Source, parameters.DrawColor, parameters.Rotation, parameters.Origin, parameters.Scale, default, 0);

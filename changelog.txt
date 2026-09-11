@@ -1,4 +1,8 @@
-v0.2.2.5
-- Fixed vanity fish in the ocean being much faster than they should be
-- Fixed? an issue with Prefix Voucher hanging some worlds. Maybe. Please?
-- Fixed visual offset issue for Stargrass trees
+v0.2.2.6
+- Fixed visual offset in stargrass tree branch glowmasks
+- Made Foreground Red Sandstone Brick Wall only merge with the any Red Sandstone tile so it's consistent between mid-game and reframing on world entry
+- Expanded the Generation Configuration UI + some of its buttons substantially to allow more space for translation and text
+- Added Verdant's Aquamarine to the Graverobber's Loot Bag drop pool if it's enabled
+- Made Chromatic Wax not count as a dye item
+- Fixed issue where ocean decor would overflow the container array for special drawing points in certain scenarios
+- Updated Russian, Chinese and Portuguese localization

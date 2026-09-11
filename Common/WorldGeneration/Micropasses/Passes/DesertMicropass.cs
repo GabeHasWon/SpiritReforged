@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Desert.DragonFossil;
 using SpiritReforged.Content.Desert.Tiles;
 using Terraria.ModLoader.Config;
@@ -28,7 +27,7 @@ internal class DesertMicropass : Micropass, IGenerationPage
 
 	PageInfo IGenerationPage.Info => new()
 	{
-		CopiedPage = new UndergroundOasisBiome()
+		CopiedPage = new OasisMicropass()
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;

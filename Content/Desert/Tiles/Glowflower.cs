@@ -1,6 +1,6 @@
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Particles;
 using System.Linq;
@@ -25,7 +25,7 @@ public class Glowflower : ModTile
 			Point pt = new(i, j);
 			int tileType = ModContent.TileType<Glowflower>();
 
-			if (Placer.CanPlaceHerb(i, j, tileType) && UndergroundOasisBiome.OasisAreas.Any(x => x.Contains(pt)))
+			if (Placer.CanPlaceHerb(i, j, tileType) && OasisMicropass.OasisAreas.Any(x => x.Contains(pt)))
 				Placer.PlaceTile(i, j - 1, tileType).Send();
 		}
 	}

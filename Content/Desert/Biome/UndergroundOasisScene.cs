@@ -2,6 +2,7 @@
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.Desert.Biome;
@@ -34,7 +35,7 @@ public class UndergroundOasisScene : ModSceneEffect
 			float parallax = 1f - Main.caveParallax;
 			float transition = EaseFunction.EaseQuadOut.Ease(1f - Main.ugBackTransition);
 
-			foreach (var area in UndergroundOasisBiome.OasisAreas)
+			foreach (var area in OasisMicropass.OasisAreas)
 			{
 				var worldCoords = area.Center.ToWorldCoordinates();
 				var roundedPos = new Vector2((int)(worldCoords.X / roundWidth) * roundWidth, (int)(worldCoords.Y / roundHeight) * roundHeight);
@@ -67,7 +68,7 @@ public class UndergroundOasisScene : ModSceneEffect
 		}
 	}
 
-	public override bool IsSceneEffectActive(Player player) => UndergroundOasisBiome.InUndergroundOasis(player);
+	public override bool IsSceneEffectActive(Player player) => OasisMicropass.UndergroundOasisBiome.InUndergroundOasis(player);
 	public override void SpecialVisuals(Player player, bool isActive)
 	{
 		_effectIntensity = isActive ? Math.Min(_effectIntensity + 0.05f, 1) : Math.Max(_effectIntensity - 0.05f, 0);

@@ -1,9 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
-using Terraria.Audio;
 
 namespace SpiritReforged.Content.Glyphs.Sanguine;
 
@@ -11,21 +11,20 @@ public partial class SanguineGlyph
 {
 	public sealed class SanguinePlayer : ModPlayer
 	{
-		internal const float HEALTH_DAMAGE_RATE = 0.0015f;
+		public const float HEALTH_DAMAGE_RATE = 0.0015f;
 
-		internal float storedHealth;
-		internal int lifestealCooldown;
+		public float storedHealth;
+		public int lifestealCooldown;
 
-		private int lastTickHP;
-		private int buffDecayCooldown;
-		private bool canStoreHealth = false; //Start with it false to prevent player initalization counting for gaining hp
+		private int _lastTickHP;
+		private int _buffDecayCooldown;
 
 		public override void ResetEffects()
 		{
-			if (buffDecayCooldown > 0)
+			if (_buffDecayCooldown > 0)
 			{
 				storedHealth *= 0.9995f; //really small constant decay as a form of softcap
-				buffDecayCooldown--;
+				_buffDecayCooldown--;
 			}
 			else
 			{
@@ -33,10 +32,10 @@ public partial class SanguineGlyph
 				storedHealth *= 0.998f; //Percentage based decay to prevent the buff from getting too high while still being decent at low values
 			}
 
-			if(Player.dead)
+			if (Player.dead)
 				storedHealth = 0;
 
-			if(storedHealth >= 1)
+			if (storedHealth >= 1)
 				Player.AddBuff(ModContent.BuffType<SanguineStackingBuff>(), 2);
 
 			if (lifestealCooldown > 0)
@@ -48,7 +47,6 @@ public partial class SanguineGlyph
 			if (item.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>())
 			{
 				float damageBonus = 1f + storedHealth * HEALTH_DAMAGE_RATE;
-
 				modifiers.FinalDamage *= damageBonus;
 			}
 		}
@@ -58,7 +56,6 @@ public partial class SanguineGlyph
 			if (proj.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>())
 			{
 				float damageBonus = 1f + storedHealth * HEALTH_DAMAGE_RATE;
-
 				modifiers.FinalDamage *= damageBonus;
 			}
 		}
@@ -78,20 +75,17 @@ public partial class SanguineGlyph
 		public override void PostUpdate()
 		{
 			//Any positive difference, including regen, counts as healed hp for the buff
-			if(Player.statLife > lastTickHP && Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>() && canStoreHealth)
+			if (Player.statLife > _lastTickHP && !Player.dead && Player.GlyphActive(new(ModContent.ItemType<SanguineGlyph>())))
 			{
 				if (!Player.HasBuff<SanguineStackingBuff>())
 					Player.AddBuff(ModContent.BuffType<SanguineStackingBuff>(), 60);
 
-				int difference = Player.statLife - lastTickHP;
+				int difference = Player.statLife - _lastTickHP;
 				storedHealth += difference;
-				buffDecayCooldown = 60;
+				_buffDecayCooldown = 60;
 			}
 
-			//Store information for next tick
-
-			lastTickHP = Player.statLife;
-			canStoreHealth = !Player.dead; //Prevent storing health when the player respawns
+			_lastTickHP = Player.statLife; //Store information for next tick
 		}
 
 		public void HitEffects(NPC target, int damageDone)
@@ -141,7 +135,6 @@ public partial class SanguineGlyph
 
 			if (storedHealth > 0)
 			{
-
 				for (int i = 0; i < 2; i++)
 				{
 					ParticleHandler.SpawnParticle(new BloodHit(target, dir * target.width / 2, Main.rand.Next(30, 40), dir.ToRotation(), Main.rand.NextFloat(0.9f, 1.1f)));

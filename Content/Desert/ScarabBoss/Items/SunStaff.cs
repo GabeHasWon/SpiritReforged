@@ -1,10 +1,12 @@
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
 [AutoloadGlowmask("255,255,255")]
+[FromClassic("RadiantCane")]
 public class SunStaff : ModItem
 {
 	public override void SetStaticDefaults()

@@ -1,13 +1,8 @@
-﻿using Microsoft.CodeAnalysis;
-using ReLogic.Utilities;
+﻿using ReLogic.Utilities;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
-using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
-using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
-using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
@@ -25,19 +20,17 @@ using SpiritReforged.Content.Ziggurat.Tiles.Chains;
 using SpiritReforged.Content.Ziggurat.Tiles.Furniture;
 using SpiritReforged.Content.Ziggurat.Walls;
 using SpiritReforged.Content.Ziggurat.Windshear;
-using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.ModLoader.Config;
-using Terraria.ModLoader.IO;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
 using TileHelper.Common;
 using TileHelper.Content.Tiles;
 
-namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 
-public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
+internal partial class ZigguratMicropass : Micropass
 {
 	/// <summary> The maximum width of the biome. </summary>
 	public const int DefaultWidth = 180;
@@ -45,20 +38,6 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 	public const int DefaultHeight = 90;
 
 	public const int HallwayWidth = 4;
-
-	/// <summary> The full rectangular area this biome encompasses. </summary>
-	public Rectangle FullArea
-	{
-		get
-		{
-			Rectangle bounds = new(Position.X - UsedWidth / 2, Position.Y - UsedHeight / 2, UsedWidth, UsedHeight);
-
-			if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
-				bounds = new Rectangle(Position.X - UsedWidth - 16, Position.Y - UsedHeight / 2, UsedWidth * 2 + 32, UsedHeight * 4);
-
-			return bounds;
-		}
-	}
 
 	[WorldBound]
 	public static readonly HashSet<Rectangle> TotalBounds = [];
@@ -181,46 +160,13 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 	[Denominator]
 	private static int LightChance = 10;
 
-	PageInfo IGenerationPage.Info => new("Ziggurat", DrawHelpers.RequestLocal(GetType(), "ZigguratPage", false), DrawHelpers.RequestLocal(GetType(), "ZigguratPageButton", false))
+	#region generation
+	public static void Generate(Rectangle area)
 	{
-		Presets =
-		[
-			new("Plagued",
-				[
-					new IndividualPreset(nameof(MaxInfections), 12),
-					new IndividualPreset(nameof(SandSplatChance), 20),
-					new IndividualPreset(nameof(FloorDivotChance), 20),
-					new IndividualPreset(nameof(SkipRoomChance), 3),
-				]),
-
-			new("Opulent",
-				[
-					new IndividualPreset(nameof(SpecialRoomChance), 1),
-					new IndividualPreset(nameof(MaxInfections), 1),
-					new IndividualPreset(nameof(LapisPotChance), 5),
-					new IndividualPreset(nameof(UncommonChance), 2),
-					new IndividualPreset(nameof(SandSplatChance), 200),
-					new IndividualPreset(nameof(SkipRoomChance), 15),
-					new IndividualPreset(nameof(CenserChance), 2)
-				]),
-
-		new("Perilous",
-				[
-					new IndividualPreset(nameof(SpikeStripChance), 1),
-					new IndividualPreset(nameof(MaxSpikeStripWidth), 14),
-					new IndividualPreset(nameof(ChestItemRange), new GenRange(6, 3)),
-				]),
-		]
-	};
-
-	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
-
-	protected override void OnPlace(Point16 point)
-	{
-		List<Rectangle> bounds = GetBounds(FullArea);
+		List<Rectangle> bounds = GetBounds(area);
 		ChestCounter = WorldGen.genRand.Next(4);
-		
-		CreateShape(FullArea, bounds);
+
+		CreateShape(area, bounds);
 
 		foreach (Rectangle bound in bounds)
 			TotalBounds.Add(bound);
@@ -392,7 +338,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		int j = origin.Y;
 
 		WorldMethods.FindGround(i, ref j);
-		Placer.PlaceTile<ScarabAltar>(i, j -1).PostPlacement(out ScarabAltarEntity _);
+		Placer.PlaceTile<ScarabAltar>(i, j - 1).PostPlacement(out ScarabAltarEntity _);
 
 		const int width = 8;
 		WorldUtils.Gen(new(i - width / 2, j), new Shapes.Rectangle(width, 2), Actions.Chain(
@@ -497,7 +443,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		PriorityQueue<Point16, float> furniturePositions = new();
 		PriorityQueue<Point16, float> chestPositions = new();
 
-		foreach (var room in rooms)
+		foreach (GenRoom room in rooms)
 		{
 			Rectangle bounds = room.Bounds;
 			bounds.Inflate(2, 2);
@@ -505,7 +451,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 			Decorator decorator = new Decorator(bounds)
 				.Enqueue(ModContent.TileType<AncientBanner>(), AncientBannerChance)
 				.Enqueue(TileID.Banners, BannerChance, new(static () => WorldGen.genRand.Next(4, 7)))
-				.Enqueue(PlacePot, 0);
+				.Enqueue(PlaceDustyPot, 0);
 
 			if (WorldGen.genRand.NextBool(CenserChance))
 				decorator.Enqueue(PlaceCenser, 1);
@@ -586,7 +532,7 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		}
 	}
 
-	private static bool PlacePot(int i, int j)
+	private static bool PlaceDustyPot(int i, int j)
 	{
 		if (WorldGen.SolidTile(i, j + 1) && WorldGen.genRand.NextBool(PotChance)) //Place pots
 		{
@@ -1160,24 +1106,85 @@ public partial class ZigguratMicrobiome : Microbiome, IGenerationPage
 		return false;
 	}
 	#endregion
+	#endregion
 
-	public override void NetReceive(BinaryReader reader)
+	#region infestation
+	private static void Infest(int count, Rectangle bound)
 	{
-		base.NetReceive(reader);
+		if (count == 0)
+			return;
 
-		TotalBounds.Clear();
-		foreach (Rectangle bound in GetBounds(FullArea))
-			TotalBounds.Add(bound);
+		WorldMethods.Generate(static (i, j) =>
+		{
+			if (WorldGen.SolidTile(i, j))
+			{
+				FastNoiseLite noise = new(WorldGen.genRand.Next());
+				noise.SetFrequency(0.1f);
+				float outerThickness = 60;
+
+				if (SecretSeedSystem.WorldSecretSeed is LabyrinthSeed)
+				{
+					noise.SetFrequency(WorldGen.genRand.NextFloat(0.05f, 0.15f));
+					outerThickness = WorldGen.genRand.NextFloat(50, 100);
+				}
+
+				CreateScarabNest(i, j, WorldGen.genRand.Next(20, 50), WorldGen.genRand.Next(20, 50), noise, outerThickness, -0.25f);
+			}
+
+			return true;
+		}, count, out _, bound);
 	}
 
-	// NetSend and WorldSave are both default
-
-	public override void WorldLoad(TagCompound tag)
+	public static void CreateScarabNest(int i, int j, int width, int height, FastNoiseLite noise, float outerThickness, float thickness = 0)
 	{
-		base.WorldLoad(tag);
+		int halfWidth = width / 2;
+		int halfHeight = height / 2;
+		Rectangle area = new(i - halfWidth, j - halfHeight, width, height);
 
-		TotalBounds.Clear();
-		foreach (Rectangle bound in GetBounds(FullArea))
-			TotalBounds.Add(bound);
+		for (int x = area.Left; x < area.Right; x++)
+		{
+			for (int y = j - area.Top; y < area.Bottom; y++)
+			{
+				float noiseValue = noise.GetNoise(x, y);
+				float distance = Vector2.DistanceSquared(new Vector2(x, y), new Vector2(i, j));
+				float distanceLimit = width * height * (0.1f + noiseValue * 0.05f);
+
+				if (distance > distanceLimit)
+					continue;
+
+				Tile tile = Main.tile[x, y];
+				bool hasTile = WorldGen.SolidOrSlopedTile(tile);
+
+				tile.ClearTile();
+				tile.WallType = (ushort)((distance > distanceLimit - outerThickness * 0.5f) ? RedSandstoneBrickCrackedWall.UnsafeType : PaleHiveWall.UnsafeType);
+
+				if (hasTile && (noiseValue < thickness || distance > distanceLimit - outerThickness))
+				{
+					int type = ModContent.TileType<PaleHive>();
+
+					if (distance > distanceLimit - outerThickness * 0.5f)
+						type = ModContent.TileType<CrackedSandstone>();
+					else if (noiseValue < -0.8f)
+						type = ModContent.TileType<GooBlock>();
+					else if (noiseValue < -0.7f)
+						type = ModContent.TileType<GooeyHive>();
+
+					tile.ResetToType((ushort)type);
+				}
+			}
+		}
+
+		WorldMethods.Generate(GrowVine, WorldGen.genRand.Next(5, 16), out _, area);
 	}
+
+	private static bool GrowVine(int i, int j)
+	{
+		bool result = false;
+
+		for (int c = 0; c < WorldGen.genRand.Next(1, 5); c++)
+			result |= Placer.GrowVine(i, j, ModContent.TileType<GooeyVine>(), 5);
+
+		return result;
+	}
+	#endregion
 }

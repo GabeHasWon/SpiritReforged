@@ -1,9 +1,8 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
@@ -170,16 +169,16 @@ internal class NewBeginningsCompat : ModSystem
 
 	private static Point16 SpawnInOasis()
 	{
-		if (UndergroundOasisBiome.OasisAreas.Count == 0)
+		if (OasisMicropass.OasisAreas.Count == 0)
 			return Point16.NegativeOne;
 
-		Rectangle selection = WorldGen.genRand.NextFromList([.. UndergroundOasisBiome.OasisAreas]);
+		Rectangle selection = WorldGen.genRand.NextFromList([.. OasisMicropass.OasisAreas]);
 		return new(selection.Center.X, selection.Center.Y);
 	}
 
 	private static Point16 SpawnInZiggurat()
 	{
-		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicrobiome).ToHashSet();
+		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicropass.ZigguratBiome).ToHashSet();
 
 		if (ziggurats.Count == 0)
 			return Point16.NegativeOne;

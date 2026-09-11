@@ -7,7 +7,7 @@ using System.Linq;
 using Terraria.WorldBuilding;
 using TileHelper.Content.Tiles;
 
-namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
+namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 
 public static class ZigguratRooms
 {
@@ -22,7 +22,7 @@ public static class ZigguratRooms
 		protected readonly Rectangle _outerBounds = bounds;
 		protected readonly RoomNoise _noise = noise;
 
-		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.DefaultWidth / WorldGen.genRand.Next([8, 10]), 14);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicropass.DefaultWidth / WorldGen.genRand.Next([8, 10]), 14);
 
 		public override void AddLinks()
 		{
@@ -47,14 +47,12 @@ public static class ZigguratRooms
 			));
 
 			if (WorldGen.genRand.NextBool())
-			{
 				WorldUtils.Gen(Bounds.Location, new ModShapes.All(data), Actions.Chain(
 					new Modifiers.Offset(0, 1),
 					new Modifiers.Dither(),
 					new Modifiers.OnlyTiles((ushort)ModContent.TileType<RedSandstoneBrick>()),
 					new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneSlab>())
 				));
-			}
 
 			PlaceColumn(new(Bounds.Left - 1, Bounds.Bottom - 1), 2);
 			PlaceColumn(new(Bounds.Right + 1, Bounds.Bottom - 1), 2);
@@ -187,7 +185,7 @@ public static class ZigguratRooms
 				const int grateHeight = 10;
 				for (int i = 0; i < 2; i++)
 				{
-					Rectangle grateArea = (i == 0) ? new(Bounds.Left, Bounds.Center.Y - grateHeight / 2 + 1, columnMiddleLeft - Bounds.Left, grateHeight)
+					Rectangle grateArea = i == 0 ? new(Bounds.Left, Bounds.Center.Y - grateHeight / 2 + 1, columnMiddleLeft - Bounds.Left, grateHeight)
 						: new(columnMiddleRight, Bounds.Center.Y - grateHeight / 2 + 1, Bounds.Right - columnMiddleRight, grateHeight);
 
 					WorldUtils.Gen(grateArea.Location, new Shapes.Rectangle(grateArea.Width, grateArea.Height), new Actions.PlaceWall((ushort)BronzeGrate.UnsafeType));
@@ -228,14 +226,10 @@ public static class ZigguratRooms
 			WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom - 6), new Shapes.Rectangle(Bounds.Width, 1), new Actions.PlaceTile((ushort)ModContent.TileType<BronzePlatform>()));
 
 			if (leftOpen)
-			{
 				WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom - 6), new Shapes.Rectangle(overhangWidth, 2), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
-			}
 			
 			if (rightOpen)
-			{
 				WorldUtils.Gen(new(Bounds.Right - overhangWidth, Bounds.Bottom - 6), new Shapes.Rectangle(overhangWidth, 2), new Actions.SetTileKeepWall((ushort)ModContent.TileType<RedSandstoneBrick>()));
-			}
 
 			WorldUtils.Gen(new(Bounds.Left, Bounds.Bottom), new Shapes.Rectangle(Bounds.Width, 1), new Actions.Custom(static (i, j, args) =>
 			{
@@ -295,7 +289,7 @@ public static class ZigguratRooms
 
 	public class TreasureRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
-		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.DefaultWidth / 5, 20);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicropass.DefaultWidth / 5, 20);
 
 		public override void Create()
 		{
@@ -333,11 +327,11 @@ public static class ZigguratRooms
 			int chestIndex = WorldGen.PlaceChest(chestX, chestY - 1, (ushort)LapisSet.TileTypes[nameof(ChestTile)], false, 0);
 
 			if (chestIndex != -1)
-				ZigguratMicrobiome.PopulateChest(Main.chest[chestIndex]);
+				ZigguratMicropass.PopulateChest(Main.chest[chestIndex]);
 
 			//Add platform furniture
 			Rectangle platformBounds = new(Bounds.X + 10, Bounds.Y, Bounds.Width - 20, Bounds.Height);
-			WorldMethods.Generate(ZigguratMicrobiome.PlaceRandomFurniture, 5, out _, platformBounds, 500);
+			WorldMethods.Generate(ZigguratMicropass.PlaceRandomFurniture, 5, out _, platformBounds, 500);
 			//Fill with coin piles
 			WorldMethods.Generate(PlaceCoinPile, WorldGen.genRand.Next(3, 6), out _, Bounds, 100);
 		}
@@ -351,7 +345,7 @@ public static class ZigguratRooms
 
 	public class LibraryRoom(Rectangle bounds, RoomNoise noise, Point origin = default) : BasicRoom(bounds, noise, origin)
 	{
-		protected override void Initialize(out Point size) => size = new(ZigguratMicrobiome.DefaultWidth / WorldGen.genRand.NextFromList(6, 8), 14);
+		protected override void Initialize(out Point size) => size = new(ZigguratMicropass.DefaultWidth / WorldGen.genRand.NextFromList(6, 8), 14);
 
 		public override void Create()
 		{

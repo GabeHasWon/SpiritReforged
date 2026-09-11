@@ -639,6 +639,71 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Amount"
 				Tooltip: The range for the number of items in a dresser.
 			}
+
+			DebrisMinimum: {
+				DisplayName: "[i:3271] (Ruins) Debris Minimum"
+				Tooltip: The minimum number of random debris to generate.
+			}
+
+			DebrisRange: {
+				DisplayName: "[i:3271] (Ruins) Debris Range"
+				Tooltip: The range of random debris to generate.
+			}
+
+			TopPlatChance: {
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Top Platform Chance"
+				Tooltip: The chance for platforms to appear at the top of a structure.
+			}
+
+			BottomPlatChance: {
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Bottom Platform Chance"
+				Tooltip: The chance for platforms to appear at the bottom of a structure.
+			}
+
+			FlagpoleChance: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Chance"
+				Tooltip: The chance for flagpoles to generate.
+			}
+
+			FlagpoleCountMinimum: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Minimum"
+				Tooltip: The minimum number of flagpoles to generate.
+			}
+
+			FlagpoleCountRange: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Range"
+				Tooltip: The range of flagpoles to generate.
+			}
+
+			FlagpoleHeightMin: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Minimum"
+				Tooltip: The minimum height of flagpoles.
+			}
+
+			FlagpoleHeightRange: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Range"
+				Tooltip: The height range of flagpoles.
+			}
+
+			PotMultiplier: {
+				DisplayName: "[i:SpiritReforged/PotsDesertItem] (Ruins) Pot Multiplier"
+				Tooltip: A multiplier for the number of pots to generate.
+			}
+
+			ChestChance: {
+				DisplayName: "[i:4267] (Ruins) Chest Chance"
+				Tooltip: The chance for a chest to generate.
+			}
+
+			UncommonPotChance: {
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] (Ruins) Uncommon Pot Chance"
+				Tooltip: The chance for uncommon pots to generate.
+			}
+
+			AbovegroundPillarChance: {
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] (Ruins) Aboveground Pillar Chance"
+				Tooltip: The chance for additional pillars to generate.
+			}
 		}
 
 		Presets: {
