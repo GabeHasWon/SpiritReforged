@@ -3618,3 +3618,12 @@ TrellisSpookyWoodTwoItem: {
 	// DisplayName: Spooky Wood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
+
+DhampirQuestItem: {
+	// DisplayName: Sad Little Bat
+	/* Tooltip:
+		'''
+		Allows the Dhampir to spawn in Salt Flats
+		"You feel an instinctual need to care for it"
+		''' */
+}

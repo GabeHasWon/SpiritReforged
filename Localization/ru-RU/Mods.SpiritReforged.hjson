@@ -127,3 +127,38 @@ EcotoneEdges: {
 }
 
 DamageClasses.HybridDamageClass.DisplayName: ед. гибридного урона
+
+CrossMod: {
+	Spooky: {
+		DhampirBounty: {
+			Dialogue: {
+				# For continuity sake, these dialogue entries are read sequentially, one eye, one player - so it'd be Eye.0, then Player.0, then Eye.1, etc
+				Eye: {
+					// 0: You know, I once knew someone like you! Someone spry, strong, and easy to use! But oh me oh my, they could only get so far, before the light of the sun left them scarred...so with a little bit of magic, I inverted their condition! A perfect specimen for daytime missions!
+					// 1: Uh...yeah, I mean, I had a more elaborate rhyme but, yeah that's about what I want. Do keep in mind that they are invisible, but just looove seeing their own reflection. Here, I have a malnourished bat I poke with a stick every night in a dinky cage that you can use to lure them out of hiding.
+					// 2: They probably just think they are too cool to hang around with little old me now. How ungrateful!
+				}
+
+				Player: {
+					// 0: And then they left right?
+					// 1: ...yeah, I wonder why they would ever leave!
+					// 2: Yeah, no other reason, got it.
+				}
+			}
+
+			RecoveryDialogue: {
+				NPC: {
+					// 0: You are back! Have you assassinated the deserter yet?
+					// 1: Oh don't worry, I have a big pile of malnourished bats I poke with a stick every night in dinky cages. I keep them around to remind myself of how much better I am than that stupid Dhampir. Grr...stupid dumb Dhampir...
+					// 2: ...oh me oh my, many things, but yet you help me so, we aren't so different...are we?
+				}
+
+				Player: {
+					// 0: No, Little Eye, no. I'm here because I lost the bat.
+					// 1: What's wrong with you?!
+					// 2: Ahuh. Just give me the bat already.
+				}
+			}
+		}
+	}
+}
