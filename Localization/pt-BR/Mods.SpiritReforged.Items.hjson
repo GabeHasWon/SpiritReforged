@@ -3509,6 +3509,11 @@ CandlePianoItem: {
 
 # You don't need to localize this, as it's only used to register a shader ID.
 ChromaticWaxShaderDummy: {
-	DisplayName: Modelo de Shader de Cera Cromática
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Olá parceiros de mods de cheat/receitas!
+}
+
+WaxPlatformItem: {
+	DisplayName: Plataforma de Vela
 	Tooltip: ""
 }
