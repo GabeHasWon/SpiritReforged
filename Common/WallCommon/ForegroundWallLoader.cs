@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.DataStructures;
 using Terraria.Graphics.Light;
 
@@ -60,7 +61,7 @@ public sealed class ForegroundWallLoader : ILoadable
 
 		return WallMethods.GetWallFrame(tile);
 
-		bool IsFull(int i, int j) => Framing.GetTileSafely(i, j).WallType == type || WorldGen.SolidTile(i, j);
+		bool IsFull(int i, int j) => Framing.GetTileSafely(i, j).WallType == type || WorldGen.SolidTile(i, j) && SpiritSets.ForegroundMergeFunc[type]?.Invoke(i, j) is not false;
 	}
 
 	private static void ResetPoints(On_Main.orig_RenderWalls orig, Main self)

@@ -1,5 +1,5 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
@@ -30,6 +30,6 @@ public class BambooPot : ModTile, ILoadItem
 		DustType = DustID.PalmWood;
 		AdjTiles = [TileID.ClayPot];
 
-		PlanterBoxMerge.PlanterTypes.Add(Type);
+		SpiritSets.IsPlanterBox[Type] = true;
 	}
 }

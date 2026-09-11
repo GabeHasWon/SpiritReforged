@@ -12,7 +12,7 @@ public class MysticalCodex : ModItem
 
 	public override void UpdateInfoAccessory(Player player)
 	{
-		var info = player.GetModPlayer<InfoPlayer>().info;
+		var info = player.GetModPlayer<InfoItem.InfoPlayer>().info;
 
 		info[ModContent.GetInstance<ScryingLens>().Name] = true;
 		info[ModContent.GetInstance<Ledger>().Name] = true;

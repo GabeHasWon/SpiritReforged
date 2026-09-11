@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Desert.DragonFossil;
 using SpiritReforged.Content.Desert.Tiles;
 using Terraria.ModLoader.Config;
@@ -28,7 +27,7 @@ internal class DesertMicropass : Micropass, IGenerationPage
 
 	PageInfo IGenerationPage.Info => new()
 	{
-		CopiedPage = new UndergroundOasisBiome()
+		CopiedPage = new OasisMicropass()
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
@@ -84,7 +83,7 @@ internal class DesertMicropass : Micropass, IGenerationPage
 		{
 			var coords = (new Vector2(i, j) + WorldGen.genRand.NextVector2Unit() * WorldGen.genRand.Next(scale)).ToPoint();
 			
-			if (Framing.GetTileSafely(coords).HasTileType(ModContent.TileType<PolishedAmber>()))
+			if (Framing.GetTileSafely(coords).Active(ModContent.TileType<PolishedAmber>()))
 				Framing.GetTileSafely(coords).TileType = (ushort)ModContent.TileType<AmberFossil>();
 		}
 	}

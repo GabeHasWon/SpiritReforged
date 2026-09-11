@@ -13,7 +13,7 @@ public class GildedSandstone : ModTile, ILoadItem
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
-		this.Merge(TileID.Sandstone, TileID.Sand, TileID.HardenedSand);
+		TileMethods.Merge(Type, TileID.Sandstone, TileID.Sand, TileID.HardenedSand);
 		AddMapEntry(new Color(198, 124, 78));
 
 		DustType = DustID.Sand;

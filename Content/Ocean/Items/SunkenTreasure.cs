@@ -7,6 +7,8 @@ using Terraria.DataStructures;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Ocean.Items.Rum;
 using SpiritReforged.Common.PlayerCommon;
+using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Items;
 
@@ -80,10 +82,12 @@ public class SunkenTreasureTile : ModTile
 		Main.tileSpelunker[Type] = true;
 		Main.tileNoFail[Type] = true;
 
+		TileID.Sets.DrawTileInSolidLayer[Type] = true;
 		TileID.Sets.PreventsSandfall[Type] = true;
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
+		TileObjectData.newTile.CoordinateHeights = [16, 20];
 		TileObjectData.newTile.Origin = new(1, 1);
 		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
 		TileObjectData.newTile.StyleWrapLimit = 2;
@@ -96,7 +100,6 @@ public class SunkenTreasureTile : ModTile
 
 		DustType = DustID.Sand;
 		AddMapEntry(new Color(133, 106, 56), Language.GetText("Mods.SpiritReforged.Items.SunkenTreasure.DisplayName"));
-		SolidBottomTile.TileTypes.Add(Type);
 	}
 
 	public override void MouseOver(int i, int j)
@@ -122,6 +125,7 @@ public class SunkenTreasureTile : ModTile
 	}
 
 	public override bool CanDrop(int i, int j) => false;
+
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
 		if (!ProgressStage(i, j))
@@ -131,10 +135,15 @@ public class SunkenTreasureTile : ModTile
 		Drop(i, j);
 	}
 
+	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) => Main.instance.TilesRenderer.AddSpecialPoint(i, j, TileDrawing.TileCounterType.CustomSolid);
+
+	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) => TileMethods.DrawSingleTile(i, j, true, Vector2.Zero);
+
 	private static void Drop(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
-		SoundEngine.PlaySound(SoundID.Coins with { Pitch = .5f }, new Vector2(i + 1, j + 1) * 16);
+		(i, j) = Helpers.GetTopLeft(i, j);
+
+		SoundEngine.PlaySound(SoundID.Coins with { Pitch = 0.5f }, new Vector2(i + 1, j + 1) * 16);
 		SoundEngine.PlaySound(SoundID.CoinPickup, new Vector2(i + 1, j + 1) * 16);
 
 		ItemMethods.SplitCoins(Main.rand.Next(50, 200), delegate (int type, int stack)
@@ -166,7 +175,7 @@ public class SunkenTreasureTile : ModTile
 		if (tile.TileFrameX / data.CoordinateFullWidth > 1)
 			return false;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		for (int frameX = 0; frameX < data.Width; frameX++)
 			for (int frameY = 0; frameY < data.Height; frameY++)

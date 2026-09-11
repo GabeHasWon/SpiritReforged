@@ -263,7 +263,10 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 				if (depth >= 0)
 				{
 					if ((depth < 15 || tile.WallType == WallID.None) && !InvalidWall(tile.WallType) && !InvalidWall(Main.tile[x, y + 1].WallType) && !Main.wallDungeon[tile.WallType])
+					{
 						tile.HasTile = true;
+						tile.LiquidAmount = 0;
+					}
 
 					if (tile.HasTile && !SavannaGenSets.SavannaCanReplace[tile.TileType] && !TileID.Sets.Ore[tile.TileType])
 						continue; //Can this tile be replaced by type?

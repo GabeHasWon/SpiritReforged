@@ -387,6 +387,11 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/ZenithPotsItem] Zenith Pot Scale"
 				Tooltip: Multiplier to the number of attempts for a zenith world's Zenith pots.
 			}
+
+			WaxScale: {
+				DisplayName: "[i:SpiritReforged/WaxPotItem] Wax Pot Scale"
+				Tooltip: Multiplier to the number of attempts for Wax Pots.
+			}
 		}
 
 		Presets: {
@@ -469,6 +474,21 @@ Pages: {
 			PotSpam: {
 				DisplayName: "[i:SpiritReforged/PotteryWheelItem] (Storage) Pot Count"
 				Tooltip: The minimum number of attempts pottery structures have to place pots.
+			}
+
+			EnchantedWorkbenchChance: {
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Houses) Workbench Chance"
+				Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
+			}
+
+			DisplayCaseChance: {
+				DisplayName: "[i:SpiritReforged/DisplayCaseItem] (Houses) Display Case Chance"
+				Tooltip: The denominator (1/x) of the chance for a Display Case to spawn in an underground house.
+			}
+
+			MirrorRate: {
+				DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] (Decor) Mirror Rate"
+				Tooltip: The multiplier to the maximum amount of Mirrors of Return that spawn in a world.
 			}
 		}
 
@@ -619,6 +639,71 @@ Pages: {
 				DisplayName: "[i:SpiritReforged/LapisDresserItem] Dresser Loot Amount"
 				Tooltip: The range for the number of items in a dresser.
 			}
+
+			DebrisMinimum: {
+				DisplayName: "[i:3271] (Ruins) Debris Minimum"
+				Tooltip: The minimum number of random debris to generate.
+			}
+
+			DebrisRange: {
+				DisplayName: "[i:3271] (Ruins) Debris Range"
+				Tooltip: The range of random debris to generate.
+			}
+
+			TopPlatChance: {
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Top Platform Chance"
+				Tooltip: The chance for platforms to appear at the top of a structure.
+			}
+
+			BottomPlatChance: {
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Bottom Platform Chance"
+				Tooltip: The chance for platforms to appear at the bottom of a structure.
+			}
+
+			FlagpoleChance: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Chance"
+				Tooltip: The chance for flagpoles to generate.
+			}
+
+			FlagpoleCountMinimum: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Minimum"
+				Tooltip: The minimum number of flagpoles to generate.
+			}
+
+			FlagpoleCountRange: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Range"
+				Tooltip: The range of flagpoles to generate.
+			}
+
+			FlagpoleHeightMin: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Minimum"
+				Tooltip: The minimum height of flagpoles.
+			}
+
+			FlagpoleHeightRange: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Range"
+				Tooltip: The height range of flagpoles.
+			}
+
+			PotMultiplier: {
+				DisplayName: "[i:SpiritReforged/PotsDesertItem] (Ruins) Pot Multiplier"
+				Tooltip: A multiplier for the number of pots to generate.
+			}
+
+			ChestChance: {
+				DisplayName: "[i:4267] (Ruins) Chest Chance"
+				Tooltip: The chance for a chest to generate.
+			}
+
+			UncommonPotChance: {
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] (Ruins) Uncommon Pot Chance"
+				Tooltip: The chance for uncommon pots to generate.
+			}
+
+			AbovegroundPillarChance: {
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] (Ruins) Aboveground Pillar Chance"
+				Tooltip: The chance for additional pillars to generate.
+			}
 		}
 
 		Presets: {
@@ -665,8 +750,8 @@ Pages: {
 			}
 
 			GlowflowerChance: {
-				DisplayName: "[i:4045] (Oasis) Glowflower Chance"
-				Tooltip: Chance for a Glowflower to be placed.
+				DisplayName: "[i:4045] (Oasis) Mariglow Chance"
+				Tooltip: Chance for a Mariglow to be placed.
 			}
 
 			PineappleChance: {

@@ -78,8 +78,8 @@ GildedScarabBuff: {
 	Description: 防御力增加{0}
 }
 
-PoolNoodleBubbleBuff: {
-	DisplayName: 游泳浮条泡泡
+Bubbled: {
+	DisplayName: 冒泡
 	Description: 你已寻获魂灵传说秘典……敬请期待我们的超级Boss——坠落之星，暗钢！
 }
 
@@ -146,4 +146,29 @@ ScarabLightPetBuff: {
 ScarabMountBuff: {
 	DisplayName: 鼠妇坐骑
 	Description: “抓稳了！”
+}
+
+DivineStrike: {
+	DisplayName: 神圣惩击
+	Description: 你的下一次攻击被强化了
+}
+
+RotDebuff: {
+	DisplayName: 腐化 [{0}]
+	Description: “你的皮肤变绿了”
+}
+
+SanguineStackingBuff: {
+	DisplayName: 染血能量 [{0}]
+	Description: 伤害增加{0}%
+}
+
+BlazeDebuff: {
+	DisplayName: 点燃
+	Description: 这很好！
+}
+
+RageGlyphBuff: {
+	DisplayName: 狂怒伤害 [{0}]
+	Description: 存储的伤害：{0}
 }

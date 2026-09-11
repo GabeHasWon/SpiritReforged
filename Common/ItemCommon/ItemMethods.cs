@@ -1,11 +1,18 @@
 ﻿using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
+using SpiritReforged.Content.Glyphs;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ItemCommon;
 
-internal static class ItemMethods
+public static class ItemMethods
 {
+	/// <summary> Succinctly stores variables related to item drawing in-world. </summary>
+	public readonly record struct ItemDrawParams(Texture2D Texture, Rectangle Source, Vector2 Position, Vector2 Origin, Color DrawColor, float Scale, float Rotation)
+	{
+		public readonly void Draw() => Main.EntitySpriteDraw(Texture, Position, Source, DrawColor, Rotation, Origin, Scale, default, 0);
+	}
+
 	public delegate void CoinAction(int type, int stack);
 
 	/// <summary> Spawns an item and automatically syncs it for the multiplayer client. </summary>
@@ -48,10 +55,25 @@ internal static class ItemMethods
 	{
 		texture ??= TextureAssets.Item[item.type].Value;
 
-		Main.GetItemDrawFrame(item.type, out _, out var frame);
-		var position = item.Bottom - new Vector2(0, frame.Height / 2) - Main.screenPosition; //Do some odd math because of how visual and item rectangles relate
+		Rectangle source = (Main.itemAnimations[item.type] != null) ? Main.itemAnimations[item.type].GetFrame(texture) : texture.Frame();
+		Vector2 position = item.Bottom - new Vector2(0, source.Height / 2) - Main.screenPosition; //Do some odd math because of how visual and item rectangles relate
 
-		Main.EntitySpriteDraw(texture, position, frame, item.GetAlpha(light), rotation, frame.Size() / 2f, scale, default, 0);
+		Main.EntitySpriteDraw(texture, position, source, item.GetAlpha(light), rotation, source.Size() / 2f, scale, default, 0);
+	}
+
+	//public static void DrawInWorld(this ItemDrawParams parameters) => Main.EntitySpriteDraw(parameters.Texture, parameters.Position, parameters.Source, parameters.DrawColor, parameters.Rotation, parameters.Origin, parameters.Scale, default, 0);
+
+	/// <summary> Gets the draw parameters of an item in the world. </summary>
+	public static ItemDrawParams GetDrawParams(this Item item, Color lightColor = default, float rotation = 0)
+	{
+		Main.GetItemDrawFrame(item.type, out Texture2D texture, out Rectangle frame);
+		Vector2 position = item.Bottom - new Vector2(0, frame.Height / 2) - Main.screenPosition;
+		Vector2 origin = frame.Size() / 2;
+
+		if (lightColor == default)
+			lightColor = Lighting.GetColor(item.Center.ToTileCoordinates()); //Sample lighting automatically
+
+		return new(texture, frame, position, origin, item.GetAlpha(lightColor), item.scale, rotation);
 	}
 
 	/// <summary> Removes the equip texture associated with the provided item. </summary>
@@ -63,6 +85,13 @@ internal static class ItemMethods
 		ModItem modItem = ItemLoader.GetItem(type);
 		HideEquipSlot(EquipLoader.GetEquipSlot(modItem.Mod, modItem.Name, equipType), array);
 	}
+
+	#region extension methods
+	public static bool SetGlyph(this Item item, GlyphItem.GlyphType type, GlyphItem.IApplicationContext context = default) => item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphItem) && glyphItem.SetGlyph(item, type, context);
+
+	public static GlyphItem.GlyphType GetGlyph(this Item item) => item.TryGetGlobalItem(out GlyphItem.GlyphGlobalItem glyphItem) ? glyphItem.Glyph : default;
+
+	public static bool HasGlyph(this Item item) => item.GetGlyph().ItemType > 0;
 
 	public static void DefaultToTrophy(this Item Item, int style)
 	{
@@ -91,4 +120,5 @@ internal static class ItemMethods
 		Item.expert = true;
 		Item.rare = -2;
 	}
+	#endregion
 }

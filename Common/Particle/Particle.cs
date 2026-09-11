@@ -35,13 +35,22 @@ public class Particle
 	/// <summary>
 	/// Call this when you want to clear your particle and remove it from the world.
 	/// </summary>
-	public void Kill() => ParticleHandler.DeleteParticleAtIndex(ID);
+	public void Kill()
+	{
+		OnKill();
+		ParticleHandler.DeleteParticleAtIndex(ID);
+	}		
 
 	/// <summary>
 	/// Called every tick. Update your particle in this method.
 	/// Particle velocity is automatically added to the particle position for you, and TimeAlive is incremented.
 	/// </summary>
 	public virtual void Update() { }
+
+	/// <summary>
+	/// Called when a particle is killed
+	/// </summary>
+	public virtual void OnKill() { }
 
 	/// <summary>
 	/// Allows you to do custom drawing for your particle. Only called if Particle.UseCustomDrawing is true.

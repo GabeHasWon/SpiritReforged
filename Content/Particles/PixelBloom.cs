@@ -9,6 +9,8 @@ public class PixelBloom : Particle
 	private float progress;
 
 	private readonly Action<Particle> _action;
+	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
+	public override ParticleLayer DrawLayer => Layer;
 
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 

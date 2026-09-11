@@ -1,16 +1,16 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
-using SpiritReforged.Common.WorldGeneration.PointOfInterest;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
-using SpiritReforged.Content.Forest.Botanist.Tiles;
+using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Forest.WoodClub;
+using SpiritReforged.Content.Glyphs;
+using SpiritReforged.Content.Glyphs.CharmcasterSet;
 using SpiritReforged.Content.Ocean.Items.KoiTotem;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 using SpiritReforged.Content.Ocean.Items.Vanity.DiverSet;
@@ -48,6 +48,7 @@ internal class NewBeginningsCompat : ModSystem
 			AddDisentombed();
 			AddWorshipper();
 			AddPurifier();
+			AddEnchanter();
 		});
 
 		void AddDiver()
@@ -130,6 +131,16 @@ internal class NewBeginningsCompat : ModSystem
 			AddOrigin("Purifier", [], equip, misc, dele);
 		}
 
+		void AddEnchanter()
+		{
+			object equip = beginnings.Call("EquipData", ModContent.ItemType<CharmcasterHat>(), ModContent.ItemType<CharmcasterRobe>(), 
+				ModContent.ItemType<CharmcasterLeggings>(), Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, ModContent.NPCType<Enchanter>());
+			object dele = GetDelegateData(() => true, list => { }, () => false, () => Point16.Zero);
+
+			AddOrigin("Enchanter", [(ModContent.ItemType<Flarepowder>(), 60), (ModContent.ItemType<ChromaticWax>(), 3)], equip, misc, dele);
+		}
+
 		void AddOrigin(string name, (int, int)[] inventory, object equipData, object miscData, object delegateData) 
 			=> beginnings.Call("ShortAddOrigin", GetIcon(name), "Reforged" + name, "Mods.SpiritReforged.Origins." + name, inventory, equipData, miscData, delegateData);
 	}
@@ -158,16 +169,16 @@ internal class NewBeginningsCompat : ModSystem
 
 	private static Point16 SpawnInOasis()
 	{
-		if (UndergroundOasisBiome.OasisAreas.Count == 0)
+		if (OasisMicropass.OasisAreas.Count == 0)
 			return Point16.NegativeOne;
 
-		Rectangle selection = WorldGen.genRand.NextFromList([.. UndergroundOasisBiome.OasisAreas]);
+		Rectangle selection = WorldGen.genRand.NextFromList([.. OasisMicropass.OasisAreas]);
 		return new(selection.Center.X, selection.Center.Y);
 	}
 
 	private static Point16 SpawnInZiggurat()
 	{
-		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicrobiome).ToHashSet();
+		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicropass.ZigguratBiome).ToHashSet();
 
 		if (ziggurats.Count == 0)
 			return Point16.NegativeOne;
@@ -266,7 +277,7 @@ internal class NewBeginningsCompat : ModSystem
 	private void AddHikerBackpack(Player player)
 	{
 		player.GetModPlayer<BackpackPlayer>().backpack = new Item(ModContent.ItemType<LeatherBackpack>(), 1);
-		(player.GetModPlayer<BackpackPlayer>().backpack.ModItem as BackpackItem).items[0] = new Item(ItemID.CalmingPotion, 3);
+		(player.GetModPlayer<BackpackPlayer>().backpack.ModItem as BackpackItem).Items[0] = new Item(ItemID.CalmingPotion, 3);
 	}
 
 	private static Point16 FindHunterSpawn()
@@ -294,14 +305,34 @@ internal class NewBeginningsCompat : ModSystem
 	{
 		var area = WorldGen.genRand.Next([.. FishingAreaMicropass.Coves]);
 
+		// Check for and spawn on Koi Totem if possible,
 		for (int x = area.Left; x < area.Right; x++)
-			for (int y = area.Top; x < area.Bottom; y++)
+		{
+			for (int y = area.Top; y < area.Bottom; y++)
 			{
 				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<KoiTotemTile>())
 					return new Point16(x, y);
 			}
+		}
 
-		return new Point16(Main.spawnTileX, Main.spawnTileY);
+		HashSet<int> validGrounds = [TileID.Stone, TileID.Platforms, TileID.WoodBlock, TileID.BorealWood, TileID.RichMahogany];
+		HashSet<Point16> positions = [];
+
+		// if not, spawn anywhere valid,
+		for (int x = area.Left; x < area.Right; x++)
+		{
+			for (int y = area.Top; y < area.Bottom; y++)
+			{
+				if (Main.tile[x, y].HasTile && validGrounds.Contains(Main.tile[x, y].TileType))
+					positions.Add(new Point16(x, y - 3));
+			}
+		}
+
+		// else, default to spawn.
+		if (positions.Count == 0)
+			return new Point16(Main.spawnTileX, Main.spawnTileY);
+
+		return WorldGen.genRand.Next(positions.ToList());
 	}
 
 	private static Point16 FindScarecrowSpawnPoint()

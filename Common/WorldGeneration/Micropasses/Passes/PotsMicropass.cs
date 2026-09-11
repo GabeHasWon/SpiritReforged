@@ -55,6 +55,11 @@ internal class PotsMicropass : Micropass, IGenerationPage
 	[GenConfigurable(1f, MaxPots, 5)]
 	[Slider]
 	[PriorityModifier(nameof(RollingPotChance))]
+	private static float WaxScale = 15;
+
+	[GenConfigurable(1f, MaxPots, 5)]
+	[Slider]
+	[PriorityModifier(nameof(RollingPotChance))]
 	private static float StuffedScale = 12;
 
 	[GenConfigurable(1f, MaxPots, 5)]
@@ -213,6 +218,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 		Generate(CreateUpsideDown, scale, out _, scale: UpsideDownScale);
 		Generate(CreateBoulder, scale, out _, scale: BoulderScale);
 		Generate(CreatePicnic, scale, out _, scale: PicnicScale);
+		Generate(CreateWax, scale, out _, scale: WaxScale);
 
 		Generate(CreateStack, (int)(Main.maxTilesX * Main.maxTilesY * StackScale * multiplier), out _, maxTries: 30_000); //Normal pot generation weight is 0.0008
 		Generate(CreateUncommon, (int)(Main.maxTilesX * Main.maxTilesY * UncommonScale * multiplier), out int pots, maxTries: 30_000);
@@ -266,6 +272,20 @@ internal class PotsMicropass : Micropass, IGenerationPage
 			return false;
 
 		int type = ModContent.TileType<ScryingPot>();
+		Placer.Check(x, y, type).IsClear().Place();
+
+		return Main.tile[x, y].TileType == type;
+	}
+
+	public static bool CreateWax(int x, int y)
+	{
+		FindGround(x, ref y);
+		y--;
+
+		if (y < Main.worldSurface || y > Main.UnderworldLayer || !CommonSurface(x, y))
+			return false;
+
+		int type = ModContent.TileType<WaxPot>();
 		Placer.Check(x, y, type).IsClear().Place();
 
 		return Main.tile[x, y].TileType == type;

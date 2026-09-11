@@ -2,6 +2,7 @@
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using Terraria.Graphics.Effects;
 
 namespace SpiritReforged.Content.Desert.Biome;
@@ -34,7 +35,7 @@ public class UndergroundOasisScene : ModSceneEffect
 			float parallax = 1f - Main.caveParallax;
 			float transition = EaseFunction.EaseQuadOut.Ease(1f - Main.ugBackTransition);
 
-			foreach (var area in UndergroundOasisBiome.OasisAreas)
+			foreach (var area in OasisMicropass.OasisAreas)
 			{
 				var worldCoords = area.Center.ToWorldCoordinates();
 				var roundedPos = new Vector2((int)(worldCoords.X / roundWidth) * roundWidth, (int)(worldCoords.Y / roundHeight) * roundHeight);
@@ -43,7 +44,7 @@ public class UndergroundOasisScene : ModSceneEffect
 				Vector2 instantParallax = new(MathHelper.Clamp((player.Center.X - roundedPos.X) * 0.03f, -16, 16), 0);
 				Vector2 center = roundedPos + scroll + new Vector2(16 + 110, 32 - 130);
 
-				sb.Draw(TextureAssets.MagicPixel.Value, center + instantParallax - Main.screenPosition + TileExtensions.TileOffset, subBackground.Bounds, Color.Black * transition, 0, subBackground.Size() / 2, 1, default, 0);
+				sb.Draw(TextureAssets.MagicPixel.Value, center + instantParallax - Main.screenPosition + TileMethods.TileOffset, subBackground.Bounds, Color.Black * transition, 0, subBackground.Size() / 2, 1, default, 0);
 
 				DrawBackgroundSliced(sb, subBackground, center + instantParallax, Color.White * 0.7f * transition);
 				DrawBackgroundSliced(sb, background, center, Color.White * transition);
@@ -62,12 +63,12 @@ public class UndergroundOasisScene : ModSceneEffect
 					Vector3 light = Lighting.GetSubLight(topLeft + offset) * 0.9f;
 					Rectangle source = new((int)offset.X, (int)offset.Y, sliceScale, sliceScale);
 
-					sb.Draw(texture, topLeft + offset - Main.screenPosition + TileExtensions.TileOffset, source, tint is Color finalTint ? new Color(light).MultiplyRGB(finalTint) : new Color(light));
+					sb.Draw(texture, topLeft + offset - Main.screenPosition + TileMethods.TileOffset, source, tint is Color finalTint ? new Color(light).MultiplyRGB(finalTint) : new Color(light));
 				}
 		}
 	}
 
-	public override bool IsSceneEffectActive(Player player) => UndergroundOasisBiome.InUndergroundOasis(player);
+	public override bool IsSceneEffectActive(Player player) => OasisMicropass.UndergroundOasisBiome.InUndergroundOasis(player);
 	public override void SpecialVisuals(Player player, bool isActive)
 	{
 		_effectIntensity = isActive ? Math.Min(_effectIntensity + 0.05f, 1) : Math.Max(_effectIntensity - 0.05f, 0);

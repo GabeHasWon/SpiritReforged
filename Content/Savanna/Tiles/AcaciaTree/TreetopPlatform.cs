@@ -2,7 +2,6 @@
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using System.Runtime.CompilerServices;
 using Terraria.DataStructures;
@@ -61,7 +60,7 @@ public class TreetopPlatform : SimpleEntity, IGrappleable
 			player.gfxOffY = 0;
 		}
 
-		lastWindCounter = TileSwaySystem.TreeWindCounter;
+		lastWindCounter = WindTileRenderer.TreeWindCounter;
 	}
 
 	public bool CanGrapple(Projectile hook)

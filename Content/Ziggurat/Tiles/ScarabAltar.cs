@@ -8,6 +8,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals;
@@ -43,6 +44,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, ILoadItem
 
 		private Vector2 _origin;
 		private Color[] _sampleColors;
+
+		public override void SetStaticDefaults() => HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 
 		public override void SetDefaults()
 		{
@@ -462,7 +465,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		var d = TileObjectData.GetTileData(Main.tile[i, j]);
 		var size = (d is null) ? new Point(1, 1) : new Point(d.Width, d.Height);
 

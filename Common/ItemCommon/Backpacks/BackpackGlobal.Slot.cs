@@ -19,7 +19,7 @@ internal partial class BackpackGlobal : GlobalItem
 		if (!item.newAndShiny)
 			return;
 
-		var items = (item.ModItem as BackpackItem).items;
+		var items = (item.ModItem as BackpackItem).Items;
 		if (items.Any(x => !x.IsAir))
 		{
 			var source = bagIcon.Frame(1, 2, 0, 0);
@@ -34,7 +34,7 @@ internal partial class BackpackGlobal : GlobalItem
 		if (item.tooltipContext != ItemSlot.Context.InventoryItem)
 			return true;
 
-		var items = (item.ModItem as BackpackItem).items;
+		var items = (item.ModItem as BackpackItem).Items;
 		if (items.Any(x => !x.IsAir)) //Draw the backpack contents in the inventory, if any
 		{
 			int length = items.Length;

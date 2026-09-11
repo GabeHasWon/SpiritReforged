@@ -134,7 +134,6 @@ public class ScarabHeatHazeShaderData : ScreenShaderData
 		base.Shader.Parameters["tileTargetTopLeft"]?.SetValue(tileTargetCorner);
 		base.Shader.Parameters["tileTargetBottomRight"]?.SetValue(tileTargetCorner2);
 
-
 		base.Shader.Parameters["sunIntensity"]?.SetValue(SunShineMultiplier);
 		
 		base.Apply();

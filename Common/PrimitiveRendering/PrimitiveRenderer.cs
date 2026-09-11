@@ -66,8 +66,6 @@ public static class PrimitiveRenderer
 	/// Directly render a given primitive shape, with an optional effect parameter.<br />
 	/// Calls the RenderPrimitives method, using the parameters of the given primitive shape to determine vertices, indeces, and type of primitives to draw.
 	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	/// <param name="effect"></param>
 	public static void DrawPrimitiveShape(IPrimitiveShape primitiveShape, Effect effect = null, string shaderPass = null, bool useUiMatrix = false)
 	{
 		ApplyPrimitiveShader(effect, shaderPass, useUiMatrix);
@@ -102,6 +100,7 @@ public static class PrimitiveRenderer
 		else
 		{
 			ShaderHelpers.SetEffectMatrices(ref effect, useUiMatrix);
+
 			foreach (var pass in effect.CurrentTechnique.Passes.Where(pass => shaderPass == null || pass.Name == shaderPass))
 				pass.Apply();
 		}

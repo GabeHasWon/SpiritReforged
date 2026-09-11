@@ -3,6 +3,7 @@ using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
@@ -28,6 +29,20 @@ internal class BackpackPlayer : ModPlayer
 	private BackpackState _state = BackpackState.None;
 	private BackpackState _oldState = BackpackState.None;
 
+	/// <summary>
+	/// Whether the given player has the given item in the inventory or in a worn backpack.
+	/// </summary>
+	public static bool HasItemInInventoryOrBackpack(Player player, int id)
+	{
+		if (player.HasItem(id))
+			return true;
+
+		if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			return player.HasItem(id, back.Items);
+
+		return false;
+	}
+
 	#region detours
 	public override void Load()
 	{
@@ -36,6 +51,18 @@ internal class BackpackPlayer : ModPlayer
 		On_Player.TakeUnityPotion += CheckBackpacksForWormholePot;
 		On_Player.HasUnityPotion += AddUnityPotionCheck;
 		On_Player.QuickBuff += On_Player_QuickBuff;
+		On_Player.HasItemInAnyInventory += AddBackpackCheck;
+	}
+
+	private bool AddBackpackCheck(On_Player.orig_HasItemInAnyInventory orig, Player self, int type)
+	{
+		if (orig(self, type))
+			return true;
+
+		if (self.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			return self.HasItem(type, back.Items);
+
+		return false;
 	}
 
 	private bool AddUnityPotionCheck(On_Player.orig_HasUnityPotion orig, Player self)
@@ -44,7 +71,7 @@ internal class BackpackPlayer : ModPlayer
 			return true;
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
 					return true;
 
@@ -63,7 +90,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 			{
 				if (item.stack <= 0 || item.type <= ItemID.None || item.buffType <= 0 || item.CountsAsClass(DamageClass.Summon) || !ItemCheck_CheckCanUse(self, item))
 					continue;
@@ -124,7 +151,7 @@ internal class BackpackPlayer : ModPlayer
 	{
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			foreach (Item item in i.items)
+			foreach (Item item in i.Items)
 			{
 				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
 				{
@@ -148,7 +175,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			Item item = BuffPlayer.SortByPriority(i.items, self).LastOrDefault();
+			Item item = BuffPlayer.SortByPriority(i.Items, self).LastOrDefault();
 
 			if (!item.IsAir && item.buffTime > 0 && item.buffType != 0 && !HasBetterFoodBuff(self, item.buffType, item.buffTime))
 				return item;
@@ -180,7 +207,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			Item item = BuffPlayer.SortByPriority(i.items, self, true).LastOrDefault();
+			Item item = BuffPlayer.SortByPriority(i.Items, self, true).LastOrDefault();
 
 			if (!item.IsAir && item.potion && item.healLife > 0)
 				return item;
@@ -208,7 +235,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (backpack.ModItem is BackpackItem bp) //Update backpack contents as though they were in the inventory
 		{
-			foreach (var item in bp.items)
+			foreach (var item in bp.Items)
 			{
 				ItemLoader.UpdateInventory(item, Player);
 				Player.RefreshInfoAccsFromItemType(item);

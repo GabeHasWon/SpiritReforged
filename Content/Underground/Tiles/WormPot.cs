@@ -4,7 +4,6 @@ using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
@@ -14,10 +13,11 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.Utilities;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
+public class WormPot : PotTile, WindTileRenderer.IDrawInWind, ILootable, ICutAttempt
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1] } };
 
@@ -49,13 +49,14 @@ public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 	public override void AddMapData() => AddMapEntry(Color.MediumVioletRed, Language.GetText("Mods.SpiritReforged.Items.WormPotItem.DisplayName"));
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
+
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
 		if (effectOnly || !fail || IsRubble || WorldMethods.Generating)
 			return;
 
 		fail = AdjustFrame(i, j);
-		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
+		WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-4, 4));
 	}
 
 	public bool OnCutAttempt(int i, int j)
@@ -64,7 +65,7 @@ public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 			return true;
 
 		bool fail = AdjustFrame(i, j);
-		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
+		WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-4, 4));
 
 		var cache = Main.tile[i, j];
 		WorldGen.KillTile_MakeTileDust(i, j, cache);
@@ -89,9 +90,9 @@ public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 
 	private static bool AdjustFrame(int i, int j)
 	{
-		const int fullWidth = 36;
+		const int full_width = 36;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		if (Main.tile[i, j].TileFrameX != 0)
 			return false; //Frame has already been adjusted
@@ -101,7 +102,7 @@ public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 			for (int y = j; y < j + 2; y++)
 			{
 				var t = Main.tile[x, y];
-				t.TileFrameX += fullWidth;
+				t.TileFrameX += full_width;
 			}
 		}
 
@@ -128,7 +129,9 @@ public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 			});
 
 			if (Main.rand.NextFloat() < 0.0001f)
+			{
 				SimpleEntitySystem.NewEntity(SimpleEntitySystem.Types[typeof(DevourerOfSoil)], new Vector2(i, j).ToWorldCoordinates(8));
+			}
 			else
 			{
 				int wormCount = Main.rand.Next(3, 7);
@@ -159,22 +162,19 @@ public class WormPot : PotTile, ISwayTile, ILootable, ICutAttempt
 		}
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		var tile = Main.tile[i, j];
-		var data = TileObjectData.GetTileData(tile);
+		Tile tile = Main.tile[i, j];
+		if (TileObjectData.GetTileData(tile) is TileObjectData data)
+		{
+			Rectangle source = new(tile.TileFrameX, tile.TileFrameY, data.CoordinateWidth, data.CoordinateHeights[tile.TileFrameY / 18]);
+			Color color = Lighting.GetColor(i, j);
 
-		var drawPos = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y);
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, data.CoordinateWidth, data.CoordinateHeights[tile.TileFrameY / 18]);
-		var dataOffset = new Vector2(data.DrawXOffset, data.DrawYOffset);
+			if (Main.LocalPlayer.findTreasure)
+				color = TileMethods.GetSpelunkerTint(color);
 
-		var color = Lighting.GetColor(i, j);
-
-		if (Main.LocalPlayer.findTreasure)
-			color = TileExtensions.GetSpelunkerTint(color);
-
-		spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, drawPos + origin + dataOffset,
-			source, color, rotation, origin, 1, SpriteEffects.None, 0);
+			spriteBatch.Draw(Helpers.GetTileTextureValue(tile), position, source, color, rotation, origin, 1, SpriteEffects.None, 0);
+		}
 	}
 
 	public void AddLoot(ILoot loot)

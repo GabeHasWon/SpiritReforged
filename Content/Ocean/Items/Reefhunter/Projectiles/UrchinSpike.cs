@@ -29,6 +29,7 @@ public class UrchinSpike : ModProjectile
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 20;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 	}
 
 	public override void SetDefaults()

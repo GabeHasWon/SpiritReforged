@@ -5,7 +5,7 @@ namespace SpiritReforged.Content.Underground.Moss.Radon;
 
 public class RadonMossBrick : ModTile, ILoadItem
 {
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<RadonMoss>()).AddIngredient(ItemID.ClayBlock, 10).AddTile(TileID.Furnaces).Register();
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<RadonMoss>()).AddIngredient(ItemID.ClayBlock, 10).AddTile(TileID.Furnaces).Register();
 
 	public override void SetStaticDefaults()
 	{

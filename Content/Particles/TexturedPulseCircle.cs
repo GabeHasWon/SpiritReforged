@@ -32,7 +32,7 @@ public class TexturedPulseCircle : PulseCircle
 		_textureStretch = textureStretch;
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
+	public override ParticleLayer DrawLayer => Layer;
 
 	internal override string EffectPassName => "TexturedStyle";
 

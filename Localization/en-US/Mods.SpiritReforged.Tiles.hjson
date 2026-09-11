@@ -27,6 +27,7 @@ Records: {
 	Scrying: Reveals a large portion of the map upon being destroyed.
 	Biome: Contains a greater variety of loot than common pots.
 	Boulder: Rolls along the ground when disturbed.
+	Wax: Imbued with potent magical energies.
 }
 
 FablesGraves: {

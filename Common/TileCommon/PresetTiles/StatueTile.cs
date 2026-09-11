@@ -46,20 +46,22 @@ public abstract class StatueTile : ModTile, ILoadItem
 
 	public override void HitWire(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
-		var data = TileObjectData.GetTileData(Main.tile[i, j]);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
-		int width = data?.Height ?? 2;
-		int height = data?.Height ?? 3;
-
-		for (int x = i; x < i + width; x++)
+		if (TileObjectData.GetTileData(Main.tile[i, j]) is TileObjectData data)
 		{
-			for (int y = j; y < j + height; y++)
-				Wiring.SkipWire(x, y);
-		}
+			int width = data?.Height ?? 2;
+			int height = data?.Height ?? 3;
 
-		Vector2 spawn = new Vector2(i, j).ToWorldCoordinates(width / 2f * 16 - 8, height * 16);
-		StatueSpawn(i, j, spawn);
+			for (int x = i; x < i + width; x++)
+			{
+				for (int y = j; y < j + height; y++)
+					Wiring.SkipWire(x, y);
+			}
+
+			Vector2 spawn = new Vector2(i, j).ToWorldCoordinates(width / 2f * 16 - 8, height * 16);
+			StatueSpawn(i, j, spawn);
+		}
 	}
 
 	public virtual void StatueSpawn(int i, int j, Vector2 center)

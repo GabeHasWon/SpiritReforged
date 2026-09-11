@@ -51,3 +51,9 @@ Purifier: {
 	Flavor: Mal abominável, vai-te embora e queime com a dor da minha pureza.
 	Description: Começa com o Bastão Bo e uma Máscara Mahakala nas Salinas (se possível).
 }
+
+Enchanter: {
+	DisplayName: Encantador
+	Flavor: Voilà! Precisa de um pouco mais de brilho? Vamos começar com uma pequenininha faísca!
+	Description: Começa com 60 Pó de Faíscas, 3 Ceras Cromáticas e uma roupa de Mestre dos Feitiços, junto do NPC, Encantadore.
+}

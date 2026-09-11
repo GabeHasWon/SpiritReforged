@@ -1,11 +1,9 @@
-﻿
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using Terraria.ModLoader.Core;
 
 namespace SpiritReforged.Common.ItemCommon;
 
-internal class ItemEvents : GlobalItem
+internal sealed class ItemEvents : GlobalItem
 {
 	public interface IQuickRecipeNPC
 	{
@@ -13,7 +11,23 @@ internal class ItemEvents : GlobalItem
 	}
 
 	public delegate void DefaultsDelegate(Item item);
+	/// <returns> True to continue vanilla behaviour. </returns>
+	public delegate bool PrefixDelegate(Item item, int prefix);
 
+	public static event PrefixDelegate OnPrefix;
+
+	public override void Load() => On_Item.Prefix += PreventPrefix;
+
+	private static bool PreventPrefix(On_Item.orig_Prefix orig, Item self, int prefixWeWant)
+	{
+		if (OnPrefix?.Invoke(self, prefixWeWant) == false)
+			return false;
+
+		orig(self, prefixWeWant);
+		return true;
+	}
+
+	#region defaults
 	internal static readonly Dictionary<int, DefaultsDelegate> DefaultByType = [];
 
 	/// <summary> Binds <paramref name="dele"/> to the provided <paramref name="itemType"/> and invokes it whenever <see cref="GlobalType{TEntity, TGlobal}.SetDefaults(TEntity)"/> is called. </summary>
@@ -30,6 +44,7 @@ internal class ItemEvents : GlobalItem
 		if (DefaultByType.TryGetValue(entity.type, out var dele))
 			dele.Invoke(entity);
 	}
+	#endregion
 
 	public override void AddRecipes()
 	{

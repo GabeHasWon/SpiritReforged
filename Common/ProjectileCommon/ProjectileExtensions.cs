@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.MathHelpers;
-
+using SpiritReforged.Content.Glyphs;
 namespace SpiritReforged.Common.ProjectileCommon;
 
 internal static class ProjectileExtensions
@@ -145,7 +145,7 @@ internal static class ProjectileExtensions
 	/// <param name="projectile">The projectile to draw.</param>
 	/// <param name="framespersecond">The amount of frames to cycle through each second.</param>
 	/// <param name="loopFrame">The frame to loop to after reaching the maximum frame count. Defaults to zero.</param>
-	/// <param name="maxFrame">The frame to loop the animation upon reaching. If null, will use <see cref="Main.projFrames[projectile.type]"/> to get the default maximum frame count.</param>
+	/// <param name="maxFrame">The frame to loop the animation upon reaching. If null, will use <see cref="Main.projFrames"/> to get the default maximum frame count.</param>
 	public static void UpdateFrame(this Projectile projectile, int framespersecond, int loopFrame = 0, int? maxFrame = null)
 	{
 		if (framespersecond == 0)
@@ -172,4 +172,6 @@ internal static class ProjectileExtensions
 	}
 
 	public static bool BelongsToPlayer(this Projectile p) => !(p.npcProj || p.owner == 255 || p.trap);
+
+	public static GlyphItem.GlyphType GetGlyph(this Projectile projectile) => projectile.TryGetGlobalProjectile(out GlyphGlobalProjectile glyphProjectile) ? glyphProjectile.glyph : default;
 }
