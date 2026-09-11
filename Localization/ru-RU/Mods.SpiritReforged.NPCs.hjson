@@ -477,8 +477,10 @@ WorldFrog: {
 	}
 
 	Reports: {
-		CavesAndClubs_0: Фокус-фокус, грусть прочь гони — в пещерах есть теперь что найти!
+		CavesAndClubs_0: Фокус-покус, грусть прочь гони — в пещерах есть теперь что найти!
 		CavesAndClubs_1: Абра-кадабра, в пещеры ступай — с новыми горшками там не скучай!
+		Spellbound_0: Зачарования скорей наложи на столах — их ты найдёшь в подземных домах!
+		Spellbound_1: Зеркалом теперь насладишься сполна — никакая дорога с ним не страшна!
 	}
 }
 
@@ -712,6 +714,8 @@ BeetleTownPet: {
 		Ladybug14: Титания
 		Ladybug15: Тюльпан
 	}
+
+	Census.SpawnCondition: Используйте [i:SpiritReforged/BeetleLicense] жучий паспорт, выпадающий со Скарабеуса
 }
 
 Enchanter: {
@@ -736,7 +740,7 @@ Enchanter: {
 		14: Оcэй
 		15: Саливан
 		16: Тэтра
-		17: Тэмисто
+		17: Фемисто
 		18: Ворв
 		19: Ивэйн
 	}
@@ -806,3 +810,10 @@ Enchanter: {
 }
 
 SealedKnight.DisplayName: Опечатанный рыцарь
+
+DhampirNPC: {
+	// DisplayName: Dhampir
+	// Entry: Cast away for being too cool for Little Eye, the Dhampir wander the world. Somewhere seasoned, they found the coolest place to be.
+}
+
+// SpookyMummyNPC.DisplayName: Spooky Mummy N P C

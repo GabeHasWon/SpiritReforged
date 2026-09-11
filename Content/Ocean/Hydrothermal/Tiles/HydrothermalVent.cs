@@ -9,6 +9,7 @@ using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 
@@ -141,9 +142,10 @@ public class HydrothermalVent : ModTile
 	}
 
 	public override void RandomUpdate(int i, int j) => TryErupt(i, j);
+
 	private static bool TryErupt(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		var pt = new Point16(i, j);
 		if (IsValid(i, j) && !cooldowns.ContainsKey(pt))

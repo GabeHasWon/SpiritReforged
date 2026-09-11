@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Visuals.RenderTargets;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals.RenderTargets;
 
 namespace SpiritReforged.Common.Visuals;
 
@@ -34,6 +35,17 @@ public interface IDrawPixelated
 					pixelQueue.Add(iDrawPixelated);
 			}
 
+			foreach (Particle.Particle particle in ParticleHandler.Particles)
+			{
+				if (particle is null || particle.TimeActive > particle.MaxTime)
+					continue;
+
+				if (particle is IDrawPixelated iDrawPixelated)
+				{
+					pixelQueue.Add(iDrawPixelated);
+				}
+			}
+
 			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
 			{
 				graphics.SetRenderTarget(PixelTarget.Value);
@@ -41,10 +53,12 @@ public interface IDrawPixelated
 				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
 
 				graphics.BlendState = BlendState.AlphaBlend; //Required for prims
+				DrawingPixelated = true;
 
 				foreach (IDrawPixelated iDrawPixelated in pixelQueue)
 					iDrawPixelated.DrawPixelated(spriteBatch);
 
+				DrawingPixelated = false;
 				spriteBatch.End();
 				graphics.SetRenderTarget(null);
 			}
@@ -65,6 +79,9 @@ public interface IDrawPixelated
 			orig(self);
 		}
 	}
+
+	/// <summary> Whether pixelated effects are currently being drawn via <see cref="DrawPixelated"/>. </summary>
+	public static bool DrawingPixelated { get; private set; }
 
 	public void DrawPixelated(SpriteBatch spriteBatch);
 

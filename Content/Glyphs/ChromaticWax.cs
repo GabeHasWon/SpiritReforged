@@ -17,7 +17,6 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -25,6 +24,14 @@ using Terraria.ModLoader.IO;
 using static SpiritReforged.Content.Glyphs.CelestialStamp;
 
 namespace SpiritReforged.Content.Glyphs;
+
+/// <summary>
+/// Empty item used solely to register the appropriate shader.
+/// </summary>
+public class ChromaticWaxShaderDummy : ModItem
+{
+	public override string Texture => base.Texture.Replace("ShaderDummy", "");
+}
 
 [FromClassic("Glyph")]
 public class ChromaticWax : ModItem
@@ -176,6 +183,21 @@ public class GlyphGlobalNPC : GlobalNPC
 
 public class GlyphGlobalProjectile : GlobalProjectile
 {
+	/// <summary> Stores active glyph effects from owned projectiles. </summary>
+	public sealed class ActiveGlyphPlayer : ModPlayer
+	{
+		public HashSet<GlyphItem.GlyphType> glyphEffects = [];
+		public bool reset;
+
+		public override void UpdateEquips()
+		{
+			if (reset)
+				glyphEffects.Clear();
+
+			reset = true;
+		}
+	}
+
 	public override bool InstancePerEntity => true;
 
 	public GlyphItem.GlyphType glyph;
@@ -210,14 +232,19 @@ public class GlyphGlobalProjectile : GlobalProjectile
 
 	public override void AI(Projectile projectile)
 	{
-		if (Main.dedServ || !ModContent.GetInstance<ReforgedClientConfig>().GlyphProjectileVisualEffects)
-			return;
-
-		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0)
+		if (projectile.TryGetOwner(out Player owner) && projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0)
 		{
-			Player owner = Main.player[projectile.owner];
-			if (owner.heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
+			if ((projectile.minion || projectile.sentry) && owner.TryGetModPlayer(out ActiveGlyphPlayer activePlayer)) //Store the minion or sentry's active glyph
+			{
+				activePlayer.glyphEffects.Add(new(glyph.ItemType));
+				activePlayer.reset = false; //Don't reset immediately
+			}
+
+			if (Main.dedServ || !ModContent.GetInstance<ReforgedClientConfig>().GlyphProjectileVisualEffects)
 				return;
+
+			if (owner.heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
+				return; //Prevent held projectiles from spawning dusts unless they are clubs
 
 			int counts = owner.ownedProjectileCounts[projectile.type] - 1;
 
@@ -269,6 +296,9 @@ public abstract class GlyphItem : ModItem
 		/// <returns> Whether <paramref name="type"/> was successfully applied. </returns>
 		public bool SetGlyph(Item item, GlyphType type, IApplicationContext context)
 		{
+			if (ItemLoader.GetItem(type.ItemType) is GlyphItem g && type == default) // removing glyph
+				g.OnRemoveGlyph(item, context);
+
 			if (type.ItemType == ItemID.None)
 			{
 				Glyph = type; //Remove glyph
@@ -479,6 +509,7 @@ public abstract class GlyphItem : ModItem
 	public readonly record struct GlyphType(int ItemType)
 	{
 		public string Name => ItemLoader.GetItem(ItemType)?.Name;
+		public bool Active => ItemType != ItemID.None;
 	}
 
 	public readonly record struct GlyphSettings(Color Color);
@@ -545,13 +576,14 @@ public abstract class GlyphItem : ModItem
 			item.Refresh(false); //Always prompts a netsync
 	}
 
+	protected virtual void OnRemoveGlyph(Item item, IApplicationContext context) { }
+
 	private static string GenderItemEffect(Item item, string baseKey)
 	{
 		if (!CrossMod.RussianLocalizable)
 			return Language.GetTextValue(baseKey + "Effect");
 
 		string gender = RussianGendering.GetGender(item.type);
-
 		return gender switch
 		{
 			"Feminine" => Language.GetTextValue(baseKey + "Gendered.Fem"),

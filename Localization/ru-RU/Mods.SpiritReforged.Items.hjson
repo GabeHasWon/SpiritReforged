@@ -90,8 +90,8 @@ CascadeLeggings: {
 	Tooltip: Увеличивает скорость передвижения в воде на 15%
 }
 
-JellyfishStaff: {
-	DisplayName: Посох медузы
+JellyfishJamJar: {
+	DisplayName: Банка с медузным джемом
 	Tooltip: Призывает крошку-медузу сражаться за вас!
 }
 
@@ -2871,7 +2871,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Зазубренные клешни
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -3166,9 +3166,9 @@ NotSunItemIcon: {
 ChromaticWax: {
 	DisplayName: Хроматический воск
 	Tooltip: Можно обменять на магические глифы
-	Gain: Зачарованное оружие получит эффект [c/{0}:«{1}»]:
+	Gain: Выбранный предмет получит эффект [c/{0}:«{1}»]:
 	Target: Можно применить только к оружию
-	RightClick: Держа этот глиф, нажмите ПКМ по оружию, который вы хотите зачаровать
+	RightClick: Нажмите ПКМ по оружию, держа этот глиф, чтобы наложить на него зачарование
 }
 
 BlazeGlyph: {
@@ -3308,10 +3308,10 @@ PrefixVoucher: {
 	Tooltip:
 		'''
 		{0}
-		[c/{0}:«{1}»]:
+		Выбранный предмет получит эффект [c/{0}:«{1}»]:
 		'''
-	AccessoryTooltip: Нажмите ПКМ по аксессуару, к которому хотите применить этот префикс
-	WeaponTooltip: Нажмите ПКМ по оружию, к которому хотите применить этот префикс
+	AccessoryTooltip: Нажмите ПКМ по аксессуару, держа этот ваучер, чтобы наложить на него префикс
+	WeaponTooltip: Нажмите ПКМ по оружию, держа этот ваучер, чтобы наложить на него префикс
 }
 
 EnchantedStamp: {
@@ -3394,7 +3394,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: Пилон космоса
+	DisplayName: Пилон небес
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
@@ -3428,7 +3428,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Зачарованный верстак
+	DisplayName: Верстак зачарований
 	Tooltip: ""
 }
 
@@ -3437,87 +3437,229 @@ CandlewickCoil: {
 	Tooltip: Бросьте, чтобы расправить моток верёвки из фитиля
 }
 
-LookerClub: {
-	// DisplayName: Looker Club
-	// Tooltip: ""
+CandleBathtubItem: {
+	DisplayName: Свечная ванна
+	Tooltip: ""
 }
 
-PumpkinPailOrange: {
-	// DisplayName: Pumpkin Pail Orange
-	// Tooltip: ""
+CandleBedItem: {
+	DisplayName: Свечная кровать
+	Tooltip: ""
 }
 
-PumpkinPailPurple: {
-	// DisplayName: Pumpkin Pail Purple
-	// Tooltip: ""
+CandleBookcaseItem: {
+	DisplayName: Свечной книжный шкаф
+	Tooltip: ""
 }
 
-PumpkinPailWhite: {
-	// DisplayName: Pumpkin Pail White
+CandleCandelabraItem: {
+	DisplayName: Свечной подсвечник
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Свечная свеча
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Свечной стул
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Свечная люстра
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Свечной сундук
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Свечная дверь
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Свечной комод
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Свечная напольная лампа
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Свечной фонарь
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Свечная раковина
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Свечной диван
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Свечной стол
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Свечной унитаз
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Свечной верстак
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Свечные напольные часы
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Свечное пианино
+	Tooltip: ""
+}
+
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Привет всем пользователям чит-панелей!
+}
+
+WaxPlatformItem: {
+	// DisplayName: Wax Platform
 	// Tooltip: ""
 }
 
 PinSpookyFarms: {
-	// DisplayName: Pin Spooky Farms
+	// DisplayName: Fetid Farms Pin
 	// Tooltip: ""
 }
 
 PinSpookyKrampus: {
-	// DisplayName: Pin Spooky Krampus
+	// DisplayName: Krampus' Workshop Pin
 	// Tooltip: ""
 }
 
 PinSpookyNose: {
-	// DisplayName: Pin Spooky Nose
+	// DisplayName: Temple of Moco Pin
 	// Tooltip: ""
 }
 
 PinSpookyRotten: {
-	// DisplayName: Pin Spooky Rotten
+	// DisplayName: Rotten Depths Pin
 	// Tooltip: ""
 }
 
 StarGourdGreenCarvedItem: {
-	// DisplayName: Star Gourd Green Carved Item
+	// DisplayName: Carved Green Stargourd
 	// Tooltip: ""
 }
 
 StarGourdLimeCarvedItem: {
-	// DisplayName: Star Gourd Lime Carved Item
-	// Tooltip: ""
-}
-
-StarGourdOrangeCarvedItem: {
-	// DisplayName: Star Gourd Orange Carved Item
+	// DisplayName: Carved Lime Stargourd
 	// Tooltip: ""
 }
 
 StarGourdOrangeLimeCarvedItem: {
-	// DisplayName: Star Gourd Orange Lime Carved Item
+	// DisplayName: Carved Orange-Lime Stargourd
+	// Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	// DisplayName: Carved Orange Stargourd
 	// Tooltip: ""
 }
 
 StarGourdRedCarvedItem: {
-	// DisplayName: Star Gourd Red Carved Item
+	// DisplayName: Carved Red Stargourd
 	// Tooltip: ""
 }
 
 StarGourdRottenCarvedItem: {
-	// DisplayName: Star Gourd Rotten Carved Item
+	// DisplayName: Carved Rotten Stargourd
 	// Tooltip: ""
 }
 
 StarGourdWhiteCarvedItem: {
-	// DisplayName: Star Gourd White Carved Item
+	// DisplayName: Carved White Stargourd
 	// Tooltip: ""
 }
 
 StarGourdYellowCarvedItem: {
-	// DisplayName: Star Gourd Yellow Carved Item
+	// DisplayName: Carved Yellow Stargourd
 	// Tooltip: ""
 }
 
 StarGourdYellowGreenCarvedItem: {
-	// DisplayName: Star Gourd Yellow Green Carved Item
+	// DisplayName: Carved Yellow-Green Stargourd
 	// Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	// DisplayName: Pumpkin Pail
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Classically spooky'
+		''' */
+}
+
+PumpkinPailPurple: {
+	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Unabashedly spooky'
+		''' */
+}
+
+PumpkinPailWhite: {
+	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Actually spooky'
+		''' */
+}
+
+TrellisOldBirchItem: {
+	// DisplayName: Crossed Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisOldBirchTwoItem: {
+	// DisplayName: Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodItem: {
+	// DisplayName: Crossed Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodTwoItem: {
+	// DisplayName: Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+DhampirQuestItem: {
+	// DisplayName: Sad Little Bat
+	/* Tooltip:
+		'''
+		Allows the Dhampir to spawn in Salt Flats
+		"You feel an instinctual need to care for it"
+		''' */
 }

@@ -284,5 +284,5 @@ public class Dragonsong : ModItem
 		}
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<TinyDragon>()).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<TinyDragon>()).AddIngredient(ItemID.IllegalGunParts).AddTile(TileID.Anvils).Register();
 }

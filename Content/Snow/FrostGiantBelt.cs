@@ -19,7 +19,11 @@ public class FrostGiantBelt : ModItem, IFlagged
 		return false;
 	}
 
-	public override void SetStaticDefaults() => NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.UndeadViking), ItemDropRule.Common(Type, 15)));
+	public override void SetStaticDefaults()
+	{
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.UndeadViking), ItemDropRule.Common(Type, 15)));
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.ArmoredViking), ItemDropRule.Common(Type, 12)));
+	}
 
 	public override void SetDefaults()
 	{

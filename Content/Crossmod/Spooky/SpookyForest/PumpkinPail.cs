@@ -10,7 +10,7 @@ internal class PumpkinPailOrange : BackpackItem
 	protected virtual int TileStyle => 0;
 	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PumpkinPailPurple>();
 
-	public override void SetDefaults()
+	public override void SetDefaults() 
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<PumpkinPailTile>(), TileStyle);
 		Item.Size = new Vector2(28, 32);

@@ -479,6 +479,8 @@ WorldFrog: {
 	Reports: {
 		CavesAndClubs_0: 莫叹空空洞穴幽，百瓮藏宝待君收！
 		CavesAndClubs_1: 洞窟深处有玄谋，吾今赠瓮助君游！
+		Spellbound_0: 新台能将附魔契，此器世间可寻觅！
+		Spellbound_1: 明镜遍野任君赏，只待冒险焕新章！
 	}
 }
 
@@ -712,6 +714,8 @@ BeetleTownPet: {
 		Ladybug14: Titania
 		Ladybug15: Tulip
 	}
+
+	Census.SpawnCondition: 使用甲虫许可证 [i:SpiritReforged/BeetleLicense] ，其掉落自圣甲虫
 }
 
 Enchanter: {
@@ -774,7 +778,7 @@ Enchanter: {
 		}
 
 		BloodMoon: {
-			0: I我无法在这样的夜晚入睡。当我闭上眼睛时，看到的只有红色。
+			0: 我无法在这样的夜晚入睡。当我闭上眼睛时，看到的只有红色。
 			1: 我的蜡烛燃烧着可怕的深红色。今晚有邪恶的事情正在酝酿。
 		}
 
@@ -801,3 +805,10 @@ Enchanter: {
 }
 
 SealedKnight.DisplayName: 漆印骑士
+
+DhampirNPC: {
+	// DisplayName: Dhampir
+	// Entry: Cast away for being too cool for Little Eye, the Dhampir wander the world. Somewhere seasoned, they found the coolest place to be.
+}
+
+// SpookyMummyNPC.DisplayName: Spooky Mummy N P C

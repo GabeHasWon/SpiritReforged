@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
@@ -187,7 +188,7 @@ public class BlazeGlyph : GlyphItem
 		//Therefore, we need to bind the same shader twice to two different item ids, requiring the use of a dummy id
 		if (!Main.dedServ)
 		{
-			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWax>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
+			GameShaders.Armor.BindShader(ModContent.ItemType<ChromaticWaxShaderDummy>(), new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.15f, 0.2f), false));
 			GameShaders.Armor.BindShader(Type, new BlazeGlyphShaderData(AssetLoader.LoadedShaders["BlazeGlyphShader"], "mainPass", new(0.4f, 0.4f), true));
 		}			
 	}
@@ -202,8 +203,12 @@ public class BlazeGlyph : GlyphItem
 
 	protected override void OnApplyGlyph(Item item, IApplicationContext context)
 	{
+		MoRHelper.OverrideElement(item, MoRHelper.Fire);
+
 		base.OnApplyGlyph(item, context);
 	}
+
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Fire, -1);
 
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
@@ -212,7 +217,7 @@ public class BlazeGlyph : GlyphItem
 			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 8f) * 4;
 			DrawData item = input;
 			item.position += offset;
-			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWax>());
+			item.shader = GameShaders.Armor.GetShaderIdFromItemId(ModContent.ItemType<ChromaticWaxShaderDummy>());
 
 			drawInfo.DrawDataCache.Add(item);
 		}

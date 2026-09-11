@@ -49,7 +49,7 @@ public class SaltBlockReflective : SaltBlock
 
 				if (t.Slope != SlopeType.Solid || t.IsHalfBlock)
 				{
-					TileExtensions.DrawSloped(i, j, texture, Color.White, Vector2.Zero);
+					TileMethods.DrawSloped(i, j, texture, Color.White, Vector2.Zero);
 					continue;
 				}
 

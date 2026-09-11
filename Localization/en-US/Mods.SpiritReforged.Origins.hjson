@@ -51,3 +51,9 @@ Purifier: {
 	Flavor: Abhorrent evil begone; burn at the sting of my purity.
 	Description: Starts with the Bo Staff and a Mahakala Mask in the Salt Flats (if possible).
 }
+
+Enchanter: {
+	DisplayName: Enchanter
+	Flavor: Huzzah! Need a little more flare? Let's begin with a spark!
+	Description: Starts with 60 Flarepowder, 3 Chromatic Wax and the Charmcaster vanity set, alongside the Enchanter NPC.
+}

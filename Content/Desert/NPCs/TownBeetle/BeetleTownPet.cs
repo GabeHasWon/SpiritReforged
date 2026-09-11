@@ -6,6 +6,7 @@ using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Desert.NPCs.TownBeetle;
 
+[AutoloadHead]
 public class BeetleTownPet : ModNPC, IForceTownNPCSpawnCheck
 {
 	private class ScarabTownPetProfile : ITownNPCProfile
@@ -39,6 +40,7 @@ public class BeetleTownPet : ModNPC, IForceTownNPCSpawnCheck
 	}
 
 	public override string Texture => AssetLoader.EmptyTexture;
+	public override string HeadTexture => "SpiritReforged/Content/Desert/NPCs/TownBeetle/BeetleTownPet_Head";
 
 	private static ScarabTownPetProfile NPCProfile;
 

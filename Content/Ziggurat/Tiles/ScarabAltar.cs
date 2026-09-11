@@ -465,7 +465,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		var d = TileObjectData.GetTileData(Main.tile[i, j]);
 		var size = (d is null) ? new Point(1, 1) : new Point(d.Width, d.Height);
 

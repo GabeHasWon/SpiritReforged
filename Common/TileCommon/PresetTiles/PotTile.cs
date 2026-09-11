@@ -10,7 +10,7 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 /// <summary> Helper for building pot tiles automatically registered in the Potstiary.<br/>
-/// Automatically calls <see cref="LootTable.Resolve"/> if this tile implements <see cref="ILootTile"/>. </summary>
+/// Automatically calls <see cref="LootTable.Resolve"/> if this tile implements <see cref="ILoot"/>. </summary>
 public abstract class PotTile : ModTile, IAutoloadRubble
 {
 	public IAutoloadRubble.RubbleData Data => default; //Effectively creates no connection with the Rubblemaker item
@@ -63,7 +63,7 @@ public abstract class PotTile : ModTile, IAutoloadRubble
 		AddMapData();
 	}
 
-	/// <summary> Adds map data for the pot. Defaults to vanilla pot map entry and color.
+	/// <summary> Adds map data for the pot. Defaults to vanilla pot map entry and color. </summary>
 	public virtual void AddMapData() => AddMapEntry(new Color(146, 76, 77), Language.GetText("MapObject.Pot"));
 
 	/// <summary> Adds object data for this pot. By default, assumes <see cref="TileObjectData.Style2x2"/> with <see cref="TileObjectData.StyleWrapLimit"/> of 3. </summary>

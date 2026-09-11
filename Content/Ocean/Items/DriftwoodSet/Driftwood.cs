@@ -7,24 +7,13 @@ namespace SpiritReforged.Content.Ocean.Items.DriftwoodSet;
 [FromClassic("Driftwood1Item")]
 public class SmallDriftwoodItem : ModItem
 {
-	public override string Texture => base.Texture.Replace("SmallDriftwoodItem", "Driftwood");
-
-	public override void SetStaticDefaults() => Main.RegisterItemAnimation(Type, new Terraria.DataStructures.DrawAnimationVertical(2, 3) { NotActuallyAnimating = true, Frame = 0 });
+	public override string Texture => base.Texture.Replace(nameof(SmallDriftwoodItem), "Driftwood0");
 
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<SmallDriftwoodTile>());
 		Item.width = 30;
 		Item.height = 18;
-	}
-
-	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-	{
-		Texture2D tex = TextureAssets.Item[Type].Value;
-		var frame = Main.itemAnimations[Type].GetFrame(tex);
-
-		spriteBatch.Draw(tex, Item.position - Main.screenPosition, frame, GetAlpha(lightColor) ?? lightColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
-		return false;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 10).Register();
@@ -62,24 +51,13 @@ public class SmallDriftwoodTile : ModTile
 [FromClassic("Driftwood2Item")]
 public class MediumDriftwoodItem : ModItem
 {
-	public override string Texture => base.Texture.Replace("MediumDriftwoodItem", "Driftwood");
-
-	public override void SetStaticDefaults() => Main.RegisterItemAnimation(Type, new Terraria.DataStructures.DrawAnimationVertical(2, 3) { NotActuallyAnimating = true, Frame = 1 });
+	public override string Texture => base.Texture.Replace(nameof(MediumDriftwoodItem), "Driftwood1");
 
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<MediumDriftwoodTile>());
 		Item.width = 30;
 		Item.height = 18;
-	}
-
-	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-	{
-		Texture2D tex = TextureAssets.Item[Type].Value;
-		var frame = Main.itemAnimations[Type].GetFrame(tex);
-
-		spriteBatch.Draw(tex, Item.position - Main.screenPosition, frame, GetAlpha(lightColor) ?? lightColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
-		return false;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 20).Register();
@@ -117,24 +95,13 @@ public class MediumDriftwoodTile : ModTile
 [FromClassic("Driftwood3Item")]
 public class LargeDriftwoodItem : ModItem
 {
-	public override string Texture => base.Texture.Replace("LargeDriftwoodItem", "Driftwood");
-
-	public override void SetStaticDefaults() => Main.RegisterItemAnimation(Type, new Terraria.DataStructures.DrawAnimationVertical(2, 3) { NotActuallyAnimating = true, Frame = 2 });
+	public override string Texture => base.Texture.Replace(nameof(LargeDriftwoodItem), "Driftwood2");
 
 	public override void SetDefaults()
 	{
 		Item.DefaultToPlaceableTile(ModContent.TileType<LargeDriftwoodTile>());
 		Item.width = 30;
 		Item.height = 18;
-	}
-
-	public override bool PreDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
-	{
-		Texture2D tex = TextureAssets.Item[Type].Value;
-		var frame = Main.itemAnimations[Type].GetFrame(tex);
-
-		spriteBatch.Draw(tex, Item.position - Main.screenPosition, frame, GetAlpha(lightColor) ?? lightColor, rotation, Vector2.Zero, scale, SpriteEffects.None, 0f);
-		return false;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(AutoContent.ItemType<Driftwood>(), 25).Register();

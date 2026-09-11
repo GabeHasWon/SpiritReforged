@@ -90,8 +90,8 @@ CascadeLeggings: {
 	Tooltip: 在水中时增加15%移动速度
 }
 
-JellyfishStaff: {
-	DisplayName: 水母法杖
+JellyfishJamJar: {
+	DisplayName: 水母果酱罐
 	Tooltip: 召唤一只小水母为你而战！
 }
 
@@ -2867,7 +2867,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: 锯齿爪
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -3386,7 +3386,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: 太空晶塔
+	DisplayName: 天空晶塔
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
@@ -3425,87 +3425,229 @@ CandlewickCoil: {
 	Tooltip: 抛出以形成可攀爬的烛芯绳索
 }
 
-LookerClub: {
-	// DisplayName: Looker Club
-	// Tooltip: ""
+CandleBathtubItem: {
+	DisplayName: 蜡浴缸
+	Tooltip: ""
 }
 
-PumpkinPailOrange: {
-	// DisplayName: Pumpkin Pail Orange
-	// Tooltip: ""
+CandleBedItem: {
+	DisplayName: 蜡床
+	Tooltip: ""
 }
 
-PumpkinPailPurple: {
-	// DisplayName: Pumpkin Pail Purple
-	// Tooltip: ""
+CandleBookcaseItem: {
+	DisplayName: 蜡书架
+	Tooltip: ""
 }
 
-PumpkinPailWhite: {
-	// DisplayName: Pumpkin Pail White
-	// Tooltip: ""
+CandleCandelabraItem: {
+	DisplayName: 蜡烛台
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: 蜡蜡烛
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: 蜡椅
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: 蜡吊灯
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: 蜡箱
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: 蜡门
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: 蜡梳妆台
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: 蜡灯
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: 蜡灯笼
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: 蜡水槽
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: 蜡沙发
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: 蜡桌
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: 蜡马桶
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: 蜡工作台
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: 蜡钟
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: 蜡钢琴
+	Tooltip: ""
+}
+
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	// DisplayName: Chromatic Wax Shader Dummy
+	// Tooltip: Hello all cheat mod users!
+}
+
+WaxPlatformItem: {
+	DisplayName: 蜡平台
+	Tooltip: ""
 }
 
 PinSpookyFarms: {
-	// DisplayName: Pin Spooky Farms
+	// DisplayName: Fetid Farms Pin
 	// Tooltip: ""
 }
 
 PinSpookyKrampus: {
-	// DisplayName: Pin Spooky Krampus
+	// DisplayName: Krampus' Workshop Pin
 	// Tooltip: ""
 }
 
 PinSpookyNose: {
-	// DisplayName: Pin Spooky Nose
+	// DisplayName: Temple of Moco Pin
 	// Tooltip: ""
 }
 
 PinSpookyRotten: {
-	// DisplayName: Pin Spooky Rotten
+	// DisplayName: Rotten Depths Pin
 	// Tooltip: ""
 }
 
 StarGourdGreenCarvedItem: {
-	// DisplayName: Star Gourd Green Carved Item
+	// DisplayName: Carved Green Stargourd
 	// Tooltip: ""
 }
 
 StarGourdLimeCarvedItem: {
-	// DisplayName: Star Gourd Lime Carved Item
-	// Tooltip: ""
-}
-
-StarGourdOrangeCarvedItem: {
-	// DisplayName: Star Gourd Orange Carved Item
+	// DisplayName: Carved Lime Stargourd
 	// Tooltip: ""
 }
 
 StarGourdOrangeLimeCarvedItem: {
-	// DisplayName: Star Gourd Orange Lime Carved Item
+	// DisplayName: Carved Orange-Lime Stargourd
+	// Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	// DisplayName: Carved Orange Stargourd
 	// Tooltip: ""
 }
 
 StarGourdRedCarvedItem: {
-	// DisplayName: Star Gourd Red Carved Item
+	// DisplayName: Carved Red Stargourd
 	// Tooltip: ""
 }
 
 StarGourdRottenCarvedItem: {
-	// DisplayName: Star Gourd Rotten Carved Item
+	// DisplayName: Carved Rotten Stargourd
 	// Tooltip: ""
 }
 
 StarGourdWhiteCarvedItem: {
-	// DisplayName: Star Gourd White Carved Item
+	// DisplayName: Carved White Stargourd
 	// Tooltip: ""
 }
 
 StarGourdYellowCarvedItem: {
-	// DisplayName: Star Gourd Yellow Carved Item
+	// DisplayName: Carved Yellow Stargourd
 	// Tooltip: ""
 }
 
 StarGourdYellowGreenCarvedItem: {
-	// DisplayName: Star Gourd Yellow Green Carved Item
+	// DisplayName: Carved Yellow-Green Stargourd
 	// Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	// DisplayName: Pumpkin Pail
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Classically spooky'
+		''' */
+}
+
+PumpkinPailPurple: {
+	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Unabashedly spooky'
+		''' */
+}
+
+PumpkinPailWhite: {
+	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Actually spooky'
+		''' */
+}
+
+TrellisOldBirchItem: {
+	// DisplayName: Crossed Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisOldBirchTwoItem: {
+	// DisplayName: Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodItem: {
+	// DisplayName: Crossed Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodTwoItem: {
+	// DisplayName: Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+DhampirQuestItem: {
+	// DisplayName: Sad Little Bat
+	/* Tooltip:
+		'''
+		Allows the Dhampir to spawn in Salt Flats
+		"You feel an instinctual need to care for it"
+		''' */
 }

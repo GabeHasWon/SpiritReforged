@@ -1,7 +1,9 @@
 using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Savanna.Items.Vanity;
 using System.IO;
+using System.Reflection;
 using Terraria.GameContent.UI;
 using Terraria.ModLoader.IO;
 
@@ -56,10 +58,14 @@ public class PrefixVoucher : ModItem
 	/// <summary> Item types to sample for prefix rarity color. </summary>
 	private static readonly int[] _sampleTypes = [ItemID.CopperBroadsword, ItemID.WoodenBow, ItemID.WandofSparking, ItemID.BabyBirdStaff, ItemID.Aglet];
 
+	private static FieldInfo _isLoadingInfo = null;
+
 	public int prefix;
 
 	private Item _tooltipPrefixItem;
 	private ExtendedPrefixInfo _info;
+
+	public override void Load() => _isLoadingInfo = typeof(ModLoader).GetField("isLoading", BindingFlags.Static | BindingFlags.NonPublic);
 
 	/// <summary> <see cref="prefix"/> must be valid before calling. </summary>
 	private ExtendedPrefixInfo FindInfo()
@@ -93,12 +99,51 @@ public class PrefixVoucher : ModItem
 			Item.ClearNameOverride();
 			Item.SetNameOverride(Item.Name.FormatWith(text));
 
-			string appliesLine = lines[1].Remove(lines[1].IndexOf(' ') + 1); //Return the tooltip line before any whitespace
-			Vector2 firstMeasure = font.MeasureString(appliesLine);
-			Vector2 secondMeasure = font.MeasureString(text);
+			// Split string,
+			string[] strings = lines[1].Split(' ');
+			int index = -1;
 
-			Rectangle source = new((int)firstMeasure.X, 0, (int)secondMeasure.X, (int)secondMeasure.Y);
+			for (int i = 0; i < strings.Length; i++)
+			{
+				string s = strings[i];
+
+				if (s.Contains("{1}"))
+				{
+					index = i;
+					break;
+				}
+			}
+
+			// Find the replacement index, if any, or set to default (second word)
+			if (index == -1)
+				index = 1;
+
+			// Default offset to the height of the font - maybe this has issues with resource packs?
+			Vector2 offset = new(0, 29);
+
+			for (int i = 0; i < index; i++)
+			{
+				string s = strings[i];
+				offset.X += font.MeasureString(s + " ").X;
+			}
+
+			// Adjust string offset and set source
+			Vector2 prefixNameSize = font.MeasureString(text);
+			Rectangle source = new((int)offset.X, 0, (int)prefixNameSize.X, (int)offset.Y);
+
 			return _info = new(color, rare, text, source, accessory);
+
+			// New code from QM kept for posterity, or in case we need to re-adjust
+			////Apply a name override
+			//Item.ClearNameOverride();
+			//Item.SetNameOverride(Item.Name.FormatWith(text));
+
+			//string appliesLine = lines[1].Remove(lines[1].IndexOf(' ') + 1); //Return the tooltip line before any whitespace
+			//Vector2 firstMeasure = font.MeasureString(appliesLine);
+			//Vector2 secondMeasure = font.MeasureString(text);
+
+			//Rectangle source = new((int)firstMeasure.X, 0, (int)secondMeasure.X, (int)secondMeasure.Y);
+			//return _info = new(color, rare, text, source, accessory);
 		}
 
 		//Apply a default name override
@@ -108,15 +153,32 @@ public class PrefixVoucher : ModItem
 		return _info = new(color, rare, Language.GetTextValue("Achievements.NoCategory"), Rectangle.Empty, accessory); //Display "None"
 	}
 
-	public void RecalculatePrefixInfo() => FindInfo(); //Publicly accessible portal for FindInfo
+	public void RecalculatePrefixInfo() => FindInfo(); // Publicly accessible portal for FindInfo
 
 	private static Item GetPrefixableItem(int prefix)
 	{
 		Item item = new(ItemID.WoodenSword);
-		while (item.prefix == 0 || item.rare < item.OriginalRarity) //Has no prefix or is a negative prefix
+
+		if (_isLoadingInfo.GetValue(null) is true) // Stops an infinite loop in load
+			return item;
+
+		if (Main.dedServ && prefix == 0)
+			return item;
+
+		int attempts = 0;
+
+		while (item.prefix == 0 || item.rare < item.OriginalRarity) // Has no prefix or is a negative prefix
 		{
 			item = new(_sampleTypes[Main.rand.Next(_sampleTypes.Length)]);
 			item.Prefix(prefix);
+
+			attempts++;
+
+			if (attempts > 100)
+			{
+				attempts = 0;
+				prefix = -2;
+			}
 		}
 
 		return item;
@@ -135,6 +197,9 @@ public class PrefixVoucher : ModItem
 		Item.width = Item.height = 28;
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = 1;
+
+		if (_isLoadingInfo.GetValue(null) is true) // Don't load data in menu for the template instance
+			return;
 
 		prefix = RollRandomPrefix(out int itemType);
 		_tooltipPrefixItem = new(itemType, 1, prefix);

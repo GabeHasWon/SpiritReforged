@@ -90,8 +90,8 @@ CascadeLeggings: {
 	Tooltip: 15% increased movement in water
 }
 
-JellyfishStaff: {
-	DisplayName: Jellyfish Staff
+JellyfishJamJar: {
+	DisplayName: Jellyfish Jam Jar
 	Tooltip: Summons a tiny jellyfish to fight for you!
 }
 
@@ -2867,7 +2867,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Serrated Claws
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -3386,7 +3386,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: Space Pylon
+	DisplayName: Sky Pylon
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
@@ -3425,91 +3425,229 @@ CandlewickCoil: {
 	Tooltip: Throw to create a climbable line of candlewick rope
 }
 
-LookerClub: {
-	DisplayName: The Looker
-	Tooltip:
-		'''
-		Can be charged to increase damage and knockback
-		Charged strikes create mini eyeballs that fight for you
-		'''
-}
-
-PumpkinPailOrange: {
-	DisplayName: Pumpkin Pail Orange
+CandleBathtubItem: {
+	DisplayName: Candle Bathtub
 	Tooltip: ""
 }
 
-PumpkinPailPurple: {
-	DisplayName: Pumpkin Pail Purple
+CandleBedItem: {
+	DisplayName: Candle Bed
 	Tooltip: ""
 }
 
-PumpkinPailWhite: {
-	DisplayName: Pumpkin Pail White
+CandleBookcaseItem: {
+	DisplayName: Candle Bookcase
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Candle Candelabra
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Candle Candle
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Candle Chair
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Candle Chandelier
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Candle Chest
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Candle Door
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Candle Dresser
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Candle Lamp
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Candle Lantern
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Candle Sink
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Candle Sofa
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Candle Table
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Candle Toilet
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Candle Work Bench
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Candle Clock
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Candle Piano
+	Tooltip: ""
+}
+
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Hello all cheat mod users!
+}
+
+WaxPlatformItem: {
+	DisplayName: Wax Platform
 	Tooltip: ""
 }
 
 PinSpookyFarms: {
-	DisplayName: Pin Spooky Farms
+	DisplayName: Fetid Farms Pin
 	Tooltip: ""
 }
 
 PinSpookyKrampus: {
-	DisplayName: Pin Spooky Krampus
+	DisplayName: Krampus' Workshop Pin
 	Tooltip: ""
 }
 
 PinSpookyNose: {
-	DisplayName: Pin Spooky Nose
+	DisplayName: Temple of Moco Pin
 	Tooltip: ""
 }
 
 PinSpookyRotten: {
-	DisplayName: Pin Spooky Rotten
+	DisplayName: Rotten Depths Pin
 	Tooltip: ""
 }
 
 StarGourdGreenCarvedItem: {
-	DisplayName: Star Gourd Green Carved Item
+	DisplayName: Carved Green Stargourd
 	Tooltip: ""
 }
 
 StarGourdLimeCarvedItem: {
-	DisplayName: Star Gourd Lime Carved Item
-	Tooltip: ""
-}
-
-StarGourdOrangeCarvedItem: {
-	DisplayName: Star Gourd Orange Carved Item
+	DisplayName: Carved Lime Stargourd
 	Tooltip: ""
 }
 
 StarGourdOrangeLimeCarvedItem: {
-	DisplayName: Star Gourd Orange Lime Carved Item
+	DisplayName: Carved Orange-Lime Stargourd
+	Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	DisplayName: Carved Orange Stargourd
 	Tooltip: ""
 }
 
 StarGourdRedCarvedItem: {
-	DisplayName: Star Gourd Red Carved Item
+	DisplayName: Carved Red Stargourd
 	Tooltip: ""
 }
 
 StarGourdRottenCarvedItem: {
-	DisplayName: Star Gourd Rotten Carved Item
+	DisplayName: Carved Rotten Stargourd
 	Tooltip: ""
 }
 
 StarGourdWhiteCarvedItem: {
-	DisplayName: Star Gourd White Carved Item
+	DisplayName: Carved White Stargourd
 	Tooltip: ""
 }
 
 StarGourdYellowCarvedItem: {
-	DisplayName: Star Gourd Yellow Carved Item
+	DisplayName: Carved Yellow Stargourd
 	Tooltip: ""
 }
 
 StarGourdYellowGreenCarvedItem: {
-	DisplayName: Star Gourd Yellow Green Carved Item
+	DisplayName: Carved Yellow-Green Stargourd
 	Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	DisplayName: Pumpkin Pail
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Classically spooky'
+		'''
+}
+
+PumpkinPailPurple: {
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Unabashedly spooky'
+		'''
+}
+
+PumpkinPailWhite: {
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Actually spooky'
+		'''
+}
+
+TrellisOldBirchItem: {
+	DisplayName: Crossed Old Birch Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisOldBirchTwoItem: {
+	DisplayName: Old Birch Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodItem: {
+	DisplayName: Crossed Spooky Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodTwoItem: {
+	DisplayName: Spooky Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+DhampirQuestItem: {
+	DisplayName: Sad Little Bat
+	Tooltip:
+		'''
+		Allows the Dhampir to spawn in Salt Flats
+		"You feel an instinctual need to care for it"
+		'''
 }

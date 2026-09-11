@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Botanist.Items;
 
@@ -18,7 +19,7 @@ internal class BotanistGlobalTile : GlobalTile
 
 			Rectangle src = new(tile.TileFrameX, tile.TileFrameY, 16, 20);
 			var origin = new Vector2(src.Width / 2f, src.Height);
-			Vector2 position = TileExtensions.DrawPosition(i, j) + origin - new Vector2(0, 2);
+			Vector2 position = Helpers.GetTilePosition(i, j) + origin - new Vector2(0, 2);
 			SpriteEffects effects = i % 2 == 1 ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 			float rotation = Main.instance.TilesRenderer.GetWindCycle(i, j, Main.instance.TilesRenderer._grassWindCounter) * 0.2f;
 			spriteBatch.Draw(tex, position, src, Color.Lerp(Lighting.GetColor(i, j), Color.Green, darkness), rotation, origin, 1f, effects, 0f);

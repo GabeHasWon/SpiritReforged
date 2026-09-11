@@ -1,5 +1,4 @@
-﻿using Humanizer;
-using SpiritReforged.Common.ItemCommon;
+﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.UI.Misc;
@@ -8,6 +7,7 @@ using SpiritReforged.Common.UI.System;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs;
 using System.Linq;
+using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
@@ -48,6 +48,7 @@ public class EnchanterUI : AutoUIState
 		}
 	}
 
+	public static readonly SoundStyle RemoveEnchantment = new("SpiritReforged/Assets/SFX/Item/Shatter2");
 	public static readonly Asset<Texture2D> LowerPanel = DrawHelpers.RequestLocal<EnchanterUI>("GlyphBubble", false);
 
 	private static GlyphItem _hovered;
@@ -96,14 +97,14 @@ public class EnchanterUI : AutoUIState
 		_clearButton.Left.Set(_list.Width.Pixels - 50, 0);
 		_clearButton.Top.Set(_list.Height.Pixels + 20, 0);
 		_clearButton.OnLeftClick += OnClickClearButton;
-		_clearButton.OnUpdate += OnHoverDefaultButton;
+		_clearButton.OnUpdate += OnHoverClearButton;
 
 		_randomButton = new(2, Language.GetText("Mods.SpiritReforged.Misc.Enchantment.Random"));
 		_randomButton.Width = _randomButton.Height = new(30, 0);
 		_randomButton.Left.Set(_list.Width.Pixels - 20, 0);
 		_randomButton.Top.Set(_list.Height.Pixels + 20, 0);
 		_randomButton.OnLeftClick += OnClickRandomButton;
-		_randomButton.OnUpdate += OnHoverDefaultButton;
+		_randomButton.OnUpdate += OnHoverRandomButton;
 
 		OverrideSamplerState = SamplerState.PointClamp;
 		Append(_slot);
@@ -251,13 +252,21 @@ public class EnchanterUI : AutoUIState
 		}
 	}
 
-	private void OnHoverDefaultButton(UIElement element)
+	private void OnHoverClearButton(UIElement element)
+	{
+		var ui = element as EnchanterButton;
+
+		ui.ShowHoverEffects = element.IsMouseHovering && _slot.Item.HasGlyph();
+		ui.DrawColor = _slot.Item.HasGlyph() ? Color.White : Color.Gray * 0.5f;
+	}
+
+	private void OnHoverRandomButton(UIElement element)
 	{
 		var ui = element as EnchanterButton;
 		bool hovering = element.IsMouseHovering;
 
 		ui.ShowHoverEffects = hovering;
-		ui.DrawColor = hovering ? Color.White : Color.Gray * 0.5f;
+		ui.DrawColor = Color.White;
 	}
 
 	private void OnClickConfirmButton(UIMouseEvent evt, UIElement listeningElement)
@@ -286,6 +295,9 @@ public class EnchanterUI : AutoUIState
 	{
 		Item item = _slot.Item;
 
+		if (!item.HasGlyph())
+			return;
+
 		item.SetGlyph(default);
 		item.prefix = 0;
 		item.ClearNameOverride();
@@ -294,6 +306,9 @@ public class EnchanterUI : AutoUIState
 		ClearList(); //Reset the list
 		PopulateList();
 		SpawnCenteredText(_slot.Item, Main.LocalPlayer.Top);
+
+		SoundEngine.PlaySound(RemoveEnchantment with { Volume = 0.5f, Pitch = -0.5f });
+		SoundEngine.PlaySound(SoundID.AbigailUpgrade with { Pitch = 0.2f, PitchVariance = 0.2f });
 	}
 
 	private void OnClickRandomButton(UIMouseEvent evt, UIElement listeningElement)

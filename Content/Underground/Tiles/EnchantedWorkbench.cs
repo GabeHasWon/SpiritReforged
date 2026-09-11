@@ -94,7 +94,7 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 	/// <summary> Deactivates the workbench tile at the provided coordinates and syncs it. </summary>
 	public static void Deactivate(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		for (int x = i; x < i + 3; x++)
 		{
 			for (int y = j; y < j + 4; y++)
@@ -126,7 +126,7 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 		if (Framing.GetTileSafely(i, j).TileFrameX >= FullFrameWidth)
 			return false;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		ActiveCoordinates = new(i, j);
 
 		UISystem.SetActive<EnchantmentUI>();

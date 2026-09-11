@@ -7,6 +7,17 @@ namespace SpiritReforged.Content.Forest.Walls;
 
 public class Trellis : ModWall, ILoadItem, ICheckItemUse
 {
+	public enum TrellisVineType
+	{
+		Invalid = -1,
+		Default = 0,
+		Corrupt,
+		Crimson,
+		Hallow,
+		Oasis,
+		Unloaded,
+	}
+
 	public virtual void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(4).AddIngredient(ItemID.Wood).AddTile(TileID.Sawmill).Register();
@@ -55,25 +66,36 @@ public class Trellis : ModWall, ILoadItem, ICheckItemUse
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
+
 	public bool? CheckItemUse(int type, Player player, int i, int j)
 	{
-		if (player.whoAmI == Main.myPlayer && type is ItemID.GrassSeeds or ItemID.CrimsonSeeds or ItemID.CorruptSeeds or ItemID.HallowedSeeds)
+		if (player.whoAmI == Main.myPlayer)
 		{
-			int minRange = type switch
+			if (type is ItemID.GrassSeeds or ItemID.CrimsonSeeds or ItemID.CorruptSeeds or ItemID.HallowedSeeds or ItemID.StaffofRegrowth or ItemID.AcornAxe)
 			{
-				ItemID.CorruptSeeds => 1,
-				ItemID.CrimsonSeeds => 2,
-				ItemID.HallowedSeeds => 3,
-				_ => 0
-			};
+				TrellisVineType minRange = type switch
+				{
+					ItemID.CorruptSeeds => TrellisVineType.Corrupt,
+					ItemID.CrimsonSeeds => TrellisVineType.Crimson,
+					ItemID.HallowedSeeds => TrellisVineType.Hallow,
+					_ => TrellisVineType.Default
+				};
 
-			if (minRange == 0 && player.ZoneDesert)
-				minRange = 4;
+				if (minRange == 0 && player.ZoneDesert)
+					minRange = TrellisVineType.Oasis;
 
-			int style = WorldGen.genRand.Next(minRange * TrellisVine.StyleRange, minRange * TrellisVine.StyleRange + TrellisVine.StyleRange);
-			Placer.PlaceTile<TrellisVine>(i, j, style).Send();
+				int range = (int)minRange;
+				int style = WorldGen.genRand.Next(range * TrellisVine.StyleRange, range * TrellisVine.StyleRange + TrellisVine.StyleRange);
+				Placer.PlaceTile<TrellisVine>(i, j, style).Send();
 
-			return true;
+				return true;
+			}
+			else if (CrossmodTrellis.CustomVinesByItem.TryGetValue(type, out var customVine))
+			{
+				int range = customVine.style;
+				int style = WorldGen.genRand.Next(range * TrellisVine.StyleRange, range * TrellisVine.StyleRange + TrellisVine.StyleRange);
+				Placer.PlaceTile(i, j, customVine.type, style).Send();
+			}
 		}
 
 		return null;

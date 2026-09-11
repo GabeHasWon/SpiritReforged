@@ -1,14 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Content.Dusts;
-using SpiritReforged.Content.Particles;
-using System.IO;
 using System.Linq;
-using Terraria;
-using Terraria.Audio;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
