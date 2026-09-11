@@ -33,7 +33,7 @@ internal class CrossmodTrellis : ModSystem
 		return InternalRecieve(mod, itemStylePairs, name, path);
 	}
 
-	private static int InternalRecieve(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path)
+	internal static int InternalRecieve(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path)
 	{
 		mod.AddContent(new CustomTrellisVine(Id, name, path));
 		int type = mod.Find<ModTile>(name).Type;

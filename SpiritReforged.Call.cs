@@ -155,7 +155,8 @@ public partial class SpiritReforgedMod : Mod
 	private static bool HasBackpack(Player player) => player.GetModPlayer<BackpackPlayer>().backpack.ModItem is BackpackItem;
 
 	[ModCall]
-	private static void ManualAddRecord(int type, int[] styles, string recordName, byte rating = byte.MaxValue, Func<bool> hidden = null, Action<int, Point16, ILoot> lootPool = null, LocalizedText description = null, LocalizedText displayName = null)
+	private static void ManualAddRecord(int type, int[] styles, string recordName, byte rating = byte.MaxValue, Func<bool> hidden = null, 
+		Action<int, Point16, ILoot> lootPool = null, LocalizedText description = null, LocalizedText displayName = null)
 	{
 		TileRecord tileRecord = new(recordName, type, styles);
 
@@ -179,24 +180,7 @@ public partial class SpiritReforgedMod : Mod
 
 		if (displayName != null)
 			tileRecord.AddDescription(displayName);
-
-						return EcotoneSurfaceMapping.ContainsEcotone(s);
-					}
-				case "AddCustomDoT":
-					{
-						return CustomDoT.AddCustomDoT(args[1..]);
-					}
-				default:
-					{
-						Logger.Error($"Call Error: Context '{context}' is invalid.");
-						return null;
-					}
-			}
-		}
-		catch (Exception e)
-		{
-			Logger.Error("Call Error: " + e.Message + "\n" + e.StackTrace);
-		}
+	}
 
 	[ModCall]
 	private static bool PotDiscovered(string name, Player player) => player.GetModPlayer<RecordPlayer>().IsValidated(name);
@@ -210,5 +194,8 @@ public partial class SpiritReforgedMod : Mod
 	[ModCall]
 	private static (bool, int) AddSavannaTree(string texturePath, string tileName, Func<int[]> getAnchor, Mod mod)
 		=> (mod.AddContent(new AcaciaTreeCrossmod(texturePath, tileName, getAnchor))) ? (true, mod.Find<ModTile>(tileName).Type) : (false, -1);
+
+	[ModCall]
+	private static int TrellisVine(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path) => CrossmodTrellis.InternalRecieve(mod, itemStylePairs, name, path);
 	#endregion
 }

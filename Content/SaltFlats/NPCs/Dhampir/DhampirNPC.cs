@@ -366,7 +366,6 @@ internal class DhampirNPC : ModNPC
 		foreach (ref MistParticle particle in CollectionsMarshal.AsSpan(_particles))
 			particle.Draw(screenPos);
 
-
 		if (State == DhampirState.Fly)
 		{
 			if (Reflections.DrawingReflection)
