@@ -1,12 +1,12 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.NPCCommon;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.JinxBow;
 
-[FromClassic("BowSummonItem")]
+[ReplaceContent("SpiritMod/BowSummonItem")]
 public class JinxBow : MinionAccessory
 {
 	public override MinionAccessoryData Data => new(ModContent.ProjectileType<JinxBowMinion>(), 15);

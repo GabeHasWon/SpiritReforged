@@ -1,9 +1,9 @@
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 
 namespace SpiritReforged.Content.Glyphs.CharmcasterSet;
 
 [AutoloadEquip(EquipType.Head)]
-[FromClassic("WitchHead")]
+[ReplaceContent("SpiritMod/WitchHead")]
 public class CharmcasterHat : ModItem
 {
 	public override void SetStaticDefaults()

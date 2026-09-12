@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.ModCompat.Classic;
+﻿using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using Terraria.GameContent.ItemDropRules;
@@ -6,7 +6,7 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Content.Granite.Armor;
 
 [AutoloadEquip(EquipType.Body)]
-[FromClassic("GraniteChest")]
+[ReplaceContent("SpiritMod/GraniteChest")]
 public class GraniteBody : ModItem
 {
 	public override void Load() => DoubleTapPlayer.OnDoubleTap += DoubleTap;

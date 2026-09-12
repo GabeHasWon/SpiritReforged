@@ -1,10 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-[FromClassic("SwiftRune")]
+[ReplaceContent("SpiritMod/SwiftRune")]
 public class CraneFeather : ModItem
 {
 	public override void SetStaticDefaults()

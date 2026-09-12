@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using TileHelper.Common;
 using TileHelper.Content.Tiles;
 using static TileHelper.Autoloader;
@@ -16,5 +16,5 @@ public class DriftwoodSet : ModSystem
 		AutoContent.ItemType<Driftwood>()
 	);
 
-	public override void PostSetupContent() => SpiritClassic.AddItemReplacement("DriftwoodWorkbenchItem", SpiritReforgedMod.Instance.Find<ModItem>("DriftwoodWorkBenchItem").Type);
+	public override void PostSetupContent() => ReplacementSystem.AddItemReplacement("SpiritMod/DriftwoodWorkbenchItem", SpiritReforgedMod.Instance.Find<ModItem>("DriftwoodWorkBenchItem").Type);
 }

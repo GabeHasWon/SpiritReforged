@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
@@ -11,7 +11,7 @@ namespace SpiritReforged.Content.Granite.Sharpshooter;
 
 [AutoloadEquip(EquipType.HandsOn)]
 [AutoloadGlowmask("255,255,255")]
-[FromClassic("ShurikenLauncher")]
+[ReplaceContent("SpiritMod/ShurikenLauncher")]
 public class SharpshooterGlove : ModItem, IFlagged
 {
 	public const int EffectiveDistance = 480;

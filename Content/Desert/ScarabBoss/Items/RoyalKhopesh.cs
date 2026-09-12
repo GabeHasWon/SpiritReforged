@@ -1,6 +1,5 @@
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 using System.IO;
 using System.Linq;
@@ -10,7 +9,7 @@ using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
-[FromClassic("RoyalKhopesh")]
+[ReplaceContent("SpiritMod/RoyalKhopesh")]
 public class RoyalKhopesh : ModItem
 {
 	internal int swingDirection = 1;

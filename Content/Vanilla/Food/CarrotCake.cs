@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 
 namespace SpiritReforged.Content.Vanilla.Food;
 
-[FromClassic("Cake")]
+[ReplaceContent("SpiritMod/Cake")]
 public class CarrotCake : FoodItem
 {
 	public override void Defaults()

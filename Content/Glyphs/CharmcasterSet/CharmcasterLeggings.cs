@@ -1,9 +1,9 @@
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 
 namespace SpiritReforged.Content.Glyphs.CharmcasterSet;
 
 [AutoloadEquip(EquipType.Legs)]
-[FromClassic("WitchLegs")]
+[ReplaceContent("SpiritMod/WitchLegs")]
 public class CharmcasterLeggings : ModItem
 {
 	public override void SetDefaults()

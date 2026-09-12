@@ -1,5 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Jungle.Bamboo.Tiles;
 using System.Linq;
@@ -7,7 +7,7 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.Cloud.Items;
 
-[FromClassic("CloudstalkItem")]
+[ReplaceContent("SpiritMod/CloudstalkItem")]
 public class Cloudstalk : ModItem
 {
 	public override void SetStaticDefaults()

@@ -1,5 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
@@ -25,6 +25,6 @@ public class StrippedBamboo : ModTile, ILoadItem
 		DustType = DustID.PalmWood;
 		AddMapEntry(new Color(145, 128, 109));
 
-		SpiritClassic.AddItemReplacement("StrippedBamboo", this.AutoItem().type);
+		ReplacementSystem.AddItemReplacement("SpiritMod/StrippedBamboo", this.AutoItem().type);
 	}
 }

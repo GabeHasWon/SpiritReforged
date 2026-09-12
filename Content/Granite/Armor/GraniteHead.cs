@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.ModCompat.Classic;
+﻿using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.GameContent.ItemDropRules;
@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Granite.Armor;
 
 [AutoloadEquip(EquipType.Head)]
 [AutoloadGlowmask("255,255,255")]
-[FromClassic("GraniteHelm")]
+[ReplaceContent("SpiritMod/GraniteHelm")]
 public class GraniteHead : ModItem
 {
 	public override void SetStaticDefaults()

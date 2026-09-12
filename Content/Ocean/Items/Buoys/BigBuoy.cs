@@ -1,9 +1,9 @@
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.SimpleEntity;
 
 namespace SpiritReforged.Content.Ocean.Items.Buoys;
 
-[FromClassic("BigBuoyItem")]
+[ReplaceContent("SpiritMod/BigBuoyItem")]
 public class BigBuoy : SmallBuoy
 {
 	public override bool? UseItem(Player player)

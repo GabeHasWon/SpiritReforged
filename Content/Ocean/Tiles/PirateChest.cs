@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Content.Ocean.Items;
 using TileHelper.Common;
@@ -28,7 +28,7 @@ public class PirateChest : ChestTile, ILoadItem
 
 		MakeLocked(CrossMod.Classic.Enabled ? ModContent.ItemType<PirateKey>() : ItemID.GoldenKey);
 
-		SpiritClassic.AddItemReplacement("PirateChest", AutoContent.ItemType<PirateChest>()); //Register a Classic item replacement
+		ReplacementSystem.AddItemReplacement("SpiritMod/PirateChest", AutoContent.ItemType<PirateChest>()); //Register a Classic item replacement
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(static (shop) => shop.NpcType == NPCID.Pirate, new NPCShop.Entry(this.AutoItemType())));
 	}
 

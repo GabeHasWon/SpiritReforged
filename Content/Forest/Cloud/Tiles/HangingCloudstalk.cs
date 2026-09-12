@@ -1,5 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using Terraria.DataStructures;
 using TileHelper.Common;
 using static Terraria.GameContent.Drawing.TileDrawing;
@@ -36,7 +36,7 @@ public class HangingCloudstalk : ModTile, ILoadItem
 		AddMapEntry(new Color(28, 138, 72));
 		DustType = -1;
 
-		SpiritClassic.AddItemReplacement("HangingCloudstalk", this.AutoItem().type);
+		ReplacementSystem.AddItemReplacement("SpiritMod/HangingCloudstalk", this.AutoItem().type);
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)

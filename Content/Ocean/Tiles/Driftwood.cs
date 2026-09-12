@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using TileHelper.Common;
@@ -41,7 +41,7 @@ public class Driftwood : ModTile, ILoadItem
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(item.type, 4, 15, 35));
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(item.type, 4, 15, 35));
 
-		SpiritClassic.AddItemReplacement("DriftwoodTileItem", item.type);
+		ReplacementSystem.AddItemReplacement("SpiritMod/DriftwoodTileItem", item.type);
 		ItemID.Sets.ShimmerTransformToItem[item.type] = ItemID.Wood;
 	}
 }

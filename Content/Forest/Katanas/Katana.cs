@@ -1,6 +1,7 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
@@ -8,6 +9,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
+[ReplaceContent(ItemID.Katana)]
 public class Katana : ModItem, IDrawHeld
 {
 	public sealed class KatanaSwing : SwungProjectile, IDrawPixelated

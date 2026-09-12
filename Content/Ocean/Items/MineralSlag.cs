@@ -1,13 +1,13 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Ocean.Items;
 
-[FromClassic("DeepCascadeShard")]
+[ReplaceContent("SpiritMod/DeepCascadeShard")]
 public class MineralSlag : ModItem
 {
 	private struct ItemData(int itemType, int stack = 1) //Extractinator use

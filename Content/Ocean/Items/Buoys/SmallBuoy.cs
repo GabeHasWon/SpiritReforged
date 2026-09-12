@@ -1,12 +1,12 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Ocean.Items.Buoys;
 
-[FromClassic("BuoyItem")]
+[ReplaceContent("SpiritMod/BuoyItem")]
 public class SmallBuoy : ModItem
 {
 	private static bool WaterBelow()

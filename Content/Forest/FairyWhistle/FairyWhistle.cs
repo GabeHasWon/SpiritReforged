@@ -1,16 +1,16 @@
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.FairyWhistle;
 
-[FromClassic("FairyWhistleItem")]
+[ReplaceContent("SpiritMod/FairyWhistleItem")]
 public class FairyWhistle : ModItem
 {
 	public static readonly SoundStyle Whistle = new("SpiritReforged/Assets/SFX/Item/Whistle")
 	{
-		PitchVariance = .3f,
+		PitchVariance = 0.3f,
 		Volume = 1.2f
 	};
 

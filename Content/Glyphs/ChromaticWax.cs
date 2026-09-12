@@ -5,8 +5,8 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.ModCompat.LocalizationTools;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -33,7 +33,7 @@ public class ChromaticWaxShaderDummy : ModItem
 	public override string Texture => base.Texture.Replace("ShaderDummy", "");
 }
 
-[FromClassic("Glyph")]
+[ReplaceContent("SpiritMod/Glyph")]
 public class ChromaticWax : ModItem
 {
 	/// <summary> A pulsing rainbow color used for visual effects. </summary>

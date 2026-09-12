@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -8,7 +8,7 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Content.Underground.Items.ExplorerTreads;
 
 [AutoloadEquip(EquipType.Shoes)]
-[FromClassic("ExplorerTreads")]
+[ReplaceContent("SpiritMod/ExplorerTreads")]
 public class ExplorerTreadsItem : ModItem, IFlagged
 {
 	public override void SetStaticDefaults()

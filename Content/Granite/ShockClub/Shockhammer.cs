@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.GameContent.ItemDropRules;
@@ -8,7 +8,7 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Content.Granite.ShockClub;
 
 [AutoloadGlowmask("255,255,255")]
-[FromClassic("RageBlazeDecapitator")]
+[ReplaceContent("SpiritMod/RageBlazeDecapitator")]
 public class Shockhammer : ClubItem
 {
 	internal override float DamageScaling => 2.25f;

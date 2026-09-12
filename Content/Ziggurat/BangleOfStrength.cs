@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Content.Particles;
@@ -9,7 +9,7 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat;
 
-[FromClassic("CleftHorn")]
+[ReplaceContent("SpiritMod/CleftHorn")]
 public class BangleOfStrength : ModItem, IFlagged
 {
 	public sealed class BanglePlayer : ModPlayer

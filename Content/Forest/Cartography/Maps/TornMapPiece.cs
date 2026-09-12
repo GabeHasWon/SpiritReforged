@@ -1,19 +1,17 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.WorldGeneration.Noise;
-using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using Terraria.Audio;
-using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.Cartography.Maps;
 
-[FromClassic("MapScroll")]
+[ReplaceContent("SpiritMod/MapScroll")]
 public class TornMapPiece : ModItem
 {
 	public static readonly SoundStyle PageFlip = new("SpiritReforged/Assets/SFX/Item/PageFlip")
 	{
-		Pitch = .5f
+		Pitch = 0.5f
 	};
 
 	public override void SetStaticDefaults()

@@ -1,7 +1,6 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
@@ -11,7 +10,7 @@ using Terraria.UI;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-[FromClassic("AssassinMagazine")]
+[ReplaceContent("SpiritMod/AssassinMagazine")]
 public class SleightOfHand : ModItem
 {
 	private class Indicator : ILoadable

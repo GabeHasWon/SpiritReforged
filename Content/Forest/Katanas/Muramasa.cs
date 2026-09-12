@@ -2,6 +2,7 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -15,6 +16,7 @@ using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
+[ReplaceContent(ItemID.Muramasa)]
 public class Muramasa : ModItem, IDrawHeld
 {
 	public sealed class	MuramasaEnchantPlayer : ModPlayer

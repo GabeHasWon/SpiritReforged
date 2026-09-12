@@ -1,14 +1,14 @@
-using SpiritReforged.Content.Ocean.Items.Reefhunter.Buffs;
 using SpiritReforged.Common.ItemCommon;
-using Terraria.DataStructures;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Content.Ocean.Items.Reefhunter.Buffs;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
-using SpiritReforged.Common.ModCompat.Classic;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 
 [AutoloadEquip(EquipType.Neck)]
-[FromClassic("PendantOfTheOcean")]
+[ReplaceContent("SpiritMod/PendantOfTheOcean")]
 public class OceanPendant : ModItem, IFlagged
 {
 	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.CoinPickup with { Pitch = .25f });

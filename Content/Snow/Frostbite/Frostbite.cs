@@ -2,7 +2,7 @@ using ReLogic.Utilities;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
@@ -10,7 +10,7 @@ using Terraria.Audio;
 
 namespace SpiritReforged.Content.Snow.Frostbite;
 
-[FromClassic("HowlingScepter")]
+[ReplaceContent("SpiritMod/HowlingScepter")]
 public class FrostbiteItem : ModItem
 {
 	public const int AttackRange = 200;
