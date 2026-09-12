@@ -8,7 +8,11 @@ public class RawMeat : FoodItem
 {
 	internal override Point Size => new(30, 26);
 
-	public override void StaticDefaults() => VariantItemRenderer.VariantCounts[Type] = 3;
+	public override void StaticDefaults()
+	{
+		VariantItemRenderer.VariantCounts[Type] = 3;
+		Main.itemAnimations[Type] = null; //Remove item animations despite being a FoodItem
+	}
 
 	public override void Defaults() => Item.buffTime = 45 * 60;
 
