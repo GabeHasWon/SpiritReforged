@@ -3,6 +3,8 @@ using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using Terraria;
+using Terraria.GameContent.Achievements;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
@@ -16,10 +18,8 @@ internal class BackpackPlayer : ModPlayer
 			if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
 			{
 				foreach (Item item in back.Items)
-				{
-					if (item.IsAir || item.type == ItemID.None)
+					if (item.IsAir || item.type == ItemID.None || ItemCanStack(incomingItem, item))
 						return true;
-				}
 			}
 
 			return false;
@@ -29,43 +29,90 @@ internal class BackpackPlayer : ModPlayer
 		{
 			if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
 			{
+				if (InventoryHasItem(incomingItem, player.inventory))
+					return true;
+
+				if (InventoryHasItem(incomingItem, player.bank4.item))
+					return true;
+
+				int index = -1;
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					// Item.whoAmI is "unused" per the XML doc so I'm doing this to avoid any weird issues
+					// even though it's pretty weird itself. 1.4.5 should fix this anyway
+					for (int j = 0; j < Main.maxItems; ++j)
+					{
+						if (Main.item[j] == incomingItem)
+						{
+							index = j;
+							break;
+						}
+					}
+				}
+
+				for (int i = 0; i < back.Items.Length; i++)
+				{
+					ref Item it = ref back.Items[i];
+
+					if (ItemCanStack(incomingItem, it))
+					{
+						SharedItemFunctionality(index, incomingItem);
+
+						it.stack += incomingItem.stack;
+						GetItemSettings.PickupItemFromWorld.HandlePostAction(it);
+
+						if (incomingItem.stack <= 0)
+						{
+							incomingItem.active = false;
+							incomingItem.SetDefaults(ItemID.None);
+						}
+
+						return false;
+					}
+				}
+
 				for (int i = 0; i < back.Items.Length; i++)
 				{
 					ref Item item = ref back.Items[i];
 
 					if (item.IsAir || item.type == ItemID.None)
 					{
-						int index = -1;
-
-						if (Main.netMode != NetmodeID.SinglePlayer)
-						{
-							// Item.whoAmI is "unused" per the XML doc so I'm doing this to avoid any weird issues
-							// even though it's pretty weird itself. 1.4.5 should fix this anyway
-							for (int j = 0; j < Main.maxItems; ++j)
-							{
-								if (Main.item[j] == item)
-								{
-									index = j;
-									break;
-								}
-							}
-						}
+						SharedItemFunctionality(index, incomingItem);
 
 						item = incomingItem.Clone();
 						incomingItem.active = false;
-
-						PopupText.NewText(PopupTextContext.RegularItemPickup, item, item.stack, noStack: false, GetItemSettings.PickupItemFromWorld.LongText);
-
-						if (Main.netMode != NetmodeID.SinglePlayer && index != -1)
-							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, index);
-
-						return true;
+						incomingItem.SetDefaults(ItemID.None);
+						return false;
 					}
 				}
 			}
 
 			return true;
+
+			static void SharedItemFunctionality(int index, Item item)
+			{
+				PopupText.NewText(PopupTextContext.RegularItemPickup, item, item.stack);
+				AchievementsHelper.NotifyItemPickup(Main.LocalPlayer, item);
+
+				if (Main.netMode != NetmodeID.SinglePlayer && index != -1)
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, index);
+			}
 		}
+
+		private static bool InventoryHasItem(Item incomingItem, Item[] inventory)
+		{
+			foreach (Item inv in inventory)
+			{
+				if (ItemCanStack(incomingItem, inv))
+					return true;
+			}
+
+			return false;
+		}
+
+		private static bool ItemCanStack(Item pickup, Item item) 
+			=> item.type > ItemID.None && item.stack < item.maxStack && item.netID == pickup.netID && item.type == pickup.type && ItemLoader.CanStack(item, pickup);
 	}
 
 	[Flags]

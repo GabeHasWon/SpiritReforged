@@ -18,6 +18,19 @@ namespace SpiritReforged.Content.Underground.Tiles;
 
 public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 {
+	public class EnchantedWorkbenchStopBreak : GlobalTile
+	{
+		public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)
+		{
+			Tile above = Main.tile[i, j - 1];
+
+			if (above.HasTile && above.TileType == ModContent.TileType<EnchantedWorkbench>() && above.TileFrameX < FullFrameWidth)
+				return false;
+
+			return true;
+		}
+	}
+
 	public const int FullFrameWidth = 18 * 3;
 
 	#region local target
@@ -81,6 +94,8 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 		Main.tileSpelunker[Type] = true;
 		Main.tileNoFail[Type] = true;
 
+		TileID.Sets.PreventsTileHammeringIfOnTopOfIt[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 		TileObjectData.newTile.Origin = new(2, 3);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
@@ -89,6 +104,12 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 
 		DustType = -1;
 		AddMapEntry(new Color(50, 25, 55), Language.GetText("Mods.SpiritReforged.Items.EnchantedWorkbenchItem.DisplayName"));
+	}
+
+	public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+	{
+		Tile tile = Main.tile[i, j];
+		return tile.TileFrameX >= FullFrameWidth;
 	}
 
 	/// <summary> Deactivates the workbench tile at the provided coordinates and syncs it. </summary>

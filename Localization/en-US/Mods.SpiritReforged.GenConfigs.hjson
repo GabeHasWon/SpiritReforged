@@ -477,8 +477,8 @@ Pages: {
 			}
 
 			EnchantedWorkbenchChance: {
-				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Houses) Workbench Chance"
-				Tooltip: The denominator (1/x) of the chance for an Enchanted Workbench to spawn in an underground house.
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Houses) Wax Press Chance"
+				Tooltip: The denominator (1/x) of the chance for a Wax Press to spawn in an underground house.
 			}
 
 			DisplayCaseChance: {

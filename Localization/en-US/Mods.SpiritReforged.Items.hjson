@@ -3416,7 +3416,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Enchanted Workbench
+	DisplayName: Wax Press
 	Tooltip: ""
 }
 
