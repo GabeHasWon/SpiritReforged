@@ -42,18 +42,18 @@ public class MineralSlag : ModItem
 	public override void ExtractinatorUse(int extractinatorBlockType, ref int resultType, ref int resultStack)
 	{
 		var choice = new WeightedRandom<ItemData>();
-		choice.Add(new ItemData(ItemID.GoldCoin), .09f);
-		choice.Add(new ItemData(ItemID.SilverCoin, Main.rand.Next(3) + 1), .7f);
+		choice.Add(new ItemData(ItemID.GoldCoin), 0.09f);
+		choice.Add(new ItemData(ItemID.SilverCoin, Main.rand.Next(3) + 1), 0.7f);
 		choice.Add(new ItemData(ItemID.CopperCoin, Main.rand.Next(40) + 1), 1.25f);
 
 		choice.Add(new ItemData(ItemID.CopperOre, Main.rand.Next(3) + 1));
 		choice.Add(new ItemData(ItemID.TinOre, Main.rand.Next(3) + 1));
 		choice.Add(new ItemData(ItemID.IronOre, Main.rand.Next(3) + 1));
 		choice.Add(new ItemData(ItemID.LeadOre, Main.rand.Next(3) + 1));
-		choice.Add(new ItemData(ItemID.SilverOre, Main.rand.Next(3) + 1), .8f);
-		choice.Add(new ItemData(ItemID.TungstenOre, Main.rand.Next(3) + 1), .8f);
-		choice.Add(new ItemData(ItemID.GoldOre, Main.rand.Next(3) + 1), .5f);
-		choice.Add(new ItemData(ItemID.PlatinumOre, Main.rand.Next(3) + 1), .5f);
+		choice.Add(new ItemData(ItemID.SilverOre, Main.rand.Next(3) + 1), 0.8f);
+		choice.Add(new ItemData(ItemID.TungstenOre, Main.rand.Next(3) + 1), 0.8f);
+		choice.Add(new ItemData(ItemID.GoldOre, Main.rand.Next(3) + 1), 0.5f);
+		choice.Add(new ItemData(ItemID.PlatinumOre, Main.rand.Next(3) + 1), 0.5f);
 
 		resultType = ((ItemData)choice).itemType;
 		resultStack = ((ItemData)choice).stack;
