@@ -16,7 +16,8 @@ public interface ISetConversion
 /// Delegates can be registered manually to any type using <see cref="AddFrameAction"/>. </summary>
 public class ConversionHandler : GlobalTile
 {
-	public sealed class Set : Dictionary<int, int>; //Make a wrapper class to futureproof
+	// Make a wrapper class to futureproof
+	public sealed class Set : Dictionary<int, int>;
 
 	public delegate bool FrameDelegate(int i, int j, int type);
 

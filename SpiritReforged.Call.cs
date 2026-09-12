@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.DebuffOverhaul;
+﻿using MonoMod.Utils;
+using SpiritReforged.Common.DebuffOverhaul;
 using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
@@ -243,12 +244,14 @@ public partial class SpiritReforgedMod : Mod
 	[ModCall]
 	private static bool RegisterConversionSet(string setName, Dictionary<int, int> dict)
 	{
-		CreateSet(setName, (Set)dict);
+		var set = new Set();
+		set.AddRange(dict);
+		CreateSet(setName, set);
 		return true;
 	}
 
 	[ModCall]
-	private static (bool, int) AddSavannaTree(string texturePath, string tileName, Func<int[]> getAnchor, Mod mod)
+	internal static (bool, int) AddSavannaTree(string texturePath, string tileName, Func<int[]> getAnchor, Mod mod)
 		=> (mod.AddContent(new AcaciaTreeCrossmod(texturePath, tileName, getAnchor))) ? (true, mod.Find<ModTile>(tileName).Type) : (false, -1);
 	#endregion
 }
