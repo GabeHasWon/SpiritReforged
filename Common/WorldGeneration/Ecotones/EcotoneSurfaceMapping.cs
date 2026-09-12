@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using SpiritReforged.Common.ModCompat.EcotoneMapper;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -365,13 +366,27 @@ public class EcotoneSurfaceMapping : ModSystem
 		}
 
 		entry.Right = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+
+		if (entry.End.X == 0)
+		{
+			int x = Main.maxTilesX - WorldGen.beachDistance - 20;
+			int y = 80;
+
+			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out _))
+				y++; // Skip over clouds
+
+			entry.End = new Point(x, y);
+		}
+
+		var lastX = entry.End.X;
 		AddEntry(entry);
 
 		EcotoneEntry rightEdge = new(entry.End, EcotoneEdgeDefinitions.GetEcotone("Ocean"));
 		rightEdge.Left = entry.Definition;
 		rightEdge.Right = EcotoneEdgeDefinitions.GetEcotone("Ocean");
 		rightEdge.End = new Point(Main.maxTilesX - Main.offLimitBorderTiles, 80);
-		ManuallyMapEntry(rightEdge, rightEdge.Start.X..(Main.maxTilesX - Main.offLimitBorderTiles));
+		ManuallyMapEntry(rightEdge, lastX..(Main.maxTilesX - Main.offLimitBorderTiles));
+
 		Entries.Add(rightEdge);
 
 		Entries = [.. Entries.OrderBy(x => x.Start.X)];

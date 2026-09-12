@@ -37,30 +37,30 @@ public class TallSandstoneShelf : ModTile, ILoadItem
 		Tile top = Framing.GetTileSafely(i, j - 1);
 		Tile bottom = Framing.GetTileSafely(i, j + 1);
 
-		if (!top.HasTileType(Type) && !bottom.HasTileType(Type) && !left.HasTileType(Type) && !right.HasTileType(Type))
+		if (!top.Active(Type) && !bottom.Active(Type) && !left.Active(Type) && !right.Active(Type))
 		{
 			frameX = 0;
 			frameY = 18 * 3;
 		}
-		else if (!top.HasTileType(Type) && !bottom.HasTileType(Type))
+		else if (!top.Active(Type) && !bottom.Active(Type))
 		{
 			frameY += 18 * 2;
 		}
-		else if (!left.HasTileType(Type) && !right.HasTileType(Type))
+		else if (!left.Active(Type) && !right.Active(Type))
 		{
 			frameX -= 18 * 2;
 		}
 
-		if (left.HasTileType(Type))
+		if (left.Active(Type))
 			frameX += 18;
 
-		if (right.HasTileType(Type))
+		if (right.Active(Type))
 			frameX -= 18;
 
-		if (!top.HasTileType(Type))
+		if (!top.Active(Type))
 			frameY -= 18;
 
-		if (!bottom.HasTileType(Type))
+		if (!bottom.Active(Type))
 			frameY += 18;
 
 		int randomFrame;

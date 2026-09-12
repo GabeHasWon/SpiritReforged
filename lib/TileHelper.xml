@@ -21,7 +21,7 @@
         <member name="T:TileHelper.Autoloader">
             <summary> The core of TileUtils. </summary>
         </member>
-        <member name="M:TileHelper.Autoloader.AllArgs(System.Int32,Microsoft.Xna.Framework.Vector3,System.Nullable{Terraria.Audio.SoundStyle},System.Boolean)">
+        <member name="M:TileHelper.Autoloader.AllArgs(System.Int32,TileHelper.Common.ILightTile.LightingSettings,System.Nullable{Terraria.Audio.SoundStyle})">
             <summary> Gets all type arguments registered by this mod. </summary>
         </member>
         <member name="M:TileHelper.Autoloader.NoArgs">
@@ -35,10 +35,10 @@
             <param name="fullName"> The name of this furniture set, including the desired namespace.<para/>
             For example, a stone-themed set might use the value "ModName.Content.Tiles.Stone", where the keyword "Stone" will be affixed before every furniture type. </param>
             <param name="arguments"> The types of furniture tiles to be loaded and with which characteristics.<para/>
-            Use <see cref="M:TileHelper.Autoloader.AllArgs(System.Int32,Microsoft.Xna.Framework.Vector3,System.Nullable{Terraria.Audio.SoundStyle},System.Boolean)"/> and <see cref="M:TileHelper.Autoloader.NoArgs"/> to assist this process, or create your own <see cref="T:TileHelper.ArgumentCollection"/>.<br/>
-            Furniture types can be revoked or added using basic signs, alongside the template tile name.<para/>
+            Use <see cref="M:TileHelper.Autoloader.AllArgs(System.Int32,TileHelper.Common.ILightTile.LightingSettings,System.Nullable{Terraria.Audio.SoundStyle})"/> and <see cref="M:TileHelper.Autoloader.NoArgs"/> to assist this process, or create your own <see cref="T:TileHelper.ArgumentCollection"/>.<br/>
+            Furniture types can be revoked or added using basic signs, alongside the template tile name or instance.<para/>
             For example, you can use the following:
-            <code>AllArgs(DustID.Marble, new(0.75f, 0.75f, 0.95f), distortGlow: false) - new BarrelTile() + new UniqueFurnitureTile()</code></param>
+            <code>AllArgs(DustID.Marble, new(0.75f, 0.75f, 0.95f), distortGlow: false) - new BarrelTile() - nameof(BenchTile) + new UniqueFurnitureTile()</code></param>
             <param name="ingredient"> The primary ingredient used in crafting. If <see cref="F:Terraria.ID.ItemID.None"/>, no recipe will be created for any item. </param>
             <param name="loadItems"> Whether this set should autoload an item for each tile. </param>
         </member>
@@ -81,13 +81,30 @@
             <summary> Considers the annotated type a template furniture type for autoloading. </summary>
         </member>
         <member name="T:TileHelper.Common.ILightTile">
-            <summary> Applied to tile types which emit light and use a glowmask by extension. </summary>
+            <summary> Indicates tile types which emit light and use a glowmask by extension. </summary>
         </member>
-        <member name="P:TileHelper.Common.ILightTile.Light">
+        <member name="T:TileHelper.Common.ILightTile.LightingSettings">
+            <summary> </summary>
+            <param name="Light"> The light level to be emitted by this tile. </param>
+            <param name="Distorted"> Whether this tile's glowmask should be distorted, like vanilla flame visuals. </param>
+        </member>
+        <member name="M:TileHelper.Common.ILightTile.LightingSettings.#ctor(Microsoft.Xna.Framework.Vector3,System.Boolean)">
+            <summary> </summary>
+            <param name="Light"> The light level to be emitted by this tile. </param>
+            <param name="Distorted"> Whether this tile's glowmask should be distorted, like vanilla flame visuals. </param>
+        </member>
+        <member name="P:TileHelper.Common.ILightTile.LightingSettings.Light">
             <summary> The light level to be emitted by this tile. </summary>
         </member>
-        <member name="P:TileHelper.Common.ILightTile.DistortGlow">
-            <summary> Whether this tile's glowmask should be distorted, like flame visuals. </summary>
+        <member name="P:TileHelper.Common.ILightTile.LightingSettings.Distorted">
+            <summary> Whether this tile's glowmask should be distorted, like vanilla flame visuals. </summary>
+        </member>
+        <member name="P:TileHelper.Common.ILightTile.Settings">
+            <summary> The lighting configuration of this tile. </summary>
+        </member>
+        <member name="M:TileHelper.Common.ILightTile.PostDrawGlowmask(Microsoft.Xna.Framework.Graphics.SpriteBatch,System.Int32,System.Int32,System.Boolean)">
+            <summary> Draws a glowmask with optional distortion.<br/>
+            Intended for use in <see cref="M:Terraria.ModLoader.ModBlockType.PostDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)"/>. </summary>
         </member>
         <member name="F:TileHelper.Common.FurnitureTile.MapColor">
             <summary> The most common color for furniture tiles on the map. </summary>
@@ -110,6 +127,15 @@
         </member>
         <member name="M:TileHelper.Common.FurnitureTile.SetStaticDefaults">
             <inheritdoc/>
+        </member>
+        <member name="T:TileHelper.Common.GlowmaskTile">
+            <summary> Class to automatically handle glowmask drawing for types registered with <see cref="F:TileHelper.Common.TileHelperSets.TileGlowmask"/>. </summary>
+        </member>
+        <member name="T:TileHelper.Common.GlowmaskTile.CoordinateColor">
+            <summary> Indicates a color influenced by tile coordinates <paramref name="i"/> and <paramref name="j"/>. </summary>
+            <param name="i"> Tile coordinate x. </param>
+            <param name="j"> Tile coordinate y. </param>
+            <returns></returns>
         </member>
         <member name="T:TileHelper.Common.GlowmaskTile.Glowmask">
             <summary> Contains tile glowmask drawing information. </summary>
@@ -210,11 +236,23 @@
         <member name="M:TileHelper.Content.AutoloadedPlaceable.AddRecipes">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.BarrelTile">
+            <summary> A default barrel tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.BarrelTile.PreDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.BathtubTile">
+            <summary> A default bathtub tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.BathtubTile.SetStaticDefaults">
             <inheritdoc/>
+        </member>
+        <member name="T:TileHelper.Content.Tiles.BedTile">
+            <summary> A default bed tile. </summary>
+        </member>
+        <member name="M:TileHelper.Content.Tiles.BedTile.HoveringOverBottomSide(System.Int32,System.Int32)">
+            <summary> Checks whether coordinates <paramref name="i"/> and <paramref name="j"/> cover the bottom half of the bed. </summary>
         </member>
         <member name="M:TileHelper.Content.Tiles.BedTile.SetStaticDefaults">
             <inheritdoc/>
@@ -231,6 +269,9 @@
         <member name="M:TileHelper.Content.Tiles.BedTile.MouseOver(System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.BenchTile">
+            <summary> A default bench tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.BenchTile.SetStaticDefaults">
             <inheritdoc/>
         </member>
@@ -243,13 +284,16 @@
         <member name="M:TileHelper.Content.Tiles.BenchTile.MouseOver(System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.BookcaseTile">
+            <summary> A default bookcase tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.BookcaseTile.SetStaticDefaults">
             <inheritdoc/>
         </member>
-        <member name="P:TileHelper.Content.Tiles.CandelabraTile.Light">
-            <inheritdoc/>
+        <member name="T:TileHelper.Content.Tiles.CandelabraTile">
+            <summary> A default candelabra tile. </summary>
         </member>
-        <member name="P:TileHelper.Content.Tiles.CandelabraTile.DistortGlow">
+        <member name="P:TileHelper.Content.Tiles.CandelabraTile.Settings">
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.Tiles.CandelabraTile.SetStaticDefaults">
@@ -264,10 +308,10 @@
         <member name="M:TileHelper.Content.Tiles.CandelabraTile.PostDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
             <inheritdoc/>
         </member>
-        <member name="P:TileHelper.Content.Tiles.CandleTile.Light">
-            <inheritdoc/>
+        <member name="T:TileHelper.Content.Tiles.CandleTile">
+            <summary> A default candle tile. </summary>
         </member>
-        <member name="P:TileHelper.Content.Tiles.CandleTile.DistortGlow">
+        <member name="P:TileHelper.Content.Tiles.CandleTile.Settings">
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.Tiles.CandleTile.SetStaticDefaults">
@@ -288,6 +332,9 @@
         <member name="M:TileHelper.Content.Tiles.CandleTile.PostDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.ChairTile">
+            <summary> A default chair tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.ChairTile.SetStaticDefaults">
             <inheritdoc/>
         </member>
@@ -303,13 +350,13 @@
         <member name="M:TileHelper.Content.Tiles.ChairTile.ModifySittingTargetInfo(System.Int32,System.Int32,Terraria.DataStructures.TileRestingInfo@)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.ChandelierTile">
+            <summary> A default chandelier tile. </summary>
+        </member>
         <member name="P:TileHelper.Content.Tiles.ChandelierTile.AnchorDataOffsets">
             <summary> Offsets the anchor and how wide it needs to be. Defaults to (1, 1), meaning the anchor only needs 1 tile in the middle of the 3 tile wide chandelier. </summary>
         </member>
-        <member name="P:TileHelper.Content.Tiles.ChandelierTile.Light">
-            <inheritdoc/>
-        </member>
-        <member name="P:TileHelper.Content.Tiles.ChandelierTile.DistortGlow">
+        <member name="P:TileHelper.Content.Tiles.ChandelierTile.Settings">
             <inheritdoc/>
         </member>
         <member name="P:TileHelper.Content.Tiles.ChandelierTile.WindCycle">
@@ -332,6 +379,9 @@
         </member>
         <member name="M:TileHelper.Content.Tiles.ChandelierTile.ModifyLight(System.Int32,System.Int32,System.Single@,System.Single@,System.Single@)">
             <inheritdoc/>
+        </member>
+        <member name="T:TileHelper.Content.Tiles.ChestTile">
+            <summary> A default chest tile. </summary>
         </member>
         <member name="P:TileHelper.Content.Tiles.ChestTile.MapEntry">
             <inheritdoc/>
@@ -366,6 +416,9 @@
         <member name="M:TileHelper.Content.Tiles.ChestTile.MouseOverFar(System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.ClockTile">
+            <summary> A default clock tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.ClockTile.SetStaticDefaults">
             <inheritdoc/>
         </member>
@@ -377,6 +430,9 @@
         </member>
         <member name="M:TileHelper.Content.Tiles.ClockTile.MouseOver(System.Int32,System.Int32)">
             <inheritdoc/>
+        </member>
+        <member name="T:TileHelper.Content.Tiles.DoorTile">
+            <summary> A default door tile. </summary>
         </member>
         <member name="P:TileHelper.Content.Tiles.DoorTile.OpenType">
             <summary> The tile type of this door's when open. </summary>
@@ -420,6 +476,9 @@
         <member name="M:TileHelper.Content.Tiles.AutoloadedDoorOpen.MouseOver(System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.DresserTile">
+            <summary> A default dresser tile. </summary>
+        </member>
         <member name="P:TileHelper.Content.Tiles.DresserTile.MapEntry">
             <inheritdoc/>
         </member>
@@ -450,7 +509,10 @@
         <member name="M:TileHelper.Content.Tiles.DresserTile.MouseOverFar(System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
-        <member name="P:TileHelper.Content.Tiles.LampTile.Light">
+        <member name="T:TileHelper.Content.Tiles.LampTile">
+            <summary> A default lamp tile. </summary>
+        </member>
+        <member name="P:TileHelper.Content.Tiles.LampTile.Settings">
             <inheritdoc/>
         </member>
         <member name="P:TileHelper.Content.Tiles.LampTile.DistortGlow">
@@ -468,10 +530,10 @@
         <member name="M:TileHelper.Content.Tiles.LampTile.PostDraw(System.Int32,System.Int32,Microsoft.Xna.Framework.Graphics.SpriteBatch)">
             <inheritdoc/>
         </member>
-        <member name="P:TileHelper.Content.Tiles.LanternTile.Light">
-            <inheritdoc/>
+        <member name="T:TileHelper.Content.Tiles.LanternTile">
+            <summary> A default lantern tile. </summary>
         </member>
-        <member name="P:TileHelper.Content.Tiles.LanternTile.DistortGlow">
+        <member name="P:TileHelper.Content.Tiles.LanternTile.Settings">
             <inheritdoc/>
         </member>
         <member name="P:TileHelper.Content.Tiles.LanternTile.WindCycle">
@@ -498,11 +560,20 @@
         <member name="M:TileHelper.Content.Tiles.LanternTile.ModifyLight(System.Int32,System.Int32,System.Single@,System.Single@,System.Single@)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.PianoTile">
+            <summary> A default piano tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.PianoTile.SetStaticDefaults">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.SinkTile">
+            <summary> A default sink tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.SinkTile.SetStaticDefaults">
             <inheritdoc/>
+        </member>
+        <member name="T:TileHelper.Content.Tiles.SofaTile">
+            <summary> A default sofa tile. </summary>
         </member>
         <member name="M:TileHelper.Content.Tiles.SofaTile.SetStaticDefaults">
             <inheritdoc/>
@@ -516,8 +587,14 @@
         <member name="M:TileHelper.Content.Tiles.SofaTile.MouseOver(System.Int32,System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="T:TileHelper.Content.Tiles.TableTile">
+            <summary> A default table tile. </summary>
+        </member>
         <member name="M:TileHelper.Content.Tiles.TableTile.SetStaticDefaults">
             <inheritdoc/>
+        </member>
+        <member name="T:TileHelper.Content.Tiles.ToiletTile">
+            <summary> A default toilet tile. </summary>
         </member>
         <member name="M:TileHelper.Content.Tiles.ToiletTile.SetStaticDefaults">
             <inheritdoc/>
@@ -536,6 +613,9 @@
         </member>
         <member name="M:TileHelper.Content.Tiles.ToiletTile.HitWire(System.Int32,System.Int32)">
             <inheritdoc/>
+        </member>
+        <member name="T:TileHelper.Content.Tiles.WorkBenchTile">
+            <summary> A default work bench tile. </summary>
         </member>
         <member name="M:TileHelper.Content.Tiles.WorkBenchTile.SetStaticDefaults">
             <inheritdoc/>

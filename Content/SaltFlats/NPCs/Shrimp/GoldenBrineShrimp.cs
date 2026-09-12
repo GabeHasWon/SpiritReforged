@@ -8,7 +8,7 @@ namespace SpiritReforged.Content.SaltFlats.NPCs.Shrimp;
 [AutoloadCritter]
 public class GoldenBrineShrimp : BrineShrimp, IGoldCritter
 {
-	public override void AddRecipes() => Recipe.Create(ItemID.GoldenDelight, 1).AddIngredient(this.AutoItemType()).Register();
+	public override void AddRecipes() => Recipe.Create(ItemID.GoldenDelight, 1).AddIngredient(this.AutoItemType()).AddTile(TileID.CookingPots).Register();
 	public override void CreateItemDefaults() => ItemEvents.CreateItemDefaults(this.AutoItemType(), item =>
 	{
 		item.value = Item.sellPrice(gold: 10);

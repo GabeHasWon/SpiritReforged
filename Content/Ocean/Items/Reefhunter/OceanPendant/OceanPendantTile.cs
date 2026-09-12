@@ -70,7 +70,7 @@ public class OceanPendantTile : ModTile
 	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		var worldPos = new Vector2(i, j) * 16 + new Vector2(8);
-		var drawPos = worldPos - Main.screenPosition + TileExtensions.TileOffset;
+		var drawPos = worldPos - Main.screenPosition + TileMethods.TileOffset;
 
 		float rotation = (float)Main.timeForVisualEffects * .01f;
 		float scale = .1f;

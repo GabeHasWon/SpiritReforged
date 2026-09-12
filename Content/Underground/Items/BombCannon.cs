@@ -67,7 +67,7 @@ public class BombCannon : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (player.HasEquip<BoomShroom>())
+		if (player.HasFlag<BoomShroom>())
 			type = BoomShroomPlayer.MakeLarge(type);
 
 		Projectile.NewProjectile(source, position, velocity, Item.shoot, damage, knockback, player.whoAmI, type, 0, velocity.Length());
@@ -196,7 +196,7 @@ internal class BombCannonHeld : ModProjectile
 		if (Projectile.owner == Main.myPlayer)
 		{
 			var velocity = Projectile.velocity * Progress;
-			bool boomShroom = owner.HasEquip<BoomShroom>();
+			bool boomShroom = owner.HasFlag<BoomShroom>();
 			int type = boomShroom ? ModContent.ProjectileType<BigCannonBomb>() : ModContent.ProjectileType<CannonBomb>();
 
 			PreNewProjectile.New(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity, type, (int)(Projectile.damage * BombCannon.ContactDamagePercentage), Projectile.knockBack, Projectile.owner, ShootType, 1, preSpawnAction: delegate (Projectile p)

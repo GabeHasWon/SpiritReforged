@@ -14,7 +14,8 @@ class ReforgedServerConfig : ModConfig
 	[DefaultValue(12)]
 	public int MaxFloatingItemCount { get; set; }
 
-	[DefaultValue(false)]
-	[ReloadRequired]
-	public bool AutoloadHeldProjectiles { get; set; }
+	// TODO: Autoload held proj
+	//[DefaultValue(false)]
+	//[ReloadRequired]
+	//public bool AutoloadHeldProjectiles { get; set; }
 }

@@ -6,6 +6,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.LocalizationTools;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
@@ -23,6 +24,14 @@ using Terraria.ModLoader.IO;
 using static SpiritReforged.Content.Glyphs.CelestialStamp;
 
 namespace SpiritReforged.Content.Glyphs;
+
+/// <summary>
+/// Empty item used solely to register the appropriate shader.
+/// </summary>
+public class ChromaticWaxShaderDummy : ModItem
+{
+	public override string Texture => base.Texture.Replace("ShaderDummy", "");
+}
 
 [FromClassic("Glyph")]
 public class ChromaticWax : ModItem
@@ -139,7 +148,7 @@ public class GlyphGlobalNPC : GlobalNPC
 		// Crossmod Wax Drops
 		if (CrossMod.Thorium.Enabled)
 		{
-			if (CrossMod.Thorium.CheckFind("BlueHag", out ModNPC blueHag) && CrossMod.Thorium.CheckFind("GreenHag", out ModNPC greenHag) && CrossMod.Thorium.CheckFind("CyanHag", out ModNPC cyanHag) && CrossMod.Thorium.CheckFind("RedHag", out ModNPC redHag))
+			if (CrossMod.Thorium.TryFind("BlueHag", out ModNPC blueHag) && CrossMod.Thorium.TryFind("GreenHag", out ModNPC greenHag) && CrossMod.Thorium.TryFind("CyanHag", out ModNPC cyanHag) && CrossMod.Thorium.TryFind("RedHag", out ModNPC redHag))
 			{
 				int[] hags = { blueHag.Type, greenHag.Type, redHag.Type, cyanHag.Type };
 
@@ -147,23 +156,17 @@ public class GlyphGlobalNPC : GlobalNPC
 					npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
 			}
 
-			if (CrossMod.Thorium.CheckFind("Illusionist", out ModNPC illusionist))
+			if (CrossMod.Thorium.TryFind("Illusionist", out ModNPC illusionist) && npc.type == illusionist.Type)
 			{
-				if (npc.type == illusionist.Type)
-				{
-					npcLoot.Add(ItemDropRule.ByCondition(new Conditions.IsExpert(), ModContent.ItemType<ChromaticWax>(), 1, 1, 2));
-					npcLoot.Add(ItemDropRule.ByCondition(new Conditions.NotExpert(), ModContent.ItemType<ChromaticWax>()));
-				}
+				npcLoot.Add(ItemDropRule.ByCondition(new Conditions.IsExpert(), ModContent.ItemType<ChromaticWax>(), 1, 1, 2));
+				npcLoot.Add(ItemDropRule.ByCondition(new Conditions.NotExpert(), ModContent.ItemType<ChromaticWax>()));
 			}
 		}
 
 		if (CrossMod.Redemption.Enabled)
 		{
-			if (CrossMod.Redemption.CheckFind("MoonflareCaster", out ModNPC moonflareCaster))
-			{
-				if (npc.type == moonflareCaster.Type)
-					npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
-			}
+			if (CrossMod.Redemption.TryFind("MoonflareCaster", out ModNPC moonflareCaster) && npc.type == moonflareCaster.Type)
+				npcLoot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<ChromaticWax>(), 50, 40));
 		}
 	}
 
@@ -171,7 +174,7 @@ public class GlyphGlobalNPC : GlobalNPC
 	{
 		int stack = (int)Math.Max(npc.value / Item.gold, 3);
 
-		if (CrossMod.Fables.Enabled && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC _))
+		if (CrossMod.Fables.Enabled && CrossMod.Fables.TryFind("ScourgeVsScarab", out ModNPC modNPC) && npc.type == modNPC.Type)
 			stack = 10; //Override chromatic wax amount
 
 		return Item.NewItem(source, npc.Hitbox, new Item(ModContent.ItemType<ChromaticWax>(), stack + Main.rand.Next(0, 3)));
@@ -180,6 +183,21 @@ public class GlyphGlobalNPC : GlobalNPC
 
 public class GlyphGlobalProjectile : GlobalProjectile
 {
+	/// <summary> Stores active glyph effects from owned projectiles. </summary>
+	public sealed class ActiveGlyphPlayer : ModPlayer
+	{
+		public HashSet<GlyphItem.GlyphType> glyphEffects = [];
+		public bool reset;
+
+		public override void UpdateEquips()
+		{
+			if (reset)
+				glyphEffects.Clear();
+
+			reset = true;
+		}
+	}
+
 	public override bool InstancePerEntity => true;
 
 	public GlyphItem.GlyphType glyph;
@@ -214,24 +232,24 @@ public class GlyphGlobalProjectile : GlobalProjectile
 
 	public override void AI(Projectile projectile)
 	{
-		if (Main.dedServ || !ModContent.GetInstance<ReforgedClientConfig>().GlyphProjectileVisualEffects)
-			return;
-
-		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0)
+		if (projectile.TryGetOwner(out Player owner) && projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0)
 		{
-			if (Main.player[projectile.owner].heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
+			if ((projectile.minion || projectile.sentry) && owner.TryGetModPlayer(out ActiveGlyphPlayer activePlayer)) //Store the minion or sentry's active glyph
+			{
+				activePlayer.glyphEffects.Add(new(glyph.ItemType));
+				activePlayer.reset = false; //Don't reset immediately
+			}
+
+			if (Main.dedServ || !ModContent.GetInstance<ReforgedClientConfig>().GlyphProjectileVisualEffects)
 				return;
 
-			// Bee gun is just so many projectiles
-			if (projectile.type is ProjectileID.Bee or ProjectileID.GiantBee)
-			{
-				if (Main.rand.NextBool(10))
-					(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
-			}	
-			else
-			{
+			if (owner.heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
+				return; //Prevent held projectiles from spawning dusts unless they are clubs
+
+			int counts = owner.ownedProjectileCounts[projectile.type] - 1;
+
+			if (Main.rand.NextFloat() > Math.Min(counts / 10f, 0.9f)) //Reduce odds with inversely with projectile counts of the same type
 				(ItemLoader.GetItem(glyph.ItemType) as GlyphItem).UpdateGlyphProjectile(projectile);
-			}
 		}
 	}
 
@@ -274,10 +292,19 @@ public abstract class GlyphItem : ModItem
 		/// <summary> Applies the provided glyph effect to <paramref name="item"/>. </summary>
 		/// <param name="item"></param>
 		/// <param name="type"></param>
+		/// <param name="context"></param>
 		/// <returns> Whether <paramref name="type"/> was successfully applied. </returns>
 		public bool SetGlyph(Item item, GlyphType type, IApplicationContext context)
 		{
-			if (ItemLoader.GetItem(type.ItemType) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
+			if (ItemLoader.GetItem(type.ItemType) is GlyphItem g && type == default) // removing glyph
+				g.OnRemoveGlyph(item, context);
+
+			if (type.ItemType == ItemID.None)
+			{
+				Glyph = type; //Remove glyph
+				return true;
+			}
+			else if (ItemLoader.GetItem(type.ItemType) is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item))
 			{
 				Glyph = type;
 				glyphItem.OnApplyGlyph(item, context);
@@ -301,7 +328,13 @@ public abstract class GlyphItem : ModItem
 
 		public override bool AllowPrefix(Item item, int pre) => !HasGlyph(out _) || ModContent.GetInstance<CelestialStampToggle>().Active();  //No glyph effect is present
 
-		public override bool CanReforge(Item item) => !HasGlyph(out _) || ModContent.GetInstance<CelestialStampToggle>().Active(); //No glyph effect is present
+		public override bool CanReforge(Item item)
+		{
+			if (HasGlyph(out _) && !ModContent.GetInstance<CelestialStampToggle>().Active())
+				SetGlyph(item, default, new ApplyContext()); //Remove the glyph
+
+			return true;
+		}
 
 		public override bool CanRightClick(Item item) => Main.mouseItem.ModItem is GlyphItem glyphItem && glyphItem.CanApplyGlyph(item);
 
@@ -476,14 +509,15 @@ public abstract class GlyphItem : ModItem
 	public readonly record struct GlyphType(int ItemType)
 	{
 		public string Name => ItemLoader.GetItem(ItemType)?.Name;
+		public bool Active => ItemType != ItemID.None;
 	}
 
 	public readonly record struct GlyphSettings(Color Color);
 
-	public LocalizedText Effect => this.GetLocalization("Effect");
 	public static LocalizedText Gain => Language.GetText(glyphLocalization + "Gain");
 	public static LocalizedText Target => Language.GetText(glyphLocalization + "Target");
 	public static LocalizedText Enchant => Language.GetText(glyphLocalization + "RightClick");
+	public LocalizedText Effect => this.GetLocalization("Effect");
 
 	public Asset<Texture2D> IconTexture
 	{
@@ -527,13 +561,36 @@ public abstract class GlyphItem : ModItem
 			item.prefix = 0; //Don't clear prefix if the celestial stamp is active
 
 		item.ClearNameOverride();
-		item.SetNameOverride($"{Effect} " + item.Name);
+
+		string itemName = item.Name;
+
+		if (CrossMod.RussianLocalizable)
+			itemName = itemName.ToLowerInvariant();
+
+		item.SetNameOverride($"{GenderItemEffect(item, this.GetLocalizationKey(""))} " + itemName);
 
 		if (item.rare < ItemRarityID.Purple)
 			item.rare++;
 
 		if (context is not SyncContext)
 			item.Refresh(false); //Always prompts a netsync
+	}
+
+	protected virtual void OnRemoveGlyph(Item item, IApplicationContext context) { }
+
+	private static string GenderItemEffect(Item item, string baseKey)
+	{
+		if (!CrossMod.RussianLocalizable)
+			return Language.GetTextValue(baseKey + "Effect");
+
+		string gender = RussianGendering.GetGender(item.type);
+		return gender switch
+		{
+			"Feminine" => Language.GetTextValue(baseKey + "Gendered.Fem"),
+			"Neuter" => Language.GetTextValue(baseKey + "Gendered.Neutral"),
+			"Plural" => Language.GetTextValue(baseKey + "Gendered.Plural"),
+			_ => Language.GetTextValue(baseKey + "Effect"),
+		};
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)

@@ -1,5 +1,6 @@
 ﻿using ReLogic.Graphics;
 using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
 using System.IO;
@@ -56,11 +57,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	{
 		base.Update(gameTime);
 
-		Vector2 textSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, warningText.Text, new Vector2(1));
-		TextScale(warningText) = MathF.Min(1, 770 / textSize.X);
-		warningText.Recalculate();
-		warningText.TextColor = Color.Lerp(Color.OrangeRed, Color.Transparent, 1 - Math.Clamp(warningTimer / 120f, 0, 1));
-		warningTimer--;
+		if (warningText is not null)
+		{
+			Vector2 textSize = ChatManager.GetStringSize(FontAssets.MouseText.Value, warningText.Text, new Vector2(1));
+			TextScale(warningText) = MathF.Min(1, 770 / textSize.X);
+			warningText.Recalculate();
+			warningText.TextColor = Color.Lerp(Color.OrangeRed, Color.Transparent, 1 - Math.Clamp(warningTimer / 120f, 0, 1));
+			warningTimer--;
+		}
 
 		if (updatePage)
 		{
@@ -138,7 +142,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			pageConfig = -1;
 
 		mainPanel = page.PageInfo.PageBack is { } value ? new UIImage(value.Value) { Color = new Color(160, 160, 160) } : new UIPanel();
-		mainPanel.Width = StyleDimension.FromPixels(800);
+		mainPanel.Width = StyleDimension.FromPixels(1000);
 		mainPanel.Height = StyleDimension.FromPixels(500);
 		mainPanel.Top = StyleDimension.FromPixels(20);
 		mainPanel.HAlign = 0.5f;
@@ -640,11 +644,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	{
 		UIButton<string> setMax = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Max"))
 		{
-			Width = StyleDimension.FromPixels(80),
+			Width = StyleDimension.FromPixels(120),
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0.5f,
 			VAlign = 1f,
-			Left = StyleDimension.FromPixels(168)
+			Left = StyleDimension.FromPixels(198)
 		};
 
 		setMax.OnUpdate += _ =>
@@ -699,11 +703,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		UIButton<string> setMin = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Min"))
 		{
-			Width = StyleDimension.FromPixels(80),
+			Width = StyleDimension.FromPixels(120),
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0.5f,
 			VAlign = 1f,
-			Left = StyleDimension.FromPixels(-168)
+			Left = StyleDimension.FromPixels(-198)
 		};
 
 		setMin.OnUpdate += _ =>
@@ -758,7 +762,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		presetButton = new(GetConfigPresetDisplay(page))
 		{
-			Width = StyleDimension.FromPixels(234),
+			Width = StyleDimension.FromPixels(264),
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0.5f,
 			VAlign = 1f,
@@ -794,7 +798,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.ResetAll"))
 		{
-			Width = StyleDimension.FromPixels(80),
+			Width = StyleDimension.FromPixels(120),
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0,
 			VAlign = 1f,
@@ -983,7 +987,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		string[] paths = name.Split('/');
 
 		// Get page if it's not passed in
-		page ??= GenConfigLoader.PagesByModAndName[paths[0] + "/" + paths[1]];
+
+		if (page is null)
+		{
+			if (GenConfigLoader.PagesByModAndName.TryGetValue(paths[0] + "/" + paths[1], out var newPage))
+				page = newPage;
+			else
+				return false;
+		}
 
 		if (paths[0] != page.Mod.Name || paths[1] != page.PageInfo.PageName)
 		{

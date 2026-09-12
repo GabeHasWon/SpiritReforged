@@ -1,6 +1,9 @@
+using SpiritReforged.Common.ModCompat.Classic;
+
 namespace SpiritReforged.Content.Glyphs.CharmcasterSet;
 
 [AutoloadEquip(EquipType.Body)]
+[FromClassic("WitchBody")]
 public class CharmcasterRobe : ModItem
 {
 	public override void SetStaticDefaults() => ArmorIDs.Body.Sets.HidesHands[Item.bodySlot] = false;

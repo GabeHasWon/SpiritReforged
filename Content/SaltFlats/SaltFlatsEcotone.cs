@@ -25,6 +25,7 @@ using Terraria.IO;
 using Terraria.ModLoader.Config;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats;
 
@@ -165,7 +166,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 				return true;
 			}
 		}
-		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) && EcotoneSurfaceMapping.OnSurface(x), false) 
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Snow") && !EcotoneSurfaceMapping.OverSpawn(x) && EcotoneSurfaceMapping.OnSurface(x), true) 
 			is EcotoneSurfaceMapping.EcotoneEntry entry && (WorldGen.getGoodWorldGen || entry.Width < 420) && !entry.Definition.Ecotone)
 		{
 			bounds = (entry.Start.X - offX, entry.End.X);
@@ -412,14 +413,14 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		Tile tile = Main.tile[i, j];
 		Tile belowTile = Main.tile[i, j + 1];
 
-		if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 120 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
+		if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 120 && belowTile.Active(ModContent.TileType<SaltBlockDull>()))
 		{
 			int type = ModContent.TileType<StoneReliquary>();
 			bool result = Placer.PlaceTile(i, j, type).success;
 
 			if (result)
 			{
-				TileExtensions.GetTopLeft(ref i, ref j);
+				(i, j) = Helpers.GetTopLeft(i, j);
 				if (Chest.CreateChest(i, j) is int search && search != -1)
 				{
 					PopulateChest(Main.chest[search]);
@@ -494,7 +495,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 			Tile tile = Main.tile[x, j];
 			Tile belowTile = Framing.GetTileSafely(x, j + 1);
 
-			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()) && (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
+			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.Active(ModContent.TileType<SaltBlockDull>()) && (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
 			{
 				int type = WorldGen.genRand.NextBool(10) ? ModContent.TileType<SaltwortTall>() : ModContent.TileType<Saltwort>();
 				anySuccess |= Placer.PlaceTile(x, j, type).success;

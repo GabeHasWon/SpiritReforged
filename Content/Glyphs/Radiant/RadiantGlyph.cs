@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
@@ -30,6 +31,14 @@ public class RadiantGlyph : GlyphItem
 			}
 		}
 	}
+
+	protected override void OnApplyGlyph(Item item, IApplicationContext context)
+	{
+		MoRHelper.OverrideElement(item, MoRHelper.Holy);
+
+		base.OnApplyGlyph(item, context);
+	}
+	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Holy, -1);
 
 	public override void SetStaticDefaults()
 	{

@@ -13,6 +13,8 @@ using SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
 using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.SaltFlats.Biome;
+using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using System.IO;
 using System.Linq;
@@ -440,17 +442,16 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 			return;
 		}
 
-		if (!NPC.HasPlayerTarget || !Target.ZoneDesert || !Main.dayTime || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
+		if (!NPC.HasPlayerTarget || !IsInValidBiome() || !Main.dayTime || Target.DistanceSQ(NPC.Center) > 1000 * 1000)
 		{
 			if (++despawnTimer >= 60 * 20 && IsIdling)
 				ChangeState(AIState.Despawn);
 		}
 		else
-		{
 			despawnTimer = 0;
-		}
 	}
 
+	private bool IsInValidBiome() => Target.ZoneDesert || Target.InModBiome<SavannaBiome>() || Target.InModBiome<SaltBiome>();
 	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => dealContactDamage;
 
 	public override bool ModifyCollisionData(Rectangle victimHitbox, ref int immunityCooldownSlot, ref MultipliableFloat damageMultiplier, ref Rectangle npcHitbox)

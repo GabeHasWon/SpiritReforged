@@ -32,9 +32,6 @@ public class SerratedClaws : ModItem
 		{
 			Player owner = Main.player[Projectile.owner];
 
-			if (Main.netMode == NetmodeID.MultiplayerClient && Main.myPlayer == owner.whoAmI)
-				new PlayerMouseHandler.ShareMouseData((byte)owner.whoAmI, Main.MouseWorld).Send();
-
 			if (owner.channel)
 			{
 				SoundTimer++;

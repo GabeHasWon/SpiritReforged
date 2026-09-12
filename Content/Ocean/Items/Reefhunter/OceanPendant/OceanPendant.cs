@@ -4,13 +4,12 @@ using Terraria.DataStructures;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.ItemCommon.Abstract;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 
 [AutoloadEquip(EquipType.Neck)]
 [FromClassic("PendantOfTheOcean")]
-public class OceanPendant : EquippableItem
+public class OceanPendant : ModItem, IFlagged
 {
 	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.CoinPickup with { Pitch = .25f });
 
@@ -23,7 +22,7 @@ public class OceanPendant : EquippableItem
 		Item.accessory = true;
 	}
 
-	public override void UpdateEquippable(Player player)
+	public override void UpdateEquip(Player player)
 	{
 		if (Collision.WetCollision(player.position, player.width, player.height))
 		{

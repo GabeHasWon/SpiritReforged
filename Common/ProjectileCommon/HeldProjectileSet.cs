@@ -32,8 +32,9 @@ internal class HeldProjectileSet : ModSystem
 
 	public override void Load()
 	{
-		if (ModContent.GetInstance<ReforgedServerConfig>().AutoloadHeldProjectiles)
-			On_Projectile.Kill += SkipKillForPopulation;
+		// TODO: Autoload held proj
+		//if (ModContent.GetInstance<ReforgedServerConfig>().AutoloadHeldProjectiles)
+		//	On_Projectile.Kill += SkipKillForPopulation;
 	}
 
 	// Skip kills so that heldProj is set by the projectile without being dead, if possible
@@ -47,8 +48,9 @@ internal class HeldProjectileSet : ModSystem
 
 	public override void PostSetupContent()
 	{
-		if (ModContent.GetInstance<ReforgedServerConfig>().AutoloadHeldProjectiles)
-			ScanIdRange(ProjectileID.Count, ProjectileLoader.ProjectileCount, false);
+		// TODO: Autoload held proj
+		//if (ModContent.GetInstance<ReforgedServerConfig>().AutoloadHeldProjectiles)
+		//	ScanIdRange(ProjectileID.Count, ProjectileLoader.ProjectileCount, false);
 	}
 
 	/// <summary>

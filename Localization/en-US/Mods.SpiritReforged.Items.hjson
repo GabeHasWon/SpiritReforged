@@ -10,6 +10,11 @@ CommonTooltips: {
 		Allows scrap to be collected from enemies
 		Hitting sentries grants temporary buffs at the cost of scrap
 		'''
+	Greatshield:
+		'''
+		<right> to block incoming damage
+		Gains increased damage with defense
+		'''
 }
 
 Kelp: {
@@ -95,8 +100,8 @@ CascadeLeggings: {
 	Tooltip: 15% increased movement in water
 }
 
-JellyfishStaff: {
-	DisplayName: Jellyfish Staff
+JellyfishJamJar: {
+	DisplayName: Jellyfish Jam Jar
 	Tooltip: Summons a tiny jellyfish to fight for you!
 }
 
@@ -2872,7 +2877,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Serrated Claws
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -3181,12 +3186,26 @@ BlazeGlyph: {
 		'''
 	Effect: Blazing
 	Death: "{0} was consumed by Rage..."
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		Fem: Feminine
+		Neutral: Neutral
+		Plural: Plural
+	}
 }
 
 RadiantGlyph: {
 	DisplayName: Radiant Glyph
 	Tooltip: Builds radiant energy when not dealing damage, empowering your next attack
 	Effect: Radiant
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 StormGlyph: {
@@ -3198,6 +3217,12 @@ StormGlyph: {
 		Projectiles occasionally create powerful bursts of wind
 		'''
 	Effect: Billowed
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 MoonlightGlyph: {
@@ -3209,6 +3234,12 @@ MoonlightGlyph: {
 		Damaging enemies leeches mana
 		'''
 	Effect: Dazzling
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 RotGlyph: {
@@ -3219,12 +3250,24 @@ RotGlyph: {
 		This blight can be inflicted on to you by enemies suffering from it
 		'''
 	Effect: Blighted
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 ShockGlyph: {
 	DisplayName: Shock Glyph
 	Tooltip: Critical strikes deal 10% more damage and shock nearby enemies
 	Effect: Shocking
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 BeeGlyph: {
@@ -3236,6 +3279,12 @@ BeeGlyph: {
 		Tagged enemies release bees when struck by minions
 		'''
 	Effect: Buzzing
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 SanguineGlyph: {
@@ -3247,15 +3296,23 @@ SanguineGlyph: {
 		Stealing life grants stacks of a decaying damage buff
 		'''
 	Effect: Leeching
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 PrefixVoucher: {
 	DisplayName: "{0} Prefix Voucher"
 	Tooltip:
 		'''
-		Can be used on items with <right>
+		{0}
 		Applies [c/{0}:{1}]
 		'''
+	AccessoryTooltip: Can be used on accessories with right click
+	WeaponTooltip: Can be used on weapons with right click
 }
 
 EnchantedStamp: {
@@ -3277,14 +3334,18 @@ CelestialStamp: {
 		When enabled occasionally grants glyph effects to crafted, looted and reforged items
 		Additionally allows items to receive prefixes and glyph effects simultaneously
 		'''
-	Active: Enchantment on
-	Inactive: Enchantment off
 }
 
 RageGlyph: {
 	DisplayName: Rage Glyph
 	Tooltip: Excessive damage you deal on kill, and damage you take is stored for your next attack
 	Effect: Wrathful
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 CharmcasterHat: {
@@ -3310,6 +3371,12 @@ VoidGlyph: {
 		Void Collapse creates a damaging singularity after enough stacks have been inflicted, reducing enemy defense
 		'''
 	Effect: Null
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
 }
 
 GlitterPurse: {
@@ -3329,7 +3396,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: Space Pylon
+	DisplayName: Sky Pylon
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
@@ -3363,8 +3430,114 @@ EnchantedWorkbenchItem: {
 	Tooltip: ""
 }
 
-StonemasonGreatshield: {
-	DisplayName: Stonemason Greatshield
+CandlewickCoil: {
+	DisplayName: Candlewick Rope Coil
+	Tooltip: Throw to create a climbable line of candlewick rope
+}
+
+CandleBathtubItem: {
+	DisplayName: Candle Bathtub
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: Candle Bed
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: Candle Bookcase
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Candle Candelabra
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Candle Candle
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Candle Chair
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Candle Chandelier
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Candle Chest
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Candle Door
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Candle Dresser
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Candle Lamp
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Candle Lantern
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Candle Sink
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Candle Sofa
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Candle Table
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Candle Toilet
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Candle Work Bench
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Candle Clock
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Candle Piano
+	Tooltip: ""
+}
+
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Hello all cheat mod users!
+}
+
+WaxPlatformItem: {
+	DisplayName: Wax Platform
 	Tooltip: ""
 }
 
@@ -3408,6 +3581,107 @@ Overloader: {
 		Allows scrap to be collected from enemies
 		Hitting sentries consumes all scrap to create an explosion
 		'''
+}
+
+StoneGreatshield: {
+	DisplayName: Stonemason Greatshield
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+SpikedScutumPurple: {
+	DisplayName: Spiked Scutum
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+SpikedScutumRed: {
+	DisplayName: "{$SpikedScutumPurple.DisplayName}"
+	Tooltip: "{$SpikedScutumPurple.Tooltip}"
+}
+
+Firewall: {
+	DisplayName: Firewall
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+KiteShield: {
+	DisplayName: Kite Shield
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+RhosRydd: {
+	DisplayName: Rhos Rydd
+	Tooltip:
+		'''
+		{$CommonTooltips.Greatshield}
+		Hold to perform a short-ranged dash
+		'''
+}
+
+Roromaraugi: {
+	DisplayName: Roromaraugi
+	Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+StaminaRing: {
+	DisplayName: Ring of Stamina
+	Tooltip:
+		'''
+		Increases Greatshield guard by {0}
+		Increases Greatshield guard regeneration speed by {1}%
+		'''
+}
+
+Vendetta: {
+	DisplayName: Vendetta
+	Tooltip:
+		'''
+		Enemies that damage you are marked for a limited time
+		Marked enemies take {0}% more damage
+		'''
+}
+
+Pepperbox: {
+	DisplayName: Pepperbox
+	Tooltip: ""
+}
+
+ShotgunAmmoType: {
+	DisplayName: Shotgun Ammo Type
+	Tooltip: ""
+}
+
+Shot: {
+	DisplayName: Shot
+	Tooltip: ""
+}
+
+ClockworkCane: {
+	DisplayName: Clockwork Cane
+	Tooltip:
+		'''
+		Summons a spinning cog to dash at your enemies
+		Collects scrap from enemies while holding a wrench
+		'''
+}
+
+ChokeTube: {
+	DisplayName: Choke Tube
+	Tooltip: Reduces the spread of shotgun weapons by 50%
+}
+
+LastWord: {
+	DisplayName: Last Word
+	Tooltip: The last bullet in your magazine deals 50% more damage
+}
+
+Buckshot: {
+	DisplayName: Buckshot
+	Tooltip: ""
+}
+
+SuperExtendoMags: {
+	DisplayName: Super Extendo Mags
+	Tooltip: ""
 }
 
 Nightlight: {

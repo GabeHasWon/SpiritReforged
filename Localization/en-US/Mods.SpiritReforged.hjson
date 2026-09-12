@@ -39,6 +39,9 @@ Misc: {
 	Enchantment: {
 		PlaceToEnchant: Place an item here to enchant
 		Enchant: Enchant
+		Cost: "{0} [c/{1}:Chromatic Wax]"
+		Clear: Remove enchantment
+		Random: Randomize enchantment
 	}
 
 	NoStock: Out of stock
@@ -123,4 +126,6 @@ DamageClasses: {
 	HybridDamageClass.DisplayName: Hybrid Damage Class
 	GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
 	WrenchClass.DisplayName: "{$LegacyTooltip.53}"
+	MagazineDamageClass.DisplayName: "{$LegacyTooltip.3}"
+	ShotgunClass.DisplayName: "{$LegacyTooltip.3}"
 }

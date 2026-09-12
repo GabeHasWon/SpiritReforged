@@ -43,7 +43,12 @@ public class StargrassTile : GrassTile, ISetConversion
 		AddMapEntry(new Color(28, 216, 151));
 		DustType = DustID.Flare_Blue;
 
-		this.AnchorSelfTo(TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants);
+		int[] mergeTypes = [TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants];
+		foreach (int type in mergeTypes)
+		{
+			if (TileObjectData.GetTileData(type, 0) is TileObjectData data && data.AnchorValidTiles != null)
+				data.AnchorValidTiles = [.. data.AnchorValidTiles, Type]; //Allow type to anchor to THIS type
+		}
 	}
 
 	public override void FloorVisuals(Player player)
