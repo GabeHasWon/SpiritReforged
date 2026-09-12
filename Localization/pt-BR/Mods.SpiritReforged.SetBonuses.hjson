@@ -24,8 +24,8 @@ Marksman:
 Wayfarer:
 	'''
 	Inimigos derrotados deixam cair mais moedas
-	   Quebrar vasos concede um bônus de velocidade de movimento
-	   Extrair minérios concede um bônus de velocidade de mineração
+	Quebrar vasos concede um bônus de velocidade de movimento
+	Extrair minérios concede um bônus de velocidade de mineração
 	'''
 Granite:
 	'''

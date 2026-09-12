@@ -1065,7 +1065,7 @@ ExplorerTreadsItem: {
 	Tooltip:
 		'''
 		Даёт 50% шанс избежать урона от ловушки
-		Получение урона от ловушки даёт короткий бафф, увеличивающий скорость передвижения
+		Получение урона от ловушки даёт короткий бафф, увеличивающий мобильность
 		«С такими ботинками даже исследование храмов превращается в обычную прогулку»
 		'''
 }
@@ -3544,8 +3544,13 @@ CandlePianoItem: {
 
 # You don't need to localize this, as it's only used to register a shader ID.
 ChromaticWaxShaderDummy: {
-	// DisplayName: Chromatic Wax Shader Dummy
-	// Tooltip: Hello all cheat mod users!
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Привет всем пользователям чит-панелей!
+}
+
+WaxPlatformItem: {
+	DisplayName: Восковая платформа
+	Tooltip: ""
 }
 
 ScrapPickup: {

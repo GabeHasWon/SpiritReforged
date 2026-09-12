@@ -21,16 +21,21 @@ using static SpiritReforged.Common.TileCommon.Conversion.ConversionHandler;
 
 namespace SpiritReforged;
 
+#nullable enable
+
 public partial class SpiritReforgedMod : Mod
 {
 	#region system
 	[AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
-	private class ModCallAttribute : Attribute;
+	private class ModCallAttribute(params string[] aliases) : Attribute
+	{
+		public readonly string[] Aliases = aliases;
+	}
 
 	/// <summary> All mod call methods registered by name. </summary>
 	private static readonly Dictionary<string, MethodInfo> CallMethods = [];
 
-	public override object Call(params object[] arguments)
+	public override object? Call(params object[] arguments)
 	{
 		try
 		{
@@ -38,8 +43,16 @@ public partial class SpiritReforgedMod : Mod
 			{
 				foreach (MethodInfo methodInfo in GetType().GetMethods(BindingFlags.Static | BindingFlags.NonPublic))
 				{
-					if (methodInfo.GetCustomAttribute<ModCallAttribute>() != null)
+					if (methodInfo.GetCustomAttribute<ModCallAttribute>() is ModCallAttribute attr)
+					{
 						CallMethods.Add(methodInfo.Name, methodInfo);
+
+						if (attr.Aliases is null)
+							continue;
+
+						foreach (string alias in attr.Aliases)
+							CallMethods.Add(alias, methodInfo);
+					}
 				}
 			}
 
@@ -52,7 +65,7 @@ public partial class SpiritReforgedMod : Mod
 			if (name == "fablescrossmod.kaiju")
 				return Scarabeus.HandleModCall(arguments); //Handle the Fables crossmod special case
 
-			if (CallMethods.TryGetValue(name, out MethodInfo info))
+			if (CallMethods.TryGetValue(name, out MethodInfo? info))
 			{
 				arguments = arguments[1..];
 
@@ -68,12 +81,10 @@ public partial class SpiritReforgedMod : Mod
 				for (int c = 0; c < arguments.Length; c++)
 				{
 					object argument = arguments[c];
-					Type argumentType = parameters[c].GetType();
+					Type argumentType = argument.GetType();
 
 					if (argument.GetType() == argumentType)
-					{
 						namedObjects[c] = argument;
-					}
 					else
 					{
 						throw new ArgumentException(name + (parameters[c].IsOptional
@@ -82,7 +93,8 @@ public partial class SpiritReforgedMod : Mod
 					}
 				}
 
-				return info.Invoke(null, namedObjects);
+				object? value = info.Invoke(null, namedObjects);
+				return value;
 			}
 			else
 			{
@@ -101,26 +113,29 @@ public partial class SpiritReforgedMod : Mod
 	//A list of all mod calls accessible by method name
 	#region calls
 	[ModCall]
-	private static void AddCustomDoT(int buffType, int category, Action<SpriteBatch, NPC, Color, Vector2, float, float> onPostDraw = null)
+	private static void AddCustomDoT(int buffType, int category, Action<SpriteBatch, NPC, Color, Vector2, float, float>? onPostDraw = null)
 		=> BuffHandler.Register(new CustomDoT((DoTExtension.Category)category, onPostDraw), buffType);
 
 	[ModCall]
 	private static bool WorldHasEcotone(string ecotoneName) => EcotoneSurfaceMapping.ContainsEcotone(ecotoneName);
 
 	[ModCall]
-	private static void AddHerb(int type, bool customDrawing = false)
+	private static bool AddHerb(int type, bool customDrawing = false)
 	{
 		HerbSet.IsHerb[type] = true;
 		HerbSet.CustomBotanistDisplay[type] = customDrawing;
+		return true;
 	}
 
 	[ModCall]
-	private static void AddUndead(int type, bool noDeathAnimation = false)
+	private static bool AddUndead(int type, bool noDeathAnimation = false)
 	{
 		UndeadNPC.UndeadTypes.Add(type);
 
 		if (noDeathAnimation)
 			UndeadNPC.NoDeathAnim.Add(type);
+
+		return true;
 	}
 
 	[ModCall]
@@ -142,19 +157,21 @@ public partial class SpiritReforgedMod : Mod
 	private static List<Rectangle> GetSaltFlatsAreas() => SaltFlatsEcotone.SaltFlatsAreas;
 
 	[ModCall]
-	private static void AddPotionVat(int item, Color color, bool decorative)
+	private static bool AddPotionVat(int item, Color color, bool decorative)
 	{
 		if (decorative)
 			PotionColorDatabase.DecorativeBrewColors.Add(item, color);
 		else
 			PotionColorDatabase.NaturalBrewColors.Add(item, color);
+
+		return true;
 	}
 
 	[ModCall]
 	private static bool HasBackpack(Player player) => player.GetModPlayer<BackpackPlayer>().backpack.ModItem is BackpackItem;
 
 	[ModCall]
-	private static void ManualAddRecord(int type, int[] styles, string recordName, byte rating = byte.MaxValue, Func<bool> hidden = null, Action<int, Point16, ILoot> lootPool = null, LocalizedText description = null, LocalizedText displayName = null)
+	private static bool ManualAddRecord(int type, int[] styles, string recordName, byte rating = byte.MaxValue, Func<bool>? hidden = null, Action<int, Point16, ILoot>? lootPool = null, LocalizedText? description = null, LocalizedText? displayName = null)
 	{
 		TileRecord tileRecord = new(recordName, type, styles);
 
@@ -180,6 +197,41 @@ public partial class SpiritReforgedMod : Mod
 			tileRecord.AddDescription(displayName);
 
 		RecordHandler.Records.Add(tileRecord);
+		return true;
+	}
+
+	/// <summary>
+	/// Backwards compatible method required to not hard crash other mods.
+	/// </summary>
+	[ModCall]
+	private static bool AddPotstiaryRecord(int type, int[] styles, string recordName, byte rating = byte.MaxValue, bool hidden = false, Action<int, ILoot>? lootPool = null, LocalizedText? description = null, LocalizedText? displayName = null)
+	{
+		TileRecord tileRecord = new(recordName, type, styles);
+
+		if (rating != byte.MaxValue)
+			tileRecord.AddRating(rating);
+
+		if (hidden != false)
+			tileRecord.Hide();
+
+		if (lootPool != null) //Register a loot pool, default if null
+			TileLootSystem.RegisterLoot((loot) =>
+			{
+				if (loot is TileLootTable t)
+					lootPool.Invoke(t.Style, loot);
+			});
+		else if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool))
+			TileLootSystem.RegisterLoot(pool, type);
+
+		if (description != null)
+			tileRecord.AddDescription(description);
+
+		if (displayName != null)
+			tileRecord.AddDescription(displayName);
+
+		RecordHandler.Records.Add(tileRecord);
+		SpiritReforgedMod.Instance.Logger.Debug("[Mod.Call] Consider using the new overload: ManualAddRecord(int type, int[] styles, string recordName, byte rating = byte.MaxValue, Func<bool>? hidden = null, Action<int, Point16, ILoot>? lootPool = null, LocalizedText? description = null, LocalizedText? displayName = null)");
+		return true;
 	}
 
 	[ModCall]
@@ -189,7 +241,11 @@ public partial class SpiritReforgedMod : Mod
 	private static bool PlayerBotanist(Player player) => BotanistHat.SetActive(player);
 
 	[ModCall]
-	private static void RegisterConversionSet(string setName, Dictionary<int, int> dict) => CreateSet(setName, (Set)dict);
+	private static bool RegisterConversionSet(string setName, Dictionary<int, int> dict)
+	{
+		CreateSet(setName, (Set)dict);
+		return true;
+	}
 
 	[ModCall]
 	private static (bool, int) AddSavannaTree(string texturePath, string tileName, Func<int[]> getAnchor, Mod mod)

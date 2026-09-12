@@ -146,7 +146,7 @@ UrchinStaff: {
 
 GarInAJar: {
 	Tooltip: ""
-	DisplayName: Gar em um Jarro
+	DisplayName: Aquário de Gar
 }
 
 GarItem: {
@@ -160,7 +160,7 @@ SavannaDirtItem: {
 }
 
 GoldGarItem: {
-	DisplayName: Gar Dourado
+	DisplayName: Gar de Ouro
 	Tooltip: ""
 }
 
@@ -408,7 +408,7 @@ MessageBottle: {
 }
 
 GoldKillifishItem: {
-	DisplayName: Peixe Killi Dourado
+	DisplayName: Peixe Killi de Ouro
 	Tooltip: ""
 }
 
@@ -1303,7 +1303,7 @@ RemedyPotion: {
 }
 
 CloudstalkBoxItem: {
-	DisplayName: Caixa de Plantio de Haste de Nuvem
+	DisplayName: Vaso de Haste de Nuvem
 	Tooltip: ""
 }
 
@@ -2114,7 +2114,7 @@ SunEarrings: {
 	Tooltip:
 		'''
 		Aumenta a mana máxima em 20
-		   7% de aumento no dano por magia
+		7% de aumento no dano por magia
 		'''
 }
 
@@ -2177,7 +2177,7 @@ OsmosifierItem: {
 }
 
 GoldDivingBeetleItem: {
-	DisplayName: Besouro Escavador Dourado
+	DisplayName: Besouro-Mergulhador de Ouro
 	Tooltip: ""
 }
 
@@ -3177,8 +3177,8 @@ BlazeGlyph: {
 	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
 	# The Effect key above is the masculine/default form
 	Gendered: {
-		Fem: Piromaníaco
-		Neutral: Piromaníaca
+		Fem: Piromaníaca
+		Neutral: Piromaníaco
 		Plural: Piromaníacos
 	}
 }
@@ -3280,7 +3280,7 @@ SanguineGlyph: {
 		'''
 		20% de redução nos danos
 		Ataques sugam vida dos inimigos, efeito que fica mais forte quando você está mais perto de morrer
-		Roubar vida irá te dar níveis de redução de ano
+		Roubar vida irá te dar níveis de aumento de dano
 		'''
 	Effect: Sanguessuga
 
@@ -3355,7 +3355,7 @@ VoidGlyph: {
 	Tooltip:
 		'''
 		Ataques infligem níveis de Colapso do Vazio
-		Colapso do Vazio cria um singularidade ameaçadora que após chegar em um certo nível, reduz a defesa inimiga
+		Colapso do Vazio cria um singularidade ameaçadora que após chegar em um certo nível, ataca seus oponentes
 		'''
 	Effect: Vazio
 
@@ -3519,8 +3519,13 @@ CandlePianoItem: {
 
 # You don't need to localize this, as it's only used to register a shader ID.
 ChromaticWaxShaderDummy: {
-	// DisplayName: Chromatic Wax Shader Dummy
-	// Tooltip: Hello all cheat mod users!
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Olá parceiros de mods de cheat/receitas!
+}
+
+WaxPlatformItem: {
+	DisplayName: Plataforma de Vela
+	Tooltip: ""
 }
 
 ScrapPickup: {

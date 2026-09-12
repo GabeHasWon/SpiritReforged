@@ -3,6 +3,7 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Content.Glyphs;
 
 namespace SpiritReforged.Common.PlayerCommon;
 
@@ -63,6 +64,9 @@ internal static class PlayerExtensions
 		var direction = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();
 		ScreenshakeHelper.Shake(player.Center, direction, strength, vibrationCycles, frames, distanceFalloff, uniqueIdentity);
 	}
+
+	/// <summary> Gets whether the player has any active glyphs of <paramref name="type"/> between owned projectiles and items. </summary>
+	public static bool GlyphActive(this Player player, GlyphItem.GlyphType type) => player.HeldItem.GetGlyph() == type || player.TryGetModPlayer(out GlyphGlobalProjectile.ActiveGlyphPlayer activePlayer) && activePlayer.glyphEffects.Contains(type);
 
 	#region find item
 	[Flags]
