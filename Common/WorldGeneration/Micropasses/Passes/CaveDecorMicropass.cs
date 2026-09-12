@@ -94,7 +94,9 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 			(int x, int y) = (plot.X, plot.Y);
 			WorldMethods.FindGround(x, ref y);
 
-			if ((Main.tile[x, y].TileType == TileID.Granite || instantaneousAttempts > 200) && !Main.tile[x, y - 1].CheckingLiquid) //Generate anywhere, but favour granite microbiomes initially
+			// Generate anywhere, but favour granite initially
+			bool graniteOrLateCheck = Main.tile[x, y].TileType == TileID.Granite || instantaneousAttempts > 200;
+			if (graniteOrLateCheck && !Main.tile[x, y - 1].CheckingLiquid && (Main.tile[x, y - 1].LiquidType == LiquidID.Water || Main.tile[x, y - 1].LiquidAmount == 0)) 
 			{
 				y--;
 

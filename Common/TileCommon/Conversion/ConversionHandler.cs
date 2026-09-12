@@ -11,7 +11,7 @@ public interface ISetConversion
 	public ConversionHandler.Set ConversionSet { get; }
 }
 
-/// <summary> Controls additional behaviour for <see cref="GlobalTile.TileFrame"/> using <see cref="FrameAction"/>.<br/>
+/// <summary> Controls additional behaviour for <see cref="GlobalTile.TileFrame"/> using <see cref="FrameDelegate"/>.<br/>
 /// A common use case is for conversion based on strict tile conditions, like plants, which convert from anchors.<para/>
 /// Delegates can be registered manually to any type using <see cref="AddFrameAction"/>. </summary>
 public class ConversionHandler : GlobalTile
@@ -52,7 +52,7 @@ public class ConversionHandler : GlobalTile
 		AddFrameActions(CommonVines, TileID.Vines, TileID.VineFlowers, TileID.CorruptVines, TileID.CrimsonVines, TileID.HallowedVines);
 	}
 
-	/// <summary> Caches <paramref name="conversions"/> by <paramref name="name"/> to be easily accessed at <see cref="SetByName"/>.<br/>
+	/// <summary> Caches <paramref name="set"/> by <paramref name="name"/> to be easily accessed at <see cref="SetByName"/>.<br/>
 	/// If the set already exists, adds the contents of <paramref name="set"/> to the existing set. </summary>
 	public static void CreateSet(string name, Set set)
 	{
@@ -64,7 +64,7 @@ public class ConversionHandler : GlobalTile
 	}
 
 	/// <summary> Outputs the set value associated with <paramref name="name"/> and <paramref name="key"/>.<para/>
-	/// For example, '<see cref="nameof(SavannaGrass)"/>, <see cref="BiomeConversionID.Corruption"/>' would output the type of <see cref="SavannaGrassCorrupt"/>. </summary>
+	/// For example, 'nameof(<see cref="SavannaGrass"/>), <see cref="BiomeConversionID.Corruption"/>' would output the type of <see cref="SavannaGrassCorrupt"/>. </summary>
 	/// <param name="name"> The name used to identify the set. This is usually the internal name of the first tile associated with it. </param>
 	/// <param name="key"> The key identifier for this set. This could either be a <see cref="BiomeConversionID"/> or a TileID depending on the nature of the conversion. </param>
 	/// <param name="value"> The value resulting from both prior identifiers. </param>
@@ -101,7 +101,7 @@ public class ConversionHandler : GlobalTile
 
 	#region actions
 	/// <summary> Allows several plants to convert interchangeably between eachother when framed.<para/>
-	/// See <see cref="Conversions"/> if you need a tile type to be included. </summary>
+	/// See <see cref="SetByName"/> if you need a tile type to be included. </summary>
 	internal static bool CommonPlants(int i, int j, int type)
 	{
 		if (FindSet(Plants, Framing.GetTileSafely(i, j + 1).TileType, out int newType) && type != newType)

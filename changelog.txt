@@ -1,3 +1,9 @@
-v0.2.2.7
-- Fixed several massive issues with new Mod.Call system
-- Added backwards compatible AddPotstiaryEntry call
+v0.2.2.8
+- Added support for Spirit Classic glyphs to not apply to weapons with Reforged glyphs
+- Fixed Raw Meat drawing incorrectly
+- Allowed items to enter backpacks directly if the inventory (and optionally Void Bag) are full
+- Fixed backpack sharing items issue between players
+- Stopped Enchanted Mirrors from generating in liquids other than water
+- Fixed casting issue in the Mod.Call for AddConversionSet
+- Added Mod.Call for "HasGlyph" (takes Item, returns bool)
+- Added Mod.Call for "GetGlyphType" (takes Item, returns string)

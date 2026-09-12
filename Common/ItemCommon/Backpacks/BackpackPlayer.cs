@@ -3,13 +3,71 @@ using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Terraria;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
 
 internal class BackpackPlayer : ModPlayer
 {
+	internal class BackpackGlobalItem : GlobalItem
+	{
+		public override bool ItemSpace(Item incomingItem, Player player)
+		{
+			if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			{
+				foreach (Item item in back.Items)
+				{
+					if (item.IsAir || item.type == ItemID.None)
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+		public override bool OnPickup(Item incomingItem, Player player)
+		{
+			if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			{
+				for (int i = 0; i < back.Items.Length; i++)
+				{
+					ref Item item = ref back.Items[i];
+
+					if (item.IsAir || item.type == ItemID.None)
+					{
+						int index = -1;
+
+						if (Main.netMode != NetmodeID.SinglePlayer)
+						{
+							// Item.whoAmI is "unused" per the XML doc so I'm doing this to avoid any weird issues
+							// even though it's pretty weird itself. 1.4.5 should fix this anyway
+							for (int j = 0; j < Main.maxItems; ++j)
+							{
+								if (Main.item[j] == item)
+								{
+									index = j;
+									break;
+								}
+							}
+						}
+
+						item = incomingItem.Clone();
+						incomingItem.active = false;
+
+						PopupText.NewText(PopupTextContext.RegularItemPickup, item, item.stack, noStack: false, GetItemSettings.PickupItemFromWorld.LongText);
+
+						if (Main.netMode != NetmodeID.SinglePlayer && index != -1)
+							NetMessage.SendData(MessageID.SyncItem, -1, -1, null, index);
+
+						return true;
+					}
+				}
+			}
+
+			return true;
+		}
+	}
+
 	[Flags]
 	private enum BackpackState
 	{

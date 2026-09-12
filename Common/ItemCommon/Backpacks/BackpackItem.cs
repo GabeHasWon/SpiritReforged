@@ -3,7 +3,6 @@ using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Content.Aether.Items;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 
@@ -20,7 +19,7 @@ public abstract class BackpackItem : ModItem
 		get
 		{
 			int count = slotCount + ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
-			_items ??= Enumerable.Repeat(new Item(), count).ToArray();
+			_items ??= [.. Enumerable.Repeat(new Item(), count)];
 
 			if (_items.Length < count) //Length has increased, resize the array and preserve contents
 			{
@@ -65,7 +64,17 @@ public abstract class BackpackItem : ModItem
 	public override ModItem Clone(Item newEntity)
 	{
 		ModItem clone = base.Clone(newEntity);
-		(clone as BackpackItem)._items = _items;
+		Item[] items = null;
+
+		if (_items is not null)
+		{
+			items = new Item[_items.Length];
+
+			for (int i = 0; i < items.Length; ++i)
+				items[i] = _items[i].Clone();
+		}
+
+		(clone as BackpackItem)._items = items;
 		(clone as BackpackItem).slotCount = slotCount;
 
 		return clone;

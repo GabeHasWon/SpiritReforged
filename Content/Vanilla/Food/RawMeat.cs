@@ -8,6 +8,8 @@ public class RawMeat : FoodItem
 {
 	internal override Point Size => new(30, 26);
 
+	public override string Texture => base.Texture + "0";
+
 	public override void StaticDefaults()
 	{
 		VariantItemRenderer.VariantCounts[Type] = 3;
