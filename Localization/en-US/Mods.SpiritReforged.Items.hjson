@@ -3683,3 +3683,12 @@ SuperExtendoMags: {
 	DisplayName: Super Extendo Mags
 	Tooltip: ""
 }
+
+Crossbow: {
+	DisplayName: Crossbow
+	Tooltip:
+		'''
+		Fires a high-damage bolt
+		Perfect reload increases damage
+		'''
+}

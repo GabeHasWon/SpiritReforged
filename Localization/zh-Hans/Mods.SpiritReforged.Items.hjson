@@ -3683,3 +3683,8 @@ SuperExtendoMags: {
 	// DisplayName: Super Extendo Mags
 	// Tooltip: ""
 }
+
+Crossbow: {
+	// DisplayName: Crossbow
+	// Tooltip: ""
+}
