@@ -3,7 +3,6 @@ using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Terraria;
 using Terraria.GameContent.Achievements;
 using Terraria.ModLoader.IO;
 
