@@ -3651,3 +3651,8 @@ DhampirQuestItem: {
 		"You feel an instinctual need to care for it"
 		''' */
 }
+
+LookerClub: {
+	// DisplayName: Looker Club
+	// Tooltip: ""
+}

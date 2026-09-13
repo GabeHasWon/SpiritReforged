@@ -40,7 +40,7 @@ public class EyeballMinion : BaseMinion
 		Projectile.usesIDStaticNPCImmunity = true;
 		Projectile.idStaticNPCHitCooldown = 8;
 
-		Projectile.scale *= Main.rand.NextFloat(1.15f, 1.35f);
+		Projectile.scale *= Main.rand.NextFloat(0.85f, 1.35f);
 		Projectile.hide = true;
 	}
 
@@ -237,7 +237,7 @@ public class EyeballMinion : BaseMinion
 			{
 				float lerp = 1f - i / (float)Projectile.oldPos.Length;
 
-				Main.spriteBatch.Draw(texture, Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition, frame, new Color(161, 140, 140, 0) * 0.33f * lerp, Projectile.oldRot[i], frame.Size() / 2f, 1f, 0f, 0f);
+				Main.spriteBatch.Draw(texture, Projectile.oldPos[i] + Projectile.Size / 2f - Main.screenPosition, frame, new Color(161, 140, 140, 0) * 0.33f * lerp, Projectile.oldRot[i], frame.Size() / 2f, Projectile.scale, 0f, 0f);
 			}
 		}
 
@@ -254,12 +254,12 @@ public class EyeballMinion : BaseMinion
 		Main.spriteBatch.End();
 		Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-		Main.spriteBatch.Draw(bloom, eyeballPos, null, Color.Black, eyeballRotation + MathHelper.Pi, bloom.Size() / 2f, 0.25f, 0f, 0f);
+		Main.spriteBatch.Draw(bloom, eyeballPos, null, Color.Black, eyeballRotation + MathHelper.Pi, bloom.Size() / 2f, Projectile.scale * 0.25f, 0f, 0f);
 
 		Main.spriteBatch.End();
 		Main.spriteBatch.BeginDefault();
 
-		Main.spriteBatch.Draw(eyeballTexture, eyeballPos, null, Color.White, eyeballRotation + MathHelper.Pi, eyeballTexture.Size() / 2f, 1f, 0f, 0f);
+		Main.spriteBatch.Draw(eyeballTexture, eyeballPos, null, Color.White, eyeballRotation + MathHelper.Pi, eyeballTexture.Size() / 2f, Projectile.scale, 0f, 0f);
 	}
 
 	public override bool DoAutoFrameUpdate(ref int framespersecond, ref int startframe, ref int endframe) => false;
