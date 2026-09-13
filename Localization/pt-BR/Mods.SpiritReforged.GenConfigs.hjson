@@ -641,68 +641,68 @@ Pages: {
 			}
 
 			DebrisMinimum: {
-				// DisplayName: "[i:3271] (Ruins) Debris Minimum"
-				// Tooltip: The minimum number of random debris to generate.
+				DisplayName: "[i:3271] (Ruínas) Mínimo de Destroços"
+				Tooltip: O valor mínimo de destroços a serem gerados.
 			}
 
 			DebrisRange: {
-				// DisplayName: "[i:3271] (Ruins) Debris Range"
-				// Tooltip: The range of random debris to generate.
+				DisplayName: "[i:3271] (Ruínas) Faixa de Destroços"
+				Tooltip: A faixa de destroços aleatórios a serem gerados.
 			}
 
 			TopPlatChance: {
-				// DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Top Platform Chance"
-				// Tooltip: The chance for platforms to appear at the top of a structure.
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruínas) Chance de Plataforma no Topo"
+				Tooltip: A chance de plataformas serem geradas no topo de uma estrutura.
 			}
 
 			BottomPlatChance: {
-				// DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruins) Bottom Platform Chance"
-				// Tooltip: The chance for platforms to appear at the bottom of a structure.
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem] (Ruínas) Chance de Plataforma no Fundo"
+				Tooltip: A chance de plataformas serem geradas no fundo de uma estrutura.
 			}
 
 			FlagpoleChance: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Chance"
-				// Tooltip: The chance for flagpoles to generate.
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruínas) Chance de Mastros de Bandeira"
+				Tooltip: Chance de mastros de bandeira serem gerados.
 			}
 
 			FlagpoleCountMinimum: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Minimum"
-				// Tooltip: The minimum number of flagpoles to generate.
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruínas) Quantidade Mínima de Mastros de Bandeira"
+				Tooltip: Quantidade Mínima de mastros de bandeira.
 			}
 
 			FlagpoleCountRange: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Count Range"
-				// Tooltip: The range of flagpoles to generate.
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruínas) Faixa da Contagem de Mastros de Bandeira"
+				Tooltip: A faixa de quantidade de mastros de bandeira que serão gerados.
 			}
 
 			FlagpoleHeightMin: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Minimum"
-				// Tooltip: The minimum height of flagpoles.
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruínas) Altura Mínima dos Mastros de Bandeira"
+				Tooltip: Altura mínima dos mastros de bandeira.
 			}
 
 			FlagpoleHeightRange: {
-				// DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruins) Flagpole Height Range"
-				// Tooltip: The height range of flagpoles.
+				DisplayName: "[i:SpiritReforged/FlagRingItem] (Ruínas) Faixa de Altura dos Mastros de Bandeira"
+				Tooltip: A faixa de altura dos mastros de bandeira.
 			}
 
 			PotMultiplier: {
-				// DisplayName: "[i:SpiritReforged/PotsDesertItem] (Ruins) Pot Multiplier"
-				// Tooltip: A multiplier for the number of pots to generate.
+				DisplayName: "[i:SpiritReforged/PotsDesertItem] (Ruínas) Multiplicador de Vasos"
+				Tooltip: O multiplicador do número de vasos a serem gerados.
 			}
 
 			ChestChance: {
-				// DisplayName: "[i:4267] (Ruins) Chest Chance"
-				// Tooltip: The chance for a chest to generate.
+				DisplayName: "[i:4267] (Ruínas) Chance de Baú"
+				Tooltip: A chance de um baú ser gerado.
 			}
 
 			UncommonPotChance: {
-				// DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] (Ruins) Uncommon Pot Chance"
-				// Tooltip: The chance for uncommon pots to generate.
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] (Ruínas) Chance de Vaso Incomum"
+				Tooltip: A chance de um vaso incomum ser gerado.
 			}
 
 			AbovegroundPillarChance: {
-				// DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] (Ruins) Aboveground Pillar Chance"
-				// Tooltip: The chance for additional pillars to generate.
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] (Ruínas) Chance de Pilar Forá da Terra"
+				Tooltip: A chance de pilares adicionais serem gerados.
 			}
 		}
 
