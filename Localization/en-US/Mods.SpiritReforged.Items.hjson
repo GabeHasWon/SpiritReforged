@@ -3692,3 +3692,8 @@ Crossbow: {
 		Perfect reload increases damage
 		'''
 }
+
+Bolt: {
+	DisplayName: Bolt
+	Tooltip: ""
+}
