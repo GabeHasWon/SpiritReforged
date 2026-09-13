@@ -1,3 +1,4 @@
-v0.2.2.9
-- Fixed Disentombed origin hanging forever
-- Beyond that, also fixed Disentombed spawning on the surface often or way out of the bounds of the Ziggurat
+v0.2.2.10
+- Fixed enchanted Wax Presses being bombable (normal Wax Presses can explode normally)
+- Made Enchanted Mirrors not blow up, allow hammering or breaking its anchors - can still be mined normally
+- Added "Sunburnt Zombie" to Thorium Zombie Repellent list

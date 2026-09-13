@@ -106,6 +106,12 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 		AddMapEntry(new Color(50, 25, 55), Language.GetText("Mods.SpiritReforged.Items.EnchantedWorkbenchItem.DisplayName"));
 	}
 
+	public override bool CanExplode(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		return tile.TileFrameX >= FullFrameWidth;
+	}
+
 	public override bool CanKillTile(int i, int j, ref bool blockDamaged)
 	{
 		Tile tile = Main.tile[i, j];
