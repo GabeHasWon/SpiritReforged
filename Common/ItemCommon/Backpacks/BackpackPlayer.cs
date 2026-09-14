@@ -28,6 +28,9 @@ internal class BackpackPlayer : ModPlayer
 		{
 			if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
 			{
+				if (ItemID.Sets.IsAPickup[incomingItem.type] || ItemID.Sets.NebulaPickup[incomingItem.type] || ItemID.Sets.ItemsThatShouldNotBeInInventory[incomingItem.type])
+					return true;
+
 				if (InventoryHasItem(incomingItem, player.inventory))
 					return true;
 
