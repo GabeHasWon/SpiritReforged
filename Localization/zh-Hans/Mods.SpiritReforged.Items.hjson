@@ -3693,7 +3693,32 @@ Crossbow: {
 		''' */
 }
 
+Bolter: {
+	// DisplayName: Bolter
+	// Tooltip: Perfect reload causes the next shot to embed into targets
+}
+
 Bolt: {
 	// DisplayName: Bolt
 	// Tooltip: ""
+}
+
+PrismBolt: {
+	// DisplayName: Prism Bolt
+	// Tooltip: Bursts into damaging light after impact
+}
+
+StingerBolt: {
+	// DisplayName: Stinger Bolt
+	// Tooltip: ""
+}
+
+FireworkBolt: {
+	// DisplayName: Firework Bolt
+	// Tooltip: Explodes after a short time
+}
+
+Drillbolt: {
+	// DisplayName: Drillbolt
+	// Tooltip: Pierces through terrain and enemies
 }

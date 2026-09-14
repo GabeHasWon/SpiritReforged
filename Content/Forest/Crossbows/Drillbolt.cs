@@ -5,13 +5,13 @@ using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Forest.Crossbows;
 
-public class Bolt : ModItem
+public class Drillbolt : ModItem
 {
-	public class BoltProjectile : ModProjectile, IDrawPixelated
+	public class DrillboltProjectile : ModProjectile, IDrawPixelated
 	{
-		public override LocalizedText DisplayName => ModContent.GetInstance<Bolt>().DisplayName;
+		public override LocalizedText DisplayName => ModContent.GetInstance<Drillbolt>().DisplayName;
 
-		public override string Texture => ModContent.GetInstance<Bolt>().Texture;
+		public override string Texture => ModContent.GetInstance<Drillbolt>().Texture;
 
 		private VertexTrail _trail;
 
@@ -27,7 +27,7 @@ public class Bolt : ModItem
 
 			if (!Main.dedServ)
 			{
-				_trail ??= new VertexTrail(new LightColorTrail(Color.White * 0.5f, Color.Transparent), new TriangleCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
+				_trail ??= new VertexTrail(new LightColorTrail(Color.White, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
 				_trail.Update();
 			}
 
@@ -35,13 +35,7 @@ public class Bolt : ModItem
 				Projectile.velocity.Y += 0.1f;
 		}
 
-		public override void OnKill(int timeLeft)
-		{
-			Vector2 velocity = Projectile.velocity * 0.2f;
-
-			for (int i = 0; i < 5; i++)
-				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.WoodFurniture, velocity.X, velocity.Y);
-		}
+		public override void OnKill(int timeLeft) => base.OnKill(timeLeft);
 
 		public override bool PreDraw(ref Color lightColor)
 		{
@@ -56,12 +50,12 @@ public class Bolt : ModItem
 
 	public override void SetDefaults()
     {
-		Item.ammo = Type;
+		Item.ammo = ModContent.ItemType<Bolt>();
 		Item.maxStack = Item.CommonMaxStack;
 		Item.consumable = true;
 		Item.damage = 10;
 		Item.knockBack = 1f;
-		Item.rare = ItemRarityID.White;
-		Item.shoot = ModContent.ProjectileType<BoltProjectile>();
+		Item.rare = ItemRarityID.Blue;
+		Item.shoot = ModContent.ProjectileType<DrillboltProjectile>();
 	}
 }
