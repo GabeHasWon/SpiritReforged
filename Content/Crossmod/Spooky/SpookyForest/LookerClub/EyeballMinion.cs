@@ -40,7 +40,7 @@ public class EyeballMinion : BaseMinion
 		Projectile.usesIDStaticNPCImmunity = true;
 		Projectile.idStaticNPCHitCooldown = 8;
 
-		Projectile.scale *= Main.rand.NextFloat(0.85f, 1.35f);
+		Projectile.scale *= Main.rand.NextFloat(0.95f, 1.15f);
 		Projectile.hide = true;
 	}
 

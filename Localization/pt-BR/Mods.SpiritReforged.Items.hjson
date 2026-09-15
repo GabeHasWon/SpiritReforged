@@ -3643,3 +3643,8 @@ LookerClub: {
 	// DisplayName: Looker Club
 	// Tooltip: ""
 }
+
+PumpkinClub: {
+	// DisplayName: Pumpkin Club
+	// Tooltip: ""
+}

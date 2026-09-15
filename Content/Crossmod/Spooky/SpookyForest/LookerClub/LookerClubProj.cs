@@ -151,12 +151,12 @@ class LookerClubProj : BaseClubProj
 			rotationOffset *= Main.rand.NextFloat(0.9f, 1.1f);
 
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
-			var p = new ImpactLine(position, particleVel, Color.White * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
+			var p = new ImpactLine(position, particleVel, Color.Gray * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
 			p.UseLightColor = true;
 			ParticleHandler.SpawnParticle(p);
 
-			if (!Main.rand.NextBool(3))
-				Dust.NewDustPerfect(position, DustID.t_LivingWood, particleVel / 3, Scale: 0.5f);
+			if (Main.rand.NextBool())
+				Dust.NewDustPerfect(position, DustID.Blood, particleVel / 3, Alpha: 150, Scale: 2.5f).noGravity = true;
 		}
 
 		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
