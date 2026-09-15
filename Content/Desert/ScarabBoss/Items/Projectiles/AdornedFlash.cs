@@ -76,19 +76,15 @@ public class AdornedFlash : ModProjectile
 		Projectile.Size = new(30);
 		Projectile.friendly = true;
 		Projectile.DamageType = DamageClass.Ranged;
-
 		Projectile.tileCollide = false;
 		Projectile.friendly = true;
 		Projectile.penetrate = 3;
-
-		Projectile.stopsDealingDamageAfterPenetrateHits = true;
-
 		Projectile.timeLeft = 50;
 		Projectile.hide = true;
 
-		// only hit a given npc once
 		Projectile.localNPCHitCooldown = -1;
 		Projectile.usesLocalNPCImmunity = true;
+		Projectile.stopsDealingDamageAfterPenetrateHits = true;
 	}
 
 	public override bool ShouldUpdatePosition() => false;
@@ -116,7 +112,8 @@ public class AdornedFlash : ModProjectile
 			_prismaticTimer--;
 		}
 
-		Projectile.velocity = Projectile.rotation.ToRotationVector2();
+		Projectile.rotation = Projectile.velocity.ToRotation();
+		Projectile.spriteDirection = Projectile.direction = Math.Sign(Projectile.velocity.X);
 
 		if (Projectile.timeLeft > 40)
 			Lighting.AddLight(Projectile.Center, DrawHelpers.MulticolorLerp(Projectile.timeLeft / 50f, _primaryPalette.Colors).ToVector3() * (Projectile.timeLeft / 50f));
@@ -125,6 +122,7 @@ public class AdornedFlash : ModProjectile
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCs.Add(index);
 
 	public override bool? CanHitNPC(NPC target) => target.whoAmI != HitTargetID;
+
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		SoundEngine.PlaySound(FlashHit, target.Center);

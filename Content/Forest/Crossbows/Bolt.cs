@@ -18,6 +18,7 @@ public class Bolt : ModItem
 		public override void SetDefaults()
 		{
 			Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
+			Projectile.extraUpdates = 1;
 			Projectile.aiStyle = -1;
 		}
 

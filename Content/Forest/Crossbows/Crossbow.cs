@@ -1,10 +1,7 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Mono.Cecil;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
-using System.IO.Pipelines;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics;
@@ -33,7 +30,7 @@ public class ReloadPlayer : ModPlayer
 	public void StartReload(int duration)
 	{
 		_reloadTime = FullReloadTime = duration;
-		_perfectReloadSpot = Main.rand.Next(PerfectRange, (int)(duration / 1.5f));
+		_perfectReloadSpot = duration / 2;
 	}
 
 	public override void DrawPlayer(Camera camera)
@@ -257,13 +254,19 @@ public class Crossbow : ModItem, ReloadPlayer.IPerfectReload
 
 	public override void SetDefaults()
     {
-		Item.DefaultToBow(30, 10, true);
+		Item.DefaultToBow(50, 10, true);
 		Item.UseSound = SoundID.DD2_BallistaTowerShot with { Pitch = 0.5f };
 		Item.useAmmo = ModContent.ItemType<Bolt>();
 		Item.damage = 10;
 		Item.knockBack = 4.5f;
 		Item.noUseGraphic = true;
 		Item.rare = ItemRarityID.Blue;
+	}
+
+	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback)
+	{
+		if (PerfectReload)
+			damage *= 2;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)

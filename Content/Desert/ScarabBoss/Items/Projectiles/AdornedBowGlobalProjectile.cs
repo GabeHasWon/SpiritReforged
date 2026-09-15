@@ -212,24 +212,11 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			return;
 
 		SoundEngine.PlaySound(FlashHit, target.Center);
-
-		int type = ModContent.ProjectileType<AdornedFlash>();
-		var p = Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Zero, type, (int)(projectile.damage * 0.66f), 0f, projectile.owner, target.whoAmI);
-
-		p.rotation = projectile.velocity.ToRotation();
-		p.spriteDirection = projectile.direction;
+		Projectile.NewProjectileDirect(projectile.GetSource_OnHit(target), projectile.Center, Vector2.Normalize(projectile.velocity), ModContent.ProjectileType<AdornedFlash>(), (int)(projectile.damage * 0.66f), 0f, projectile.owner, target.whoAmI);
 
 		for (int i = 0; i < 4; i++)
 		{
 			Color c = _primaryPalette.Colors[Main.rand.Next(3)];
-
-			static void ColorAction(Particle p)
-			{
-				p.Velocity *= 0.95f;
-				Color light = Main.rand.Next([Color.Green, Color.Cyan, Color.Orange]);
-				Lighting.AddLight(p.Position, light.ToVector3() * MathHelper.Lerp(0.25f, 0f, p.TimeActive / (float)p.MaxTime));
-			}
-
 			ParticleHandler.SpawnParticle(new SharpStarParticle(
 				target.Center,
 				projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.3f, 0.6f),
@@ -258,9 +245,16 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			}
 		}
 
+		_hitNPC = true; // only make flash effect once;
+
 		static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;
 
-		_hitNPC = true; // only make flash effect once;
+		static void ColorAction(Particle p)
+		{
+			p.Velocity *= 0.95f;
+			Color light = Main.rand.Next([Color.Green, Color.Cyan, Color.Orange]);
+			Lighting.AddLight(p.Position, light.ToVector3() * MathHelper.Lerp(0.25f, 0f, p.TimeActive / (float)p.MaxTime));
+		}
 	}
 
 	public override void OnKill(Projectile projectile, int timeLeft)

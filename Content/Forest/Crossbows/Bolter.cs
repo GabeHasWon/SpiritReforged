@@ -3,7 +3,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Crossbows;
 
-public class Bolter : ModItem
+public class Bolter : ModItem, ReloadPlayer.IPerfectReload
 {
 	public class BolterHeld : Crossbow.CrossbowHeld
 	{
@@ -14,9 +14,11 @@ public class Bolter : ModItem
 		public override IConfiguration SetConfiguration() => new Crossbow.CrossbowConfiguration(null, 30, 10, 40);
 	}
 
+	public bool PerfectReload { get; set; }
+
 	public override void SetDefaults()
     {
-		Item.DefaultToBow(30, 10, true);
+		Item.DefaultToBow(20, 10, true);
 		Item.UseSound = SoundID.DD2_BallistaTowerShot with { Pitch = 0.5f };
 		Item.useAmmo = ModContent.ItemType<Bolt>();
 		Item.damage = 10;
@@ -28,6 +30,8 @@ public class Bolter : ModItem
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
 		SwungProjectile.Spawn(position, velocity, ModContent.ProjectileType<BolterHeld>(), damage, knockback, player, 0, source);
+		PerfectReload = false;
+
 		return true;
     }
 }
