@@ -3428,7 +3428,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Верстак зачарований
+	DisplayName: Стол для печатей
 	Tooltip: ""
 }
 
