@@ -3416,7 +3416,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: 附魔工作台
+	DisplayName: 压蜡台
 	Tooltip: ""
 }
 
