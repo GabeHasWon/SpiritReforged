@@ -3413,7 +3413,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Mesa de Encantamento
+	DisplayName: Prensa de Cera
 	Tooltip: ""
 }
 

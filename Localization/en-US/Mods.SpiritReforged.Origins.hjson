@@ -37,7 +37,7 @@ Caveman: {
 Disentombed: {
 	DisplayName: Disentombed
 	Flavor: Three thousand years have passed...my reign will return. I will return.
-	Description: Starts with the mummy vanity in the Ziggurat.
+	Description: Starts with the mummy vanity and 3 Desert Torches stuck in the Ziggurat.
 }
 
 Worshipper: {
