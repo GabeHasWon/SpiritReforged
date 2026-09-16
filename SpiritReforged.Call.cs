@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.DebuffOverhaul;
+﻿using MonoMod.Utils;
+using SpiritReforged.Common.DebuffOverhaul;
 using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
@@ -8,6 +9,7 @@ using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
 using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
@@ -39,9 +41,9 @@ public partial class SpiritReforgedMod : Mod
 	{
 		try
 		{
-			if (CallMethods.Count == 0) //Initialize local methods attributed by [ModCall]
+			if (CallMethods.Count == 0) // Initialize local methods attributed by [ModCall]
 			{
-				foreach (MethodInfo methodInfo in GetType().GetMethods(BindingFlags.Static | BindingFlags.NonPublic))
+				foreach (MethodInfo methodInfo in GetType().GetMethods(BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public))
 				{
 					if (methodInfo.GetCustomAttribute<ModCallAttribute>() is ModCallAttribute attr)
 					{
@@ -243,12 +245,26 @@ public partial class SpiritReforgedMod : Mod
 	[ModCall]
 	private static bool RegisterConversionSet(string setName, Dictionary<int, int> dict)
 	{
-		CreateSet(setName, (Set)dict);
+		var set = new Set();
+		set.AddRange(dict);
+		CreateSet(setName, set);
 		return true;
 	}
 
 	[ModCall]
 	private static (bool, int) AddSavannaTree(string texturePath, string tileName, Func<int[]> getAnchor, Mod mod)
 		=> (mod.AddContent(new AcaciaTreeCrossmod(texturePath, tileName, getAnchor))) ? (true, mod.Find<ModTile>(tileName).Type) : (false, -1);
+
+	[ModCall]
+	internal static bool HasGlyph(Item item) => item.GetGlobalItem<GlyphItem.GlyphGlobalItem>().HasGlyph(out _);
+
+	[ModCall]
+	internal static string GetGlyphType(Item item)
+	{
+		if (item.GetGlobalItem<GlyphItem.GlyphGlobalItem>().HasGlyph(out GlyphItem glyphItem))
+			return glyphItem.GetType().Name;
+
+		return string.Empty;
+	}
 	#endregion
 }

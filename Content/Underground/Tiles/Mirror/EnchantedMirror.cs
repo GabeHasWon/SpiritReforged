@@ -234,6 +234,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
+		TileID.Sets.PreventsTileHammeringIfOnTopOfIt[Type] = true;
+		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = true;
 		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
@@ -246,6 +248,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		AddMapEntry(FurnitureTile.MapColor, this.AutoModItem().DisplayName);
 		DustType = -1;
 	}
+
+	public override bool CanExplode(int i, int j) => false;
 
 	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
 
