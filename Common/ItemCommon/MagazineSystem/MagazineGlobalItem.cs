@@ -221,20 +221,27 @@ public class MagazineGlobalItem : GlobalItem
 		return null;
 	}
 
+	/// We only increase ammo used if this hook actually runs (otherwise, ammo was not used via ammo conservation stat)
+	public override void OnConsumeAmmo(Item weapon, Item ammo, Player player)
+	{
+		if (Active)
+		{
+			var mp = player.GetModPlayer<MagazinePlayer>();
+
+			_currentMagazine.AmmoUsed++;
+
+			int magazineSize = mp.GetMagazineSize(_magazineData._magazineSize);
+
+			if (_currentMagazine.AmmoUsed == magazineSize)
+				ActivateReload(player, weapon, magazineSize);
+		}
+	}
+
 	public void Fire(Item item, Player player)
 	{
 		_reloadIdleTimer = 0;
 
-		var mp = player.GetModPlayer<MagazinePlayer>();
-
 		MagazinePlayer.Fire(item);
-
-		_currentMagazine.AmmoUsed++;
-
-		int magazineSize = mp.GetMagazineSize(_magazineData._magazineSize);
-
-		if (_currentMagazine.AmmoUsed == magazineSize)
-			ActivateReload(player, item, magazineSize);
 	}
 
 	void ActivateReload(Player player, Item item, int ammoUsed)
