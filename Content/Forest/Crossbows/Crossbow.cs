@@ -179,7 +179,7 @@ public class Crossbow : ModItem, ReloadPlayer.IPerfectReload
 				if (!status.Reloading) //Reloading has ended sooner than expected (perfect reload)
 					Counter = Math.Max(Counter, (int)SwingTime - 20);
 			}
-			else if (!status.Reloading)
+			else
 			{
 				if (Counter == 1)
 				{
@@ -187,7 +187,7 @@ public class Crossbow : ModItem, ReloadPlayer.IPerfectReload
 						Dust.NewDustPerfect(GetEndPosition(-8), Main.rand.NextFromList(DustID.GoldCoin, DustID.Smoke), (Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(3f)).RotatedByRandom(1f)).noGravity = true;
 				}
 
-				if (Counter == SwingTime - 3)
+				if (!status.Reloading && Counter == SwingTime - 3)
 				{
 					status.StartReload(GetConfig<CrossbowConfiguration>().ReloadTime); //Start reload
 

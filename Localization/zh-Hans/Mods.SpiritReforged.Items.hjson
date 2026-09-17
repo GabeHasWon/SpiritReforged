@@ -3725,15 +3725,15 @@ Drillbolt: {
 
 AutomaticCrossbow: {
 	// DisplayName: Automatic Crossbow
-	// Tooltip: ""
+	// Tooltip: Perfect reload increases fire-rate for the magazine
 }
 
 Shadepiercer: {
 	// DisplayName: Shadepiercer
-	// Tooltip: ""
+	// Tooltip: Perfect reload temporarily grants stealth and additional piercing
 }
 
 Starbalest: {
 	// DisplayName: Starbalest
-	// Tooltip: ""
+	// Tooltip: Perfect reload causes shots to explode
 }

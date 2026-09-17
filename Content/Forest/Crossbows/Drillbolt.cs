@@ -35,7 +35,7 @@ public class Drillbolt : ModItem
 			Projectile.hide = true;
 
 			Projectile.usesLocalNPCImmunity = true;
-			Projectile.localNPCHitCooldown = -1;
+			Projectile.localNPCHitCooldown = 20;
 		}
 
 		public override void AI()
@@ -75,6 +75,7 @@ public class Drillbolt : ModItem
 				{
 					ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center, -Vector2.UnitY, Color.Lerp(TileMaterial.FindMaterial(tile.TileType).Color, Color.Black, 0.2f), 30, false, false));
 					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, -Vector2.UnitY, TileMaterial.FindMaterial(tile.TileType).Color, 30, false, false));
+					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, Vector2.UnitY * -Main.rand.NextFloat(1.2f), TileMaterial.FindMaterial(tile.TileType).Color, 40, false, false));
 				}
 
 				SoundEngine.PlaySound(SoundID.WormDig, Projectile.Center);
