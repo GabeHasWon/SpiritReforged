@@ -24,16 +24,20 @@ public class Bolt : ModItem
 
 		public override void AI()
 		{
-			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-
 			if (!Main.dedServ)
 			{
 				_trail ??= new VertexTrail(new LightColorTrail(Color.White * 0.5f, Color.Transparent), new TriangleCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
 				_trail.Update();
 			}
 
-			if (++Projectile.ai[0] > 60)
-				Projectile.velocity.Y += 0.1f;
+			if (Projectile.ai[0] > 60)
+				Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.4f, 10);
+
+			if (Projectile.ai[0] > 40)
+				Projectile.velocity *= 0.99f;
+
+			Projectile.ai[0]++;
+			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 		}
 
 		public override void OnKill(int timeLeft)
@@ -61,7 +65,7 @@ public class Bolt : ModItem
 		Item.maxStack = Item.CommonMaxStack;
 		Item.consumable = true;
 		Item.damage = 10;
-		Item.knockBack = 1f;
+		Item.knockBack = 3f;
 		Item.rare = ItemRarityID.White;
 		Item.shoot = ModContent.ProjectileType<BoltProjectile>();
 	}

@@ -4,7 +4,6 @@ using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
-using Terraria;
 
 namespace SpiritReforged.Content.Forest.Crossbows;
 
@@ -43,7 +42,7 @@ public class PrismBolt : ModItem
 				_trails ??=
 					[
 						new VertexTrail(new RainbowColorTrail(), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75),
-						new VertexTrail(new RainbowColorTrail(), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 8 * Projectile.scale, 85) { Opacity = 0.5f}
+						new VertexTrail(new RainbowColorTrail(), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 8 * Projectile.scale, 85) { Opacity = 0.5f }
 					];
 
 				foreach (VertexTrail trail in _trails)
@@ -52,8 +51,13 @@ public class PrismBolt : ModItem
 
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-			if (++Projectile.ai[0] > 60)
-				Projectile.velocity.Y += 0.1f;
+			if (Projectile.ai[0] > 60)
+				Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.4f, 10);
+
+			if (Projectile.ai[0] > 40)
+				Projectile.velocity *= 0.99f;
+
+			Projectile.ai[0]++;
 		}
 
 		public override void OnKill(int timeLeft)
@@ -102,8 +106,10 @@ public class PrismBolt : ModItem
 		Item.maxStack = Item.CommonMaxStack;
 		Item.consumable = true;
 		Item.damage = 10;
-		Item.knockBack = 1f;
+		Item.knockBack = 3f;
 		Item.rare = ItemRarityID.Blue;
 		Item.shoot = ModContent.ProjectileType<PrismBoltProjectile>();
 	}
+
+	//public override void AddRecipes() => CreateRecipe(20).AddIngredient(ModContent.ItemType<Bolt>()).AddRecipeGroup().AddTile(TileID.WorkBenches).Register();
 }

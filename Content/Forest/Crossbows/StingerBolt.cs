@@ -18,6 +18,8 @@ public class StingerBolt : ModItem
 		public override void SetDefaults()
 		{
 			Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
+			Projectile.extraUpdates = 1;
+			Projectile.penetrate = 2;
 			Projectile.aiStyle = -1;
 		}
 
@@ -27,7 +29,7 @@ public class StingerBolt : ModItem
 
 			if (!Main.dedServ)
 			{
-				_trail ??= new VertexTrail(new LightColorTrail(Color.White, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
+				_trail ??= new VertexTrail(new LightColorTrail(Color.RosyBrown * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
 				_trail.Update();
 			}
 
@@ -53,9 +55,11 @@ public class StingerBolt : ModItem
 		Item.ammo = ModContent.ItemType<Bolt>();
 		Item.maxStack = Item.CommonMaxStack;
 		Item.consumable = true;
-		Item.damage = 10;
+		Item.damage = 7;
 		Item.knockBack = 1f;
 		Item.rare = ItemRarityID.Blue;
 		Item.shoot = ModContent.ProjectileType<StingerBoltProjectile>();
 	}
+
+	//public override void AddRecipes() => CreateRecipe(20).AddIngredient(ModContent.ItemType<Bolt>()).AddIngredient(ItemID.Stinger).AddTile(TileID.WorkBenches).Register();
 }

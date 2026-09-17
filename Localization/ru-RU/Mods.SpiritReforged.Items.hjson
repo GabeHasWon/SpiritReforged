@@ -3734,3 +3734,18 @@ Drillbolt: {
 	// DisplayName: Drillbolt
 	// Tooltip: Pierces through terrain and enemies
 }
+
+AutomaticCrossbow: {
+	// DisplayName: Automatic Crossbow
+	// Tooltip: ""
+}
+
+Shadepiercer: {
+	// DisplayName: Shadepiercer
+	// Tooltip: ""
+}
+
+Starbalest: {
+	// DisplayName: Starbalest
+	// Tooltip: ""
+}
