@@ -121,7 +121,7 @@ public static class ItemVisualHelpers
 		if (stepDisplace)
 		{
 			int frame = player.bodyFrame.Y / player.bodyFrame.Height;
-			if (frame > 6 && frame < 10 || frame > 13 && frame < 17)
+			if (frame is > 6 and < 10 or > 13 and < 17)
 				finalPosition -= Vector2.UnitY * 2f;
 		}
 

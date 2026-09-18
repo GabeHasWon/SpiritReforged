@@ -53,7 +53,7 @@ public class Heirloom() : ShotgunItem(new())
 
 		var globalItem = Item.GetGlobalItem<MagazineGlobalItem>();
 
-		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch }, position), new(-0.2f, 0.5f, 2, 120), new(62, 22), new(-24, -2), MagazineReloadType.EntireMagazine, MagazineUIType.Shell, true, -12, -0.25f);
+		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch }, position), new(-0.2f, 0.5f, 2, 120), new(62, 22), new(-24, -2), MagazineReloadType.EntireMagazine, MagazineUIType.Shell, true, true, -12, -0.25f);
 		globalItem.SetAnimations(new(0.04f, 0.96f), reloadStyle: ReloadUseStyle, reloadFrame: ReloadUseFrame);
 	}
 
@@ -86,14 +86,16 @@ public class Heirloom() : ShotgunItem(new())
 
 			var magazineWeapon = Item.GetGlobalItem<MagazineGlobalItem>();
 
+			//magazineWeapon.Fire(Item, player);
+
 			// ensure we fire the rest of the magazine
 			// We could just set the ammo used to magazine size, but this works with the UI, and also procs a reload
 			while (magazineWeapon.AmmoRemaining(player) > 0)
 			{
+				magazineWeapon.Fire(Item, player);
+
 				// call the ammo function to use the ammo
 				player.PickAmmo(Item, out int projType, out float speed, out int damageToUse, out float knockBack, out int ammoID);
-
-				magazineWeapon.Fire(Item, player);
 			}
 
 			shotgunStats = new();

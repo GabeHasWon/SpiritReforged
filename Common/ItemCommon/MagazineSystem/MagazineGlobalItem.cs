@@ -123,6 +123,9 @@ public class MagazineGlobalItem : GlobalItem
 	// because we have to manually interrupt item time to cancel a reload, we store a seperate timer to ensure proper behavior.
 	private int reloadCancelCooldown;
 
+	// Whether or not the weapon uses magazine functionality on right click. Defaults to true.
+	private bool shouldUseMagazineOnRightClick;
+
 	private Vector2 _itemSize;
 	private Vector2 _itemOrigin;
 
@@ -146,7 +149,7 @@ public class MagazineGlobalItem : GlobalItem
 	}
 	public int AmmoRemaining(Player player) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize() - _currentMagazine.AmmoUsed;
 	public float MagazineProgress(Player player) => 1f - AmmoRemaining(player) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize();
-	public void ActivateMagazine(Item item, ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, MagazineReloadType reloadType, MagazineUIType uiType, bool useCustomUseStyle = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
+	public void ActivateMagazine(Item item, ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, MagazineReloadType reloadType, MagazineUIType uiType, bool useCustomUseStyle = true, bool useMagazineOnRightClick = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
 	{
 		oldHoldStyle = item.holdStyle;
 
@@ -164,6 +167,8 @@ public class MagazineGlobalItem : GlobalItem
 
 		_itemSize = itemSize;
 		_itemOrigin = itemOrigin;
+
+		shouldUseMagazineOnRightClick = useMagazineOnRightClick;
 	}
 	public MagazineData GetMagazineData() => _magazineData;
 	public CurrentMagazine GetCurrentMagazine() => _currentMagazine;
@@ -190,6 +195,9 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
+			if (player.altFunctionUse == 2 && !shouldUseMagazineOnRightClick)
+				return true;
+
 			if (ReloadType == MagazineReloadType.OneAtATime && reloadCancelCooldown <= 0)
 			{
 				if (AmmoRemaining(player) > 0)
@@ -213,7 +221,15 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
-			Fire(item, player);
+			_reloadIdleTimer = 0;
+
+			if (player.altFunctionUse == 2)
+			{
+				if (shouldUseMagazineOnRightClick)
+					Fire(item, player);
+			}
+			else
+				Fire(item, player);
 
 			return null;
 		}
@@ -226,21 +242,36 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
-			var mp = player.GetModPlayer<MagazinePlayer>();
+			if (player.altFunctionUse == 2)
+			{
+				if (shouldUseMagazineOnRightClick)
+				{
+					var mp = player.GetModPlayer<MagazinePlayer>();
 
-			_currentMagazine.AmmoUsed++;
+					_currentMagazine.AmmoUsed++;
 
-			int magazineSize = mp.GetMagazineSize(_magazineData._magazineSize);
+					int magazineSize = mp.GetMagazineSize(_magazineData._magazineSize);
 
-			if (_currentMagazine.AmmoUsed == magazineSize)
-				ActivateReload(player, weapon, magazineSize);
+					if (_currentMagazine.AmmoUsed == magazineSize)
+						ActivateReload(player, weapon, magazineSize);
+				}
+			}
+			else
+			{
+				var mp = player.GetModPlayer<MagazinePlayer>();
+
+				_currentMagazine.AmmoUsed++;
+
+				int magazineSize = mp.GetMagazineSize(_magazineData._magazineSize);
+
+				if (_currentMagazine.AmmoUsed == magazineSize)
+					ActivateReload(player, weapon, magazineSize);
+			}			
 		}
 	}
 
 	public void Fire(Item item, Player player)
 	{
-		_reloadIdleTimer = 0;
-
 		MagazinePlayer.Fire(item);
 	}
 
@@ -280,12 +311,27 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
-			var data = _magazineData;
+			if (player.altFunctionUse == 2)
+			{
+				if (shouldUseMagazineOnRightClick)
+				{
+					var data = _magazineData;
 
-			if (AmmoRemaining(player) <= 0)
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), position);
+					if (AmmoRemaining(player) <= 0)
+						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), position);
 
-			_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress(player)), position);
+					_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress(player)), position);
+				}
+			}
+			else
+			{
+				var data = _magazineData;
+
+				if (AmmoRemaining(player) <= 0)
+					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), position);
+
+				_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress(player)), position);
+			}
 
 			_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
 			_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
@@ -311,7 +357,7 @@ public class MagazineGlobalItem : GlobalItem
 				if (_shotUseStyle is not null)
 					_shotUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin);
 				else
-					ItemVisualHelpers.SetGunUseStyle(player, item, _shootDirection, _shotRecoil, EaseCircularOut, EaseOutBack(), _itemSize, _itemOrigin, _animationRatio);
+					ItemVisualHelpers.SetGunUseStyle(player, item, _shootDirection, _shotRecoil, EaseQuinticIn, EaseOutBack(), _itemSize, _itemOrigin, _animationRatio);
 
 				_reloadIdleTimer = 0;
 			}		
@@ -367,7 +413,7 @@ public class MagazineGlobalItem : GlobalItem
 			if (_shotUseFrame is not null)
 				_shotUseFrame.Invoke(item, player, _shootDirection, _shootRotation, _itemSize, _itemOrigin);
 			else
-				ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, _rotationRecoil, EaseCircularOut, EaseOutBack(), false, _animationRatio);
+				ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, _rotationRecoil, EaseQuinticIn, EaseOutBack(), false, _animationRatio);
 		}
 	}
 
@@ -567,6 +613,7 @@ public class MagazineGlobalItem : GlobalItem
 		clone.ReloadType = ReloadType;
 		clone.UIType = UIType;
 		clone.oldHoldStyle = oldHoldStyle;
+		clone.shouldUseMagazineOnRightClick = shouldUseMagazineOnRightClick;
 
 		return clone;
 	}

@@ -3607,3 +3607,8 @@ Slug: {
 	DisplayName: Slug
 	Tooltip: ""
 }
+
+Survivalist: {
+	DisplayName: Survivalist
+	Tooltip: ""
+}
