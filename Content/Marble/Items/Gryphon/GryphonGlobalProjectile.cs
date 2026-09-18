@@ -20,8 +20,8 @@ public class GryphonGlobalProjectile : GlobalProjectile
 	{
 		if (active)
 		{
-			if (projectile.penetrate > -1)
-				projectile.penetrate = -1;
+			if (projectile.penetrate < 2 && projectile.penetrate > 0)
+				projectile.penetrate = 2;
 
 			if (Main.rand.NextBool(30))
 			{
