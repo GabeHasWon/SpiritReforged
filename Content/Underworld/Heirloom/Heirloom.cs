@@ -89,7 +89,12 @@ public class Heirloom() : ShotgunItem(new())
 			// ensure we fire the rest of the magazine
 			// We could just set the ammo used to magazine size, but this works with the UI, and also procs a reload
 			while (magazineWeapon.AmmoRemaining(player) > 0)
+			{
+				// call the ammo function to use the ammo
+				player.PickAmmo(Item, out int projType, out float speed, out int damageToUse, out float knockBack, out int ammoID);
+
 				magazineWeapon.Fire(Item, player);
+			}
 
 			shotgunStats = new();
 

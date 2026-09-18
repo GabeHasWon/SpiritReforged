@@ -36,7 +36,7 @@ public class Slug : ShotgunAmmoItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 12;
+		Item.damage = 57;
 		Item.value = Item.buyPrice(copper: 50);
 	}
 
@@ -56,7 +56,7 @@ public class SlugProjectile : ModProjectile
 	public static readonly Asset<Texture2D> OutlineTexture = DrawHelpers.RequestLocal<SlugProjectile>("SlugProjectile_Outline", false);
 
 	public const int MAX_TIMELEFT = 360;
-	public const int TIME_TILL_GRAVITY = 45; // how many frames before gravity kicks in, and the fire effects fade off
+	public const int TIME_TILL_GRAVITY = 60; // how many frames before gravity kicks in, and the fire effects fade off
 	public override string Texture => AssetLoader.EmptyTexture;
 	
 	private readonly ParticleRenderer _trailRenderer = new();
@@ -72,7 +72,7 @@ public class SlugProjectile : ModProjectile
 	{
 		Projectile.friendly = true;
 		Projectile.DamageType = ModContent.GetInstance<ShotgunClass>();
-		Projectile.extraUpdates = 1;
+		Projectile.extraUpdates = 2;
 		Projectile.stopsDealingDamageAfterPenetrateHits = true;
 		Projectile.penetrate = 1;
 		Projectile.Size = new(4);
@@ -85,30 +85,30 @@ public class SlugProjectile : ModProjectile
 
 	public override void AI()
 	{
-		if (!Main.dedServ)
+		/*if (!Main.dedServ)
 		{
 			if (_trails == null)
 				CreateTrail();
 
 			foreach (VertexTrail trail in _trails)
 				trail.Update();
-		}
+		}*/
 
 		Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
 		if (Projectile.timeLeft < MAX_TIMELEFT - TIME_TILL_GRAVITY)
 		{
-			Projectile.velocity *= 0.98f;
-			Projectile.velocity.Y += 0.05f;
+			Projectile.velocity *= 0.99f;
+			Projectile.velocity.Y += 0.025f;
 
 			if (Projectile.velocity.Y > 0)
-				Projectile.velocity.Y *= 1.05f;
+				Projectile.velocity.Y *= 1.025f;
 
 			if (Projectile.velocity.Y > 16f)
 				Projectile.velocity.Y = 16f;
 		}
 		else
-			Projectile.velocity *= 0.985f;
+			Projectile.velocity *= 0.97f;
 	}
 
 	public override bool PreDraw(ref Color lightColor)
@@ -127,67 +127,17 @@ public class SlugProjectile : ModProjectile
 
 		if (Projectile.timeLeft > fadeTime)
 		{
-			Main.instance.LoadProjectile(873); //Ensure these textures are loaded before drawing
-			Main.instance.LoadProjectile(ProjectileID.FallingStar);
+			//float fadeOut = 
 
-			var starAura = TextureAssets.Extra[ExtrasID.FallingStar].Value;
-			var glowLine = TextureAssets.Projectile[873].Value;
-
-			float time = MathHelper.Min((Projectile.timeLeft - fadeTime) / (float)TIME_TILL_GRAVITY, 1f);
-			float fadeIn = 1f;
-			if (time > 0.75f)
-				fadeIn = 1f - (time - 0.75f) / 0.25f;
-
-			int trailLength = Projectile.oldPos.Length;
-
-			for (int i = 0; i < trailLength; i++)
-			{
-				float lerp = i / (float)trailLength;
-
-				Vector2 drawPos = Projectile.oldPos[i] + Projectile.Size / 2f - Projectile.velocity - Main.screenPosition;
-
-				Color color = Color.Lerp(new(255, 100, 100), new(255, 60, 0), lerp).Additive();
-
-				Vector2 scale = new Vector2(Projectile.scale) * 0.75f * (1f - lerp);
-
-				Main.spriteBatch.Draw(glowLine, drawPos, null, color * 0.85f * fadeIn * (1f - lerp) * time, Projectile.rotation, glowLine.Size() / 2f, new Vector2(scale.X * 1.15f, scale.Y * 1.5f), 0f, 0f);
-
-				Main.spriteBatch.Draw(starAura, drawPos, null, color * fadeIn * (1f - lerp) * time, Projectile.rotation, starAura.Size() / 2f, scale * 0.75f , 0f, 0f);
-			}
-
-			Main.spriteBatch.Draw(texWhite, Projectile.Center - Main.screenPosition, null, Color.Orange.Additive() * 0.25f * time, Projectile.rotation, texWhite.Size() / 2f, Projectile.scale, 0f, 0f);
-		}
-
-		const int bloomFade = 100;
-		int bloomTime = MAX_TIMELEFT - bloomFade;
-
-		if (Projectile.timeLeft > MAX_TIMELEFT - bloomFade)
-		{
-			float fade = (Projectile.timeLeft - bloomTime) / (float)bloomFade;
-
-			_trailRenderer.Draw(Main.spriteBatch);
-
-			if (_trails != null)
-			{
-				foreach (VertexTrail trail in _trails)
-				{
-					trail.Opacity = fade;
-
-					if (Projectile.penetrate == -1)
-						trail.Opacity *= 0.2f;
-
-					trail?.Draw(TrailSystem.TrailShaders, Main.spriteBatch.GraphicsDevice);
-				}
-			}
-
-			Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Yellow, Color.DarkOrange, 1f - fade).Additive() * fade * 0.25f, Projectile.rotation, bloom.Size() / 2f, Projectile.scale * 0.2f, 0f, 0f);
-			
-			Main.spriteBatch.Draw(bloom, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Orange, Color.OrangeRed, 1f - fade).Additive() * fade * 0.25f, Projectile.rotation, bloom.Size() / 2f, Projectile.scale * 0.15f, 0f, 0f);
-
-			Main.spriteBatch.Draw(texOutline, Projectile.Center - Main.screenPosition, null, Color.Lerp(Color.Orange, Color.DarkOrange, 1f - fade).Additive() * fade, Projectile.rotation, texOutline.Size() / 2f, Projectile.scale, 0f, 0f);
+			Main.spriteBatch.Draw(texWhite, Projectile.Center - Main.screenPosition, null, Color.Yellow.Additive(), Projectile.rotation, texWhite.Size() / 2f, Projectile.scale * 2f, 0f, 0f);
 		}
 
 		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, null, lightColor * fadeOut, Projectile.rotation, tex.Size() / 2f, Projectile.scale, 0f, 0f);
+		
+		if (Projectile.timeLeft > fadeTime)
+		{
+			Main.spriteBatch.Draw(texWhite, Projectile.Center - Main.screenPosition, null, Color.White.Additive(), Projectile.rotation, texWhite.Size() / 2f, Projectile.scale, 0f, 0f);
+		}
 
 		return false;
 	}
