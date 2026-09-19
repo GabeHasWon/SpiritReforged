@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.UI.Enchantment;
@@ -19,7 +19,7 @@ using Terraria.Utilities;
 namespace SpiritReforged.Content.Glyphs;
 
 [AutoloadHead]
-[FromClassic("RuneWizard")]
+[ReplaceContent("SpiritMod/RuneWizard")]
 public class Enchanter : ModNPC
 {
 	/// <summary> Used to track whether <see cref="Enchanter"/> has spawned previously in this world. Not useable on multiplayer clients. </summary>

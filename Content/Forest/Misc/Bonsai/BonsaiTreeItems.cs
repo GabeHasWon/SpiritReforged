@@ -1,8 +1,8 @@
-﻿using SpiritReforged.Common.ModCompat.Classic;
+﻿using SpiritReforged.Common.ModCompat.Replacement;
 
 namespace SpiritReforged.Content.Forest.Misc.Bonsai;
 
-[FromClassic("PottedSakura")]
+[ReplaceContent("SpiritMod/PottedSakura")]
 public class SakuraBonsaiItem : ModItem
 {
 	public virtual int Style => 0;
@@ -15,7 +15,7 @@ public class SakuraBonsaiItem : ModItem
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<BonsaiPot>()).AddIngredient(ItemID.VanityTreeSakuraSeed).Register();
 }
 
-[FromClassic("PottedWillow")]
+[ReplaceContent("SpiritMod/PottedWillow")]
 public class WillowBonsaiItem : SakuraBonsaiItem
 {
 	public override int Style => 1;
