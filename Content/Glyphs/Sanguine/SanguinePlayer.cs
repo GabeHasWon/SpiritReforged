@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Particles;
 
@@ -17,7 +18,6 @@ public partial class SanguineGlyph
 
 		private int _lastTickHP;
 		private int _buffDecayCooldown;
-		private bool _canStoreHealth = false; //Start with it false to prevent player initalization counting for gaining hp
 
 		public override void ResetEffects()
 		{
@@ -75,7 +75,7 @@ public partial class SanguineGlyph
 		public override void PostUpdate()
 		{
 			//Any positive difference, including regen, counts as healed hp for the buff
-			if(Player.statLife > _lastTickHP && Player.HeldItem.GetGlyph().ItemType == ModContent.ItemType<SanguineGlyph>() && _canStoreHealth)
+			if (Player.statLife > _lastTickHP && !Player.dead && Player.GlyphActive(new(ModContent.ItemType<SanguineGlyph>())))
 			{
 				if (!Player.HasBuff<SanguineStackingBuff>())
 					Player.AddBuff(ModContent.BuffType<SanguineStackingBuff>(), 60);
@@ -85,10 +85,7 @@ public partial class SanguineGlyph
 				_buffDecayCooldown = 60;
 			}
 
-			//Store information for next tick
-
-			_lastTickHP = Player.statLife;
-			_canStoreHealth = !Player.dead; //Prevent storing health when the player respawns
+			_lastTickHP = Player.statLife; //Store information for next tick
 		}
 
 		public void HitEffects(NPC target, int damageDone)

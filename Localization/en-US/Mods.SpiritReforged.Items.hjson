@@ -3426,7 +3426,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Enchanted Workbench
+	DisplayName: Wax Press
 	Tooltip: ""
 }
 
@@ -3534,6 +3534,11 @@ CandlePianoItem: {
 ChromaticWaxShaderDummy: {
 	DisplayName: Chromatic Wax Shader Dummy
 	Tooltip: Hello all cheat mod users!
+}
+
+WaxPlatformItem: {
+	DisplayName: Wax Platform
+	Tooltip: ""
 }
 
 ScrapPickup: {

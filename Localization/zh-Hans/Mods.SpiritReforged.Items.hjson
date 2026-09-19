@@ -3536,6 +3536,11 @@ ChromaticWaxShaderDummy: {
 	// Tooltip: Hello all cheat mod users!
 }
 
+WaxPlatformItem: {
+	DisplayName: 蜡平台
+	Tooltip: ""
+}
+
 ScrapPickup: {
 	// DisplayName: Scrap
 	/* Tooltip:

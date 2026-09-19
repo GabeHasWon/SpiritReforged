@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Misc;
-using System.Linq;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Glyphs.Sanguine;
