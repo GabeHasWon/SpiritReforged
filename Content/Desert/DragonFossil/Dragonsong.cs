@@ -1,8 +1,8 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -21,11 +21,13 @@ public class Dragonsong : ModItem
 		};
 
 		public ref float Counter => ref Projectile.ai[0];
+
 		private Vector2 MuzzlePosition => Projectile.Center + Vector2.Normalize(Projectile.velocity) * 36;
 
 		public override LocalizedText DisplayName => ModContent.GetInstance<Dragonsong>().DisplayName;
 
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 4;
+
 		public override void SetDefaults()
 		{
 			Projectile.ignoreWater = true;
@@ -82,13 +84,12 @@ public class Dragonsong : ModItem
 						for (int i = 0; i < 3; i++)
 						{
 							Vector2 velocity = (Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(2f, 5f)).RotatedByRandom(1);
-							ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, velocity, Color.Gray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 20)
+							ParticleRenderers.OverPlayers.Add(new SmokeCloud(MuzzlePosition, velocity, Color.Gray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 20)
 							{
 								TertiaryColor = Color.OrangeRed,
 								Pixellate = true,
 								PixelDivisor = 2,
-								Intensity = 2f,
-								Layer = ParticleLayer.AbovePlayer
+								Intensity = 2f
 							});
 						}
 					}
@@ -96,12 +97,11 @@ public class Dragonsong : ModItem
 			}
 			else if (Main.rand.NextBool())
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(MuzzlePosition, Vector2.UnitY * -Main.rand.NextFloat(3, 5), Color.DarkSlateGray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 30)
+				ParticleRenderers.OverPlayers.Add(new SmokeCloud(MuzzlePosition, Vector2.UnitY * -Main.rand.NextFloat(3, 5), Color.DarkSlateGray, 0.05f, Common.Easing.EaseFunction.EaseCircularOut, 30)
 				{
 					TertiaryColor = Color.PaleVioletRed,
 					Pixellate = true,
 					PixelDivisor = 3,
-					Layer = ParticleLayer.AbovePlayer
 				});
 			}
 		}
@@ -181,7 +181,7 @@ public class Dragonsong : ModItem
 				Projectile.scale *= 0.9f;
 
 			if (!Main.dedServ && Main.rand.NextBool(15))
-				ParticleHandler.SpawnParticle(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity * Main.rand.NextFloat(0.25f), 1, 20));
+				ParticleRenderers.UnderProjectiles.Add(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity * Main.rand.NextFloat(0.25f), 1, 20));
 
 			Projectile.velocity *= 0.985f;
 			Projectile.rotation = Projectile.velocity.ToRotation();
@@ -196,7 +196,7 @@ public class Dragonsong : ModItem
 			for (int i = 0; i < 5; i++)
 			{
 				Vector2 velocity = (Projectile.velocity * Main.rand.NextFloat(0.2f, 1)).RotatedByRandom(0.3);
-				ParticleHandler.SpawnParticle(new DragonEmber(Projectile.Center, velocity, 1, 40));
+				ParticleRenderers.UnderProjectiles.Add(new DragonEmber(Projectile.Center, velocity, 1, 40));
 			}
 		}
 
@@ -205,7 +205,7 @@ public class Dragonsong : ModItem
 			if (timeLeft > 0)
 			{
 				for (int i = 0; i < 10; i++)
-					ParticleHandler.SpawnParticle(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Main.rand.NextVector2Unit() * Main.rand.NextFloat(), 1, 30));
+					ParticleRenderers.UnderProjectiles.Add(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Main.rand.NextVector2Unit() * Main.rand.NextFloat(), 1, 30));
 			}
 		}
 
@@ -272,7 +272,7 @@ public class Dragonsong : ModItem
 			SoundEngine.PlaySound(SoundID.DD2_SkeletonDeath);
 
 			for (int i = 0; i < 4; i++)
-				TerrariaParticles.OverInventory.Add(new DragonBoneParticle(i)
+				ParticleRenderers.OverInventory.Add(new DragonBoneParticle(i)
 				{
 					LocalPosition = Main.MouseScreen,
 					Scale = Vector2.One,

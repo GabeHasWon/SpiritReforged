@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.Misc;
+﻿/*using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Common.Particle;
@@ -234,4 +234,4 @@ public class ParticleHandler : ILoadable
 	/// Returns the numeric type of the given particle.
 	/// </summary>
 	public static int ParticleType<T>() => particleTypes[typeof(T)];
-}
+}*/

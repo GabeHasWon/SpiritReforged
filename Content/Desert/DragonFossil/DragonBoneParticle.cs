@@ -3,9 +3,8 @@ using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Desert.DragonFossil;
 
-public class DragonBoneParticle(int style) : ABasicParticle
+public class DragonBoneParticle(int style) : Particle
 {
-	public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(DragonBoneParticle), "DragonBoneParticle", false);
 	protected readonly int _style = style;
 	protected int _timeActive;
 
@@ -24,7 +23,7 @@ public class DragonBoneParticle(int style) : ABasicParticle
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
 	{
-		Texture2D texture = Texture.Value;
+		Texture2D texture = Texture;
 		Rectangle source = texture.Frame(1, 4, 0, _style, 0, -2);
 
 		spritebatch.Draw(texture, LocalPosition + settings.AnchorPosition, source, Color.White, Rotation, source.Size() / 2, Scale, default, 0);

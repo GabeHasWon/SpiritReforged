@@ -94,7 +94,7 @@ public class SaltBlockReflective : SaltBlock
 					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
 					Main.spriteBatch.RestartToDefault();
 
-					SmokeTargetSystem.DrawCompositeSmoke(7, false);
+					SmokeTargetRenderer.DrawCompositeSmoke(7, false);
 				}
 
 				spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
@@ -114,7 +114,7 @@ public class SaltBlockReflective : SaltBlock
 
 				if (Reflections.Detail > 2)
 				{
-					SmokeTargetSystem.DrawCompositeSmoke(6, false);
+					SmokeTargetRenderer.DrawCompositeSmoke(6, false);
 					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowSolid);
 				}
 
@@ -149,12 +149,12 @@ public class SaltBlockReflective : SaltBlock
 				if (Reflections.Detail > 2)
 				{
 					spriteBatch.End();
-					Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
-					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveSolid);
-					Main.spriteBatch.End();
+					spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
+					ParticleHandler.DrawAllParticles(spriteBatch, ParticleLayer.AboveSolid);
+					spriteBatch.End();
 					spriteBatch.BeginDefault();
 
-					SmokeTargetSystem.DrawCompositeSmoke(5, false);
+					SmokeTargetRenderer.DrawCompositeSmoke(5, false);
 				}
 
 				DrawOrderSystem.DrawSolid();

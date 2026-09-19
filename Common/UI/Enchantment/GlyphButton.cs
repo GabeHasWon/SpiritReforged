@@ -61,7 +61,7 @@ public class GlyphButton : UIElement
 			{
 				Vector2 velocity = Main.rand.NextVector2Circular(0.5f, 0.5f);
 
-				TerrariaParticles.OverInventory.Add(new PrettySparkleParticle()
+				ParticleRenderers.OverInventory.Add(new PrettySparkleParticle()
 				{
 					LocalPosition = Main.rand.NextVector2FromRectangle(GetDimensions().ToRectangle()),
 					Scale = new Vector2(Main.rand.NextFloat(0.25f, 0.6f)),

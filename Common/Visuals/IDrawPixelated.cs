@@ -1,4 +1,3 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.RenderTargets;
 
 namespace SpiritReforged.Common.Visuals;
@@ -35,15 +34,10 @@ public interface IDrawPixelated
 					pixelQueue.Add(iDrawPixelated);
 			}
 
-			foreach (Particle.Particle particle in ParticleHandler.Particles)
+			foreach (Particle particle in ParticleHandler.Particles)
 			{
-				if (particle is null || particle.TimeActive > particle.MaxTime)
-					continue;
-
 				if (particle is IDrawPixelated iDrawPixelated)
-				{
 					pixelQueue.Add(iDrawPixelated);
-				}
 			}
 
 			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue

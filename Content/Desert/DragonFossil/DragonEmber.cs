@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Desert.DragonFossil;
 
@@ -7,35 +8,32 @@ public class DragonEmber : Particle
 	private readonly int _style;
 	private readonly float _baseScale;
 
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
 	public DragonEmber(Vector2 position, Vector2 velocity, float scale, int maxTime)
 	{
-		Position = position;
+		LocalPosition = position;
 		Velocity = velocity;
-		Scale = scale;
+		Scale = new Vector2(scale);
 		Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-		Color = Color.White;
-		MaxTime = maxTime;
+		TimeMax = maxTime;
 
 		_baseScale = scale;
 		_style = Main.rand.Next(5);
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
 		const int fadeout = 10;
-		Lighting.AddLight(Position, Color.Orange.ToVector3() * Scale * 0.5f);
+		Lighting.AddLight(LocalPosition, Color.Orange.ToVector3() * Scale.Length() * 0.5f);
 
-		if (TimeActive > MaxTime - fadeout)
-			Scale = _baseScale * (1f - (TimeActive - (float)(MaxTime - fadeout)) / fadeout);
+		if (TimeActive > TimeMax - fadeout)
+			Scale = new Vector2(_baseScale * (1f - (TimeActive - (float)(TimeMax - fadeout)) / fadeout));
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		Texture2D texture = ParticleHandler.GetTexture(Type);
+		Texture2D texture = Texture;
 		Rectangle source = texture.Frame(1, 5, 0, _style, 0, -2);
 
-		spriteBatch.Draw(texture, Position - Main.screenPosition, source, Color, Rotation, source.Size() / 2, Scale, default, 0);
+		spriteBatch.Draw(texture,  LocalPosition + settings.AnchorPosition, source, Color.White, Rotation, source.Size() / 2, Scale, default, 0);
 	}
 }

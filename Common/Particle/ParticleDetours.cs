@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.Misc;
+﻿/*using SpiritReforged.Common.Misc;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Common.Particle;
@@ -115,4 +115,4 @@ internal sealed class ParticleDetours : ILoadable
 	}
 
 	public void Unload() { }
-}
+}*/

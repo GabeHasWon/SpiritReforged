@@ -3,8 +3,8 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Particles.Basic;
 using Terraria.Audio;
@@ -38,7 +38,7 @@ public class RotDebuff : ModBuff
 			spriteBatch.Draw(skull, endPosition, null, color * fadeout * lightness * 2, sine * 0.1f, skull.Size() / 2, Math.Min(progress * 10, options.Scale) + sine * 0.1f, default, 0);
 
 			if ((int)Main.timeForVisualEffects % 18 == 0 && fadeout == 1)
-				TerrariaParticles.OverHealthBars.Add(new BubbleParticle(40, color * lightness, npc)
+				ParticleRenderers.OverHealthBars.Add(new BubbleParticle(40, color * lightness, npc)
 				{
 					LocalPosition = endPosition + Main.screenPosition - npc.Center,
 					Scale = new Vector2(0.8f) * options.Scale,
@@ -87,14 +87,13 @@ public class RotDebuff : ModBuff
 
 				for (int i = 0; i < 3; i++)
 				{
-					ParticleHandler.SpawnParticle(new FlyParticle(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.2f) * Main.rand.NextFloat(1.5f), 0f, 0.5f, 45));
+					ParticleRenderers.OverPlayers.Add(new FlyParticle(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.2f) * Main.rand.NextFloat(1.5f), 0f, 0.5f, 45));
 
-					ParticleHandler.SpawnParticle(new MaggotParticle(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.3f)
+					ParticleRenderers.UnderNPCs.Add(new MaggotParticle(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.3f)
 						* Main.rand.NextFloat(2.5f) - Vector2.UnitY, Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 20 + Main.rand.Next(20)));
 
-					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.5f)
-						* Main.rand.NextFloat(2.5f), new Color(87, 94, 1), 40, false, false)
-						{ Layer = ParticleLayer.BelowNPC });
+					ParticleRenderers.UnderNPCs.Add(new SmallCompositeSmoke(position, target.Center.DirectionTo(owner.Center).RotatedByRandom(0.5f)
+						* Main.rand.NextFloat(2.5f), new Color(87, 94, 1), 40, false, false));
 				}
 			}
 		}
@@ -223,20 +222,14 @@ public class RotDebuff : ModBuff
 			Vector2 position = Main.rand.NextVector2FromRectangle(entity.Hitbox);
 
 			if (Main.rand.NextBool(2))
-				ParticleHandler.SpawnParticle(new FlyParticle(position, -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f), 0f, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(30, 90)));
+				ParticleRenderers.OverPlayers.Add(new FlyParticle(position, -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f), 0f, Main.rand.NextFloat(0.8f, 1.2f), Main.rand.Next(30, 90)));
 
 			if (Main.rand.NextBool(6))
-				ParticleHandler.SpawnParticle(new MaggotParticle(position, Main.rand.NextVector2Circular(1f, 1f), Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 40)
-				{ Layer = ParticleLayer.AbovePlayer });
+				ParticleRenderers.OverPlayers.Add(new MaggotParticle(position, Main.rand.NextVector2Circular(1f, 1f), Main.rand.NextFloat(MathHelper.TwoPi), Main.rand.NextFloat(0.8f, 1.1f), 40));
 
-			ParticleHandler.SpawnParticle(new CompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
-			{ Layer = ParticleLayer.BelowNPC });
-
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38), 40, false, false, SmokeUpdate)
-			{ Layer = ParticleLayer.BelowNPC });
-
-			ParticleHandler.SpawnParticle(new AttachedCompositeSmoke(entity, Main.rand.NextVector2FromRectangle(entity.Hitbox), Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(169, 158, 38), 45, false, false, SmokeUpdate)
-			{ Layer = ParticleLayer.BelowNPC });
+			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(87, 94, 1), 50, false, false, SmokeUpdate));
+			ParticleRenderers.UnderNPCs.Add(new SmallCompositeSmoke(position, Main.rand.NextVector2Circular(1f, 1f) * Main.rand.NextFloat(0.2f, 1.2f), new Color(169, 158, 38), 40, false, false, SmokeUpdate));
+			ParticleRenderers.UnderNPCs.Add(new AttachedCompositeSmoke(entity, Main.rand.NextVector2FromRectangle(entity.Hitbox), Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(169, 158, 38), 45, false, false, SmokeUpdate));
 		}
 
 		static void SmokeUpdate(Particle p)
@@ -281,13 +274,9 @@ public class RotDebuff : ModBuff
 
 				for (int i = 0; i < 8; i++)
 				{
-					ParticleHandler.SpawnParticle(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
-
-					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate)
-					{ Layer = ParticleLayer.BelowNPC });
-
-					ParticleHandler.SpawnParticle(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate)
-					{ Layer = ParticleLayer.BelowNPC });
+					ParticleRenderers.OverPlayers.Add(new FlyParticle(center, Main.rand.NextVector2CircularEdge(1f, 1f), 0f, Main.rand.NextFloat(0.7f, 1.1f), 60));
+					ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(87, 94, 1), 50, false, false, SmokeUpdate));
+					ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(center, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.9f, 1f), new Color(169, 158, 38), 50, false, false, SmokeUpdate));
 				}
 			}
 		}

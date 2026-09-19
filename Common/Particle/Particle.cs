@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Common.Particle;
+﻿/*namespace SpiritReforged.Common.Particle;
 
 /// <summary>
 /// Represents a particle with a position, velocity, rotation, scale and transparency.
@@ -56,4 +56,4 @@ public class Particle
 	/// Allows you to do custom drawing for your particle. Only called if Particle.UseCustomDrawing is true.
 	/// </summary>
 	public virtual void CustomDraw(SpriteBatch spriteBatch) { }
-}
+}*/

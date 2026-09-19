@@ -1,34 +1,34 @@
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
 public class ShimmerStar : Particle
 {
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
+	private readonly Color _color;
 
 	public ShimmerStar(Vector2 position, Color color, float scale, int maxTime, Vector2 velocity = default)
 	{
-		Position = position;
-		Color = color.Additive();
-		Scale = scale;
-		MaxTime = maxTime;
+		LocalPosition = position;
+		_color = color.Additive();
+		Scale = new Vector2(scale);
+		TimeMax = maxTime;
 		Velocity = velocity;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
-		Rotation += .01f;
-		Velocity *= .98f;
+		Rotation += 0.01f;
+		Velocity *= 0.98f;
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
 	{
-		var basetexture = ParticleHandler.GetTexture(Type);
+		Texture2D texture = Texture;
+		Color color = _color * Progress;
+		Vector2 scale = Scale * (1f - Progress);
 
-		var color = Color * Progress;
-		float scale = Scale * (1f - Progress);
-
-		spriteBatch.Draw(basetexture, Position - Main.screenPosition, null, color, Rotation, basetexture.Size() / 2, scale, SpriteEffects.None, 0);
+		spritebatch.Draw(texture, LocalPosition + settings.AnchorPosition, null, color, Rotation, texture.Size() / 2, scale, 0, 0);
 	}
 }
