@@ -11,6 +11,7 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Items.Ammo;
+using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
@@ -137,6 +138,7 @@ public class SlugProjectile : ModProjectile
 		}
 		else
 		{
+			Projectile.velocity.Y += 0.003f;
 			Projectile.velocity *= 0.975f;
 
 			if (Main.rand.NextBool(4))
@@ -150,9 +152,7 @@ public class SlugProjectile : ModProjectile
 			return false;
 
 		var tex = BaseTexture.Value;
-		var texOutline = OutlineTexture.Value;
 		var texWhite = TextureColorCache.ColorSolid(tex, Color.White);
-		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		Main.instance.LoadProjectile(873); //Ensure these textures are loaded before drawing
 		Main.instance.LoadProjectile(ProjectileID.FallingStar);
@@ -175,7 +175,7 @@ public class SlugProjectile : ModProjectile
 
 		if (Projectile.timeLeft > fadeTime)
 		{
-			const float MAX_SCALE = 2.4f;
+			const float MAX_SCALE = 2.1f;
 			const float MIN_SCALE = 1.2f;
 
 			float fade = (Projectile.timeLeft - fadeTime) / (float)TIME_TILL_GRAVITY;
@@ -264,7 +264,9 @@ public class SlugProjectile : ModProjectile
 		}
 
 		Projectile.penetrate = -1;
-		Projectile.velocity = oldVelocity;
+		if (Projectile.timeLeft < MAX_TIMELEFT - 10)
+			Projectile.velocity = oldVelocity;
+
 		return false;
 	}
 
@@ -273,10 +275,22 @@ public class SlugProjectile : ModProjectile
 		// more dramatic hit
 		if (Projectile.timeLeft > MAX_TIMELEFT - TIME_TILL_FIRE_FADEOUT)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BulletHit") with { Volume = 0.66f, Pitch = -0.1f }, Projectile.Center);
+			float strength = 1f;
+
+			// Point blank shot
+			if (Projectile.timeLeft > MAX_TIMELEFT - 5)
+			{
+				if (Main.myPlayer == Projectile.owner)
+					ScreenshakeHelper.Shake(Projectile.Center, -Projectile.velocity * 0.1f, 0.66f, 2, 10);
+
+				Projectile.velocity *= 0.5f;
+				strength = 1.5f;
+			}
+
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BulletHit") with { Volume = 0.66f * strength, Pitch = -0.1f }, Projectile.Center);
 
 			float rotation = Main.rand.NextFloat(6.28f);
-			float scorchScale = Main.rand.NextFloat(0.08f, 0.12f);
+			float scorchScale = Main.rand.NextFloat(0.08f, 0.12f) * strength;
 
 			ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, Color.Orange.Additive(), rotation, scorchScale, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 15)
 			{
@@ -296,12 +310,12 @@ public class SlugProjectile : ModProjectile
 				PixelDivisor = 2,
 			});
 
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < (int)(4 * strength); i++)
 			{
 				Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(4f, 4f), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
 
-				Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
-				float scale = Main.rand.NextFloat(0.05f, 0.15f);
+				Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f) * strength;
+				float scale = Main.rand.NextFloat(0.05f, 0.15f) * strength;
 
 				ParticleHandler.SpawnParticle(new BloomParticle(Projectile.Center, velocity, Color.Orange, scale, 30, 1, p => p.Velocity *= 0.9f));
 

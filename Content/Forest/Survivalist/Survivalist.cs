@@ -47,7 +47,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 	{
 		if (player.altFunctionUse == 2)
 		{
-			Projectile.NewProjectile(source, position, velocity, ProjectileID.Grenade, damage * 2, knockback * 2, player.whoAmI);
+			Projectile.NewProjectile(source, position, velocity * 13f, ModContent.ProjectileType<SurvivalistGrenadeProjectile>(), damage * 2, knockback * 2, player.whoAmI);
 
 			return false;
 		}
@@ -57,7 +57,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
 	{
-		/*if (Item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineWeapon) && magazineWeapon.Reloading)
+		if (Item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineWeapon) && magazineWeapon.Reloading)
 		{
 			float animationProgress = magazineWeapon.ReloadProgress(drawInfo.drawPlayer, Item);
 
@@ -68,31 +68,38 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 
 			var handleData = new DrawData(handle, drawData.position, drawData.sourceRect, drawData.color, drawData.rotation, drawData.origin, drawData.scale, flip, 0f);
 
-			float maxRotation = 1.1f * drawInfo.drawPlayer.direction;
+			float maxRotation = 0.6f * drawInfo.drawPlayer.direction;
 
 			float barrelRot = drawData.rotation;
-			if (animationProgress is > 0.25f and < 0.35f)
+
+			if (animationProgress > 0.05f)
 			{
-				float lerp = EaseBuilder.EaseCircularOut.Ease((animationProgress - 0.25f) / 0.1f);
+				float lerper = (animationProgress - 0.05f) / 0.95f;
 
-				barrelRot += MathHelper.Lerp(0, maxRotation, lerp);
+				if (lerper is > 0.1f)
+				{
+					if (lerper < 0.2f)
+					{
+						float interpolant = (lerper - 0.1f) / 0.1f;
+						barrelRot += MathHelper.Lerp(0, maxRotation, EaseBuilder.EaseInBack(4).Ease(interpolant));
+					}
+					else if (lerper < 0.8f)
+						barrelRot += maxRotation;
+					else if (lerper >= 0.8f)
+					{
+						float interpolant = (lerper - 0.8f) / 0.2f;
+						barrelRot += MathHelper.Lerp(maxRotation, 0, EaseBuilder.EaseInOutBack(2.3f).Ease(interpolant));
+					}
+				}
 			}
-			else if (animationProgress is >= 0.35f and < 0.75f)
-				barrelRot += maxRotation;
-			else if (animationProgress >= 0.75f)
-			{
-				float lerp = EaseBuilder.EaseInOutBack().Ease((animationProgress - 0.75f) / 0.25f);
 
-				barrelRot += MathHelper.Lerp(maxRotation, 0, lerp);
-			}
-
-			var barrelData = new DrawData(barrel, drawData.position + new Vector2(40 * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation), null, drawData.color, barrelRot, barrel.Size() / 2f, drawData.scale, flip, 0f);
+			var barrelData = new DrawData(barrel, drawData.position + new Vector2(43 * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation), null, drawData.color, barrelRot, barrel.Size() / 2f, drawData.scale, flip, 0f);
 
 			drawInfo.DrawDataCache.Add(handleData);
 			drawInfo.DrawDataCache.Add(barrelData);
 
 			return false;
-		}*/
+		}
 
 		return true;
 	}
@@ -102,26 +109,36 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 		float itemRotation = player.compositeBackArm.rotation + 1.5707964f * player.gravDir;
 		Vector2 itemPosition = player.MountedCenter;
 
-		if (animProgress < 0.15f)
+		const float back = -6f;
+		const float front = -2f;
+
+		if (animProgress < 0.1f)
 		{
-			float lerper = animProgress / 0.15f;
-			itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(0f, -2f, EaseFunction.EaseCircularInOut.Ease(lerper));
+			float lerper = animProgress / 0.1f;
+			itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(0f, back, EaseFunction.EaseCircularInOut.Ease(lerper));
 		}
 		else
 		{
-			if (animProgress < 0.75f)
+			float lerper = (animProgress - 0.1f) / 0.9f;
+
+			if (lerper < 0.1f)
+				itemPosition += itemRotation.ToRotationVector2() * back;
+			else if (lerper < 0.25f)
 			{
-				itemPosition += itemRotation.ToRotationVector2() * -2f;
+				float interpolant = (lerper - 0.1f) / 0.15f;
+				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(back, front, EaseFunction.EaseCircularOut.Ease(interpolant));
 			}
-			else
+			else if (lerper < 0.8f)
+				itemPosition += itemRotation.ToRotationVector2() * front;
+			else if (lerper >= 0.8f)
 			{
-				float lerper = (animProgress - 0.75f) / 0.25f;
-				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(-2f, 0f, EaseFunction.EaseCircularInOut.Ease(lerper));
+				float interpolant = (lerper - 0.8f) / 0.2f;
+				itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(front, -0f, EaseFunction.EaseInOutBack().Ease(interpolant));
 			}
 		}
 
-		if (animProgress < 0.3f)
-			Dust.NewDustPerfect(itemPosition + new Vector2(42, -8 * player.direction).RotatedBy(itemRotation), DustID.Smoke, -Vector2.UnitY + Main.rand.NextVector2Circular(0.3f, 0.3f), 250, default, 3f);
+		//if (animProgress < 0.3f)
+		//	Dust.NewDustPerfect(itemPosition + new Vector2(42, -8 * player.direction).RotatedBy(itemRotation), DustID.Smoke, -Vector2.UnitY + Main.rand.NextVector2Circular(0.3f, 0.3f), 250, default, 3f);
 
 		ItemVisualHelpers.CleanHoldStyle(player, itemRotation, itemPosition, itemSize, itemOrigin, true, false, true);
 	}
@@ -133,43 +150,31 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 
 		Player.CompositeArmStretchAmount frontStretch = Player.CompositeArmStretchAmount.ThreeQuarters;
 
-		const float kickback = -0.35f;
-		const float lowerRotation = 0.6f;
-		const float endRotation = -0.05f;
+		const float min = 0.2f;
+		const float max = 0.45f;
 
-		if (animProgress < 0.35f)
+		if (animProgress < 0.05f)
 		{
-			if (animProgress < 0.1f)
-			{
-				float lerper = animProgress / 0.1f;
-				rotation += MathHelper.Lerp(0f, kickback, EaseFunction.EaseCircularOut.Ease(lerper)) * player.direction;
-				frontArmRotation += MathHelper.Lerp(0f, kickback, EaseFunction.EaseCircularOut.Ease(lerper)) * player.direction;
-			}
-			else
-			{
-				float lerper = (animProgress - 0.1f) / 0.25f;
-				rotation += MathHelper.Lerp(kickback, lowerRotation, EaseFunction.EaseCircularInOut.Ease(lerper)) * player.direction;
-				frontArmRotation -= 0.15f * player.direction;
-			}
+			float lerper = animProgress / 0.05f;
+			rotation += MathHelper.Lerp(0f, min, EaseFunction.EaseCircularOut.Ease(lerper)) * player.direction;
 		}
 		else
 		{
-			if (animProgress > 0.75f)
-			{
-				frontStretch = Player.CompositeArmStretchAmount.None;
-				if (animProgress > 0.85f)
-					frontStretch = Player.CompositeArmStretchAmount.Full;
+			float lerper = (animProgress - 0.05f) / 0.95f;
 
-				float lerper = (animProgress - 0.75f) / 0.25f;
-				rotation += MathHelper.Lerp(lowerRotation, endRotation, EaseFunction.EaseInOutBack(3f).Ease(lerper)) * player.direction;
+			if (lerper < 0.05f)
+				rotation += min * player.direction;
+			else if (lerper < 0.25f)
+			{
+				float interpolant = (lerper - 0.05f) / 0.2f;
+				rotation += MathHelper.Lerp(min, max, EaseFunction.EaseOutBack(3).Ease(interpolant)) * player.direction;
 			}
-			else
+			else if (lerper < 0.8f)
+				rotation += max * player.direction;
+			else if (lerper >= 0.8f)
 			{
-				frontStretch = Player.CompositeArmStretchAmount.Quarter;
-
-				frontArmRotation -= 0.15f * player.direction;
-
-				rotation += lowerRotation * player.direction;
+				float interpolant = (lerper - 0.8f) / 0.2f;
+				rotation += MathHelper.Lerp(max, 0f, EaseFunction.EaseInOutBack(4.2f).Ease(interpolant)) * player.direction;
 			}
 		}
 

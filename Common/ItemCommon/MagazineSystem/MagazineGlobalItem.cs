@@ -120,6 +120,9 @@ public class MagazineGlobalItem : GlobalItem
 	private int _reloadIdleTimer;
 	private int _maxReloadIdleTimer = 360;
 
+	// delay reload start until item is finished being used (shot)
+	private int reloadDelay;
+
 	// because we have to manually interrupt item time to cancel a reload, we store a seperate timer to ensure proper behavior.
 	private int reloadCancelCooldown;
 
@@ -135,18 +138,19 @@ public class MagazineGlobalItem : GlobalItem
 	public MagazineUIType UIType;
 
 	public bool Active => _magazineData is not null;
-	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0;
+	public bool Reloading => Active && _currentMagazine.ReloadTimer > 0 && reloadDelay <= 0;
 	public float ReloadProgress(Player player, Item item)
 	{
 		float interpolant = 1f - _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
 
 		// When a reload happens right after firing, Terraria stashes a clone of the item and this clone does not update variables, like the reload timer,
 		// So the timer does not update during this time, which causes a jump in our animation. This just uses the players item and item time to recalculate it to account for it.
-		if (interpolant == 0)
-			interpolant = 1f - (_currentMagazine.ReloadTimer - (item.useTime - player.itemTime)) / (float)_maxReloadTimer;
+		//if (interpolant == 0)
+		//	interpolant = 1f - (_currentMagazine.ReloadTimer - (item.useTime - player.itemTime)) / (float)_maxReloadTimer;
 
 		return interpolant;
 	}
+
 	public int AmmoRemaining(Player player) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize() - _currentMagazine.AmmoUsed;
 	public float MagazineProgress(Player player) => 1f - AmmoRemaining(player) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize();
 	public void ActivateMagazine(Item item, ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, MagazineReloadType reloadType, MagazineUIType uiType, bool useCustomUseStyle = true, bool useMagazineOnRightClick = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
@@ -277,6 +281,8 @@ public class MagazineGlobalItem : GlobalItem
 
 	void ActivateReload(Player player, Item item, int ammoUsed)
 	{
+		reloadDelay = item.useTime - 1;
+
 		//reloadCancelCooldown = _magazineData._reloadTime;
 
 		_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
@@ -353,7 +359,6 @@ public class MagazineGlobalItem : GlobalItem
 			}
 			else
 			{
-
 				if (_shotUseStyle is not null)
 					_shotUseStyle.Invoke(item, player, heldItemFrame, _shootDirection, _shootRotation, _itemSize, _itemOrigin);
 				else
@@ -495,72 +500,79 @@ public class MagazineGlobalItem : GlobalItem
 			if (reloadCancelCooldown > 0)
 				reloadCancelCooldown--;
 
-			if (_currentMagazine.ReloadTimer > 0)
+			if (reloadDelay > 0)
 			{
-				item.holdStyle = ItemHoldStyleID.HoldFront;
-
-				/*if (ReloadType == MagazineReloadType.OneAtATime && player.controlUseItem && AmmoRemaining(player) > 0 && reloadCancelCooldown <= 0)
-				{
-					reloadCancelCooldown = _magazineData._reloadTime; 
-					_maxReloadTimer = 0;
-					_currentMagazine.ReloadTimer = 0;
-					return;
-				}*/
-
-				_currentMagazine.ReloadTimer--;
-
-				if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
-				{
-					float interpolant = 1 - MagazineProgress(player);
-					float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
-
-					const float padding = 0.25f;
-
-					if (reloadProgress is > padding and < (1f - padding))
-					{
-						float lerp = 1f - (reloadProgress - padding) / (1f - padding * 2);
-
-						int old = _currentMagazine.AmmoUsed;
-						_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
-
-						if (old != _currentMagazine.AmmoUsed)
-						{
-							MagazinePlayer.UnempowerShot();
-
-							SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
-						}
-					}
-				}
-				else if (ReloadType == MagazineReloadType.EntireMagazine)
-				{
-					if (_currentMagazine.ReloadTimer == 0)
-					{
-						// TODO: Replace this
-						SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f });
-						MagazinePlayer.UnempowerAllShots();
-						_currentMagazine.AmmoUsed = 0;
-					}
-				}
-
-				if (_currentMagazine.ReloadTimer == 0)
-					item.holdStyle = oldHoldStyle;
+				reloadDelay--;
 			}
 			else
 			{
-				item.holdStyle = oldHoldStyle;
-
-				if (_oldAmmoUsed > 0)
-					_oldAmmoUsed = 0;
-
-				if (_currentMagazine.AmmoUsed > 0)
+				if (_currentMagazine.ReloadTimer > 0)
 				{
-					if (++_reloadIdleTimer >= _maxReloadIdleTimer) // activate reload after a period of idling (no shooting)
-					{
-						ActivateReload(player, item, _currentMagazine.AmmoUsed);
+					item.holdStyle = ItemHoldStyleID.HoldFront;
 
-						_reloadIdleTimer = 0;
+					/*if (ReloadType == MagazineReloadType.OneAtATime && player.controlUseItem && AmmoRemaining(player) > 0 && reloadCancelCooldown <= 0)
+					{
+						reloadCancelCooldown = _magazineData._reloadTime; 
+						_maxReloadTimer = 0;
+						_currentMagazine.ReloadTimer = 0;
+						return;
+					}*/
+
+					_currentMagazine.ReloadTimer--;
+
+					if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
+					{
+						float interpolant = 1 - MagazineProgress(player);
+						float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
+
+						const float padding = 0.25f;
+
+						if (reloadProgress is > padding and < (1f - padding))
+						{
+							float lerp = 1f - (reloadProgress - padding) / (1f - padding * 2);
+
+							int old = _currentMagazine.AmmoUsed;
+							_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
+
+							if (old != _currentMagazine.AmmoUsed)
+							{
+								MagazinePlayer.UnempowerShot();
+
+								SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+							}
+						}
 					}
-				}			
+					else if (ReloadType == MagazineReloadType.EntireMagazine)
+					{
+						if (_currentMagazine.ReloadTimer == 0)
+						{
+							// TODO: Replace this
+							SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f });
+							MagazinePlayer.UnempowerAllShots();
+							_currentMagazine.AmmoUsed = 0;
+						}
+					}
+
+					if (_currentMagazine.ReloadTimer == 0)
+						item.holdStyle = oldHoldStyle;
+				}
+				else
+				{
+					item.holdStyle = oldHoldStyle;
+
+					if (_oldAmmoUsed > 0)
+						_oldAmmoUsed = 0;
+
+					if (_currentMagazine.AmmoUsed > 0)
+					{
+						if (++_reloadIdleTimer >= _maxReloadIdleTimer) // activate reload after a period of idling (no shooting)
+						{
+							ActivateReload(player, item, _currentMagazine.AmmoUsed);
+
+							_reloadIdleTimer = 0;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -614,6 +626,7 @@ public class MagazineGlobalItem : GlobalItem
 		clone.UIType = UIType;
 		clone.oldHoldStyle = oldHoldStyle;
 		clone.shouldUseMagazineOnRightClick = shouldUseMagazineOnRightClick;
+		clone.reloadDelay = reloadDelay;
 
 		return clone;
 	}
