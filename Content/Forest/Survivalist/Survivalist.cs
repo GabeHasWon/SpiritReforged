@@ -21,7 +21,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 
 	int cooldown;
 
-	public override bool AltFunctionUse(Player player) => cooldown <= 0;
+	public override bool AltFunctionUse(Player player) => cooldown <= 0 && !MagazinePlayer.GetMagazineWeapon(player).Reloading;
 
 	public override void SafeSetDefaults()
 	{
@@ -47,7 +47,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 	{
 		if (player.altFunctionUse == 2)
 		{
-			Projectile.NewProjectile(source, position, velocity * 13f, ModContent.ProjectileType<SurvivalistGrenadeProjectile>(), damage * 2, knockback * 2, player.whoAmI);
+			Projectile.NewProjectile(source, position, velocity * 13f, ModContent.ProjectileType<SurvivalistGrenadeProjectile>(), damage / 4, knockback * 2, player.whoAmI);
 
 			return false;
 		}

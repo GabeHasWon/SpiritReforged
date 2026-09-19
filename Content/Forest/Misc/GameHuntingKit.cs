@@ -5,8 +5,6 @@ using SpiritReforged.Content.Underground.Items;
 namespace SpiritReforged.Content.Forest.Misc;
 public class GameHuntingKit : ModItem
 {
-	// TODO: Texture
-	public override string Texture => AssetLoader.EmptyTexture;
 	public override void SetDefaults()
 	{
 		Item.DefaultToAccessory();

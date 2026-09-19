@@ -30,6 +30,14 @@ public class Slug : ShotgunAmmoItem
 		for (int i = 1; i < shotCount; i++)
 			damageIncrease += 0.1f;
 
+		for (int i = 0; i < 5; i++)
+		{
+			for (int x = 0; x < 2; x++)
+				Dust.NewDustPerfect(position, DustID.Torch, direction.RotatedByRandom(spreadAmount) * Main.rand.NextFloat(speed, speed * 2f), 0, default, Main.rand.NextFloat(3.5f)).noGravity = true;
+
+			Dust.NewDustPerfect(position + direction * speed, DustID.Smoke, direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
+		}
+
 		return [Projectile.NewProjectileDirect(source, position, direction.RotatedByRandom(spreadAmount) * speed * Main.rand.NextFloat(1.25f, 1.5f), ModContent.ProjectileType<SlugProjectile>(), damage, knockback, player.whoAmI)];
 	}
 
