@@ -19,7 +19,7 @@ public class UncommonSpookyPots : PotTile, ILootable
 {
 	public enum Style : int
 	{
-		LowerCatacombs, UpperCatacombs, Krampus, TarPits, RottenDepths, FetidFarms, NoseTemple, SpiderCaves, SpookyForest
+		LowerCatacombs, UpperCatacombs, Krampus, TarPits, RottenDepths, FetidFarms, NoseTemple, SpiderGrotto, SpookyForest
 	}
 
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/PotBreak")
@@ -69,7 +69,7 @@ public class UncommonSpookyPots : PotTile, ILootable
 	{
 		Style.SpookyForest => 1.35f,
 		Style.Krampus or Style.TarPits => 1.5f,
-		Style.FetidFarms or Style.RottenDepths or Style.SpiderCaves or Style.UpperCatacombs => 2,
+		Style.FetidFarms or Style.RottenDepths or Style.SpiderGrotto or Style.UpperCatacombs => 2,
 		Style.NoseTemple => 2.25f,
 		Style.LowerCatacombs => 3,
 		_ => 1.25f
@@ -231,6 +231,8 @@ public class UncommonSpookyPots : PotTile, ILootable
 				return;
 		}
 
+		Mod spooky = CrossMod.Spooky.Instance;
+
 		switch (style)
 		{
 			case Style.LowerCatacombs:
@@ -296,12 +298,10 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 				break;
 
-			case Style.SpiderCaves:
+			case Style.SpiderGrotto:
 
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, GoreID.GreekPot1);
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, GoreID.GreekPot2);
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, GoreID.GreekPot3);
-				dustType = DustID.MarblePot;
+				Gore.NewGore(source, GetRandom(), Vector2.Zero, spooky.Find<ModGore>("SpiderCavePotGore").Type);
+				dustType = DustID.Web;
 
 				break;
 
@@ -322,8 +322,6 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 	public void AddLoot(ILoot loot)
 	{
-		Mod spooky = CrossMod.Spooky.Instance;
-
 		var style = GetStyle(loot is TileLootTable t ? t.Style / 3 * 36 : 0);
 
 		List<int> potions = [ItemID.SpelunkerPotion, ItemID.HunterPotion,
@@ -357,25 +355,14 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 		int type = style switch
 		{
-			Style.Desert => ItemID.FossilOre,
-			Style.Dungeon => ItemID.Bone,
-			Style.Marble => ItemID.Javelin,
-			Style.Hell => ItemID.LivingFireBlock,
-			Style.Granite => ItemID.Geode,
+			Style.RottenDepths => SpookyItem("FishboneChunk"),
+			Style.FetidFarms => SpookyItem("PlantMulch"),
+			Style.SpiderGrotto => SpookyItem("SpiderChitin"),
 			_ => -1
 		};
 
 		if (type != -1)
-		{
-			if (style is Style.Dungeon)
-				loot.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.DownedSkeletron), ItemID.Bone, 2, 10, 15));
-			if (style is Style.Granite)
-				loot.AddCommon(ItemID.Geode, 3);
-			if (style is Style.Desert)
-				loot.AddCommon(ItemID.FossilOre, 6, 4, 10);
-			else
-				loot.AddCommon(type, 2, 10, 15);
-		}
+			loot.AddCommon(type, 2, 10, 15);
 
 		List<IItemDropRule> branch = [];
 
@@ -389,42 +376,24 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 		branch.Add(healingPotRule);
 
-		if (style is Style.SpookyForest or Style.LowerCatacombs or Style.UpperCatacombs or Style.NoseTemple or Style.SpiderCaves)
+		if (style is Style.SpookyForest or Style.LowerCatacombs or Style.UpperCatacombs or Style.NoseTemple or Style.SpiderGrotto)
 			SpookyAmmoBranch(branch);
 
 		loot.Add(new OneFromRulesRule(1, [.. branch]));
-
-		int ArrowType()
-		{
-			int result = style switch
-			{
-				Style.Ice => ItemID.FrostburnArrow,
-				Style.Dungeon => ItemID.BoneArrow,
-				Style.Marble => ItemID.JestersArrow,
-				Style.Hell => ItemID.HellfireArrow,
-				_ => ItemID.WoodenArrow
-			};
-
-			if (style is Style.Desert or Style.Jungle)
-				result = ItemID.FlamingArrow;
-			else if (style is Style.Corruption or Style.Crimson)
-				result = ItemID.UnholyArrow;
-
-			return result;
-		}
 
 		int TorchType()
 		{
 			int result = style switch
 			{
-				Style.SpookyForest => ItemType("SpookyBiomeTorchItem"),
-				Style.UpperCatacombs => ItemType("CatacombTorch1Item"),
-				Style.LowerCatacombs => ItemType("CatacombTorch2Item"),
-				Style.NoseTemple => ItemType("SpookyHellTorchItem"),
-				Style.SpiderCaves => ItemType("SpiderBiomeTorchItem"),
-				Style.Marble => ItemID.YellowTorch,
-				Style.Hell => ItemID.DemonTorch,
-				Style.Mushroom => ItemID.MushroomTorch,
+				Style.SpookyForest => SpookyItem("SpookyBiomeTorchItem"),
+				Style.UpperCatacombs => SpookyItem("CatacombTorch1Item"),
+				Style.LowerCatacombs => SpookyItem("CatacombTorch2Item"),
+				Style.NoseTemple => SpookyItem("SpookyHellTorchItem"),
+				Style.SpiderGrotto => SpookyItem("SpiderBiomeTorchItem"),
+				Style.FetidFarms => ItemID.JungleTorch,
+				Style.Krampus => ItemID.IceTorch,
+				Style.TarPits => ItemID.DesertTorch,
+				Style.RottenDepths => ItemID.CoralTorch,
 				_ => ItemID.SpelunkerGlowstick
 			};
 
@@ -439,8 +408,8 @@ public class UncommonSpookyPots : PotTile, ILootable
 		rule.OnFailedConditions(GetRule("MossyPebble"));
 		branch.Add(new OneFromRulesRule(1, GetRule("OldWoodArrow"), GetRule("RustedBullet"), GetRule("OldWoodArrow"), rule));
 
-		static IItemDropRule GetRule(string name) => ItemDropRule.Common(ItemType(name), 1, 15, 30);
+		static IItemDropRule GetRule(string name) => ItemDropRule.Common(SpookyItem(name), 1, 15, 30);
 	}
 
-	private static int ItemType(string name) => CrossMod.Spooky.Find<ModItem>(name).Type;
+	private static int SpookyItem(string name) => CrossMod.Spooky.Find<ModItem>(name).Type;
 }
