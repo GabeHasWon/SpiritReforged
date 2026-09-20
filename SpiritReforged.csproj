@@ -25,6 +25,7 @@
 	  </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Content\Crossmod\Spooky\Tiles\Pots\Gores\" />
     <Folder Include="Localization\ru-RU\" />
   </ItemGroup>
   <ItemGroup>

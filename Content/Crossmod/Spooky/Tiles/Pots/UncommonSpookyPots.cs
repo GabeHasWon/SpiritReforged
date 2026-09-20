@@ -11,9 +11,8 @@ using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
-using TileHelper.Common;
 
-namespace SpiritReforged.Content.Crossmod.Spooky.Tiles;
+namespace SpiritReforged.Content.Crossmod.Spooky.Tiles.Pots;
 
 public class UncommonSpookyPots : PotTile, ILootable
 {
@@ -130,12 +129,6 @@ public class UncommonSpookyPots : PotTile, ILootable
 		}
 	}
 
-	public override void SetStaticDefaults()
-	{
-		base.SetStaticDefaults();
-		// TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(200, 200, 200));
-	}
-
 	public override void AddMapData() => AddMapEntry(new Color(112, 60, 70), Language.GetText("MapObject.Pot"));
 
 	public override void NearbyEffects(int i, int j, bool closer)
@@ -162,18 +155,21 @@ public class UncommonSpookyPots : PotTile, ILootable
 		if (!fail && !IsRubble)
 		{
 			var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);
-
-			if (GetStyle(Main.tile[i, j].TileFrameY) is Style.RottenDepths)
+			Style style = GetStyle(Main.tile[i, j].TileFrameY);
+			
+			if (style is Style.RottenDepths)
 			{
 				SoundEngine.PlaySound(SoundID.NPCHit1 with { Volume = .3f, Pitch = .25f }, pos);
 				SoundEngine.PlaySound(SoundID.NPCDeath1, pos);
 			}
-			else if (GetStyle(Main.tile[i, j].TileFrameY) is Style.NoseTemple)
+			else if (style is Style.NoseTemple)
 			{
 				SoundEngine.PlaySound(Squish, pos);
 				SoundEngine.PlaySound(JungleBreak, pos);
 				SoundEngine.PlaySound(SoundID.Dig, pos);
 			}
+			else if (style == Style.SpookyForest)
+				SoundEngine.PlaySound(SoundID.Dig, pos);
 			else
 			{
 				SoundEngine.PlaySound(SoundID.Shatter, pos);
@@ -232,6 +228,7 @@ public class UncommonSpookyPots : PotTile, ILootable
 		}
 
 		Mod spooky = CrossMod.Spooky.Instance;
+		Mod reforged = SpiritReforgedMod.Instance;
 
 		switch (style)
 		{
@@ -307,7 +304,27 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 			case Style.SpookyForest:
 
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, 203);
+				if (variant == 0)
+				{
+					Gore.NewGore(source, center + new Vector2(Main.rand.NextFloat(-24, 0), -12), Vector2.Zero, reforged.Find<ModGore>("GreenForest0").Type);
+
+					for (int k = 0; k < 3; ++k)
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("GreenForest" + (k + 1)).Type);
+				}
+				else if (variant == 1)
+				{
+					Gore.NewGore(source, center + new Vector2(Main.rand.NextFloat(-24, 0), -12), Vector2.Zero, reforged.Find<ModGore>("OrangeForest0").Type);
+
+					for (int k = 0; k < 6; ++k)
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("OrangeForest" + (k + 1)).Type);
+				}
+				else
+				{
+					for (int k = 0; k < 5; ++k)
+						Gore.NewGore(source, GetRandom(), Main.rand.NextVector2Circular(2, 2), GoreID.Smoke1 + Main.rand.Next(3));
+				}
+
+					Gore.NewGore(source, GetRandom(), Vector2.Zero, 203);
 				Gore.NewGore(source, GetRandom(), Vector2.Zero, 204);
 				dustType = DustID.Obsidian;
 

@@ -3651,3 +3651,48 @@ DhampirQuestItem: {
 		"You feel an instinctual need to care for it"
 		'''
 }
+
+UncommonSpookyPotsLowerCatacombsItem: {
+	DisplayName: Uncommon Spooky Pots Lower Catacombs Item
+	Tooltip: ""
+}
+
+UncommonSpookyPotsUpperCatacombsItem: {
+	DisplayName: Uncommon Spooky Pots Upper Catacombs Item
+	Tooltip: ""
+}
+
+UncommonSpookyPotsKrampusItem: {
+	DisplayName: Uncommon Spooky Pots Krampus Item
+	Tooltip: ""
+}
+
+UncommonSpookyPotsTarPitsItem: {
+	DisplayName: Uncommon Spooky Pots Tar Pits Item
+	Tooltip: ""
+}
+
+UncommonSpookyPotsRottenDepthsItem: {
+	DisplayName: Uncommon Spooky Pots Rotten Depths Item
+	Tooltip: ""
+}
+
+UncommonSpookyPotsFetidFarmsItem: {
+	DisplayName: Uncommon Spooky Pots Fetid Farms Item
+	Tooltip: ""
+}
+
+UncommonSpookyPotsNoseTempleItem: {
+	DisplayName: Uncommon Spooky Pots Nose Temple Item
+	Tooltip: ""
+}
+
+UncommonSpookyPotsSpiderGrottoItem: {
+	DisplayName: Uncommon Spooky Pots Spider Grotto Item
+	Tooltip: ""
+}
+
+UncommonSpookyPotsSpookyForestItem: {
+	DisplayName: Uncommon Spooky Pots Spooky Forest Item
+	Tooltip: ""
+}
