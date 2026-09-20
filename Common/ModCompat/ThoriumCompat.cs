@@ -30,6 +30,7 @@ internal class ThoriumGlobalNPC : GlobalNPC
 			ModContent.NPCType<TridentZombie>(),
 			ModContent.NPCType<CactusZombie>(),
 			ModContent.NPCType<TumbleZombie>(),
+			ModContent.NPCType<SunburntZombie>(),
 			ModContent.NPCType<VeiledZombie>()
 		];
 

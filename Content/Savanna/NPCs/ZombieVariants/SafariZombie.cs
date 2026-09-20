@@ -65,7 +65,7 @@ public class SafariZombie : ModNPC, ISubstitute
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		var rule = ItemDropRule.Common(ModContent.ItemType<HuntingRifle>(), 100);
+		var rule = ItemDropRule.Common(ModContent.ItemType<HuntingRifle>(), 30);
 		rule.OnSuccess(ItemDropRule.Common(ItemID.MusketBall, 1, 25, 45), hideLootReport: true);
 		npcLoot.Add(rule);
 

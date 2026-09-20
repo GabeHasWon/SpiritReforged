@@ -95,7 +95,7 @@ public class StackablePots : ModTile
 		int style = x % 3 + y * 3;
 		var velocity = (Vector2.UnitY * -Main.rand.NextFloat(3f, 5f)).RotatedByRandom(1f);
 
-		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), velocity, ModContent.ProjectileType<FallingPot>(), 10, 0, ai0: style);
+		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), velocity, ModContent.ProjectileType<FallingPot>(), 0, 0, ai0: style);
 
 		Offsets.Remove(new Point16(i, j));
 	}

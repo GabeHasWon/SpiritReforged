@@ -21,5 +21,5 @@ public class GoldDivingBeetle : DivingBeetle, IGoldCritter, ItemEvents.IQuickRec
 		}
 	);
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => base.SpawnChance(spawnInfo) * 0.05f;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => base.SpawnChance(spawnInfo) * 0.005f;
 }
