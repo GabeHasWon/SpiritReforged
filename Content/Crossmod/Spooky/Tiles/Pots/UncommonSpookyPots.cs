@@ -247,7 +247,6 @@ public class UncommonSpookyPots : PotTile, ILootable
 		}
 
 		Mod spooky = CrossMod.Spooky.Instance;
-		Mod reforged = SpiritReforgedMod.Instance;
 
 		switch (style)
 		{
@@ -282,23 +281,22 @@ public class UncommonSpookyPots : PotTile, ILootable
 					dustType = DustID.Confetti_Blue;
 
 					for (int k = 0; k < 3; ++k)
-						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("BlueGift" + k).Type);
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, Mod.Find<ModGore>("BlueGift" + k).Type);
 				}
 				else if (variant == 1)
 				{
 					dustType = DustID.Confetti_Green;
 
 					for (int k = 0; k < 3; ++k)
-						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("GreenGift" + k).Type);
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, Mod.Find<ModGore>("GreenGift" + k).Type);
 				}
 				else
 				{
 					dustType = DustID.OrangeStainedGlass;
 
 					for (int k = 0; k < 3; ++k)
-						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("OrangeGift" + k).Type);
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, Mod.Find<ModGore>("OrangeGift" + k).Type);
 				}
-
 
 				break;
 
@@ -327,33 +325,44 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 			case Style.NoseTemple:
 
-				dustType = DustID.Crimson;
-				Gore.NewGore(source, center, Vector2.Zero, Mod.Find<ModGore>("PotCrimson1").Type);
+				for (int k = 0; k < 3; ++k)
+					Gore.NewGore(source, GetRandom(), Main.rand.NextVector2Circular(2, 2), Mod.Find<ModGore>("Nose" + Main.rand.Next(4)).Type);
 
 				break;
 
 			case Style.SpiderGrotto:
 
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, spooky.Find<ModGore>("SpiderCavePotGore").Type);
-				dustType = DustID.Web;
+				if (variant == 0)
+				{
+					for (int k = 0; k < 2; ++k)
+						Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("RedPot" + k).Type);
+				}
+				else if (variant == 1)
+				{
+					for (int k = 0; k < 2; ++k)
+						Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("GrayPot" + k).Type);
+				}
+				else
+					Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("DarkGrayPot").Type);
 
+				dustType = DustID.Web;
 				break;
 
 			case Style.SpookyForest:
 
 				if (variant == 0)
 				{
-					Gore.NewGore(source, center + new Vector2(Main.rand.NextFloat(-24, 0), -12), Vector2.Zero, reforged.Find<ModGore>("GreenForest0").Type);
+					Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("GreenForest0").Type);
 
 					for (int k = 0; k < 3; ++k)
-						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("GreenForest" + (k + 1)).Type);
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, Mod.Find<ModGore>("GreenForest" + (k + 1)).Type);
 				}
 				else if (variant == 1)
 				{
-					Gore.NewGore(source, center + new Vector2(Main.rand.NextFloat(-24, 0), -12), Vector2.Zero, reforged.Find<ModGore>("OrangeForest0").Type);
+					Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("OrangeForest0").Type);
 
 					for (int k = 0; k < 6; ++k)
-						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("OrangeForest" + (k + 1)).Type);
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, Mod.Find<ModGore>("OrangeForest" + (k + 1)).Type);
 				}
 				else
 				{
@@ -374,11 +383,20 @@ public class UncommonSpookyPots : PotTile, ILootable
 		Vector2 GetRandom(float distance = 15f) => center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(distance);
 	}
 
+	private static Vector2 GetCenteredPosition(Vector2 center) => center + new Vector2(Main.rand.NextFloat(-24, 0), -12);
+
 	public void AddLoot(ILoot loot)
 	{
 		var style = GetStyle(loot is TileLootTable t ? t.Style / 3 * 36 : 0);
 
-		List<int> potions = [ItemID.SpelunkerPotion, ItemID.HunterPotion,
+		if (style == Style.SpookyForest)
+			loot.AddOneFromOptions(1, SpookyItem("CandyCorn"), SpookyItem("VampireGummy"), SpookyItem("EyeChocolate"), SpookyItem("FrankenMarshmallow"),
+				SpookyItem("GoofyPretzel"), ItemID.ChocolateChipCookie, ItemID.Marshmallow);
+		else if (style == Style.FetidFarms)
+			loot.AddOneFromOptions(1, ItemID.Apple, ItemID.Apricot, ItemID.BlackCurrant, ItemID.Banana, ItemID.Cherry, ItemID.Lemon, ItemID.Mango, ItemID.Peach, ItemID.Plum,
+				ItemID.Rambutan, ItemID.Dragonfruit, ItemID.Grapes);
+
+			List<int> potions = [ItemID.SpelunkerPotion, ItemID.HunterPotion,
 			ItemID.GravitationPotion, ItemID.LifeforcePotion, ItemID.TitanPotion, ItemID.BattlePotion,
 			ItemID.MagicPowerPotion, ItemID.ManaRegenerationPotion, ItemID.BiomeSightPotion, ItemID.HeartreachPotion,
 			ModContent.ItemType<DoubleJumpPotion>(), WorldGen.crimson ? ItemID.RagePotion : ItemID.WrathPotion];

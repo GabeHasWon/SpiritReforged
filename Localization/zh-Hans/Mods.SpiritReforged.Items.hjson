@@ -3653,46 +3653,46 @@ DhampirQuestItem: {
 }
 
 UncommonSpookyPotsLowerCatacombsItem: {
-	// DisplayName: Uncommon Spooky Pots Lower Catacombs Item
+	// DisplayName: "{$Tiles.Records.LowerCatacombs.Name}"
 	// Tooltip: ""
 }
 
 UncommonSpookyPotsUpperCatacombsItem: {
-	// DisplayName: Uncommon Spooky Pots Upper Catacombs Item
+	// DisplayName: "{$Tiles.Records.UpperCatacombs.Name}"
 	// Tooltip: ""
 }
 
 UncommonSpookyPotsKrampusItem: {
-	// DisplayName: Uncommon Spooky Pots Krampus Item
+	// DisplayName: "{$Tiles.Records.Krampus.Name}"
 	// Tooltip: ""
 }
 
 UncommonSpookyPotsTarPitsItem: {
-	// DisplayName: Uncommon Spooky Pots Tar Pits Item
+	// DisplayName: "{$Tiles.Records.TarPits.Name}"
 	// Tooltip: ""
 }
 
 UncommonSpookyPotsRottenDepthsItem: {
-	// DisplayName: Uncommon Spooky Pots Rotten Depths Item
+	// DisplayName: "{$Tiles.Records.RottenDepths.Name}"
 	// Tooltip: ""
 }
 
 UncommonSpookyPotsFetidFarmsItem: {
-	// DisplayName: Uncommon Spooky Pots Fetid Farms Item
+	// DisplayName: "{$Tiles.Records.FetidFarms.Name}"
 	// Tooltip: ""
 }
 
 UncommonSpookyPotsNoseTempleItem: {
-	// DisplayName: Uncommon Spooky Pots Nose Temple Item
+	// DisplayName: "{$Tiles.Records.NoseTemple.Name}"
 	// Tooltip: ""
 }
 
 UncommonSpookyPotsSpiderGrottoItem: {
-	// DisplayName: Uncommon Spooky Pots Spider Grotto Item
+	// DisplayName: "{$Tiles.Records.SpiderGrotto.Name}"
 	// Tooltip: ""
 }
 
 UncommonSpookyPotsSpookyForestItem: {
-	// DisplayName: Uncommon Spooky Pots Spooky Forest Item
+	// DisplayName: "{$Tiles.Records.SpookyForest.Name}"
 	// Tooltip: ""
 }
