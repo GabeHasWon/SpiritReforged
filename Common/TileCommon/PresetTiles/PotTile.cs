@@ -21,6 +21,7 @@ public abstract class PotTile : ModTile, IAutoloadRubble
 	public bool IsRubble => Main.ContentLoaded ? Autoloader.IsRubble(Type) : Name.Contains("Rubble"); //Autoloader.IsRubble is unusuable before loading is complete
 
 	public override void Load() => SpiritReforgedSystem.OnLoad += AutoloadFromGroup;
+
 	public virtual void AutoloadFromGroup()
 	{
 		foreach (string name in Styles.Keys)

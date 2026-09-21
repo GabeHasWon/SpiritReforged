@@ -8,6 +8,7 @@ using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Underground.Items;
 using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Pottery;
+using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -49,6 +50,24 @@ public class UncommonSpookyPots : PotTile, ILootable
 				dict.Add(name, [start++, start++, start++]);
 
 			return dict;
+		}
+	}
+
+	public override void AutoloadFromGroup()
+	{
+		foreach (string name in Styles.Keys)
+		{
+			string finalName = Name + name;
+			NamedStyles.StyleGroup group = new(finalName, Styles[name]);
+
+			NamedStyles.AddStyle(Type, group);
+
+			TileRecord record = AddRecord(Type, group);
+			record.AddDisplayName(Language.GetText("Mods.SpiritReforged.Tiles.Records." + name + ".Name"));
+			record.AddDescription(Language.GetText("Mods.SpiritReforged.Tiles.Records." + name + ".Entry"));
+			RecordHandler.Records.Add(record);
+
+			Mod.AddContent(new AutoloadedPotItem(Name + "Rubble", group, record.Condition, AddItemRecipes));
 		}
 	}
 
@@ -258,10 +277,28 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 			case Style.Krampus:
 
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, GoreID.DesertPot1);
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, GoreID.DesertPot2);
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, GoreID.DesertPot3);
-				dustType = DustID.DesertPot;
+				if (variant == 0)
+				{
+					dustType = DustID.Confetti_Blue;
+
+					for (int k = 0; k < 3; ++k)
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("BlueGift" + k).Type);
+				}
+				else if (variant == 1)
+				{
+					dustType = DustID.Confetti_Green;
+
+					for (int k = 0; k < 3; ++k)
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("GreenGift" + k).Type);
+				}
+				else
+				{
+					dustType = DustID.OrangeStainedGlass;
+
+					for (int k = 0; k < 3; ++k)
+						Gore.NewGore(source, GetRandom(), Vector2.Zero, reforged.Find<ModGore>("OrangeGift" + k).Type);
+				}
+
 
 				break;
 
@@ -324,7 +361,7 @@ public class UncommonSpookyPots : PotTile, ILootable
 						Gore.NewGore(source, GetRandom(), Main.rand.NextVector2Circular(2, 2), GoreID.Smoke1 + Main.rand.Next(3));
 				}
 
-					Gore.NewGore(source, GetRandom(), Vector2.Zero, 203);
+				Gore.NewGore(source, GetRandom(), Vector2.Zero, 203);
 				Gore.NewGore(source, GetRandom(), Vector2.Zero, 204);
 				dustType = DustID.Obsidian;
 

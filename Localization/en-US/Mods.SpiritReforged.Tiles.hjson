@@ -1,4 +1,5 @@
 Records: {
+	# Reforged pots
 	CoinPortal:
 		'''
 		Always contains a coin portal.
@@ -28,6 +29,52 @@ Records: {
 	Biome: Contains a greater variety of loot than common pots.
 	Boulder: Rolls along the ground when disturbed.
 	Wax: Imbued with potent magical energies.
+
+	# Spooky cross mod pots
+	SpookyForest: {
+		Name: Stuffed Pail
+		Entry: The leading edge of flimsy candy carriers.
+	}
+
+	SpiderGrotto: {
+		Name: Webbed Cooking Pot
+		Entry: ...who cooked all of these?
+	}
+
+	NoseTemple: {
+		Name: Porcelain Nose
+		Entry: The fanciest porcelain for the haughtiest noses.
+	}
+
+	FetidFarms: {
+		Name: Groceries
+		Entry: Fresh grown produce!
+	}
+
+	RottenDepths: {
+		Name: Loaded Skeletons
+		Entry: Seems like these fish swallowed some goods.
+	}
+
+	TarPits: {
+		Name: Taramic Pot
+		Entry: Ornate, slightly sticky, kinda cracked.
+	}
+
+	Krampus: {
+		Name: Awesome Present
+		Entry: The coolest gift boxes you've ever seen.
+	}
+
+	UpperCatacombs: {
+		Name: Ancient Carved Pot
+		Entry: The carvings on these are lovely, but hard to see.
+	}
+
+	LowerCatacombs: {
+		Name: Jeering Pot
+		Entry: They sneer at you.
+	}
 }
 
 FablesGraves: {
