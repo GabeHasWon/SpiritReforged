@@ -120,7 +120,7 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 			// Two trails that converge on the same point from opposing starting rotations
 			List<Vector2> cache = [];
 
-			Vector2 start = ArmPosition + new Vector2(16f, -8f * Owner.direction).RotatedBy(Projectile.rotation);
+			Vector2 start = ArmPosition + new Vector2(28f, -2f * Owner.direction).RotatedBy(Projectile.rotation);
 			Vector2 end = start + new Vector2(MathHelper.Lerp(8, 32, ChargeProgress), 0).RotatedBy(Projectile.rotation + MathHelper.Lerp(-1, 0, EaseBuilder.EaseQuadInOut.Ease(ChargeProgress)));
 
 			for (int i = 0; i < MAX_POINTS; i++)
@@ -134,7 +134,7 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 			List<Vector2> cache2 = [];
 
-			start = ArmPosition + new Vector2(16f, -8f * Owner.direction).RotatedBy(Projectile.rotation);
+			start = ArmPosition + new Vector2(28f, -2f * Owner.direction).RotatedBy(Projectile.rotation);
 			end = start + new Vector2(MathHelper.Lerp(8, 32, ChargeProgress), 0).RotatedBy(Projectile.rotation + MathHelper.Lerp(1, 0, EaseBuilder.EaseQuadInOut.Ease(ChargeProgress)));
 
 			for (int i = 0; i < MAX_POINTS; i++)
