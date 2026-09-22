@@ -1,0 +1,59 @@
+Diver: {
+	DisplayName: Buceador
+	Flavor: Después de una inmersión, el buzo está listo para comenzar en una nueva tierra, ansioso por descubrir nuevas aguas.
+	Description: Comienza con el atuendo de buzo, aletas y un Colgante del Océano
+}
+
+Botanist: {
+	DisplayName: Botánico
+	Flavor: Un herbolario, si lo prefieres. Muy hábil para recolectar y usar hierbas.
+	Description: Comienza con un conjunto completo de botánico, una hoz y un par de bolsas de hierbas y un espantapájaros.
+}
+
+Recluse: {
+	DisplayName: Ermitaño
+	Flavor: Para ellos, es más fácil refugiarse en lo profundo del subsuelo donde nadie los moleste. ¡La pesca es mejor aquí abajo!
+	Description: Comienza en una cabaña de pesca subterránea con un sombrero de pesca, una caña de pescar de fibra de vidrio, unos cuantos cebos y cajas.
+}
+
+Hunter: {
+	DisplayName: Cazador
+	Flavor: La caza salvaje es su juego. Al igual que los depredadores de la sabana, la caza lo es todo.
+	Description: Comienza en una Sabana con un rifle de cazador, algo de munición y un atuendo de safari.
+}
+
+Hiker: {
+	DisplayName: Excursionista
+	Flavor: La exploración alegra el alma, y cuentan con los suministros necesarios para lograrlo.
+	Description: Comienza en lo alto de la colina más alta con 60 antorchas, 30 barras luminosas y 150 cuerdas.
+}
+
+Caveman: {
+	DisplayName: Cavernícola
+	Flavor: La vida sencilla resulta productiva. Una palabra lo resume: Ug.
+	Description: Comienza en algun lugar profundo bajo tierra con una túnica de piel curtida y un garrote de madera.
+}
+
+Disentombed: {
+	DisplayName: Desenterrado
+	Flavor: Han pasado tres mil años… mi reinado regresará. Yo regresaré.
+	Description: Comienza atrapado en el zigurat con un atuendo de momia y 3 antorchas del desierto.
+}
+
+Worshipper: {
+	DisplayName: Adorador
+	Flavor: Condenado a rezarle al sol pero nunca poder verlo. Mantiene la esperanza a pesar de todo.
+	Description: Comienza en el oasis hundido con el conjunto de bailarín solar y el cetro de vendaval cizallante.
+}
+
+Purifier: {
+	DisplayName: Purificador
+	Flavor: Abominable mal, desaparece; arde con la presencia de mi pureza.
+	Description: Comienza en el salar (si es posible) con el bastón bo y una máscara de mahakala.
+}
+
+Enchanter: {
+	DisplayName: Encantador
+	Flavor: ¡Huzzah! ¿Necesitas un poco más de estilo? ¡Comencemos con una chispa!
+	Description: Comienza con 60 polvo de vengala, 3 cera cromática y el atuendo de tejedor de encantos, junto al Npc encantador.
+}

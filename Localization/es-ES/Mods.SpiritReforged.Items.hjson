@@ -1,0 +1,3533 @@
+CommonTooltips: {
+	Backpack:
+		'''
+		Almacena {0} objetos
+		Debes vaciarla por completo antes de desequiparla
+		'''
+	Shimmerable: "{0} se transforma dentro del fulgor"
+}
+
+Kelp: {
+	DisplayName: Alga
+	Tooltip: Debe ser plantada debajo del agua
+}
+
+PirateChestItem: {
+	DisplayName: Cofre pirata
+	Tooltip: ""
+}
+
+PirateKey: {
+	DisplayName: Llave secreta
+	Tooltip: "'Los piratas deben haber escondido un tesoro en algún lugar...'"
+}
+
+RawFish: {
+	DisplayName: Pescado crudo
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'Se puede comer... ¿quizá cocínalo primero?'
+		'''
+}
+
+SunkenTreasure: {
+	DisplayName: Tesoro hundido
+	Tooltip:
+		'''
+		Clic derecho para abrir
+		'Tal vez aún esté repleto de tesoros valiosos'
+		'''
+}
+
+DriftwoodItem: {
+	DisplayName: Madera a la deriva
+	Tooltip: ""
+}
+
+MusselItem: {
+	DisplayName: Mejillón
+	Tooltip: ""
+}
+
+CrinoidItem: {
+	DisplayName: Crinoideo
+	Tooltip: ""
+}
+
+PelicanItem: {
+	DisplayName: Pelicano
+	Tooltip: ""
+}
+
+SandPiperItem: {
+	DisplayName: Correlimo
+	Tooltip: ""
+}
+
+TinyCrabItem: {
+	DisplayName: Cangrejo pálido
+	Tooltip: ""
+}
+
+TubewormItem: {
+	DisplayName: Poliqueto tubícola
+	Tooltip: ""
+}
+
+CascadeChestplate: {
+	DisplayName: Cota de cazador de arrecifes
+	Tooltip: Aumenta un 50% la resistencia al retroceso
+}
+
+CascadeHelmet: {
+	DisplayName: Casco de cazador de arrecifes
+	Tooltip: Permite respirar bajo el agua
+}
+
+CascadeLeggings: {
+	DisplayName: Grebas de cazador de arrecifes
+	Tooltip: Aumenta un 15% la velocidad de movimiento bajo el agua
+}
+
+JellyfishJamJar: {
+	DisplayName: Marmita de miel de medusa
+	Tooltip: Invoca a una pequeña medusa para que luche por ti
+}
+
+Lifesaver: {
+	DisplayName: Salvavidas
+	Tooltip:
+		'''
+		Invoca una mantarraya como montura
+		La mantarraya es incapaz de moverse en tierra, pero puede flotar sobre líquidos
+		'''
+}
+
+ClawCannon: {
+	DisplayName: Tenaza turbo-burbuja
+	Tooltip: ""
+}
+
+IridescentScale: {
+	DisplayName: Escama iridiscente
+	Tooltip: "'Destella de forma hermosa debajo del agua'"
+}
+
+OceanPendant: {
+	DisplayName: Reliquia de tritón
+	Tooltip: Mejora enormemente el movimiento bajo el agua
+}
+
+ReefSpear: {
+	DisplayName: Perforador de arrecifes
+	Tooltip: Clic derecho para lanzar el tridente, los enemigos empalados reciben más daño con el ataque principal
+}
+
+SkullSentry: {
+	DisplayName: Cráneo devorador de hombres
+	Tooltip: Invoca un cráneo infestado de gusanos devoradores que disparan mucosidad roja a los enemigos cercanos
+}
+
+UrchinStaff: {
+	DisplayName: Descarga erizomántica
+	Tooltip: ""
+}
+
+GarInAJar: {
+	Tooltip: ""
+	DisplayName: Pecera de pejelagarto
+}
+
+GarItem: {
+	DisplayName: Pejelagarto
+	Tooltip: ""
+}
+
+SavannaDirtItem: {
+	DisplayName: Tierra áspera
+	Tooltip: ""
+}
+
+GoldGarItem: {
+	DisplayName: Pejelagarto dorado
+	Tooltip: ""
+}
+
+Sushi: {
+	DisplayName: Sushi
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		Permite respirar bajo el agua
+		'¡Frio y fresco!'
+		'''
+}
+
+Nigiri: {
+	DisplayName: Nigiri
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		Permite moverse libremente en el agua
+		'El corte perfecto'
+		'''
+}
+
+HoneySalmon: {
+	DisplayName: Filete glaseado de miel
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'¡La mezcla perfecta de lo dulce y lo salado!'
+		'''
+}
+
+FishChips: {
+	DisplayName: Pesca y crujientes
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+CrystalFish: {
+	DisplayName: Salmón cristalizado
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed2}
+		Boosts magic power
+		'''
+}
+
+RawMeat: {
+	DisplayName: Carne cruda
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'Se puede comer... ¿quizá cocínalo primero?'
+		'''
+}
+
+CookedMeat: {
+	DisplayName: Carne cocida
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'Asado a la perfección'
+		'''
+}
+
+GoldenCaviar: {
+	DisplayName: Caviar dorado
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed3}
+		'El pináculo de la gastronomía'
+		'''
+}
+
+GarBannerItem.DisplayName: Estandarte de pejelagarto
+
+CoconutMilk: {
+	DisplayName: Leche de coco
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'¡No necesitas taza!'
+		'''
+}
+
+DiverBody: {
+	DisplayName: Placa de buceador ancestral
+	Tooltip: ""
+}
+
+DiverHead: {
+	DisplayName: Casco de buceador ancestral
+	Tooltip: ""
+}
+
+DiverLegs: {
+	DisplayName: Pantalón de buceador ancestral
+	Tooltip: ""
+}
+
+SailorCap: {
+	DisplayName: Gorra de marinero
+	Tooltip: "'¡Todos a bordo!'"
+}
+
+StrippedBambooItem: {
+	DisplayName: Bloque de bambú sin corteza
+	Tooltip: ""
+}
+
+BambooBarrelItem: {
+	DisplayName: Cesta de bambú
+	Tooltip: ""
+}
+
+BambooBenchItem: {
+	DisplayName: Banco de bambú
+	Tooltip: ""
+}
+
+BambooBirdCageItem: {
+	DisplayName: Pajarera de bambú
+	Tooltip: Clic derecho para colocar en su interior ciertas aves
+}
+
+BambooPikeItem: {
+	DisplayName: Espada corta de bambú
+	Tooltip: ""
+}
+
+BambooPotItem: {
+	DisplayName: Maceta de bambú
+	Tooltip: ""
+}
+
+SteamedMussels: {
+	DisplayName: Mejillones al vapor
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'Fresco y deleitable'
+		'''
+}
+
+JellyCandle: {
+	DisplayName: Vela de medusa
+	Tooltip: Invoca una medusa flotante
+}
+
+SmallDriftwoodItem: {
+	DisplayName: Restos de madera a la deriva pequeño
+	Tooltip: "'Estéticamente placentero'"
+}
+
+MediumDriftwoodItem: {
+	DisplayName: Restos de madera a la deriva mediano
+	Tooltip: "'Aesthetically pleasing'"
+}
+
+LargeDriftwoodItem: {
+	DisplayName: Restos de madera a la deriva grande
+	Tooltip: "'Aesthetically pleasing'"
+}
+
+DriftwoodChestplate: {
+	DisplayName: Coraza de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodHelmet: {
+	DisplayName: Casco de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodLeggings: {
+	DisplayName: Pantalones de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodPlatformItem: {
+	DisplayName: Plataforma de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodSword: {
+	DisplayName: Espada de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodWallItem: {
+	DisplayName: Pared de madera a la deriva
+	Tooltip: ""
+}
+
+Cloudstalk: {
+	DisplayName: Tallo de nube
+	Tooltip: "'Naturalmente encontrado muy arriba'"
+}
+
+CloudstalkSeed: {
+	DisplayName: Semillas de tallo de nube
+	Tooltip: ""
+}
+
+DoubleJumpPotion: {
+	DisplayName: Poción de céfiro
+	Tooltip: Permite temporalmente un doble salto
+}
+
+FlightPotion: {
+	DisplayName: Poción surcadora
+	Tooltip: Aumenta en un 25% la duración de vuelo
+}
+
+HangingCloudstalkItem: {
+	DisplayName: Tallo de nube colgante
+	Tooltip: ""
+}
+
+FloatingDriftwood: {
+	DisplayName: Madera a la deriva
+	Tooltip: ""
+}
+
+FishCrate: {
+	DisplayName: Caja de embalaje
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+Ambergris: {
+	DisplayName: Ámbar gris
+	Tooltip:
+		'''
+		Altamente valioso
+		'No quieres saber de dónde vino esto'
+		'''
+}
+
+MessageBottle: {
+	DisplayName: Mensaje embotellado
+	Tooltip:
+		'''
+		Invoca una balsa como montura
+		Aumenta en 10 la capacidad de pesca
+		'''
+}
+
+GoldKillifishItem: {
+	DisplayName: Killi dorado
+	Tooltip: ""
+}
+
+KillifishItem: {
+	DisplayName: Killi
+	Tooltip: ""
+}
+
+KillifishBannerItem.DisplayName: Estandarte de killi
+
+BambooHalberd: {
+	DisplayName: Alabarda de bambú
+	Tooltip: ""
+}
+
+BambooKendoBlade: {
+	DisplayName: Espada de kendo de bambú
+	Tooltip: Clic derecho para impulsarte hacia adelante
+}
+
+KoiTotem: {
+	DisplayName: Tótem koi
+	Tooltip:
+		'''
+		Aumenta en 5 la capacidad de pesca si se coloca cerca
+		Ocasionalmente repone el cebo que se utilizó por última vez
+		'''
+}
+
+FairyWhistle: {
+	DisplayName: Silbato feérico
+	Tooltip: Invoca un hada protectora para que luche por ti
+}
+
+TermiteItem: {
+	DisplayName: Termita
+	Tooltip: ""
+}
+
+StarPowder: {
+	DisplayName: Polvo estelar
+	Tooltip: ¡Lánzalo sobre el césped para vigorizarlo con luz de las estrellas!
+}
+
+TermiteJar: {
+	DisplayName: Tarro de termitas
+	Tooltip: "'Una pesadilla ecológica'"
+}
+
+ButterflyStaff: {
+	DisplayName: Báculo de mariposas etéreas
+	Tooltip:
+		'''
+		Invoca una mariposa mágica para que luche por ti
+		'Formado a partir de una flor de cereza perfecta'
+		'''
+}
+
+PoolNoodle: {
+	DisplayName: Fideo de piscina
+	Tooltip:
+		'''
+		3 de daño de conexión por invocación
+		{$CommonItemTooltip.Whips}
+		Los enemigos golpeados liberan explosiones de burbujas cuando son impactados por invocaciones
+		'''
+}
+
+ToucaneItem: {
+	DisplayName: Bastucán
+	Tooltip: Invoca un tucán enfadado para que luche por ti
+}
+
+QuenchPotion: {
+	DisplayName: Poción vigorizante
+	Tooltip: Aumenta en un 25% la duración de los efectos de otras pociones
+}
+
+LivingBaobabLeafWallItem: {
+	DisplayName: Pared de hojas de baobab viviente
+	Tooltip: ""
+}
+
+LivingBaobabWallItem: {
+	DisplayName: Pared de baobab viviente
+	Tooltip: ""
+}
+
+LivingBaobabLeafWand: {
+	DisplayName: Varita de hoja de baobab viviente
+	Tooltip: Coloca hojas de baobab
+}
+
+LivingBaobabWand: {
+	DisplayName: Varita de baobab viviente
+	Tooltip: Coloca baobab viviente
+}
+
+WrithingSticks: {
+	DisplayName: Palos retorcidos
+	Tooltip: Invoca un amigable rodapaja para seguirte
+}
+
+BaobabFruit: {
+	DisplayName: Fruta de baobab
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+SavannaGrassSeeds: {
+	DisplayName: Semillas de césped de sabana
+	Tooltip: ""
+}
+
+LeatherBackpack: {
+	DisplayName: Mochila de cuero
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Cómoda, practica, y todavía ágil'
+		'''
+}
+
+Caryocar: {
+	DisplayName: Pequi
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+CustardApple: {
+	DisplayName: Chirimoya
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+BeachUmbrellaItem: {
+	DisplayName: Sombrilla de playa
+	Tooltip: ""
+}
+
+BigBuoy: {
+	DisplayName: Boya grande
+	Tooltip: "{$ItemTooltip.CoralTorch}"
+}
+
+SmallBuoy: {
+	DisplayName: Boya pequeña
+	Tooltip: "{$ItemTooltip.CoralTorch}"
+}
+
+LoungeChairItem: {
+	DisplayName: Tumbona
+	Tooltip: ""
+}
+
+Omelette: {
+	DisplayName: Omelette
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed2}
+		'Perfectamente cocido'
+		'''
+}
+
+OstrichEgg: {
+	DisplayName: Huevo de avestruz
+	Tooltip: "{$BuffDescription.WellFed}"
+}
+
+DrywoodItem: {
+	DisplayName: Madera seca
+	Tooltip: ""
+}
+
+DrywoodBow: {
+	DisplayName: Arco de madera seca
+	Tooltip: ""
+}
+
+DrywoodBreastplate: {
+	DisplayName: Coraza de madera seca
+	Tooltip: ""
+}
+
+DrywoodGreaves: {
+	DisplayName: Grebas de madera seca
+	Tooltip: ""
+}
+
+DrywoodHammer: {
+	DisplayName: Martillo de madera seca
+	Tooltip: ""
+}
+
+DrywoodHelmet: {
+	DisplayName: Casco de madera seca
+	Tooltip: ""
+}
+
+DrywoodSword: {
+	DisplayName: Espada de madera seca
+	Tooltip: ""
+}
+
+HuntingRifle: {
+	DisplayName: Rifle de caza
+	Tooltip: Aumenta el daño contra enemigos distantes al permanecer quieto
+}
+
+SafariHat: {
+	DisplayName: Sombrero de safari
+	Tooltip: ""
+}
+
+SafariShorts: {
+	DisplayName: Shorts de safari
+	Tooltip: ""
+}
+
+SafariVest: {
+	DisplayName: Chaleco de safari
+	Tooltip: ""
+}
+
+SunStaff: {
+	DisplayName: Cetro del resplandor
+	Tooltip: Proyecta la luz del amanecer frente a ti
+}
+
+SavannaMusicBoxItem: {
+	DisplayName: Caja de música (Sabana)
+	Tooltip: ""
+}
+
+DrywoodBathtubItem: {
+	DisplayName: Bañera de madera seca
+	Tooltip: ""
+}
+
+DrywoodBedItem: {
+	DisplayName: Cama de madera seca
+	Tooltip: ""
+}
+
+DrywoodBookcaseItem: {
+	DisplayName: Librería de madera seca
+	Tooltip: ""
+}
+
+DrywoodCandelabraItem: {
+	DisplayName: Candelabro de madera seca
+	Tooltip: ""
+}
+
+DrywoodCandleItem: {
+	DisplayName: Vela de madera seca
+	Tooltip: ""
+}
+
+DrywoodChairItem: {
+	DisplayName: Silla de madera seca
+	Tooltip: ""
+}
+
+DrywoodClockItem: {
+	DisplayName: Reloj de madera seca
+	Tooltip: ""
+}
+
+DrywoodDresserItem: {
+	DisplayName: Aparador de madera seca
+	Tooltip: ""
+}
+
+DrywoodLampItem: {
+	DisplayName: Farola de madera seca
+	Tooltip: ""
+}
+
+DrywoodPianoItem: {
+	DisplayName: Piano de madera seca
+	Tooltip: ""
+}
+
+DrywoodSinkItem: {
+	DisplayName: Fregadero de madera seca
+	Tooltip: ""
+}
+
+DrywoodTableItem: {
+	DisplayName: Mesa de madera seca
+	Tooltip: ""
+}
+
+DrywoodToiletItem: {
+	DisplayName: Retrete de madera seca
+	Tooltip: ""
+}
+
+DrywoodWorkBenchItem: {
+	DisplayName: Banco de trabajo de madera seca
+	Tooltip: ""
+}
+
+DrywoodLanternItem: {
+	DisplayName: Linterna de madera seca
+	Tooltip: ""
+}
+
+DrywoodSofaItem: {
+	DisplayName: Sofá de madera seca
+	Tooltip: ""
+}
+
+DrywoodChestItem: {
+	DisplayName: Cofre de madera seca
+	Tooltip: ""
+}
+
+DrywoodDoorItem: {
+	DisplayName: Puerta de madera seca
+	Tooltip: ""
+}
+
+DriftwoodBarrelItem: {
+	DisplayName: Barril de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodBathtubItem: {
+	DisplayName: Bañera de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodBedItem: {
+	DisplayName: Cama de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodBenchItem: {
+	DisplayName: Banco de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodBookcaseItem: {
+	DisplayName: Librería de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodCandelabraItem: {
+	DisplayName: Candelabro de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodCandleItem: {
+	DisplayName: Vela de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodChairItem: {
+	DisplayName: Silla de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodChandelierItem: {
+	DisplayName: Lámpara de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodClockItem: {
+	DisplayName: Reloj de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodDoorItem: {
+	DisplayName: Puerta de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodDresserItem: {
+	DisplayName: Aparador de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodLampItem: {
+	DisplayName: Farola de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodPianoItem: {
+	DisplayName: Piano de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodSinkItem: {
+	DisplayName: Fregadero de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodTableItem: {
+	DisplayName: Mesa de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodToiletItem: {
+	DisplayName: Retrete de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodWorkBenchItem: {
+	DisplayName: Banco de trabajo de madera a la deriva
+	Tooltip: ""
+}
+
+HerosMemorialStatueItem: {
+	DisplayName: Memorial del héroe
+	Tooltip: Vive por siempre
+}
+
+DustyFieldsItem: {
+	DisplayName: Praderas polvorientos
+	Tooltip: "'S. Yaki'"
+}
+
+OrangeSkiesItem: {
+	DisplayName: Cielos naranjas
+	Tooltip: "'S. Yaki'"
+}
+
+StrongWindsItem: {
+	DisplayName: Vientos fuertes
+	Tooltip: "'S. Yaki'"
+}
+
+WaningSunItem: {
+	DisplayName: Sol menguante
+	Tooltip: "'E. Sibellius'"
+}
+
+ScarecrowItem: {
+	DisplayName: Espantapájaros
+	Tooltip: ""
+}
+
+BotanistBody: {
+	DisplayName: Sudadera de botánico
+	Tooltip: ""
+}
+
+BotanistHat: {
+	DisplayName: Sombrero de paja
+	Tooltip: Te mantiene alegre
+}
+
+BotanistLegs: {
+	DisplayName: Pants de botánico
+	Tooltip: Aumenta un 10% la velocidad de movimiento
+}
+
+BeachTowel: {
+	DisplayName: Toalla de playa
+	Tooltip: "'Te mantiene seco, ¡pero asegúrate de no saltar al agua con ella!'"
+}
+
+BikiniBottom: {
+	DisplayName: Bikini inferior
+	Tooltip: "'¡¿Quién necesita armadura cuando puedes correr libre bajo el sol?!'"
+}
+
+BikiniTop: {
+	DisplayName: Bikini superior
+	Tooltip: "'A pesar de lo que uno podría esperar, realmente no ofrece ningún tipo de defensa'"
+}
+
+SwimmingTrunks: {
+	DisplayName: Shorts
+	Tooltip: "'No ofrecen mucha defensa, pero son innegablemente elegantes'"
+}
+
+TintedGlasses: {
+	DisplayName: Gafas coloridas
+	Tooltip: "'Ayudan a completar el estilo, así que es mejor mantenerlas puestas incluso si está oscuro'"
+}
+
+WheatgrassSeedPouch: {
+	DisplayName: Saco de semillas de trigo
+	Tooltip:
+		'''
+		Lanza semillas que hacen crecer pasto de trigo sobre el césped
+		'Se sacude y se agita en tu mano'
+		'''
+}
+
+RoyalKhopesh: {
+	DisplayName: Khopesh de la realeza
+	Tooltip:
+		'''
+		Clic derecho para lanzar el khopesh
+		Clic derecho o izquierdo para llamar de vuelta el khopesh, atrayendo enemigos empalados y potenciando el siguiente ataque
+		'''
+}
+
+SavannaSandstormMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Caja de música (Tormenta de polvo)
+}
+
+FishLure: {
+	DisplayName: Señuelo de pesca
+	Tooltip:
+		'''
+		{$ItemTooltip.CoralTorch}
+		Atrae bancos de peces a las aguas cercanas
+		'''
+}
+
+DrywoodPlatformItem: {
+	DisplayName: Plataforma de madera seca
+	Tooltip: ""
+}
+
+SavannaDirtWallItem: {
+	DisplayName: Muro de tierra áspera
+	Tooltip: ""
+}
+
+GravelItem: {
+	DisplayName: Grava
+	Tooltip: ""
+}
+
+MagmastoneItem: {
+	DisplayName: Piedra magmática
+	Tooltip: ""
+}
+
+SavannaCrateHardmode: {
+	DisplayName: Caja de safari
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SavannaCrate: {
+	DisplayName: Caja de pradera
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+MineralSlag: {
+	DisplayName: Escoria mineralizada
+	Tooltip: Se puede usar en el expriminator
+}
+
+HyenaBannerItem.DisplayName: Estandarte de hiena
+OstrichBannerItem.DisplayName: Ostrich Banner
+
+SavannaCampfireItem: {
+	DisplayName: Hoguera de sabana
+	Tooltip: "{$ItemTooltip.Campfire}"
+}
+
+SavannaFountainItem: {
+	DisplayName: Fuente de agua de sabana
+	Tooltip: ""
+}
+
+DrywoodFenceItem: {
+	DisplayName: Valla de madera seca
+	Tooltip: ""
+}
+
+DrywoodWallItem: {
+	DisplayName: Pared de madera seca
+	Tooltip: ""
+}
+
+ZiplineGun: {
+	DisplayName: Cañón de rieles
+	Tooltip:
+		'''
+		Crea un riel en la posición del cursor capaz de transportar a los jugadores
+		Los rieles pueden eliminarse con clic izquierdo sobre ellos o haciendo clic derecho
+		'No debe confundirse con el cañón de riel'
+		'''
+	AssistantOn: Clic derecho para habilitar la asistencia
+	AssistantOff: Clic derecho para deshabilitar la asistencia
+}
+
+FrostbiteItem: {
+	DisplayName: Fauce glacial encantada
+	Tooltip:
+		'''
+		Conjura una ventisca frente a ti
+		Ignora 10 puntos de la defensa del enemigo
+		'''
+}
+
+RogueCrest: {
+	DisplayName: Insignia de pícaro
+	Tooltip:
+		'''
+		Invoca una espada oxidada para que luche por ti
+		No consume espacios de súbditos
+		Ocasionalmente abre heridas, infligiendo sangrado si los enemigos son golpeados con ataques cuerpo a cuerpo ó de látigo
+		'''
+}
+
+GildedScarab: {
+	DisplayName: Escarabajo reforzado
+	Tooltip:
+		'''
+		Recibir daño otorga una mejora temporal de defensa
+		La defensa otorgada es proporcional al daño recibido
+		'''
+}
+
+SparrowItem: {
+	DisplayName: Gorrión
+	Tooltip: ""
+}
+
+Blunderbuss: {
+	DisplayName: Trabuco
+	Tooltip: Dispara una amplia dispersión de balas
+}
+
+SafekeeperRing: {
+	DisplayName: Anillo del guardián
+	Tooltip:
+		'''
+		Aumenta ligeramente el daño infligido contra enemigos no-muertos
+		'Emite una luz escalofriante'
+		'''
+}
+
+PeevedTumblerBannerItem.DisplayName: Estandarte de rodapaja molesto
+
+LeatherHood: {
+	DisplayName: Capucha de tirador
+	Tooltip: Aumenta un 5% la probabilidad de ataque crítico a distancia
+}
+
+LeatherLegs: {
+	DisplayName: Botas de tirador
+	Tooltip: ""
+}
+
+LeatherPlate: {
+	DisplayName: Placa de tirador
+	Tooltip: ""
+}
+
+ExplorerTreadsItem: {
+	DisplayName: Suelas del explorador
+	Tooltip:
+		'''
+		50% de probabilidad de evadir las trampas y peligros ambientales
+		Aumenta la velocidad de movimiento después de pisar trampas o peligros ambientales
+		'Hace de la exploración de templos un paseo por el parque'
+		'''
+}
+
+LeatherCloakItem: {
+	DisplayName: Manto de cuero
+	Tooltip:
+		'''
+		Inmunidad contra los formidables vientos de las tormentas de arena
+		Aumenta un 15% la aceleración 
+		Aumenta un 5% la velocidad de movimiento
+		'''
+}
+
+CactusStaff: {
+	DisplayName: Báculo de cactus
+	Tooltip: Invoca muros de cactus para protegerte
+}
+
+PearlString: {
+	DisplayName: Collar de perlas
+	Tooltip:
+		'''
+		Los enemigos derrotados sueltan más monedas
+		'Te sientes con suerte'
+		'''
+}
+
+DrywoodChandelierItem: {
+	DisplayName: Lámpara de madera seca
+	Tooltip: ""
+}
+
+DriftwoodLanternItem: {
+	DisplayName: Linterna de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodFenceItem: {
+	DisplayName: Valla de madera a la deriva
+	Tooltip: ""
+}
+
+ArcaneNecklaceGold: {
+	DisplayName: Collar Arcano
+	Tooltip:
+		'''
+		Aumenta el maná máximo en 20
+		Al golpear un enemigo, probabilidad de convertir su vitalidad en estrellas de maná
+		'''
+}
+
+ArcaneNecklacePlatinum: {
+	DisplayName: "{$ArcaneNecklaceGold.DisplayName}"
+	Tooltip: "{$ArcaneNecklaceGold.Tooltip}"
+}
+
+PinBlue: {
+	DisplayName: Tachuela azul
+	Tooltip: ""
+}
+
+PinGreen: {
+	DisplayName: Tachuela verde
+	Tooltip: ""
+}
+
+PinRed: {
+	DisplayName: Tachuela roja
+	Tooltip: ""
+}
+
+PinYellow: {
+	DisplayName: Tachuela amarilla
+	Tooltip: ""
+}
+
+PinHive: {
+	DisplayName: Tachuela de colmena
+	Tooltip: ""
+}
+
+PinButterfly: {
+	DisplayName: Tachuela de mariposa
+	Tooltip: ""
+}
+
+PinFaeling: {
+	DisplayName: Tachuela de hada
+	Tooltip: ""
+}
+
+PinSavanna: {
+	DisplayName: Tachuela de sabana
+	Tooltip: ""
+}
+
+PinCuriosity: {
+	DisplayName: Tachuela de la curiosidad
+	Tooltip: ""
+}
+
+PinSky: {
+	DisplayName: Tachuela solar
+	Tooltip: ""
+}
+
+PinSword: {
+	DisplayName: Tachuela de espada
+	Tooltip: ""
+}
+
+TornMapPiece: {
+	DisplayName: Trozo de mapa rasgado
+	Tooltip: Revela el mapa a tus alrededores
+}
+
+FashionableBackpack: {
+	DisplayName: Mochila a la moda
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Elegante, moderna, pero igualmente eficaz'
+		'''
+}
+
+HikingBackpack: {
+	DisplayName: Mochila de excursionismo
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Práctica, duradera, y sobre todo, cómoda'
+		'''
+}
+
+Minipack: {
+	DisplayName: Mochila compacta
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Pequeña, ligera, y super compacta'
+		'''
+}
+
+PinkPack: {
+	DisplayName: Riñonera
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'El mejor color, útil, y una gran visibilidad a la distancia'
+		'''
+}
+
+PouchPack: {
+	DisplayName: Bolsa mochila
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Simple, cómoda, y propensa a derrames'
+		'''
+}
+
+DyeCrateItem: {
+	DisplayName: Caja para tintes
+	Tooltip:
+		'''
+		{$CommonItemTooltip.RightClickToOpen}
+		'Huele... ¡sorprendentemente placentero!'
+		'''
+}
+
+SavannaNightMusicBoxItem: {
+	DisplayName: Caja de música (Noche en la sabana)
+	Tooltip: ""
+}
+
+SavannaPylonItem: {
+	DisplayName: Torre de la sabana
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CraneFeather: {
+	DisplayName: Pluma de grulla
+	Tooltip: Aumenta la agilidad en el aire
+}
+
+TatteredMap: {
+	DisplayName: Mapa deteriorado
+	Tooltip: ""
+}
+
+CrescentMelon: {
+	DisplayName: Melón creciente
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		{$ItemTooltip.ManaRegenerationPotion}
+		'''
+}
+
+MidnightApple: {
+	DisplayName: Manzana de medianoche
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		{$ItemTooltip.ManaRegenerationPotion}
+		'Chispea como el cielo nocturno'
+		'''
+}
+
+NightSky: {
+	DisplayName: Cielo nocturno
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed2}
+		{$ItemTooltip.ManaRegenerationPotion}
+		'Sabe como el cosmos'
+		'''
+}
+
+Pearlberry: {
+	DisplayName: Baya perlada
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		{$ItemTooltip.ManaRegenerationPotion}
+		'Destella y brilla intensamente...'
+		'''
+}
+
+DriftwoodBow: {
+	DisplayName: Arco de madera a la deriva
+	Tooltip: ""
+}
+
+DriftwoodHammer: {
+	DisplayName: Martillo de madera a la deriva
+	Tooltip: ""
+}
+
+RemedyPotion: {
+	DisplayName: Poción panacea
+	Tooltip:
+		'''
+		Otorga inmunidad a los siguientes efectos:
+		[list]
+		'''
+}
+
+CloudstalkBoxItem: {
+	DisplayName: Macetero de tallo de nube
+	Tooltip: ""
+}
+
+OceanSlimeBannerItem.DisplayName: Estandarte de slime coco
+
+OceanDepthsBoxItem: {
+	DisplayName: Caja de música (Océano profundo)
+	Tooltip: ""
+}
+
+OstrichPants: {
+	DisplayName: Pantalones de avestruz
+	Tooltip: "'¡Casi como si estuvieran vivos!'"
+}
+
+CampfireSpit: {
+	DisplayName: Soporte de fogata
+	Tooltip: Puede colocarse en hogueras
+}
+
+KillieFishbowl: {
+	DisplayName: Pecera de killi
+	Tooltip: "'¿Quizás un recipiente más grande la próxima vez?'"
+}
+
+SparrowCageItem: {
+	DisplayName: Jaula para gorriones
+	Tooltip: ""
+}
+
+PinBlood: {
+	DisplayName: Tachuela sangrienta
+	Tooltip: ""
+}
+
+PinWulfrum: {
+	DisplayName: Tachuela de wulfrum
+	Tooltip: ""
+}
+
+WayfarerHead: {
+	DisplayName: Sombrero de peregrino
+	Tooltip: Inmunidad a apagón
+}
+
+WayfarerBody: {
+	DisplayName: Mochila de peregrino
+	Tooltip: Aumenta un 5% la velocidad de movimiento
+}
+
+WayfarerLegs: {
+	DisplayName: Pantalones de peregrino
+	Tooltip: Aumenta un 7% la velocidad de movimiento
+}
+
+AncientKoiTotem: {
+	DisplayName: Tótem koi ancestral
+	Tooltip: "{$Items.KoiTotem.Tooltip}"
+}
+
+BoomShroom: {
+	DisplayName: Champibomba
+	Tooltip:
+		'''
+		Todos los explosivos arrojados son mucho más grandes... y poderosos
+		Aumenta el intervalo entre lanzamientos
+		'''
+}
+
+ClayBomb: {
+	DisplayName: Bomba de arcilla
+	Tooltip: Una explosión pequeña que propaga arcilla
+}
+
+ClayBombSticky: {
+	DisplayName: Bomba de arcilla pegajosa
+	Tooltip: "{$Items.ClayBomb.Tooltip}"
+}
+
+SandBomb: {
+	DisplayName: Bomba de arena
+	Tooltip: Una explosión pequeña que propaga arena
+}
+
+SandBombSticky: {
+	DisplayName: Bomba de arena pegajosa
+	Tooltip: "{$Items.SandBomb.Tooltip}"
+}
+
+CoarseBomb: {
+	DisplayName: Bomba áspera
+	Tooltip: Una explosión pequeña que propaga tierra áspera
+}
+
+CoarseBombSticky: {
+	DisplayName: Bomba áspera pegajosa
+	Tooltip: "{$Items.CoarseBomb.Tooltip}"
+}
+
+MudBomb: {
+	DisplayName: Bomba de lodo
+	Tooltip: Una explosión pequeña que propaga lodo
+}
+
+MudBombSticky: {
+	DisplayName: Bomba de lodo pegajosa
+	Tooltip: "{$Items.MudBomb.Tooltip}"
+}
+
+HideTunic: {
+	DisplayName: Túnica de piel curtida
+	Tooltip: Aumenta un 25% el tamaño y el retroceso de las armas cuerpo a cuerpo
+}
+
+PotteryWheelItem: {
+	DisplayName: Rueda de alfarería
+	Tooltip:
+		'''
+		Se utiliza para fabricar vasijas decorativas
+		<right> al colocarlo para ver las recetas disponibles
+		'''
+}
+
+BiomePotsCavernItem: {
+	DisplayName: Vasija cavernosa
+	Tooltip: ""
+}
+
+OrnatePotsItem: {
+	DisplayName: Vasija ornamentada
+	Tooltip: ""
+}
+
+BiomePotsIceItem: {
+	DisplayName: Vasija congelada
+	Tooltip: ""
+}
+
+BiomePotsDesertItem: {
+	DisplayName: Vasija desértica
+	Tooltip: ""
+}
+
+BiomePotsJungleItem: {
+	DisplayName: Vasija selvática
+	Tooltip: ""
+}
+
+BiomePotsDungeonItem: {
+	DisplayName: Vasija de mazmorra
+	Tooltip: ""
+}
+
+BiomePotsCorruptionItem: {
+	DisplayName: Vasija corrupta
+	Tooltip: ""
+}
+
+BiomePotsCrimsonItem: {
+	DisplayName: Vasija carmesí
+	Tooltip: ""
+}
+
+BiomePotsMarbleItem: {
+	DisplayName: Vasija de mármol
+	Tooltip: ""
+}
+
+BiomePotsHellItem: {
+	DisplayName: Vasija de obsidiana
+	Tooltip: ""
+}
+
+BiomePotsMushroomItem: {
+	DisplayName: Vasija champiñón
+	Tooltip: ""
+}
+
+PotsCavernItem: {
+	DisplayName: Vasija cavernosa pequeña
+	Tooltip: ""
+}
+
+PotsIceItem: {
+	DisplayName: Vasija congelada pequeña
+	Tooltip: ""
+}
+
+PotsJungleItem: {
+	DisplayName: Vasija selvática pequeña
+	Tooltip: ""
+}
+
+PotsDungeonItem: {
+	DisplayName: Vasija de mazmorra pequeña
+	Tooltip: ""
+}
+
+PotsHellItem: {
+	DisplayName: Vasija de obsidiana pequeña
+	Tooltip: ""
+}
+
+PotsCorruptionItem: {
+	DisplayName: Vasija corrupta pequeña
+	Tooltip: ""
+}
+
+PotsSpiderItem: {
+	DisplayName: Vasija arácnida pequeña
+	Tooltip: ""
+}
+
+PotsCrimsonItem: {
+	DisplayName: Vasija carmesí pequeña
+	Tooltip: ""
+}
+
+PotsPyramidItem: {
+	DisplayName: Vasija de pirámide pequeña
+	Tooltip: ""
+}
+
+PotsTempleItem: {
+	DisplayName: Vasija de templo pequeña
+	Tooltip: ""
+}
+
+PotsMarbleItem: {
+	DisplayName: Vasija de mármol pequeña
+	Tooltip: ""
+}
+
+PotsDesertItem: {
+	DisplayName: Vasija desértica pequeña
+	Tooltip: ""
+}
+
+CommonPotsMushroomItem: {
+	DisplayName: Vasija champiñón pequeña
+	Tooltip: ""
+}
+
+SilverPlattersItem: {
+	DisplayName: Bandeja de plata
+	Tooltip: ""
+}
+
+StuffedPotsItem: {
+	DisplayName: Vasija desbordada
+	Tooltip: ""
+}
+
+WormPotItem: {
+	DisplayName: Vasija gusano
+	Tooltip: ""
+}
+
+AetherShipmentItem: {
+	DisplayName: Carga de éter
+	Tooltip: ""
+}
+
+PotionVatsAntiqueItem: {
+	DisplayName: Depósito de pociones antiguo
+	Tooltip: ""
+}
+
+PotionVatsCloningItem: {
+	DisplayName: Depósito de clonación de pociones
+	Tooltip: ""
+}
+
+SilverFoodPlatterItem: {
+	DisplayName: Bandeja de plata para comida
+	Tooltip: "{$ItemTooltip.FoodPlatter}"
+}
+
+RadonMossItem: {
+	DisplayName: Musgo de radón
+	Tooltip: "{$ItemTooltip.XenonMoss}"
+}
+
+OganessonMossItem: {
+	DisplayName: Musgo de oganesón
+	Tooltip: "{$ItemTooltip.XenonMoss}"
+}
+
+RadonMossBrickItem: {
+	DisplayName: Ladrillo de musgo de radón
+	Tooltip: ""
+}
+
+RadonMossBrickWallItem: {
+	DisplayName: Pared de ladrillos de musgo de radón
+	Tooltip: ""
+}
+
+OganessonMossBrickItem: {
+	DisplayName: Ladrillo de musgo de oganesón
+	Tooltip: ""
+}
+
+OganessonMossBrickWallItem: {
+	DisplayName: Pared de ladrillos de musgo de oganesón
+	Tooltip: ""
+}
+
+ScryingPotItem: {
+	DisplayName: Vasija vidente
+	Tooltip: ""
+}
+
+BombCannon: {
+	DisplayName: Cañón bombardero
+	Tooltip:
+		'''
+		Usa bombas como munición 
+		Las bombas disparadas del cañón no destruyen bloques
+		'Una innovación destroza techos'
+		'''
+}
+
+PotHead: {
+	DisplayName: Cabeza de vasija
+	Tooltip: ""
+}
+
+UpsideDownPotItem: {
+	DisplayName: Vasija de cabeza
+	Tooltip: ""
+}
+
+PotionVatsAlchemyItem: {
+	DisplayName: Depósito alquímico de pociones
+	Tooltip: ""
+}
+
+DunceCrabBannerItem.DisplayName: Estandarte de cangrejo zopenco
+WheezerBannerItem.DisplayName: Estandarte de resollador
+
+WheezerStatueItem: {
+	DisplayName: Estatua de resollador
+	Tooltip: ""
+}
+
+FlaskArgon: {
+	DisplayName: Cápsula de musgo de argón
+	Tooltip: Extiende musgo brillante al impactar
+}
+
+FlaskHelium: {
+	DisplayName: Cápsula de musgo de helio
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
+}
+
+FlaskKrypton: {
+	DisplayName: Cápsula de musgo de kriptón
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
+}
+
+FlaskNeon: {
+	DisplayName: Cápsula de musgo de neón
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
+}
+
+FlaskOganesson: {
+	DisplayName: Cápsula de musgo de oganesón
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
+}
+
+FlaskRadon: {
+	DisplayName: Cápsula de musgo de radón
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
+}
+
+FlaskXenon: {
+	DisplayName: Cápsula de musgo de xenón
+	Tooltip: "{$Items.FlaskArgon.Tooltip}"
+}
+
+BiomePotsGraniteItem: {
+	DisplayName: Vasija de granito
+	Tooltip: ""
+}
+
+CommonPotsGraniteItem: {
+	DisplayName: Vasija de granito pequeña
+	Tooltip: ""
+}
+
+OganessonBobber: {
+	DisplayName: Corcho de pesca de musgo de oganesón
+	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
+}
+
+RadonBobber: {
+	DisplayName: Corcho de pesca de musgo de radón
+	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
+}
+
+LandscapingShears: {
+	DisplayName: Tijeras para paisajismo
+	Tooltip: Aumenta la cosecha al recolectar follaje
+}
+
+WoodenClub: {
+	DisplayName: Garrote de madera
+	Tooltip: Puede cargarse para aumentar el daño y el retroceso
+}
+
+GoldClub: {
+	DisplayName: Gran martillo dorado
+	Tooltip: Úsalo de nuevo durante un golpe para encadenar un gancho cargable
+}
+
+PlatinumClub: {
+	DisplayName: Cetro de platino
+	Tooltip:
+		'''
+		Realiza un golpe ascendente que lanza a los enemigos por los aires
+		Mantén presionado para rematar con un golpe descendente
+		'''
+}
+
+FrostGiantBelt: {
+	DisplayName: Cinturón del coloso gélido
+	Tooltip:
+		'''
+		Aumenta en un 50% la resistencia al retroceso mientras cargas un garrote
+		Cargar un garrote aumenta gradualmente la defensa
+		'''
+}
+
+Macuahuitl: {
+	DisplayName: Macuahuitl
+	Tooltip:
+		'''
+		Puede girarse rápidamente alrededor del usuario causando sangrado
+		Los golpes cargados infligen daño adicional a los enemigos que están sangrando
+		'''
+}
+
+BassSlapper: {
+	DisplayName: Lubina azotadora
+	Tooltip: Al cargar completamente, azota varios impactos consecutivos
+}
+
+Shockhammer: {
+	DisplayName: Martillo de choque
+	Tooltip: La carga completa libera una onda de choque que viaja sobre los bloques
+}
+
+Bowlder: {
+	DisplayName: Rocaliche
+	Tooltip: Los ataques cargados liberan una poderosa roca de boliche
+}
+
+BoStaff: {
+	DisplayName: Bastón bo
+	Tooltip: Infligir daño continuo acumula combo
+}
+
+Blasphemer: {
+	DisplayName: Blasfemador
+	Tooltip: Los ataques cargados estallan en un géiser de fuego
+}
+
+Hummus: {
+	DisplayName: Pasta de sésamo
+	Tooltip:
+		'''
+		{$BuffDescription.WellFed}
+		'¡Caliente y sabrosa!'
+		'''
+}
+
+ZenithPotsItem: {
+	DisplayName: Vasija cénit
+	Tooltip: ""
+}
+
+ZenithPotsPaleItem: {
+	DisplayName: "{$Items.ZenithPotsItem.DisplayName}"
+	Tooltip: ""
+}
+
+OtherworldSavannaMusicBoxItem: {
+	DisplayName: Caja de música de otro mundo (Dia en la sabana)
+	Tooltip: ""
+}
+
+OtherworldSavannaNightMusicBoxItem: {
+	DisplayName: Caja de música de otro mundo (Noche en la sabana)
+	Tooltip: ""
+}
+
+SavannaSandstormOtherworldMusicBoxItem: {
+	DisplayName: Caja de música de otro mundo (Tormenta de polvo)
+	Tooltip: ""
+}
+
+SavannaTorchItem: {
+	DisplayName: Antorcha de sabana
+	Tooltip: ""
+}
+
+FlaskBlue: {
+	DisplayName: Cápsula de musgo azul
+	Tooltip: Spreads moss on impact
+}
+
+FlaskBrown: {
+	DisplayName: Cápsula de musgo café
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
+}
+
+FlaskGreen: {
+	DisplayName: Cápsula de musgo verde
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
+}
+
+FlaskLava: {
+	DisplayName: Cápsula de musgo de lava
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
+}
+
+FlaskPurple: {
+	DisplayName: Cápsula de musgo morado
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
+}
+
+FlaskRed: {
+	DisplayName: Cápsula de musgo rojo
+	Tooltip: "{$Items.FlaskBlue.Tooltip}"
+}
+
+TitleMusicBoxItem: {
+	DisplayName: Caja de música (Titulo De Spirit)
+	Tooltip: ""
+}
+
+Drypowder: {
+	DisplayName: Polvo seco
+	Tooltip: Extiende la sabana
+}
+
+ElephantKite: {
+	DisplayName: Cometa de elefante
+	Tooltip: "{$CommonItemTooltip.Kite}"
+}
+
+CartographyTableItem: {
+	DisplayName: Mesa de cartografía
+	Tooltip:
+		'''
+		Te permite compartir el mapa con otros jugadores
+		Interactúa para publicar tus hallazgos
+		'''
+}
+
+PurityBonsaiItem: {
+	DisplayName: Bonsái de sauce
+	Tooltip: ""
+}
+
+RubyBonsaiItem: {
+	DisplayName: Bonsái de rubí
+	Tooltip: ""
+}
+
+SakuraBonsaiItem: {
+	DisplayName: Bonsái de sakura
+	Tooltip: ""
+}
+
+WillowBonsaiItem: {
+	DisplayName: Bonsái de sauce amarillo
+	Tooltip: ""
+}
+
+AmethystBonsaiItem: {
+	DisplayName: Bonsái de amatista
+	Tooltip: ""
+}
+
+DiamondBonsaiItem: {
+	DisplayName: Bonsái de diamante
+	Tooltip: ""
+}
+
+EmeraldBonsaiItem: {
+	DisplayName: Bonsái de esmeralda
+	Tooltip: ""
+}
+
+SapphireBonsaiItem: {
+	DisplayName: Bonsái de zafiro
+	Tooltip: ""
+}
+
+TopazBonsaiItem: {
+	DisplayName: Bonsái de topacio
+	Tooltip: ""
+}
+
+AmberBonsaiItem: {
+	DisplayName: Bonsái de ámbar
+	Tooltip: ""
+}
+
+JinxBow: {
+	DisplayName: Arco de jinx
+	Tooltip:
+		'''
+		Dispara flechas a los enemigos sin consumir munición y ocasionalmente los marca
+		Golpear enemigos marcados con ataques a distancia desata una poderosa flecha mágica
+		'''
+}
+
+ExplosiveRum: {
+	DisplayName: Ron Explosivo
+	Tooltip: "'¡Oh, mira nada más!'"
+}
+
+Flarepowder: {
+	DisplayName: Polvo vengala
+	Tooltip: Libera una nube de polvo mágico flotante
+}
+
+VexpowderBlue: {
+	DisplayName: Polvo vejador
+	Tooltip:
+		'''
+		{$Items.Flarepowder.Tooltip}
+		Confunde a los enemigos golpeados
+		'''
+}
+
+VexpowderRed: {
+	DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Items.VexpowderBlue.Tooltip}"
+}
+
+BreakawayChair: {
+	DisplayName: Silla de impacto
+	Tooltip: Se desquebraja al impactar
+}
+
+AncientMarksmanHood: {
+	DisplayName: "{$Items.LeatherHood.DisplayName} antigua"
+	Tooltip: "{$Items.LeatherHood.Tooltip}"
+}
+
+AncientMarksmanLegs: {
+	DisplayName: "{$Items.LeatherLegs.DisplayName} antiguas"
+	Tooltip: ""
+}
+
+AncientMarksmanPlate: {
+	DisplayName: "{$Items.LeatherPlate.DisplayName} antigua"
+	Tooltip: ""
+}
+
+RollingPotsItem: {
+	DisplayName: Roca vasija
+	Tooltip: ""
+}
+
+MossSlimeBannerItem.DisplayName: Estandarte de slime musgoso
+
+InvisibleLure: {
+	DisplayName: Corcho de pesca invisible
+	Tooltip: "{$Items.FishLure.Tooltip}"
+}
+
+SharpshooterGlove: {
+	DisplayName: Guante del tirador certero
+	Tooltip:
+		'''
+		Aumenta el daño a distancia a la distancia
+		Los disparos consecutivos a esta distancia infligen daño aumentado
+		'''
+}
+
+BonsaiPot: {
+	DisplayName: Maceta de bonsái
+	Tooltip: Se utiliza para elaborar bonsáis decorativos
+}
+
+WickerBasketsItem: {
+	DisplayName: Cesta de mimbre
+	Tooltip: ""
+}
+
+EarthshakerBreastplate: {
+	DisplayName: Coraza de sacudetierras
+	Tooltip: ""
+}
+
+EarthshakerChestpiece: {
+	DisplayName: Cota de sacudetierras
+	Tooltip: ""
+}
+
+EarthshakerHeadgear: {
+	DisplayName: Casco de sacudetierras
+	Tooltip: ""
+}
+
+EarthshakerTreads: {
+	DisplayName: Zancadas de sacudetierras
+	Tooltip: ""
+}
+
+EarthshakerWarmask: {
+	DisplayName: Máscara de guerra de sacudetierras
+	Tooltip: ""
+}
+
+GraniteBody: {
+	DisplayName: Cota cinética
+	Tooltip: Aumenta ligeramente la altura del salto
+}
+
+GraniteHead: {
+	DisplayName: Visor cinético
+	Tooltip: "{$Items.GraniteBody.Tooltip}"
+}
+
+GraniteLegs: {
+	DisplayName: Grebas cinéticas
+	Tooltip: "{$Items.GraniteBody.Tooltip}"
+}
+
+FingerGun: {
+	DisplayName: Dedo pistolero
+	Tooltip:
+		'''
+		Aumenta la velocidad de disparo al tener más mana
+		Ignora 5 puntos de la defensa del enemigo
+		'¡Pew pew!'
+		'''
+}
+
+FlaskOfFrost: {
+	DisplayName: Frasco de escarcha
+	Tooltip: Los ataques cuerpo a cuerpo y de látigo congelan a los enemigos
+}
+
+HardlightVisor: {
+	DisplayName: Visor aurico
+	Tooltip: ""
+	AltDisplayName: Visor con aura
+	AltTooltip: "'No confundir con los visores auricos'"
+}
+
+PolishedAmberItem: {
+	DisplayName: Bloque de ámbar refinado
+	Tooltip: ""
+}
+
+AmberFossilSafeItem: {
+	DisplayName: Bloque de fósil en ámbar
+	Tooltip: ""
+}
+
+GildedSandstoneItem: {
+	DisplayName: Bloque de arenisca revestida
+	Tooltip: ""
+}
+
+RedSandstoneBrickItem: {
+	DisplayName: Ladrillo de arenisca roja
+	Tooltip: ""
+}
+
+RedSandstoneBrickCrackedItem: {
+	DisplayName: Ladrillo de arenisca roja fragmentado
+	Tooltip: "'¡Todavía estructuralmente sólido!'"
+}
+
+WalkieTalkie: {
+	DisplayName: Walkie Talkie
+	Tooltip: Permite hablar con el pescador desde cualquier parte
+	Disabled: Nadie parece contestar...
+}
+
+ScryingLens: {
+	DisplayName: Lente fulgurante
+	Tooltip: Muestra las transmutaciones del fulgor
+	ShimmerLine: " Transmuta en [i:{0}] [c/FFFFFF:{1}]"
+}
+
+Ledger: {
+	DisplayName: Libro de cuentas
+	Tooltip: Muestra el precio de venta de los objetos
+}
+
+MysticalCodex: {
+	DisplayName: Códice místico
+	Tooltip: Muestra las transmutaciones y el precio de los objetos
+}
+
+CommonPotsSavannaItem: {
+	DisplayName: Vasija de sabana
+	Tooltip: ""
+}
+
+SunEarrings: {
+	DisplayName: Aretes de bailarín solar
+	Tooltip:
+		'''
+		Aumenta el maná máximo en 20
+		Aumenta un 7% el daño mágico
+		'''
+}
+
+SilkSirwal: {
+	DisplayName: Bombacho de bailarín solar
+	Tooltip: Aumenta la velocidad de movimiento y la aceleración al desplazarse sobre cualquier superficie
+}
+
+SilkTop: {
+	DisplayName: Top de bailarín solar
+	Tooltip: Aumenta un 7% el daño mágico
+}
+
+CeremonialDagger: {
+	DisplayName: Daga ceremonial
+	Tooltip:
+		'''
+		Puede usarse para sacrificar pueblerinos
+		<right> inflige daño crítico a enemigos sangrando
+		'''
+}
+
+Thornball: {
+	DisplayName: Bola espinosa
+	Tooltip: Se incrusta en superficies y ralentiza a los enemigos
+}
+
+SaltBlockDullItem: {
+	DisplayName: Bloque de sal opaco
+	Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	DisplayName: Bloque de sal
+	Tooltip: "'Suave y reflectante'"
+}
+
+NeedleTrapItem: {
+	DisplayName: Trampa de aguijón
+	Tooltip: ""
+}
+
+DivingBeetleItem: {
+	DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	Tooltip: ""
+}
+
+SunDropper: {
+	DisplayName: Gotero de luz solar mágica
+	Tooltip: ""
+}
+
+OsmosifierItem: {
+	DisplayName: Osmosificador
+	Tooltip: Genera de forma pasiva bloques de sal opacos al estar sumergido en agua
+}
+
+GoldDivingBeetleItem: {
+	DisplayName: Escarabajo buceador dorado
+	Tooltip: ""
+}
+
+StoneStupasItem: {
+	DisplayName: Estupa de piedra
+	Tooltip: ""
+}
+
+SaltChestItem: {
+	DisplayName: Cofre de sal
+	Tooltip: ""
+}
+
+SaltDresserItem: {
+	DisplayName: Aparador de sal
+	Tooltip: ""
+}
+
+SaltBathtubItem: {
+	DisplayName: Bañera de sal
+	Tooltip: ""
+}
+
+SaltBedItem: {
+	DisplayName: Cama de sal
+	Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	DisplayName: Librería de sal
+	Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	DisplayName: Candelabro de sal
+	Tooltip: ""
+}
+
+SaltChandelierItem: {
+	DisplayName: Lámpara de sal
+	Tooltip: ""
+}
+
+SaltClockItem: {
+	DisplayName: Reloj de sal
+	Tooltip: ""
+}
+
+SaltDoorItem: {
+	DisplayName: Puerta de sal
+	Tooltip: ""
+}
+
+SaltLampItem: {
+	DisplayName: Farol de sal
+	Tooltip: ""
+}
+
+SaltLanternItem: {
+	DisplayName: Linterna de sal
+	Tooltip: ""
+}
+
+SaltPianoItem: {
+	DisplayName: Piano de sal
+	Tooltip: ""
+}
+
+SaltSinkItem: {
+	DisplayName: Fregadero de sal
+	Tooltip: ""
+}
+
+SaltSofaItem: {
+	DisplayName: Sofá de sal
+	Tooltip: ""
+}
+
+SaltTableItem: {
+	DisplayName: Mesa de sal
+	Tooltip: ""
+}
+
+SaltToiletItem: {
+	DisplayName: Retrete de sal
+	Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	DisplayName: Banco de trabajo de sal
+	Tooltip: ""
+}
+
+SaltCandleItem: {
+	DisplayName: Vela de sal
+	Tooltip: ""
+}
+
+SaltChairItem: {
+	DisplayName: Silla de sal
+	Tooltip: ""
+}
+
+OtherworldlyRadioItem: {
+	DisplayName: Radio de otro mundo
+	Tooltip:
+		'''
+		<right> para alternar a música de otro mundo
+		'Encantadoramente anticuado'
+		'''
+	TunedToNormal: (Frecuencia estándar)
+	TunedToOtherworld: (Frecuencia peculiar)
+	MusicDisplay: "[i:576] Estas escuchando:"
+}
+
+SleightOfHand: {
+	DisplayName: Juego de manos
+	Tooltip:
+		'''
+		Toca dos veces {0} mientras sujetas un arma de daño a distancia para cambiar el tipo de munición
+		Funciona en el inventario
+		'''
+}
+
+RuinedSandstonePillarItem: {
+	DisplayName: Viga de arenisca ruinosa
+	Tooltip: ""
+}
+
+GlidingItem: {
+	DisplayName: Deslizamiento
+	Tooltip: "'Tix A. Lun'"
+}
+
+ViciousFlamingoItem: {
+	DisplayName: Flamenco despiadado
+	Tooltip: "'Tix A. Lun'"
+}
+
+SaltWallItem: {
+	DisplayName: Pared de sal
+	Tooltip: ""
+}
+
+JerboaItem: {
+	DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
+	Tooltip: ""
+}
+
+JarboaItem: {
+	DisplayName: Jerbo
+	Tooltip: ""
+}
+
+RedSandstoneBrickWallItem: {
+	DisplayName: Pared de ladrillo de arenisca roja
+	Tooltip: ""
+}
+
+PolishedSandstoneWallItem: {
+	DisplayName: Pared de arenizca suave
+	Tooltip: ""
+}
+
+CarvedLapisItem: {
+	DisplayName: Bloque de lapislázuli tallado
+	Tooltip: ""
+}
+
+LapisChestItem: {
+	DisplayName: Cofre de lapislázuli
+	Tooltip: ""
+}
+
+LapisDresserItem: {
+	DisplayName: Aparador de lapislázuli
+	Tooltip: ""
+}
+
+LapisCandleItem: {
+	DisplayName: Vela de lapislázuli
+	Tooltip: ""
+}
+
+LapisBathtubItem: {
+	DisplayName: Bañera de lapislázuli
+	Tooltip: ""
+}
+
+LapisBedItem: {
+	DisplayName: Cama de lapislázuli
+	Tooltip: ""
+}
+
+LapisBookcaseItem: {
+	DisplayName: Librería de lapislázuli
+	Tooltip: ""
+}
+
+LapisCandelabraItem: {
+	DisplayName: Candelabro de lapislázuli
+	Tooltip: ""
+}
+
+LapisChairItem: {
+	DisplayName: Silla de lapislázuli
+	Tooltip: ""
+}
+
+LapisChandelierItem: {
+	DisplayName: Lámpara de lapislázuli
+	Tooltip: ""
+}
+
+LapisClockItem: {
+	DisplayName: Reloj de lapislázuli
+	Tooltip: ""
+}
+
+LapisDoorItem: {
+	DisplayName: Puerta de lapislázuli
+	Tooltip: ""
+}
+
+LapisLampItem: {
+	DisplayName: Farol de lapislázuli
+	Tooltip: ""
+}
+
+LapisLanternItem: {
+	DisplayName: Linterna de lapislázuli
+	Tooltip: ""
+}
+
+LapisPianoItem: {
+	DisplayName: Piano de lapislázuli
+	Tooltip: ""
+}
+
+LapisSinkItem: {
+	DisplayName: Fregadero de lapislázuli
+	Tooltip: ""
+}
+
+LapisSofaItem: {
+	DisplayName: Sofá de lapislázuli
+	Tooltip: ""
+}
+
+LapisTableItem: {
+	DisplayName: Mesa de lapislázuli
+	Tooltip: ""
+}
+
+LapisToiletItem: {
+	DisplayName: Retrete de lapislázuli
+	Tooltip: ""
+}
+
+LapisWorkBenchItem: {
+	DisplayName: Banco de trabajo de lapislázuli
+	Tooltip: ""
+}
+
+LapisPlatformItem: {
+	DisplayName: Plataforma de lapislázuli
+	Tooltip: ""
+}
+
+SwordStandItem: {
+	DisplayName: Atril de espadas
+	Tooltip: Permite exhibir ciertas armas usando <right>
+}
+
+TrellisItem: {
+	DisplayName: Celosía de jardín
+	Tooltip: Coloca {$ItemName.GrassSeeds} para que crezcan enredaderas
+}
+
+TrellisBorealItem: {
+	DisplayName: Celosía de jardín de madera boreal
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisEbonwoodItem: {
+	DisplayName: Celosía de jardín de madera de ébano
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisMahoganyItem: {
+	DisplayName: Celosía de jardín de madera de caoba rica
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPalmItem: {
+	DisplayName: Celosía de jardín de madera de palmera
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPearlwoodItem: {
+	DisplayName: Celosía de jardín de madera perlada
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisShadewoodItem: {
+	DisplayName: Celosía de jardín de madera sombría
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoItem: {
+	DisplayName: Celosía de jardín cruzada
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoBorealItem: {
+	DisplayName: Celosía de jardín cruzada de madera boreal
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoEbonwoodItem: {
+	DisplayName: Celosía de jardín cruzada de madera de ébano
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoMahoganyItem: {
+	DisplayName: Celosía de jardín cruzada de madera de caoba rica
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPalmItem: {
+	DisplayName: Celosía de jardín cruzada de madera de palmera
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPearlwoodItem: {
+	DisplayName: Celosía de jardín cruzada de madera perlada
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoShadewoodItem: {
+	DisplayName: Celosía de jardín cruzada de madera sombría
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+ChainLoopItem: {
+	DisplayName: Anillo de cadena
+	Tooltip: Presiona Arriba/Abajo mientras se colocan para ajustar el largo de la cadena
+}
+
+GoldChainLoopItem: {
+	DisplayName: Anillo de cadena dorado
+	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
+}
+
+SaltPlatformItem: {
+	DisplayName: Plataforma de sal
+	Tooltip: ""
+}
+
+MahakalaMaskBlue: {
+	DisplayName: Máscara de Mahakala
+	Tooltip: Disminuye tanto el daño recibido como el causado contra enemigos malignos
+}
+
+MahakalaMaskRed: {
+	DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
+}
+
+RedSandstoneSlabItem: {
+	DisplayName: Losa de arenisca roja
+	Tooltip: ""
+}
+
+CenserItem: {
+	DisplayName: Incensario
+	Tooltip: ""
+}
+
+CarvedLapisWallItem: {
+	DisplayName: Pared de lapislázuli tallada
+	Tooltip: ""
+}
+
+BronzePotsItem: {
+	DisplayName: Vasija de bronce
+	Tooltip: ""
+}
+
+LapisPotsItem: {
+	DisplayName: Vasija de lapislázuli
+	Tooltip: ""
+}
+
+TrellisDrywoodItem: {
+	DisplayName: Celosía de jardín de madera seca
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDrywoodItem: {
+	DisplayName: Celosía de jardín cruzada de madera seca
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+BronzeGrateItem: {
+	DisplayName: Bronze Grate Wall
+	Tooltip: ""
+}
+
+BronzePlatingItem: {
+	DisplayName: Bronze Plating
+	Tooltip: ""
+}
+
+BronzePlatingWallItem: {
+	DisplayName: Pared de placas de bronce
+	Tooltip: ""
+}
+
+BronzePlatformItem: {
+	DisplayName: Plataforma de bronce
+	Tooltip: ""
+}
+
+ZigguratTorchItem: {
+	DisplayName: Antorcha de zigurat
+	Tooltip: Se enciende al estar cerca
+}
+
+SwordStandMahoganyItem: {
+	DisplayName: Atril de espadas de caoba rica
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+SwordStandSandstoneItem: {
+	DisplayName: Atril de espadas de arenisca
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+RedSandstoneBrickForegroundWallItem: {
+	DisplayName: Pared frontal de ladrillo de arenisca roja
+	Tooltip: Se muestra por delante de los jugadores
+}
+
+SaltPylonItem: {
+	DisplayName: Torre salina
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+SaltNightMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Caja de música (Noche en el Salar)
+}
+
+SaltMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Caja de música (Salar)
+}
+
+PineappleSeeds: {
+	DisplayName: Semillas de piña
+	Tooltip: ""
+}
+
+Dragonsong: {
+	DisplayName: Cantico Dragónico
+	Tooltip:
+		'''
+		Usa gel como munición
+		Probabilidad del 50% de ahorrar munición
+		'Eres una persona horrible'
+		'''
+}
+
+TinyDragon: {
+	DisplayName: Dragon pequeñito
+	Tooltip:
+		'''
+		Invoca a un dragón en miniatura
+		'El último en su especie'
+		'''
+}
+
+PileOfConsequences: {
+	DisplayName: Pila de consecuencias
+	Tooltip: "'Eres consciente de lo que hiciste'"
+}
+
+BrineShrimpItem: {
+	DisplayName: Artemia salina
+	Tooltip: ""
+}
+
+GoldenBrineShrimpItem: {
+	DisplayName: Artemia salina dorada
+	Tooltip: ""
+}
+
+CorruptStactusBannerItem.DisplayName: Estandarte de cacturio corrompido
+CrimsonStactusBannerItem.DisplayName: Estandarte de cacturio carmesí
+DesertStactusBannerItem.DisplayName: Estandarte de cacturio
+HallowedStactusBannerItem.DisplayName: Estandarte de cacturio bendito
+
+AncientBannerItem: {
+	DisplayName: Estandarte ancestral
+	Tooltip: ""
+}
+
+TallSandstoneShelfItem: {
+	DisplayName: Archivo de arenisca
+	Tooltip: ""
+}
+
+SaltTorchItem: {
+	DisplayName: Antorcha de sal
+	Tooltip: ""
+}
+
+ZigguratMusicBoxItem: {
+	DisplayName: Caja de música (Zigurat)
+	Tooltip: ""
+}
+
+PinSaltFlat: {
+	DisplayName: Tachuela salina
+	Tooltip: ""
+}
+
+PinZiggurat: {
+	DisplayName: Tachuela de zigurat
+	Tooltip: ""
+}
+
+BangleOfStrength: {
+	DisplayName: Brazalete de la fortaleza
+	Tooltip: Fortalece periodicamente los golpes de armas cuerpo a cuerpo
+}
+
+ScarabTabletOneItem: {
+	DisplayName: Ídolo crestado
+	Tooltip: ""
+}
+
+ScarabTabletTwoItem: {
+	DisplayName: Sol alífero
+	Tooltip: ""
+}
+
+ScarabAltarItem: {
+	DisplayName: Altar ancestral
+	Tooltip: ""
+}
+
+RedSandstoneBrickCrackedWallItem: {
+	DisplayName: Pared de ladrillo de arenisca roja fragmentada
+	Tooltip: ""
+}
+
+AncientBooksItem: {
+	DisplayName: Ancient Book
+	Tooltip: "'Rendered unreadable by time'"
+}
+
+SaltGlassWallItem: {
+	DisplayName: Pared de cristal salino
+	Tooltip: ""
+}
+
+SaltPanelWallItem: {
+	DisplayName: Pared de panel de sal
+	Tooltip: ""
+}
+
+SaltPlateWallItem: {
+	DisplayName: Pared de placa de sal
+	Tooltip: ""
+}
+
+SaltFireplaceItem: {
+	DisplayName: Chimenea de sal
+	Tooltip: ""
+}
+
+SaltGlassItem: {
+	DisplayName: Bloque de cristal salino
+	Tooltip: ""
+}
+
+SaltPanelItem: {
+	DisplayName: Bloque de panel de sal
+	Tooltip: ""
+}
+
+SaltPlateItem: {
+	DisplayName: Bloque de placa de sal
+	Tooltip: ""
+}
+
+SaltCrate: {
+	DisplayName: Caja salada
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SaltCrateHardmode: {
+	DisplayName: Caja de salmuera
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SaltCrateRestored: {
+	DisplayName: Caja salada restaurada
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SaltCrateHardmodeRestored: {
+	DisplayName: Caja de salmuera restaurada
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+GraverobberBannerItem.DisplayName: Estandarte de saqueador de sepulcros
+
+GiantBag: {
+	DisplayName: Saco de botín
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'El favorito de bribones y malhechores por todo el mundo'
+		'''
+}
+
+CrackedSandstoneItem: {
+	DisplayName: Arenisca fragmentada
+	Tooltip: ""
+}
+
+StoneReliquaryItem: {
+	DisplayName: Reliquiario de piedra
+	Tooltip: ""
+}
+
+SaltCampfireItem: {
+	DisplayName: Hoguera de sal
+	Tooltip: "{$ItemTooltip.Campfire}"
+}
+
+SaltFountainItem: {
+	DisplayName: Fuente de agua del salar
+	Tooltip: ""
+}
+
+SaltskipperQuestFish: {
+	Description: ¡Esos salares son tan alucinantes! No podía distinguir siquiera dónde terminaba la sal y comenzaba el agua. Cuando finalmente puse mi anzuelo en el agua, ese pez de aspecto desagradable simplemente salió dando coletazos junto a mí y empezó a respirar AIRE. ¡Atrápalo para mí para que pueda pasear a mi nuevo pez mascota!.
+	CatchLocation: El Salar
+	DisplayName: Volatinero salado
+	Tooltip: "'Se encuentra en el salar'"
+}
+
+WispBannerItem.DisplayName: Estandarte de destello etéreo
+DecrepitMummyBannerItem.DisplayName: Estandarte de momia decrepita
+
+PaleHiveItem: {
+	DisplayName: Bloque de colmena pálida
+	Tooltip: ""
+}
+
+PaleHiveWallItem: {
+	DisplayName: Pared de colmena pálida
+	Tooltip: ""
+}
+
+GooBlockItem: {
+	DisplayName: Bloque viscoso
+	Tooltip: ""
+}
+
+WindshearScepter: {
+	DisplayName: Cetro de vendaval cizallante
+	Tooltip: Libera una ráfaga de viento cortante
+}
+
+SaltTallGateItem: {
+	DisplayName: Puerta alta de sal
+	Tooltip: ""
+}
+
+EnlilStatueItem: {
+	DisplayName: Estatua de Enlil
+	Tooltip: Aumenta la velocidad de movimiento vertical si se coloca cerca
+}
+
+SerratedClaws: {
+	DisplayName: Garras Serradas
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
+}
+
+FlagRingItem: {
+	DisplayName: Mástil de bandera
+	Tooltip: Puede ser martilleado para agregar banderas
+}
+
+CobbledBrickWallItem: {
+	DisplayName: Pared de ladrillo labrado
+	Tooltip: ""
+}
+
+CobbledBrickItem: {
+	DisplayName: Bloque de ladrillo labrado
+	Tooltip: ""
+}
+
+BronzeGrateDoorItem: {
+	DisplayName: Puerta de verja de bronce
+	Tooltip: Permite que pasen líquidos, incluso si esta cerrada
+}
+
+CalmingBellItem: {
+	DisplayName: Campana de la serenidad
+	Tooltip: Clic derecho para reducir la regeneración de enemigos
+}
+
+BrownShinglesItem: {
+	DisplayName: Tejuela café
+	Tooltip: ""
+}
+
+WoodenShinglesItem: {
+	DisplayName: Tejuela de madera
+	Tooltip: ""
+}
+
+GildedRedSandstoneItem: {
+	DisplayName: Bloque de arenisca roja revestida
+	Tooltip: ""
+}
+
+BronzeGrateBlockItem: {
+	DisplayName: Verja de bronce
+	Tooltip: Solo permite que pasen liquidos
+}
+
+BedouinBreastplate: {
+	DisplayName: Placa beduina
+	Tooltip: Aumenta un 5% el daño
+}
+
+BedouinCowl: {
+	DisplayName: Capucha beduina
+	Tooltip: Aumenta un 5% la probabilidad de ataque crítico
+}
+
+BedouinLeggings: {
+	DisplayName: Pantalones de beduina
+	Tooltip: Aumenta un 10% la velocidad de movimiento
+}
+
+ZigguratTikiTorchItem: {
+	DisplayName: Antorcha tiki de zigurat
+	Tooltip: ""
+}
+
+CricketItem: {
+	DisplayName: Grillo
+	Tooltip: ""
+}
+
+GoldCricketItem: {
+	DisplayName: Grillo dorado
+	Tooltip: ""
+}
+
+CricketCageItem: {
+	DisplayName: Jaula de grillo
+	Tooltip: ""
+}
+
+GoldCricketCageItem: {
+	DisplayName: Jaula de grillo dorado
+	Tooltip: ""
+}
+
+CarrotCake: {
+	DisplayName: Pastel de zanahoria
+	Tooltip: "{$BuffDescription.WellFed3}"
+}
+
+AvianRitualMask: {
+	DisplayName: Máscara ceremonial aviadora
+	Tooltip: ""
+}
+
+BullRitualMask: {
+	DisplayName: Máscara ceremonial de toro
+	Tooltip: ""
+}
+
+AdornedBow: {
+	DisplayName: Gran arco revestido
+	Tooltip:
+		'''
+		Carga un disparo potenciado
+		Los disparos perfectos le dan la propiedad a las flechas de refractarse al impactar
+		'''
+}
+
+BagOScarabs: {
+	DisplayName: Bolsa del tesoro (Escarabeus)
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+ScarabMask: {
+	DisplayName: Máscara de escarabeus
+	Tooltip: ""
+}
+
+ScarabRelic: {
+	DisplayName: Reliquia de escarabeus
+	Tooltip: ""
+}
+
+ScarabTrophy: {
+	DisplayName: Trofeo de escarabeus
+	Tooltip: ""
+}
+
+ScarabRadio: {
+	DisplayName: Radio Escarabajo
+	Tooltip: ""
+}
+
+SpaceHeater: {
+	DisplayName: Radiador
+	Tooltip: Clic derecho sobre la manija para ajustar la temperatura
+}
+
+ScarabMusicBox: {
+	DisplayName: Caja de música (Escarabeus)
+	Tooltip: ""
+
+	Toggle: {
+		0: Primera fase
+		1: Segunda fase
+	}
+}
+
+SpiritTreeTopper: {
+	DisplayName: Spirit
+	Tooltip: Se puede poner en un árbol de Navidad
+}
+
+LocustCrook: {
+	DisplayName: Cayado de la plaga
+	Tooltip:
+		'''
+		Invoca a un centinela
+		Arroja el cayado, invocando enjambres de langostas que infestan a los enemigos
+		'''
+}
+
+IridescentDye: {
+	DisplayName: Tinte iridiscente
+	Tooltip: ""
+}
+
+ScarabLightPetItem: {
+	DisplayName: Sonajero bombilla
+	Tooltip:
+		'''
+		Invoca un escarabeus bebé
+		'¡Eureka!'
+		'''
+}
+
+BeetleLicense: {
+	DisplayName: Licencia de escarabajo
+	Tooltip:
+		'''
+		Usala para adoptar un escarabajo para tu pueblo
+		¿Que ya tienes uno?
+		¡Usa más licencias para activar el programa de intercambio de mascotas!
+		¡Encuentra lo que más os convenga a ti y a tu escarabajo!
+		'''
+	LicenseUse: La licencia se teletransporta al servicio de entregas escarabajiles
+}
+
+GooeyHiveItem: {
+	DisplayName: Bloque de colmena viscosa
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: Capullo de madreselva
+	Tooltip: Invoca una montura de cochinilla
+}
+
+SandySandstoneItem: {
+	DisplayName: Arenisca arenosa
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: Terracotta Tombstone
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: Terracotta Grave Marker
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: Terracotta Gravestone
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: Terracotta Obelisk
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: Drywood Tombstone
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: Savanna Gravestone
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: Drywood Grave Marker
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: Drywood Cross Grave Marker
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: Modern Obelisk
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: Modern Tombscreen
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: Modern Gravestone
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: Modern Headstone
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: Salt Headstone
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: Salt Tombstone
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: Salt Gravestone
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: Salt Grave Marker
+	Tooltip: ""
+}
+
+NotSunItemIcon: {
+	DisplayName: Not Sun Item Icon
+	Tooltip: ""
+}
+
+ChromaticWax: {
+	DisplayName: Cera cromática
+	Tooltip: Puede intercambiarse por glifos mágicos
+	Gain: El arma a encantar obtendrá: [c/{0}:{1}]
+	Target: Solo puede ser aplicado a armas
+	RightClick: Sujeta este glifo y haz clic derecho en el objeto que deseas encantar
+}
+
+BlazeGlyph: {
+	DisplayName: Glifo de avernus
+	Tooltip:
+		'''
+		Al infligir daño, canaliza las llamas infernales para recubrir tu cuerpo
+		Aumenta hasta un 40% el daño y un 20% la probabilidad de ataque crítico dependiendo de la vitalidad sacrificada
+		'''
+	Effect: Igniscente
+	Death: Las llamas infernales han reclamado a {0}...
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		Fem: Feminine
+		Neutral: Neutral
+		Plural: Plural
+	}
+}
+
+RadiantGlyph: {
+	DisplayName: Glifo numinoso
+	Tooltip: Al no infligir daño, canaliza energía divina que se desata en el próximo ataque
+	Effect: Numen
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+StormGlyph: {
+	DisplayName: Storm Glyph
+	Tooltip:
+		'''
+		Can only be applied to weapons that fire projectiles
+		Increases projectile velocity
+		Projectiles occasionally create powerful bursts of wind
+		'''
+	Effect: Billowed
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+MoonlightGlyph: {
+	DisplayName: Glifo de radiancia lunar
+	Tooltip:
+		'''
+		Convierte un 20% del daño del arma a daño mágico
+		Aumenta el daño infligido al disponer de poco maná
+		Infligir daño drena maná de los enemigos
+		'''
+	Effect: Astral
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+RotGlyph: {
+	DisplayName: Glifo putrefacto
+	Tooltip:
+		'''
+		Los ataques infectan una plaga contagiosa
+		Este mal puede transmitirse a ti por enemigos que lo padezcan
+		'''
+	Effect: Infectado
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+ShockGlyph: {
+	DisplayName: Glifo keraunós
+	Tooltip: Aumenta 10% el daño de los ataques críticos y electrifica enemigos cercanos
+	Effect: Conductor
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+BeeGlyph: {
+	DisplayName: Glifo de abeja
+	Tooltip:
+		'''
+		Convierte un 20% del daño del arma a daño de invocación
+		Tus invocaciones se centraran en los enemigos golpeados
+		Los enemigos golpeados liberan abejas cuando son impactados por invocaciones
+		'''
+	Effect: Zumbante
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+SanguineGlyph: {
+	DisplayName: Glifo sanguinario
+	Tooltip:
+		'''
+		Reduce un 20% el daño del arma
+		Los ataques obtienen robo de vida que aumenta al disponer de poca salud
+		Al absorber vida, obtienes cargas de daño que se deterioran con el tiempo
+		'''
+	Effect: Insaciable
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+PrefixVoucher: {
+	DisplayName: Vale con modificador {0}
+	Tooltip:
+		'''
+		{0}
+		Aplica [c/{0}:{1}]
+		'''
+	AccessoryTooltip: Clic derecho sobre accesorios para aplicarlo
+	WeaponTooltip: Clic derecho sobre armas para aplicarlo
+}
+
+EnchantedStamp: {
+	DisplayName: Sello encantado
+	Tooltip:
+		'''
+		Permite alternar una habilidad desde el panel izquierdo del inventario
+		Al activarse, ocasionalmente otorga los efectos de glifos a objetos creados, saqueados o reforjados
+		'''
+	Active: Encantamiento activado
+	Inactive: Encantamiento desactivado
+}
+
+CelestialStamp: {
+	DisplayName: Sello del mago
+	Tooltip:
+		'''
+		Permite alternar una habilidad desde el panel izquierdo del inventario
+		Al activarse, ocasionalmente otorga los efectos de glifos a objetos creados, saqueados o reforjados
+		Permite que los objetos reciban simultáneamente modificadores y efectos de glifos
+		'''
+}
+
+RageGlyph: {
+	DisplayName: Glifo de cólera
+	Tooltip: El daño recibido y el exceso de daño infligido al matar se canalizan en tu siguiente ataque
+	Effect: Cólerico
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+CharmcasterHat: {
+	DisplayName: Sombrero de tejedor de encantos
+	Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	DisplayName: Pantalones de tejedor de encantos
+	Tooltip: ""
+}
+
+CharmcasterRobe: {
+	DisplayName: Túnica de tejedor de encantos
+	Tooltip: ""
+}
+
+VoidGlyph: {
+	DisplayName: Glifo del vacio
+	Tooltip:
+		'''
+		Los ataques acumulan colapso del vacío
+		Tras acumular suficientes cargas, colapso del vacío crea una singularidad dañina que reduce la defensa del enemigo
+		'''
+	Effect: Tehom
+
+	Gendered: {
+		Fem: ""
+		Neutral: ""
+		Plural: ""
+	}
+}
+
+GlitterPurse: {
+	DisplayName: Bolso de purpurina
+	Tooltip: Aumenta el numero de objetos que almacenan las mochilas de forma permanente
+	StatusText: Tus mochilas aumentan de tamaño
+}
+
+MariglowSeedPouch: {
+	DisplayName: Saco de semillas de cempasúchil
+	Tooltip: Lanza semillas que hacen crecer cempasúchil sobre la arena
+}
+
+DisplayCaseItem: {
+	DisplayName: Vitrina
+	Tooltip: <right> para colocar un accesorio dentro
+}
+
+SkyPylonItem: {
+	DisplayName: Torre celestial
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CandlewickItem: {
+	DisplayName: Cuerda de pabilo
+	Tooltip: Se puede usar para subir
+}
+
+WaxBlockItem: {
+	DisplayName: Bloque de cera
+	Tooltip: ""
+}
+
+WaxPotItem: {
+	DisplayName: Vasija de cera
+	Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	DisplayName: Espejo del vínculo eterno
+	Tooltip: <right> para viajar a tu hogar y crear un portal
+}
+
+MirrorItem: {
+	DisplayName: Espejo
+	Tooltip: ""
+}
+
+EnchantedWorkbenchItem: {
+	DisplayName: Prensa de cera
+	Tooltip: ""
+}
+
+CandlewickCoil: {
+	DisplayName: Rollo de cuerda de pabilo
+	Tooltip: Se puede lanzar para crear una cuerda por la que escalar
+}
+
+CandleBathtubItem: {
+	DisplayName: Bañera de cera
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: Cama de cera
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: Librería de cera
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Candelabro de cera
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Vela de cera
+	Tooltip: "'Sí, de eso están hechas'"
+}
+
+CandleChairItem: {
+	DisplayName: Silla de cera
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Lámpara de cera
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Cofre de cera
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Puerta de cera
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Aparador de cera
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Farol de cera
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Linterna de cera
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Fregadero de cera
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Sofá de cera
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Mesa de cera
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Retrete de cera
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Banco de trabajo de cera
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Reloj de cera
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Piano de cera
+	Tooltip: ""
+}
+
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Hello all cheat mod users!
+}
+
+WaxPlatformItem: {
+	DisplayName: Plataforma de cera
+	Tooltip: ""
+}

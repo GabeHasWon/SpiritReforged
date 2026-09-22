@@ -1,0 +1,103 @@
+HydrothermalVentPlume.DisplayName: Nube de humo
+Cannonbubble.DisplayName: Tenaza turboburbuja
+UrchinBall.DisplayName: Erizo
+UrchinSpike.DisplayName: Espina de erizo
+JellyfishBolt.DisplayName: Rayo eléctrico
+JellyfishMinion.DisplayName: Medusa pequeña
+ReefWrathProj.DisplayName: Arrecife de coral
+JellyfishPet.DisplayName: Medusa mascota
+FairyMinion.DisplayName: Súbdito de Hada
+FairyProj.DisplayName: Rayo mágico
+StarPowderProj.DisplayName: Polvo de estrellas
+ButterflyMinion.DisplayName: Súbdito mariposa
+ToucanFeather.DisplayName: Pluma de tucán
+ToucanMinion.DisplayName: Súdito de tucán
+TumblerPet.DisplayName: Rodapaja mascota
+SunOrb.DisplayName: Orbe solar
+SunStaffHeld.DisplayName: Báculo del resplandor
+WheatgrassSeed.DisplayName: Semilla de trigo
+RoyalKhopeshHeld.DisplayName: Khopesh de la realeza
+Zipline.DisplayName: Riel
+RogueKnifeMinion.DisplayName: Cuchillo oxidado
+CactusWallProj.DisplayName: Muro de cactus
+SkullSentryEye.DisplayName: Ojo centinela de calavera
+SkullSentryMucus.DisplayName: Moco centinela de calavera
+SkullSentrySentry.DisplayName: Centinela de calavera centinela
+ZiplineProj.DisplayName: Proyectil de riel
+FallingBaobabFruit.DisplayName: Fruto de baobab caído
+RollingCart.DisplayName: Carrito rodante
+RadonMossBobber.DisplayName: Flotador de musgo de radón
+OganessonMossBobber.DisplayName: Flotador de musgo de oganesón
+BuffAura.DisplayName: Aura de mejora
+WheezerCloud.DisplayName: Gas venenoso
+Shockwave.DisplayName: Onda expansiva
+EnergizedShockwave.DisplayName: Onda expansiva energizada
+RollingBowlder.DisplayName: Roliche rodante
+Firespike.DisplayName: Espina de fuego
+CannonBomb.DisplayName: Disparo de cañon bombardero
+BigCannonBomb.DisplayName: "{$Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Items.Drypowder.DisplayName}"
+JinxArrow.DisplayName: Flecha de jinx
+JinxBowMinion.DisplayName: Súbdito del arco de jinx
+RumExplosion.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+EnergyImpact.DisplayName: Pisotón energizado
+EnergyPlunge.DisplayName: "{$Projectiles.EnergyImpact.DisplayName}"
+FingerShot.DisplayName: Disparo de dedo
+NeedleTrapProj.DisplayName: "{$Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Projectiles.ToucanMinion.DisplayName}"
+PhysicsChain.DisplayName: Cadena
+GoldPhysicsChain.DisplayName: Cadena dorada
+CactusSpine.DisplayName: Espina de cactus
+TinyDragonPet.DisplayName: "{$Items.TinyDragon.DisplayName}"
+DragonFireball.DisplayName: Bola de fuego de dragón
+PileOfConsequencesPet.DisplayName: Consecuencias
+EnergyLaser.DisplayName: Laser de energia
+BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
+WindBlast.DisplayName: Explosión de viento
+DivebombScarab.DisplayName: Escarabajo en picada
+SwarmScarab.DisplayName: Escarabajo de enjambre
+SerratedClawsHeld.DisplayName: "{$Items.SerratedClaws.DisplayName}"
+AdornedBowHeld.DisplayName: Arco adornado sostenido
+AdornedFlash.DisplayName: Destello adornado
+AdornedArrowDeathTrail.DisplayName: Estela de muerte de flecha adornada
+LocustCrookProjectile.DisplayName: Cayado de langosta
+CrookLocust.DisplayName: Langosta
+LocustDamageProjectile.DisplayName: Proyectil de daño de langosta
+LocustExplosion.DisplayName: Explosión de langostas
+CrookLocustGore.DisplayName: Desmembramiento de langosta
+RoyalKhopeshThrown.DisplayName: Khopesh de la realeza arrojado
+FloatingGem.DisplayName: Gema flotante
+BeamOLight.DisplayName: Rayo de luz
+SandShockwavePillar.DisplayName: Pilar de onda de choque de arena
+SandballProjectile.DisplayName: Bola de arena
+BabyAntlionProjectile.DisplayName: Crisálida de hormiga leon bebé
+ScarabLightPet.DisplayName: Escarabajo bebé
+SoilBallProjectile.DisplayName: Bola de suelo
+TerracottaTombstoneProjectile.DisplayName: "{$Items.TerracottaTombstoneItem.DisplayName}"
+TerracottaGraveMarkerProjectile.DisplayName: "{$Items.TerracottaGraveMarkerItem.DisplayName}"
+TerracottaGravestoneProjectile.DisplayName: "{$Items.TerracottaGravestoneItem.DisplayName}"
+TerracottaObeliskProjectile.DisplayName: "{$Items.TerracottaObeliskItem.DisplayName}"
+DrywoodTombstoneProjectile.DisplayName: "{$Items.DrywoodTombstoneItem.DisplayName}"
+SavannaGravestoneProjectile.DisplayName: "{$Items.SavannaGravestoneItem.DisplayName}"
+DrywoodGraveMarkerProjectile.DisplayName: "{$Items.DrywoodGraveMarkerItem.DisplayName}"
+DrywoodCrossGraveMarkerProjectile.DisplayName: "{$Items.DrywoodCrossGraveMarkerItem.DisplayName}"
+ModernObeliskProjectile.DisplayName: "{$Items.ModernObeliskItem.DisplayName}"
+ModernTombscreenProjectile.DisplayName: "{$Items.ModernTombscreenItem.DisplayName}"
+ModernGravestoneProjectile.DisplayName: "{$Items.ModernGravestoneItem.DisplayName}"
+ModernHeadstoneProjectile.DisplayName: "{$Items.ModernHeadstoneItem.DisplayName}"
+SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
+SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
+SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
+SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
+Firefall.DisplayName: Caída de fuego
+WindBurstProjectile.DisplayName: Ráfaga de viento
+SingularCollapse.DisplayName: Singularidad
+ShockGlyphLightningBolt.DisplayName: Rayo eléctrico
+MariglowSeed.DisplayName: Semilla de cempasúchil
+RageHit.DisplayName: Golpe colérico
+MirrorReturnPortal.DisplayName: Portal del espejo del vínculo eterno

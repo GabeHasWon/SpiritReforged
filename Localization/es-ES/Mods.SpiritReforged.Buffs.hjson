@@ -1,0 +1,174 @@
+EmpoweredSwim: {
+	DisplayName: Natación
+	Description: Te sientes mucho más rápido en el agua
+}
+
+MantarayBuff: {
+	DisplayName: Raya al rescate
+	Description: ¡Ágil como las mareas!
+}
+
+JellyfishMinion_Buff: {
+	DisplayName: Medusa
+	Description: ¡Una medusa tierna y saltarina lucha por ti!
+}
+
+JellyfishPet_Buff: {
+	DisplayName: Medusa amigable
+	Description: ¡Esta medusa enérgica adora seguirte a todas partes!
+}
+
+DoubleJumpPotionBuff: {
+	DisplayName: Acrobacia de céfiro
+	Description: Permite un salto extra
+}
+
+FlightPotionBuff: {
+	DisplayName: Surcador
+	Description: Aumenta en un 25% el tiempo de vuelo
+}
+
+BottleMountBuff: {
+	DisplayName: Balsa
+	Description: Enviando un SOS
+}
+
+FairyMinion_Buff: {
+	DisplayName: Hada
+	Description: ¡Oye! ¡Cuidado!
+}
+
+Impaled: {
+	DisplayName: Empalado
+	Description: Has sido empalado por una bola con pinchos ¡Auch!
+}
+
+KoiTotemBuff: {
+	DisplayName: Tótem koi
+	Description: Aumenta la capacidad de pesca
+}
+
+ButterflyMinion_Buff: {
+	DisplayName: Mariposa etérea
+	Description: La mariposa etérea luchará por ti
+}
+
+ToucanMinion_Buff: {
+	DisplayName: Tucán
+	Description: El tucán luchará por ti
+}
+
+QuenchPotion_Buff: {
+	DisplayName: Saciado
+	Description: Aumenta en un 25% la duración de otras pociones
+}
+
+TumblerPet_Buff: {
+	DisplayName: Rodapaja amigable
+	Description: Un amigable rodapaja te sigue
+}
+
+Frozen: {
+	DisplayName: Congelado
+	Description: Disminuye la velocidad de movimiento de los enemigos
+}
+
+GildedScarabBuff: {
+	DisplayName: Escudo de escarabajo
+	Description: Aumenta la defensa en {0}
+}
+
+Bubbled: {
+	DisplayName: Enburbujado
+	Description: Has encontrado el códice secreto del lore de Spirit... Mantente en sintonía para nuestro nuevo super jefe Darksteel, la estrella caída
+}
+
+ExplorerSpeed: {
+	DisplayName: Velocidad del explorador
+	Description: Aumenta la velocidad de movimiento
+}
+
+RemedyPotionBuff: {
+	DisplayName: Panacea
+	Description: Otorga inmunidad
+}
+
+OpenWounds: {
+	DisplayName: Herida abierta
+	Description: Vulnerable al sangrado
+}
+
+ExplorerPot: {
+	DisplayName: Impulso del explorador
+	Description: ¡Tienes ganas de más!
+}
+
+ExplorerMine: {
+	DisplayName: Vigor del explorador
+	Description: ¡Sigue cavando!
+}
+
+JinxMark: {
+	DisplayName: Marca de jinx
+	Description: Marcado por el arco de jinx
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: Arma imbuida: Congelación
+	Description: Los ataques cuerpo a cuerpo congelan a los enemigos
+}
+
+Slowed: {
+	DisplayName: Ralentizado
+	Description: Tu movimiento se está volviendo pesado
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: Tucán
+	Description: ¿El tucán luchará por ti?
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: Dragon miniatura
+	Description: Un pequeño dragón te sigue
+}
+
+EnlilBuff: {
+	DisplayName: Auxilio de Enlil
+	Description: Aumenta la velocidad de movimiento vertical
+}
+
+ScarabLightPetBuff: {
+	DisplayName: Escarabajo bebé
+	Description: "'Está tramando algo…'"
+}
+
+ScarabMountBuff: {
+	DisplayName: Montura de cochinilla
+	Description: "'¡Espera!'"
+}
+
+DivineStrike: {
+	DisplayName: Golpe divino
+	Description: Tu siguiente ataque esta potenciado
+}
+
+RotDebuff: {
+	DisplayName: Descomposición [{0}]
+	Description: "'Tu piel se está volviendo verde'"
+}
+
+SanguineStackingBuff: {
+	DisplayName: Energía sanguinaria [{0}]
+	Description: Aumenta el daño en un {0}%
+}
+
+BlazeDebuff: {
+	DisplayName: Combustión
+	Description: ¡Esta bien!
+}
+
+RageGlyphBuff: {
+	DisplayName: Daño iracundo [{0}]
+	Description: Daño almacenado: {0}
+}

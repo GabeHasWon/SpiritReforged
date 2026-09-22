@@ -1,0 +1,125 @@
+Biomes: {
+	SavannaBiome: {
+		DisplayName: Sabana
+		TownNPCDialogueName: la Sabana
+	}
+
+	SaltBiome: {
+		DisplayName: Salar
+		TownNPCDialogueName: el Salar
+	}
+
+	ZigguratBiome: {
+		DisplayName: Zigurat
+		TownNPCDialogueName: el Zigurat
+	}
+}
+
+SlotContexts.Backpack: Mochila
+
+Conditions: {
+	InSavanna: En la Sabana
+	PeevedTumbler: When sparkling
+	Discovered: Descubrimiento
+	Submerged: Sumergido
+	InSaltFlats: En el Salar
+	IsPrickly: When prickly
+	InZiggurat: En el Zigurat
+	InSpace: En el Espacio
+	NotSnow: No en la Tundra
+}
+
+Misc: {
+	Pins: {
+		Move: Mover tachuela
+		Obtained: Ya tienes esta tachuela
+		UseItem: Clic derecho para añadir esta tachuela a tu colección
+	}
+
+	Enchantment: {
+		PlaceToEnchant: Coloca un objeto aquí para encantarlo
+		Enchant: Encantar
+		Cost: "{0} [c/{1}:Chromatic Wax]"
+		Clear: Remover encantamiento
+		Random: Aleatorizar encantamiento
+	}
+
+	NoStock: Agotado
+	GraveText: <wavy>El texto es viejo y desvanecido; no logras distinguir bien lo que dice.
+	MenuButton: Usar el estilo del menú
+	UnchangedMap: El mapa no tiene cambios.
+	ShareMap: El mapa ha sido compartido.
+	ShareAndUpdateMap: El mapa ha sido compartido y actualizado.
+}
+
+DamageSources: {
+	Impaling: {
+		0: "{0} ha sido empalado."
+		1: "{0} fue ensartado."
+	}
+}
+
+GameTips: {
+	# Release
+	ReforgedTip0: Lleva siempre comida contigo. ¡Nunca sabes cuándo podría ser útil!
+	ReforgedTip1: Raramente, se pueden encontrar mariposas escondidas en arboledas subterráneas.
+	ReforgedTip2: ¡Las tachuelas son útiles! Revisa tu inventario de tachuelas en la parte inferior izquierda de tu mapa.
+	ReforgedTip3: Los animales de la sabana no pueden atraparse con redes para insectos.
+	ReforgedTip4: Mochilas. Ahora tienes más espacio.
+	ReforgedTip5: Las profundidades del océano guardan muchas cosas de interesantes.
+	ReforgedTip6: La hierba estelar ofrece un buen alivio en la oscuridad de la noche.
+	ReforgedTip7: El tallo de nube siempre crece bajo las nubes. ¡No olvides mirar hacia arriba!
+	ReforgedTip8: Puedes pararte sobre los árboles de acacia si necesitas algo de altura.
+	ReforgedTip9: A veces llegan cosas a la orilla del océano; ¡échale un vistazo de vez en cuando!
+	# Caves & Clubs
+	ReforgedTip10: Muchas vasijas salpican las cuevas bajo tus pies! Mantén los ojos abiertos.
+	ReforgedTip11: Los garrotes ofrecen un daño fuerte y concentrado a un solo objetivo.
+	# Sunscorched
+	ReforgedTip12: Las leyendas hablan de una ofrenda de gemas sobre un altar antiguo...
+	ReforgedTip13: ¡Ten cuidado al explorar el antiguo zigurat! Las sorpresas se esconden en cada esquina.
+	ReforgedTip14: Los oasis hundidos pueden brindar un alivio muy necesario del caos del desierto subterráneo.
+	ReforgedTip15: ¡El ámbar oculta secretos! Tal vez encuentres algo dentro...
+	ReforgedTip16: ¡Ten cuidado al caminar por las ruinas del desierto! Algunos pisos pueden ser menos sólidos de lo que piensas.
+	# Spellbound
+	ReforgedTip17: Los glifos otorgan a tus armas poderosos efectos que transforman la manera en que se usan.
+	ReforgedTip18: La cera cromática puede encontrarse en vasijas, cajas y como botín al derrotar a ciertos enemigos.
+	ReforgedTip19: El encantador puede imbuir tu arma con una variedad de glifos únicos. ¡Pruébalos todos!
+}
+
+Emotes: {
+	CartographerEmote.Command: Cartógrafa
+	HikerEmote.Command: Excursionista
+	EnchanterEmote.Command: enchanteremote
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: Libro de cuentas
+		Description: Mostrando el precio de venta
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: Visión fulgurante
+		Description: Mostrando transmutaciones
+	}
+}
+
+Ecotones: {
+	SaltFlatsEcotone: Salar
+	SavannaEcotone: Sabana
+}
+
+EcotoneEdges: {
+	Forest: Bosque
+	Desert: Desierto
+	Ocean: Océano
+	Snow: Tundra
+	Jungle: Jungla
+	Corruption: Corrupción
+	Crimson: Carmesí
+	Hallow: Sagrado
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+}
+
+DamageClasses.HybridDamageClass.DisplayName: Daño de clase hibrida
