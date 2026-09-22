@@ -3624,3 +3624,8 @@ Survivalist: {
 		'Fire in the hole!'
 		''' */
 }
+
+Flakker: {
+	// DisplayName: Flakker
+	// Tooltip: ""
+}
