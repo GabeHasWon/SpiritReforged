@@ -3523,7 +3523,7 @@ Vendetta: {
 
 Pepperbox: {
 	// DisplayName: Pepperbox
-	// Tooltip: ""
+	// Tooltip: Rapidly peppers enemies
 }
 
 ShotgunAmmoType: {
@@ -3533,7 +3533,7 @@ ShotgunAmmoType: {
 
 Shot: {
 	// DisplayName: Shot
-	// Tooltip: ""
+	// Tooltip: Fires a spread of shot
 }
 
 ClockworkCane: {
@@ -3557,45 +3557,70 @@ LastWord: {
 
 Buckshot: {
 	// DisplayName: Buckshot
-	// Tooltip: ""
+	// Tooltip: Fires a tight spread of powerful buckshot
 }
 
 SuperExtendoMags: {
 	// DisplayName: Super Extendo Mags
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Doubles magazine size
+		Increases reload time by 30%
+		''' */
 }
 
 SaltShot: {
 	// DisplayName: Salt Shot
-	// Tooltip: ""
+	// Tooltip: Fires a spread of bouncing salt shards
 }
 
 DragonsBreath: {
 	// DisplayName: Dragons Breath
-	// Tooltip: ""
+	// Tooltip: Fires a vehement spread of incendiary rounds that pierce enemies and terrain
 }
 
 Gryphon: {
 	// DisplayName: Gryphon
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Can be charged to decrease spread
+		Fully charged shots pierce infinitely
+		''' */
 }
 
 Heirloom: {
 	// DisplayName: Heirloom
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		With a full magazine, press <right> to fire both barrels at once
+		'Super'
+		''' */
 }
 
 GameHuntingKit: {
 	// DisplayName: Game Hunting Kit
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Decreases spread of shotguns by 50%
+		Increases the magazine size of shotguns by 50%
+		''' */
 }
 
 Slug: {
 	// DisplayName: Slug
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Fires a single powerful slug
+		This slug deals much more damage at close range
+		''' */
 }
 
 Survivalist: {
 	// DisplayName: Survivalist
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Press <right> to fire a grenade from the underbarrel
+		This grenade reloads every five seconds
+		'Fire in the hole!'
+		''' */
 }

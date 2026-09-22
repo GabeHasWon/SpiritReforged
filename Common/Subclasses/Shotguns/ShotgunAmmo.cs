@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Common.Subclasses.Greatshields;
+﻿using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Subclasses.Greatshields;
+using SpiritReforged.Content.Particles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,7 +74,7 @@ public abstract class ShotgunAmmoItem : ModItem
 	}
 }
 
-// TODO: mod call for this
+// TODO: mod call to add things to this
 public class ShotgunGlobalItem : GlobalItem
 {
 	public static List<int> _shotgunIDs = 
@@ -83,19 +85,34 @@ public class ShotgunGlobalItem : GlobalItem
 		ItemID.TacticalShotgun,
 		];
 
-	public override bool AppliesToEntity(Item entity, bool lateInstantiation)
+	public Dictionary<int, ShotgunStats> _shotgunStats = [];
+
+	public override void Load()
 	{
-		return _shotgunIDs.Contains(entity.type);
+		// default stats
+		_shotgunStats.Add(ItemID.Boomstick, new());
+		// 50% more shots, 50% more spread
+		_shotgunStats.Add(ItemID.QuadBarrelShotgun, new(shotMultiplier: 0.5f, spreadMultiplier: 0.5f));
+		// 25% more speed, 20% less spread
+		_shotgunStats.Add(ItemID.OnyxBlaster, new(speedMultiplier: 0.25f, spreadMultiplier: -0.2f));
+		// default stats
+		_shotgunStats.Add(ItemID.Shotgun, new());
+		// 35% less spread
+		_shotgunStats.Add(ItemID.TacticalShotgun, new(spreadMultiplier: -0.35f));
 	}
+
+	public override void Unload() => _shotgunStats = null;
+
+	public override bool AppliesToEntity(Item entity, bool lateInstantiation) => _shotgunIDs.Contains(entity.type);
 
 	public override bool InstancePerEntity => true;
 
-	public override bool? CanChooseAmmo(Item weapon, Item ammo, Player player) // allows shotguns to use vanilla behavior and our shotgun ammo
+	public override bool? CanChooseAmmo(Item weapon, Item ammo, Player player) // allows shotguns to only use shot
 	{
 		if (ammo.ammo == ModContent.ItemType<ShotgunAmmoType>())
 			return true;
 
-		return base.CanChooseAmmo(weapon, ammo, player);
+		return false;
 	}
 
 	public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -110,16 +127,60 @@ public class ShotgunGlobalItem : GlobalItem
 
 			var shotgunPlayer = player.GetModPlayer<ShotgunPlayer>();
 
-			ammo._behavior.Invoke(item, player, source, position, direction, 
-				shotgunPlayer.ModifyShotCount(ammo._shotCount),
-				shotgunPlayer.ModifySpread(ammo._spreadAmount),
-				shotgunPlayer.ModifySpeed(ammo._speed), 
+			bool found = _shotgunStats.TryGetValue(item.type, out var stats);
+
+			var shotgunStats = found ? stats : new ShotgunStats();
+
+			ammo._behavior.Invoke(item, player, source, position, direction,
+				shotgunPlayer.ModifyShotCount(ammo._shotCount, shotgunStats._additionalShots, shotgunStats._shotMultiplier),
+				shotgunPlayer.ModifySpread(ammo._spreadAmount, shotgunStats._additionalSpread, shotgunStats._spreadMultiplier),
+				shotgunPlayer.ModifySpeed(ammo._speed, shotgunStats._additionalSpeed, shotgunStats._speedMultiplier),
 				damage, knockback);
 
-			return false;
+			Vector2 normalized = velocity.SafeNormalize(Vector2.UnitX);
+			Vector2 shellPos = position + new Vector2(item.width / 2, -8 * player.direction).RotatedBy(velocity.ToRotation());
+
+			ParticleHandler.SpawnParticle(new ShotgunShellParticle(shellPos,
+				-normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 1f, 60, ammo));
+
+			for (int i = 0; i < 4; i++)
+			{
+				Dust.NewDustPerfect(shellPos, DustID.Torch, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 0, default, Main.rand.NextFloat(2f));
+			}
+
+			return true;
 		}
 
 		return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
+	}
+}
+
+public class ShotgunGlobalProjectile : GlobalProjectile
+{
+	// list of all projectiles used by ammos with the musket ball ammo type
+	// we use this to manually delete shotgun bullets from vanilla as we override them but want to keep additional behavior (such as onyx blaster)
+	public static List<int> musketBallProjectiles = new();
+
+	public override void SetStaticDefaults()
+	{
+		foreach ((int id, Item item) in ContentSamples.ItemsByType)
+		{
+			if (id == AmmoID.Bullet)
+				musketBallProjectiles.Add(item.shoot);
+		}
+
+		musketBallProjectiles.Add(ProjectileID.PurificationPowder);
+	}
+
+	public override void OnSpawn(Projectile projectile, IEntitySource source)
+	{
+		// if we are a (vanilla / modded opt in) shotgun
+		if (source is EntitySource_ItemUse_WithAmmo ammoSource && ShotgunGlobalItem._shotgunIDs.Contains(ammoSource.Item.type))
+		{
+			// Destroy all musket ball projectiles
+			if (musketBallProjectiles.Contains(projectile.type))
+				projectile.Kill();
+		}
 	}
 }
 
