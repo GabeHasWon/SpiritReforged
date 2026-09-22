@@ -13,16 +13,16 @@ using Terraria.DataStructures;
 using static SpiritReforged.Common.ItemCommon.MagazineSystem.MagazineGlobalItem;
 
 namespace SpiritReforged.Content.Forest.Flakker;
-public class Flakker() : ShotgunItem(new(shotMultiplier: -0.33f, additionalSpread: 0.2f, spreadMultiplier: 0.65f))
+public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread: 0.2f, spreadMultiplier: 0.65f))
 {
 	bool[] reloadEffects;
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 6;
+		Item.damage = 25;
 		Item.knockBack = 2f;
 		Item.width = 66;
 		Item.height = 24;
-		Item.useTime = Item.useAnimation = 95;
+		Item.useTime = Item.useAnimation = 75;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.noMelee = true;
 		Item.noUseGraphic = false;
@@ -31,7 +31,7 @@ public class Flakker() : ShotgunItem(new(shotMultiplier: -0.33f, additionalSprea
 		Item.autoReuse = true;
 
 		var globalItem = Item.GetGlobalItem<MagazineGlobalItem>();
-		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot_0" + Main.rand.Next(1, 4)) with { Pitch = pitch, Volume = 0.5f, PitchVariance = 0.1f }, position), new(-0.2f, 0.7f, 8, 70), new(62, 26), new(-18, -2), MagazineReloadType.EntireMagazine, MagazineUIType.Shell, true, false, -18, -0.15f);
+		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot_0" + Main.rand.Next(1, 4)) with { Pitch = pitch, Volume = 0.5f, PitchVariance = 0.1f }, position), new(-0.2f, 0.7f, 9, 55), new(62, 26), new(-18, -2), MagazineReloadType.EntireMagazine, MagazineUIType.Shell, true, false, -18, -0.15f);
 		globalItem.SetAnimations(new(0.04f, 0.96f), reloadStyle: ReloadUseStyle, reloadFrame: ReloadUseFrame);
 	}
 
@@ -52,7 +52,7 @@ public class Flakker() : ShotgunItem(new(shotMultiplier: -0.33f, additionalSprea
 			float baseSpread = i == 0 ? 0 : 0.25f;
 
 			PreNewProjectile.New(source, position, velocity.RotatedByRandom(player.GetModPlayer<ShotgunPlayer>().ModifySpread(baseSpread)) * Main.rand.NextFloat(10, 15),
-				ModContent.ProjectileType<FlakkerProjectile>(), damage, knockback, player.whoAmI, source.AmmoItemIdUsed, preSpawnAction: p => (p.ModProjectile as FlakkerProjectile).parent = Item.ModItem as Flakker);
+				ModContent.ProjectileType<FlakkerProjectile>(), damage / 3, knockback, player.whoAmI, source.AmmoItemIdUsed, preSpawnAction: p => (p.ModProjectile as FlakkerProjectile).parent = Item.ModItem as Flakker);
 		}
 
 		for (int i = 0; i < 5; i++)

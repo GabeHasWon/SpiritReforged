@@ -74,7 +74,7 @@ public class FlakkerProjectile : ModProjectile
 					shotgunPlayer.ModifyShotCount(ammo._shotCount, shotgunStats._additionalShots, shotgunStats._shotMultiplier),
 					shotgunPlayer.ModifySpread(ammo._spreadAmount, shotgunStats._additionalSpread, shotgunStats._spreadMultiplier),
 					shotgunPlayer.ModifySpeed(ammo._speed, shotgunStats._additionalSpeed, shotgunStats._speedMultiplier),
-					(int)(Projectile.damage * 1.5f), Projectile.knockBack * 5);
+					(int)(Projectile.damage * 3f), Projectile.knockBack * 5);
 			}
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Explosion_01") with { Volume = 0.25f, Pitch = 0.3f, PitchVariance = 0.2f }, Projectile.Center);
