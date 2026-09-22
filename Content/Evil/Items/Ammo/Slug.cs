@@ -146,7 +146,7 @@ public class SlugProjectile : ModProjectile
 		}
 		else
 		{
-			Projectile.velocity.Y += 0.003f;
+			Projectile.velocity.Y += 0.02f;
 			Projectile.velocity *= 0.975f;
 
 			if (Main.rand.NextBool(4))
@@ -288,6 +288,8 @@ public class SlugProjectile : ModProjectile
 			// Point blank shot
 			if (Projectile.timeLeft > MAX_TIMELEFT - 5)
 			{
+				fadeOutTimer += 15;
+
 				if (Main.myPlayer == Projectile.owner)
 					ScreenshakeHelper.Shake(Projectile.Center, -Projectile.velocity * 0.1f, 0.66f, 2, 10);
 

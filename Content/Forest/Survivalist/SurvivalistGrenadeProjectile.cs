@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using ReLogic.Utilities;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Greatshields;
@@ -9,6 +10,8 @@ using Terraria.Audio;
 namespace SpiritReforged.Content.Forest.Survivalist;
 public class SurvivalistGrenadeProjectile : ModProjectile
 {
+	internal SlotId loopingSound;
+
 	public override void SetDefaults()
 	{
 		Projectile.Size = new(8);
@@ -22,11 +25,21 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 
 	public override void AI()
 	{
+		if (Projectile.ai[0] == 0)
+			loopingSound = SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/SurvivalistGrenadeLooping") { IsLooped = true, Volume = 0.33f }, Projectile.Center);
+
+		if (loopingSound.IsValid)
+		{
+			SoundEngine.TryGetActiveSound(loopingSound, out var result);
+			if (result is not null)
+				result.Position = Projectile.Center;
+		}
+
 		Projectile.rotation = Projectile.velocity.ToRotation();
 
-		if (++Projectile.ai[0] > 30)
+		if (++Projectile.ai[0] > 25)
 		{
-			Projectile.velocity *= 0.985f;
+			Projectile.velocity *= 0.98f;
 			Projectile.velocity.Y += 0.04f;
 			if (Projectile.velocity.Y > 0)
 				Projectile.velocity.Y *= 1.07f;
@@ -34,6 +47,9 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 			if (Projectile.velocity.Y > 16f)
 				Projectile.velocity.Y = 16f;
 		}
+
+		if (Main.rand.NextBool(5))
+			Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(1.5f, 1.5f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = !Main.rand.NextBool(10);
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -54,19 +70,23 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 
 	void Explode()
 	{
+		if (Main.myPlayer == Projectile.owner)
+			ScreenshakeHelper.Shake(Projectile.Center, -Projectile.velocity * 0.25f, 1.5f, 2, 10);
+
+		SoundEngine.TryGetActiveSound(loopingSound, out var result);
+		result.Stop();
+
+		Projectile.velocity *= 0f;
 		Projectile.damage *= 3;
 		Projectile.penetrate = -1;
 		Projectile.timeLeft = 10;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 10;
-		Projectile.Resize(150, 150);
+		Projectile.Resize(115, 115);
 
 		float strength = Main.rand.NextFloat(0.9f, 1.33f);
 
-		if (Main.myPlayer == Projectile.owner)
-			ScreenshakeHelper.Shake(Projectile.Center, -Projectile.velocity * 0.25f, 1.5f, 2, 10);
-
-		SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Explosion_0" + Main.rand.Next(1, 3)) { Volume = 0.66f, PitchVariance = 0.1f }, Projectile.Center);
 
 		for (int i = 0; i < (int)(12 * strength); i++)
 		{
@@ -96,18 +116,18 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Yellow.Additive(), Color.Orange, 0.6f, 180 * strength, 30, "Smoke", stretch, EaseFunction.EaseQuinticOut)
 		{ Angle = Main.rand.NextFloat(MathHelper.TwoPi) });
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.Orange.Additive(), 0.3f, 120 * strength, 30, "Smoke", stretch, EaseFunction.EaseCubicOut)
+		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Yellow.Additive(), Color.DarkOrange.Additive(), 0.4f, 150 * strength, 30, "Smoke", stretch, EaseFunction.EaseCubicOut)
 		{ Angle = Main.rand.NextFloat(MathHelper.TwoPi) });
 
 		for (int i = 0; i < (int)(8 * strength); i++)
 		{
 			if (Main.rand.NextBool())
-				ParticleHandler.SpawnParticle(new BloomParticle(glowPos, Main.rand.NextVector2CircularEdge(7f, 7f) * Main.rand.NextFloat(0.75f, 1f), Color.Orange, 0.4f * strength, Main.rand.Next(30, 50), 1, EmberUpdate));
+				ParticleHandler.SpawnParticle(new BloomParticle(glowPos, Main.rand.NextVector2CircularEdge(7f, 7f) * Main.rand.NextFloat(0.65f, 1f), Color.Orange, 0.4f * strength, Main.rand.Next(20, 70), 1, EmberUpdate));
 
 			Vector2 pos = Projectile.Center;
 			Vector2 velocity = Main.rand.NextVector2CircularEdge(13f, 13f) * Main.rand.NextFloat(0.5f, 1f) * strength;
 
-			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.Orange, Color.Goldenrod, Main.rand.NextFloat()), 1.35f, Main.rand.Next(10, 30), p => p.Velocity *= 0.9f, tileCollide: false));
+			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.Orange, Color.Goldenrod, Main.rand.NextFloat()), 1.65f, Main.rand.Next(10, 50), p => p.Velocity *= 0.9f, tileCollide: false));
 		
 			for (int x = 0; x < 3; x++)
 			{

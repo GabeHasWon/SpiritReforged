@@ -45,7 +45,13 @@ public class ShotgunShellParticle : Particle
 			return;
 		}
 
-		Velocity.Y += 0.1f;
+		Velocity.Y += 0.09f;
+		if (Velocity.Y > 0)
+			Velocity.Y *= 1.04f;
+
+		if (Velocity.Y > 20f)
+			Velocity.Y = 20f;
+
 		Velocity *= 0.99f;
 
 		Rotation += Velocity.Length() * 0.03f;

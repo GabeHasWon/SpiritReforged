@@ -36,12 +36,12 @@ public class Buckshot : ShotgunAmmoItem
 		return spawnedProjectiles;
 	}
 
-	public Buckshot() : base(Behavior, 9, .65f, 13f) { }
+	public Buckshot() : base(Behavior, 3, .35f, 14f) { }
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 8;
-		Item.knockBack = 3f;
+		Item.damage = 16;
+		Item.knockBack = 6f;
 	}
 
 	public override void AddRecipes()
