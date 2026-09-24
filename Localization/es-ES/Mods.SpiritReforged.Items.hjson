@@ -136,11 +136,11 @@ UrchinStaff: {
 
 GarInAJar: {
 	Tooltip: ""
-	DisplayName: Pecera de pejelagarto
+	DisplayName: Pecera de esturión
 }
 
 GarItem: {
-	DisplayName: Pejelagarto
+	DisplayName: Esturión
 	Tooltip: ""
 }
 
@@ -150,7 +150,7 @@ SavannaDirtItem: {
 }
 
 GoldGarItem: {
-	DisplayName: Pejelagarto dorado
+	DisplayName: Esturión dorado
 	Tooltip: ""
 }
 
@@ -224,7 +224,7 @@ GoldenCaviar: {
 		'''
 }
 
-GarBannerItem.DisplayName: Estandarte de pejelagarto
+GarBannerItem.DisplayName: Estandarte de esturión
 
 CoconutMilk: {
 	DisplayName: Leche de coco
@@ -1160,7 +1160,7 @@ PinSky: {
 }
 
 PinSword: {
-	DisplayName: Tachuela de espada
+	DisplayName: Tachuela espada
 	Tooltip: ""
 }
 
@@ -1329,7 +1329,7 @@ KillieFishbowl: {
 }
 
 SparrowCageItem: {
-	DisplayName: Jaula para gorriones
+	DisplayName: Jaula para gorrión
 	Tooltip: ""
 }
 
@@ -2652,7 +2652,7 @@ Dragonsong: {
 }
 
 TinyDragon: {
-	DisplayName: Dragon pequeñito
+	DisplayName: Dragoncillo
 	Tooltip:
 		'''
 		Invoca a un dragón en miniatura
@@ -2666,19 +2666,19 @@ PileOfConsequences: {
 }
 
 BrineShrimpItem: {
-	DisplayName: Artemia salina
+	DisplayName: Camarón de salmuera
 	Tooltip: ""
 }
 
 GoldenBrineShrimpItem: {
-	DisplayName: Artemia salina dorada
+	DisplayName: Camarón de salmuera dorado
 	Tooltip: ""
 }
 
 CorruptStactusBannerItem.DisplayName: Estandarte de cacturio corrompido
 CrimsonStactusBannerItem.DisplayName: Estandarte de cacturio carmesí
 DesertStactusBannerItem.DisplayName: Estandarte de cacturio
-HallowedStactusBannerItem.DisplayName: Estandarte de cacturio bendito
+HallowedStactusBannerItem.DisplayName: Estandarte de cacturio sagrado
 
 AncientBannerItem: {
 	DisplayName: Estandarte ancestral

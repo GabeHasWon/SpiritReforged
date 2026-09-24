@@ -177,7 +177,7 @@ Pages: {
 		Presets: {
 			Whimsical: {
 				Name: "[i:SpiritReforged/MidnightApple] Fantasioso"
-				Tooltip: Cuevas gigantes y frondosas, colinas de césped de estrellas y tranquilos campos de trigo… ¿qué podría salir mal?
+				Tooltip: Cuevas gigantes y frondosas, colinas de césped de estrellas y tranquilos campos de trigo... ¿qué podría salir mal?
 			}
 
 			Treacherous: {
@@ -637,7 +637,7 @@ Pages: {
 
 			DresserItemRange: {
 				DisplayName: "[i:SpiritReforged/LapisDresserItem] Cantidad de botín en los aparadores"
-				Tooltip: Determina el rango para la cantidad de objetos en un aparador. 
+				Tooltip: Determina el rango para la cantidad de objetos en un aparador.
 			}
 
 			DebrisMinimum: {

@@ -140,7 +140,7 @@ EnlilBuff: {
 
 ScarabLightPetBuff: {
 	DisplayName: Escarabajo bebé
-	Description: "'Está tramando algo…'"
+	Description: "'Está tramando algo...'"
 }
 
 ScarabMountBuff: {

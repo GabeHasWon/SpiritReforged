@@ -43,8 +43,8 @@ Mapping: {
 Signs: {
 	Underground: {
 		Common: {
-			0: <wavy>Las vasijas guardan el secreto…
-			1: <wavy>El texto está demasiado desvanecido para leerse…
+			0: <wavy>Las vasijas guardan el secreto...
+			1: <wavy>El texto está demasiado desvanecido para leerse...
 			2: <colorful:255,80,80>El letrero está cubierto de garabatos ininteligibles con un líquido de dudosa procedencia.
 			3: <wavy>......Las mercancías de er.
 			4: <wavy>El viejo letrero casi se ha vuelto polvo.
@@ -57,7 +57,7 @@ Signs: {
 		}
 
 		Rare: {
-			0: <wavy>Recoge mis páginas…
+			0: <wavy>Recoge mis páginas...
 			1: Parece que no hay bolas de viscosidad por aquí. —Quien pinta los letreros
 			2:
 				'''

@@ -1,362 +1,362 @@
 VanillaDialogue: {
 	Guide: {
-		WorldNPC: You might run into other explorers as you wander the world. If you do, maybe you can help each other out!
-		Ecotone: If the climate is right, the region between the Desert and Jungle can be home to a vast Savanna. I've always wanted to see it!
-		Savanna: The leather from the animals here could craft you some pretty neat gear, kid.
-		Kelp: Don't eat the seaweed.
+		WorldNPC: Podrías encontrarte con otros exploradores mientras recorres el mundo. Si lo haces, ¡quizás puedan ayudarse mutuamente!
+		Ecotone: Si el clima es adecuado, la región entre el Desierto y la Jungla puede albergar una vasta Sabana. ¡Siempre he querido verla!
+		Savanna: El cuero de los animales que habitan aquí podría fabricarte un muy buen equipo, chico.
+		Kelp: No comas el alga marina.
 	}
 
-	ArmsDealer.Savanna: Lotta big game around these parts. Even the likes of you could hit 'em.
+	ArmsDealer.Savanna: Hay un montón de animales grandes por aquí. Incluso alguien como tú podría derribarlos.
 
 	Stylist: {
-		Savanna: It's wicked hard to maintain my hairstyle in this climate.
-		Duststorm: If I have to pick out sand from one more person's hair, I swear...
+		Savanna: Es ridículo lo difícil que es mantener mi peinado en este clima.
+		Duststorm: Si tengo que sacar la arena del cabello de una persona más, te juro que...
 	}
 
 	TravellingMerchant: {
-		Cartographer1: I often run into a wayward cartographer on my travels. I swear, she gives me a run for my money!
-		Cartographer2: Oh, it's {0}! She gave me directions last month before falling right into a ditch.
-		Discoveries: Sometimes, I stumble upon rare curios on my journey. Maybe you can find them too, if you keep an eye out.
+		Cartographer1: A menudo me encuentro con una cartógrafa medio zafada en mis viajes. Lo juro, ¡es mi archienemiga!
+		Cartographer2: ¡Ah, es {0}! El mes pasado me dio indicaciones antes de caer en un foso.
+		Discoveries: A veces me tropiezo con cosas curiosas y raras en mis viajes. Tal vez tú también puedas encontrarlas si tienes buen ojo.
 	}
 
-	Demolitionist.HasBoomshroom: You've got what? A 'shroom that makes BIGGER booms? I love mother nature!
+	Demolitionist.HasBoomshroom: ¿Que tienes qué? ¿Un hongo que hace las explosiones más grandes? ¡Me encanta la madre naturaleza!
 
 	Nurse: {
-		Duststorm: Don't get scraped up by all that dust outside! It's below my pay grade.
-		Savanna: No, I'm not a vet! Now get those animals out of here.
+		Duststorm: ¡No te ensucies con todo ese polvo de allá afuera! Eso está por debajo de lo que me pagas.
+		Savanna: ¡No, no soy veterinaria! Ahora saca a esos animales de aquí.
 	}
 
 	PartyGirl: {
-		Duststorm: Aw, it's not party weather. Maybe we can have a kickback instead!
-		Savanna: All this open space is perfect for a party! Ooh, maybe a dayger!
+		Duststorm: Awwh, no es clima para una fiesta. ¡Quizás podamos hacer una reunión tranquila en su lugar!
+		Savanna: ¡Todo este espacio abierto es perfecto para una fiesta! Ooh, ¡quizás una reunión divertida!
 	}
 
 	Golfer: {
-		Duststorm: It's all this dust's fault that I'm playing below par!
-		Savanna: Everything here is a hazard! My balls keep getting stuck in the bushes and sand...and the trees!
+		Duststorm: ¡Es culpa de todo este polvo que estoy jugando por debajo de mi nivel!
+		Savanna: ¡Todo aquí es un peligro! Mis pelotas se quedan atascadas en los arbustos, en la arena... ¡y hasta en los árboles!
 	}
 
 	Zoologist: {
-		Savanna1: Oh my god- this place is, like, perfect! You've got to check out all the cute little animals here!
-		Savanna2: What?! Those hyenas bit you? But they're like, totally adorable!
+		Savanna1: ¡Por dios, este lugar es, perfecto! ¡Tienes que ver todos los lindos animalitos que hay aquí!
+		Savanna2: ¡¿Qué?! ¿Esas hienas te mordieron? ¡Pero si son totalmente adorables!
 	}
 
 	Angler: {
-		Pager0: ...what are you trying to do? You can't give me my fish over pager, dummy!
-		Pager1: Remember to bring me the fish IN PERSON.
+		Pager0: ...¿Qué estás intentando hacer? ¡No puedes darme mi pescado a través del walkie talkie tonto!
+		Pager1: Recuerda traerme el pez EN PERSONA.
 	}
 
-	Wizard.SaltFlats: The rocks around these parts would make for a perfect crystal ball!
-	Painter.SaltFlats: I've never seen a more beautiful landscape! I could paint here for the rest of my life.
-	Cyborg.SaltFlats: It.. it burns.
-	Mechanic.SaltFlats: Ugh! All this salt is corroding my gear. Get me out of here!
-	Truffle.SaltFlats: This place is deeply uncomfortable for our kind. I feel so dry...
+	Wizard.SaltFlats: ¡Las rocas de esta zona serían perfectas para una bola de cristal!
+	Painter.SaltFlats: ¡Nunca habia visto un paisaje tan hermoso! Podría pintar aquí por el resto de mi vida.
+	Cyborg.SaltFlats: Eso... eso quema.
+	Mechanic.SaltFlats: ¡Ugh! ¡Toda esta sal está corroyendo mi equipo! ¡Sácame de aquí!
+	Truffle.SaltFlats: Este lugar es profundamente incómodo para los de mi especie. Me siento tan seco...
 }
 
 Crinoid: {
-	DisplayName: Crinoid
-	Entry: These curious critters are closely related to starfish. They feed off of whatever sinks down to the bottom of the sea.
+	DisplayName: Crinoideo
+	Entry: ¡Estas curiosas criaturas están estrechamente relacionadas con las estrellas de mar! Se alimentan de todo lo que se hunde hasta el fondo del mar.
 }
 
 Pelican: {
-	DisplayName: Pelican
-	Entry: A large sea bird with a special beak to hold its prey. Startling it could cause the bird to drop what it's caught, but that would be mean.
+	DisplayName: Pelicano
+	Entry: Un ave marina grande con un pico especial para sostener a su presa. Asustarla podría hacer que el ave suelte lo que atrapó, pero eso sería cruel.
 }
 
 TinyCrab: {
-	DisplayName: Palecrab
-	Entry: These adorable little critters are not as hostile as their larger relatives. Living in deeper waters has made them lose coloration since they have less exposure to sunlight.
+	DisplayName: Cangrejo pálido
+	Entry: ¡Estas adorables criaturitas no son tan hostiles como sus parientes más grandes! Vivir en aguas más profundas ha hecho que pierdan coloración, ya que tienen menos exposición a la luz solar.
 }
 
 Tubeworm: {
-	DisplayName: Tubeworm
-	Entry: Deep below the glimmering tides, down where the light won't shine, live some fascinating creatures, able to feast off of the smog exuded from hydrothermal vents.
+	DisplayName: Poliqueto tubícola
+	Entry: En lo profundo de las mareas relucientes, donde la luz casi no llega, viven criaturas fascinantes, capaces de alimentarse del humo que emanan los respiraderos hidrotermales.
 }
 
 SandPiper: {
-	DisplayName: Sand Piper
-	Entry: A small, brave bird that patrols the shorelines looking for food uncovered by the waves.
+	DisplayName: Correlimo
+	Entry: Un ave pequeña y valiente que patrulla las costas en busca de alimento descubierto por las olas.
 }
 
 Gar: {
-	DisplayName: Gar
-	Entry: Gars are keen hunters that normally inhabit freshwater bodies. One must always be on guard when swimming with a gar - they can attack from the side, front, or even the rear.
+	DisplayName: Esturión
+	Entry: Los pejelagartos son cazadores astutos que normalmente habitan cuerpos de agua dulce. Siempre hay que estar alerta al nadar cerca de uno ya que pueden atacar desde el costado, el frente o incluso por detrás.
 }
 
 GoldGar: {
-	DisplayName: Gold Gar
-	Entry: Only a monster would rip open a rare Gold Gar for their succulent caviar. Only a monster...
+	DisplayName: Esturíón dorado
+	Entry: Sólo un monstruo abriría un raro esturión dorado para obtener su suculento caviar. Sólo un monstruo...
 }
 
 OceanSlime: {
-	DisplayName: Coconut Slime
-	Entry: Look out from above! These tricky slimes reside on the shore, inconspicuously camouflaged as this familiar fruit.
+	DisplayName: Slime coco
+	Entry: ¡Cuidado con la cabeza! Estos astutos slimes habitan en la costa, camuflándose de manera discreta como esta fruta familiar.
 }
 
 DiverZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Who knew those oxygen tanks needed to have actual oxygen in them?
+	Entry: ¿Quién hubiera imaginado que esos tanques de oxígeno necesitaban tener oxígeno dentro?
 }
 
 KelpZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Fish fear me, women fear me, men fear me, children fear me, for I am the undead.
+	Entry: Los peces me temen, las mujeres me temen, los hombres me temen, los niños me temen, porque soy el no-muerto.
 }
 
 SailorZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Despite their current status, they used to run this really nice luxury cruiser you should check out sometime.
+	Entry: A pesar de su estado actual, solían dirigir un lujoso crucero realmente agradable que deberías visitar algúna vez.
 }
 
 TridentZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Their trident clearly didn't do them much good in life. It's still quite pointy, so watch out.
+	Entry: Su tridente claramente no les sirvió de mucho en vida. Todavía es bastante puntiagudo, así que cuidado.
 }
 
 Killifish: {
-	DisplayName: Killifish
-	Entry: True to their name, Killifish are known for their one defining trait, getting killed. Their gorgeous, iridescent scales are there too.
+	DisplayName: Killi
+	Entry: Fieles a su nombre, los killi son conocidos por su rasgo definitorio: Ser asesinados. Sus hermosas escamas iridiscentes también están ahí.
 }
 
 GoldKillifish: {
-	DisplayName: Gold Killifish
-	Entry: Bright gold scales do not help with Killifish's woes.
+	DisplayName: Killi dorado
+	Entry: Las brillantes escamas doradas no alivian las desgracias de los killis.
 }
 
 Termite: {
-	DisplayName: Termite
-	Entry: These little bugs swarm together to build massive nests with complex tunnels. They have an acquired taste for the dry, crunchy wood of the Savanna.
+	DisplayName: Termita
+	Entry: Estos pequeños insectos se agrupan para construir enormes nidos con túneles complejos. Han adquirido un gusto especial por la madera seca y crujiente de la sabana.
 }
 
 SavannaSandSlime: {
 	DisplayName: "{$NPCName.SandSlime}"
-	Entry: Slightly more leafy, a little less sandy, all the same danger.
+	Entry: Un poco más frondoso, un poco menos arenoso, pero con el mismo peligro.
 }
 
 PeevedTumbler: {
-	DisplayName: Peeved Tumbler
-	Entry: Life isn't easy in the Savanna...but it's also not too bad. Hey, you'd be annoyed if you had sand in your eyes too.
+	DisplayName: Rodapaja molesto
+	Entry: La vida no es fácil en la sabana... pero tampoco es tan mala. Oye, tú también te molestarías si tuvieras arena en los ojos.
 }
 
 Sparrow: {
-	Entry: Much like its forest cousin, the world-famous Bird, Sparrows are simple. They fly about, picking at termites and enjoying the Savanna air.
-	DisplayName: Sparrow
+	Entry: Al igual que su primo del bosque, el mundialmente famoso pájaro, los gorriones son sencillos. Vuelan recogiendo termitas y disfrutando del aire de la sabana.
+	DisplayName: Gorrión
 }
 
 SafariZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: On the bright side, if you're already undead, snakes can't do anything to you.
+	Entry: Por el lado positivo, si ya eres un no-muerto, las serpientes no significan una amenaza.
 }
 
 TumbleZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Under the undead facade, under all that blood and branch and bile, there lies a heartwarming story of a Tumbler and a Zombie becoming friends in the most unlikely of situations.
+	Entry: Bajo la fachada de no-muerto, bajo toda esa sangre, ramas y bilis, yace una conmovedora historia de un rodapaja y un zombi que se hicieron amigos en las circunstancias más improbables.
 }
 
 Hyena: {
-	DisplayName: Hyena
-	Entry: A mischevious sort, the Hyena hunt in packs, aiming for weak wildlife. With Terrarians, however, they run rather than confront.
+	DisplayName: Hiena
+	Entry: De naturaleza traviesa, las hienas cazan en manada, apuntando a la fauna más débil. Sin embargo, frente a los terrarianos prefieren huir antes que enfrentarse.
 }
 
 Ostrich: {
-	DisplayName: Ostrich
-	Entry: While not one to take flight, the Ostrich enjoys deceptively fast land speeds regardless. Thankfully, they use that to scrounge for worms instead of for you.
+	DisplayName: Avestruz
+	Entry: A pesar de no poder volar, el avestruz disfruta de velocidades terrestres sorprendentemente rápidas. Por suerte, rebuscan gusanos en lugar de perseguirte a ti.
 }
 
 ButterflyCritter: {
-	DisplayName: Ethereal Butterfly
-	Entry: Perhaps, if you look into the night sky, you'll find them among the stars as well. They flutter in a dance as ephemeral as their bodies.
+	DisplayName: Mariposa etérea
+	Entry: Quizás, si miras al cielo nocturno, también las encuentres entre las estrellas. Revolotean en una danza tan efímera como sus cuerpos.
 }
 
 SavannaJungleSlime: {
-	DisplayName: Jungle Slime
-	Entry: It's gobbled up some flowers! Almost too cute to kill...
+	DisplayName: Slime de la jungla
+	Entry: Se ha tragado un par de flores. ¡Casi demasiado adorable para matarlo...!
 }
 
 Cartographer: {
-	DisplayName: Cartographer
-	Buttons.Map: Map
+	DisplayName: Cartógrafa
+	Buttons.Map: Mapa
 
 	Names: {
 		0: Soleana
-		1: Kyra
-		2: Jesse
-		3: '''"Clumsy"'''
+		1: Kira
+		2: Jessica
+		3: '''"Torpe"'''
 		4: Wynn
 		5: Nessa
 	}
 
 	Dialogue: {
-		0: Mapping's tough work. Sometimes you lose your place, and... wait.
-		1: Say, you got any nice, hardy paper on you? I've done plumb run out.
-		2: Gosh... dropping a pin on the ground is a bad time. Especially the brown ones.
-		3: Hey, do you have a map? Mind if I take a look? Better be well kept!
-		4: Finding the way once is luck. Finding the way twice takes a good map.
+		0: El trabajo de cartografía es duro. A veces pierdes tu en un lugar y... espera.
+		1: ¿Tendrás de casualidad algún buen papel resistente? Yo ya me quede sin nada.
+		2: Diablos... dejar caer una tachuela al suelo nunca es buena idea. Especialmente los cafés.
+		3: Oye, ¿tienes un mapa? ¿Te importa si le echo un vistazo? ¡Más vale que esté bien cuidado!
+		4: Encontrar el camino una vez es suerte. Encontrarlo dos veces requiere de un buen mapa.
 
 		Map: {
 			FloatingIsland: {
-				0: Let's see... it was right here! A cute little floating island I found. How'd I get there? Well, let's just say harpies can carry you WAY farther than you'd expect.
-				1: Take a look here. Waaay up there! Got up to some mischief a while back, and ended up in the sky! I think there was some treasure, but I was a little too preoccupied thinking of how to get down.
-				2: Check this spot out! I found an island in the sky a few weeks ago, it was cool but the neighbours were annoying! Hope you find something there that I couldn't.
+				0: Veamos... ¡estaba justo aquí! Una pequeña y adorable isla flotante que encontré. ¿Que cómo llegué allá arriba? Bueno, digamos que las arpías pueden llevarte MUCHO más lejos de lo que esperarías.
+				1: Échale un vistazo aquí. ¡muuuy arriba! Hace un tiempo me metí en algunos problemas ¡y terminé en el cielo!. Creo haber visto un tesoro, pero estaba demasiado preocupada pensando en como bajar.
+				2: ¡Mira este lugar! Hace unas semanas encontré una isla en el cielo; era genial, pero los vecinos eran molestos. ¡Espero que encuentres algo que yo no pude!
 			}
 
 			EnchantedSword: {
-				0: I found something... here! It was down a narrow tunnel; wouldn't you believe it, a sword in the stone, just like the legends say! I got cold feet and shied away though, I ain't worthy.
-				1: Aha! Here's the spot. It looks unassuming, but there's a mighty looking sword hidden under the ground. I would have taken it, but my pockets were full of rare mushrooms and mapping paper.
-				2: Here we are! Dunno how it got there, but I found a sword embedded in stone. Like that one legend...King Arthur was it? I don't mess with strange weapons though; maybe that's more your thing.
+				0: ¡Habia encontrado algo... aquí! Estaba en un túnel estrecho; ¿lo creerías? Una espada en una piedra, justo como dicen las leyendas. Pero me acobardé y me alejé del lugar... no soy digna.
+				1: ¡Ajá! Este era el lugar. Parece poco llamativo, pero hay una espada imponente escondida bajo tierra. La habría tomado, pero mis bolsillos completamente llenos de hongos raros y papel cartográfico.
+				2: ¡Aquí estamos! No sé cómo llegó allí, pero encontré una espada incrustada en una piedra. Como en esa leyenda... ¿era el rey arturo? Mira yo no me meto con armas extrañas; quizá eso sea más lo tuyo.
 			}
 
 			Shimmer: {
 				0:
 					'''
-					Where was it...there it is! I was hikin' down a dark, and dangerous cave. And what do I see on the horizon? A brilliant, shimmering pink glow. Truly gorgeous.
-					You know what that means in nature? Stay away. So I did.
+					¿Dónde estaba... ¡ahí está! Estaba caminando por una cueva oscura y peligrosa. ¿Y qué veo en el horizonte? Un brillante resplandor rosado y reluciente. Realmente hermoso.
+					¿Sabes lo que eso significa en la naturaleza? Mantente alejado. Así que lo hice.
 					'''
 				1:
 					'''
-					Um... I think it was around here. Tripped and hit my head on my way back from the ocean. When I woke up, fae little critters had taken me to this strange, and unusual place. 
-					I don't remember much after that, but I did start freaking out. Those faelings took me out of there in a hurry.
+					Um... creo que fue por aquí. Tropecé y me golpeé la cabeza cuando volvía del océano. Cuando desperté, unas pequeñas criaturas feéricas me habían llevado a este lugar extraño e inusual.
+					No recuerdo mucho después de eso, pero empecé a entrar en pánico. Esas criaturas brillantes me sacaron inmediatamente.
 					'''
 				2:
 					'''
-					Here it is. You ever seen water? Imagine that, but it glows like the night sky. An out-of-this world purple. 
-					Don't recommend drinking it, it makes your body feel fake. I don't know how to explain it. Trust me on this one.
+					Aquí está. ¿Alguna vez has visto agua? Imagina eso, pero brillando como el cielo nocturno. Un púrpura de otro mundo.
+					No te recomiendo beberlo, hace que tu cuerpo se sienta falso. No sé cómo explicarlo. Confía en mí en esta.
 					'''
 			}
 
 			Savanna: {
 				0:
 					'''
-					There we go, pin's on the house. I was up to the usual: taking my morning walk and viciously punching trees to get apples. After punching a couple of trees, 
-					I look up. Somehow, a whole prairie snuck up on me. I went back to punching trees after a few moments.
+					Y listo, tachuela colocada. Estaba en lo de siempre: dando mi paseo matutino y golpeando árboles con furia para conseguir manzanas. Después de golpear un par de árboles...
+					Levanto la mirada. De alguna manera, una pradera entera se me apareció de repente. Volví a golpear árboles después del momento de sorpresa.
 					'''
 				1:
 					'''
-					Take a look over here. You ever just walk straight ahead, staring right at the ground? You shouldn't. But a bit ago when I did, I saw the grass slowly go from a nice vibrant green to a sickly green. 
-					I look up; the largest grass I've ever seen. Thick as hell, too. So what'd I do? Well...I walked away. WAY too much work to walk in.
+					Mira por aquí. ¿Alguna vez has caminado recto mirando fijamente el suelo? No deberías. Pero hace un rato, cuando lo hice, vi cómo la hierba pasaba lentamente de un verde vibrante y bonito a un verde enfermizo.
+					Miro hacia arriba; la hierba más larga que he visto. También increíblemente gruesa. ¿Qué hice entonces? Bueno... me alejé. Es demasiado trabajo intentar caminar por allí.
 					'''
 				2:
 					'''
-					So a while ago I was seeing how quickly I could run from jungle bats, right? And then boom, right over here on the map, the air gets real dusty. A savanna sprawls out in front of me. What a sight!
-					And just for the record, I found out that I can run REAL quick when I need to.
+					Resulta que hace un tiempo estaba viendo qué tan rápido podía correr para escapar de los murciélagos de la jungla, ¿necesario verdad? Y entonces ¡boom!, justo aquí en el mapa, el aire se volvió muy polvoriento. Una sabana se extendía frente a mí. ¡caray que vista!
+					Y para que conste, descubrí que puedo correr MUY rápido cuando lo necesito.
 					'''
 			}
 
 			Hive: {
-				0: Pin goes...here. On the low, I don't recommend that jungle place. It's ROUGH. But when you see one of those big hives, there's honey nearby. And that's a treat worth many stings.
-				1: There you go! Um...I'll be real. Sometimes you'll strike liquid gold and it's STILL not worth investing in. Nasty bees... keep it hike, not business.
-				2: If you take a look right... here, you'll find something you may be interested in. I'll keep this short though, stingers hurt. Be prepared.
+				0: La tachuela va... aquí. Entre nos, no recomiendo nada ese lugar de la jungla. Es DURO. Pero cuando ves uno de esos grandes panales, hay miel cerca. Y esa es una delicia que vale muchas picaduras.
+				1: ¡Ahí lo tienes! Eh... seré sincera. A veces encuentras oro líquido y AÚN ASÍ no vale la pena invertir en ello. Con esas desagradables avispas... mantenlo como excursión, no como negocio.
+				2: Si miras justo... aquí, encontrarás algo que puede interesarte. Lo mantendré simple, las picaduras duelen; prepárate.
 			}
 
 			Curiosity: {
 				0:
 					'''
-					Here you are. Y'know, I wander a lot. Seeing the sights, thinking out loud.. well, none of that matters when the dirt kisses my face as I fall. 
-					I tripped over something on the ground over here, but I couldn't tell you what it was. I was way too furious to look.
+					Ahí estas. Sabes, deambulo mucho. Contemplando el paisaje, pensando en voz alta... bueno, nada de eso importa cuando la tierra besa mi cara al tropezarme.
+					Me tropecé con algo por aquí, pero no podría decirte qué era. Estaba demasiado enojada para mirar.
 					'''
 				1:
 					'''
-					I think it was...here? Close enough. You come across lots of interesting things when exploring as much as I do. Sometimes, you see something that's worth checking out.
-					If I was you i'd make a break for it. Who knows, someone else might find it before you!
+					Creo que fue... ¿aquí? Esta por esta zona. Te topas con muchas cosas interesantes cuando exploras tanto como yo. A veces, ves algo que vale la pena revisar.
+					Si fuera tú, me daría prisa en llegar. ¡Quién sabe, alguien más rondando por ahí podría encontrarlo antes que tú!.
 					'''
 				2:
 					'''
-					Take a look around here. I'm a mapper, right? I map. And sometimes I lose track of all my pins... well I pinned this here map, and plumb forgot why I did it.
-					Well after going all the way there, and coming all the way back, I forgot all over again. You can have it instead, maybe i'm just forgetful but I don't want no cursed doohickey.
+					Dale un vistazo a esta zona. Soy cartógrafa ¿no?, Yo mapeo. Y a veces le pierdo la pista a mis tachuelas... bueno, clavé esta en el mapa y olvidé por completo por qué lo hice.
+					Veras, después de atravesar todo el camino hasta allá y regresar de nuevo todo ese camino de vuelta, lo olvidé otra vez. Puedes quedártelo tú en su lugar, quizá solo soy olvidadiza pero no quiero ningún cachivache maldito.
 					'''
 			}
 
 			ButterflyShrine: {
 				0:
 					'''
-					Check out this spot right here. It was a cold and eerie night, a hefty breeze done pulled my maps right out from my backpack.
-					I dropped to the ground to retrieve my precious handiwork, when I saw it. A little pinhole sized hole in the ground, and it was glowing purple! I don't think i'm gonna go messing with that, but you seem like the brave adventurous type.
+					Mira este lugar; justo aquí. Era una noche fría y escalofriante, una fuerte brisa lanzó mis mapas de mi mochila.
+					Me agaché para recuperar mi preciado trabajo, cuando lo vi. Un pequeño agujero del tamaño de un alfiler en el suelo, ¡y brillaba de color púrpura! No creo que vaya a meterme con eso, pero tú pareces expresar valentía y gusto por las aventuras.
 					'''
 				1:
 					'''
-					Right here, at this point on the map! I don't know how to preface this, but you ever get those little floaties in your eye? Little lights you can't explain?
-					You'd better not laugh, but I swear i've seen little pink butterflies hanging around this spot. But they ain't real! I tried to catch em' but they're made of light, I can't explain it!
+					Justo aquí, en este punto del mapa. No sé cómo decirlo, pero ¿alguna vez te han aparecido esas pequeñas motitas flotantes en el ojo? Esas lucecitas que no puedes explicar.
+					No te rías, pero juro que he visto pequeñas mariposas rosas rondando este lugar. ¡Pero no son reales! Intenté atraparlas, pero están hechas de luz, no puedo explicarlo.
 					'''
-				2: This here pins where it happened. I've tripped over a few holes in my day. But never in my days have I seen one glowing purple. That's some hocus pocus nonsense that I don't want any part of, keep on walking.
+				2: Este es el lugar, en esta tachuela es donde ocurrió. Me he tropezado con algunos agujeros en mi vida, pero nunca había visto uno que brillara de color púrpura. Eso es un asunto de magia extraña en el que no quiero involucrarme, así que seguí caminando.
 			}
 
 			WulfrumBunker: {
-				0: Hopefully this is right. I was walking around as I do, and behind a copse of trees I see this weird green mechanical site. The top has all these things and from below I hear a mechanical whirring...no thanks!
-				1: This was where my camp was, right there. I was taking a rest from a nice, long day of walking around, when this little machine guy with a big hand STOLE my bag. Good thing I had rested a bit, because that little guy kept me running for a while.
-				2: There it is! Hard to forget it after all. You don't often find industry out here, which is good for me. I don't much care for all of the noise. Especially once an energy field appeared and scrap was flying towards me.
+				0: Esperemos que aquí este correcto. Mientras caminaba como suelo hacerlo, detrás de un grupo de árboles vi aquel extraño y verde sitio mecánico. La parte superior estaba llena de cosas y se escuchaba que provenia desde abajo un zumbido mecánico... no gracias.
+				1: Aquí fue donde estaba mi campamento, justo aquí. Estaba descansando tras un largo día de caminata, cuando apareció ese pequeño tipo mecánico con una gran mano y ¡ME ROBO mi bolsa! Menos mal habia descansado un poco, porque ese pequeñín me tuvo corriendo un buen rato.
+				2: Ahí está, imposible olvidarlo después de todo. No se suele encontrar industria por aquí, lo cual me viene bien. No me agrada todo ese ruido, especialmente cuando una vez apareció un campo de energía y la chatarra empezó a volar hacia mí.
 			}
 
 			BloodAltar: {
-				0: And... there! Charting the surface is only, well, the surface. I find a lot of strange things underground, and many of them I steer clear from... What? I'm a cartographer, not an adventurer!
-				1: Should be it! You seem like the capable type. I'd found this undead fellow who actually listened to reason, which was strange enough, but he sold me this... hand. I followed where it pointed to and found myself at an unsettling crypt... Maybe you can get something out of all this, I'm not going back there.
-				2: You up for a challenge? I'm not, that's for sure. There's this dungeon with a room that reeks of blood... And with that strange altar in the middle, yeah I didn't stay for long.
+				0: Y... ¡ahí está! Trazar la superficie es solo eso, la superficie. Encuentro muchas cosas extrañas bajo tierra, y de muchas me mantengo bien alejada... ¿Qué esperabas? Soy cartógrafa, no aventurera.
+				1: ¡Debería de ser aquí! Pareces ser capaz. Encontré a un sujeto no-muerto que, sorprendentemente, escuchaba a la razón, lo cual ya era bastante extraño, pero me vendió esta... mano. Seguí la dirección a la que apuntaba y terminé en una cripta inquietante... Tal vez tú puedas sacar algo de todo esto, porque yo no pienso volver allí.
+				2: ¿Listo para un desafío? Yo no, eso es algo seguro. Hay una mazmorra con una sala que apesta a sangre... Y con ese extraño altar en el centro, así es, no me quedé mucho tiempo.
 			}
 
 			SaltFlat: {
-				0: Can't forget it! There, right there, is the first time I saw a mirror to the sky. I was looking down, as I tend to do, and BAM! Clouds! First, I was concerned, but it was just a thin layer of water...probably. Make sure it's safe so I don't have to.
-				1: Right there! You ever find yourself sliding down the slopes in those snowy areas? Like, with all the ice and such? No? Well, let's say it makes it way harder to tell what's going on in front of you when you do that. Intentionally, of course. This place looks awesome though, I'd recommend once you get the snow off of you.
-				2: Usually, a pratfall brings me to a discovery. This time, I was diligent. Shortly after panicking about a surprisingly wet ground, the vista appeared before me. It was stunning. As long as you keep your maps on your hips, you're set for a wonderful time.
+				0: ¡No puedo olvidarlo! Justo ahí, fue la primera vez que vi un espejo hacia el cielo. Estaba mirando hacia abajo, como suelo hacer, y ¡BAM! ¡Nubes! Al principio me preocupé, pero solo era una fina capa de agua... probablemente. Asegúrate de que sea un lugar seguro para que yo no tenga que hacerlo.
+				1: ¡Justo ahí! ¿Alguna vez te has deslizado por las laderas en esas zonas nevadas? Con todo ese hielo y demás. ¿No? Bueno, digamos que es mucho más difícil saber qué ocurre frente a ti cuando lo haces. Intencionalmente, claro. Este lugar se ve increíble, lo recomendaría una vez que te sacudas la nieve.
+				2: Por lo general, una caída torpe me lleva a un descubrimiento. Esta vez fui diligente. Poco después de entrar en pánico por un suelo sorprendentemente húmedo, apareció la vista ante mí. Era impresionante. Mientras mantengas tus mapas en la cadera, tendrás un tiempo maravilloso.
 			}
 
 			Ziggurat: {
-				0: Hmm...there. I've said this before - I'm a cartographer. I draw maps. So when I see a big, imposing wall of cracking, crumbling red brick, I am unbelievably skilled at determining if it's something I should mess with. I heard buzzing in there. Needless to say, yours for the taking.
-				1: Gotcha! Desert makes it easy to remember. Not much to recall there, you know, so seeing smoke rise out of the ground with no explanation? Interesting. You look down and see the facade of a massive structure? Memorable. Have at her. I wasn't going to risk lava or whatever.
-				2: Here you are. It's part of my job to find the occasional ruin. No worries, we've got a protocol for a reason. But man, stepping in and almost being pierced through the ground? Gentle reminder that sometimes, I'm an excellent runner.
+				0: Hmm... aquí. Ya lo he dicho antes: soy cartógrafa. Yo dibujo mapas. Así que cuando veo una gran e imponente pared de ladrillo rojo agrietado y desmoronado, soy increíblemente hábil para determinar si es algo con lo que debería meterme. Escuché un zumbido ahí dentro. No hace falta decirlo, es todo tuyo.
+				1: ¡Lo tengo! El desierto lo hace fácil de recordar. No hay mucho que rememorar ahí, así que ¿ver humo salir del suelo sin explicación? interesante. Miras hacia abajo y ves la fachada de una estructura enorme... inolvidable. Adelante, es toda tuya. Yo no iba a arriesgarme con lava ni nada parecido.
+				2: Aquí estás. Es parte de mi trabajo encontrar alguna que otra ruina. No pasa nada, tenemos un protocolo por una razón. Pero vaya, entrar y casi ser atravesada por el suelo... un recordatorio amable de que, a veces, soy una excelente corredora.
 			}
 
-			FirstPin: I've added this here pin to your "Pin collection". You can access it any time from the bottom left corner of your map.
+			FirstPin: He agregado esta tachuela a tu “Colección de tachuelas”. Puedes acceder a ella en cualquier momento desde la esquina inferior izquierda de tu mapa.
 		}
 	}
 
-	Entry: A peculiar mix of passionate explorer and abysmally clumsy, the Cartographer goes to places that...well, almost no one's explored. Sometimes, it's about being safe, not novel.
+	Entry: Una mezcla peculiar de exploradora apasionada y torpeza abismal, la Cartógrafa va a lugares que... bueno, casi nadie ha explorado. A veces se trata de estar a salvo, no de ser novedoso.
 }
 
 Hiker: {
-	DisplayName: Hiker
+	DisplayName: Senderista
 
 	Buttons: {
-		Feed: Feed
-		Supplies: Supplies
-		Silver: 20 silver
+		Feed: Alimentar
+		Supplies: Suministros
+		Silver: 20 de plata
 	}
 
 	Dialogue: {
 		Hungry: {
 			Asking: {
-				0: Hey there stranger, care to share in some snacking? If you can lend me a {0} then I may have something nice for you too.
-				1: You ever leave the house, and THEN realize you're hungry? I wish I didn't... could you spare me a {0}?
-				2: A long uphill hike really takes it out of you. I'm so beat, I could go for some {0}... help a guy out?
-				3: I went through my last protein bar a whole fourty-five minutes ago, I'm on my last legs here. Could you spare one of your {0}?
+				0: Que tal extraño. ¿Te importaría compartir algún almuerzo? Si puedes regalarme un {0}, entonces quizá tenga algo agradable para ti también.
+				1: ¿Alguna vez sales de casa y ENTONCES justo después, te das cuenta de que tienes hambre? Ojalá no me pasara... ¿podrías darme un {0}?
+				2: Una larga caminata cuesta arriba realmente pide mucho. Estoy tan acabado que podría ir a buscar algo de {0}... ¿Ayudarías a un compañero?
+				3: Me acabé mi última barra de proteína hace ya cuarenta y cinco minutos, estoy en mi fin del sendero. ¿Podrías darme uno de tus {0}?
 			}
 
 			Thanks: {
-				0: Thanks friend, I can always count on generous strangers. Take some supplies, from one stranger to another!
-				1: Bahaha, that hits the spot! A good snack always makes me feel generous, have some supplies on the house.
-				2: Hey, thanks a million. Here friend, take a pack for free.
-				3: Nothing hits quite like a meal after a long hike. Prices are off pal, take a pack. It's free!
+				0: Gracias amigo. Siempre puedo contar con extraños generosos. ¡Toma algunos suministros, de un extraño a otro!
+				1: Bajaja, ¡Esa delicia sí que dio en el clavo! Un buen bocadillo siempre me pone generoso, aquí tienes algunos suministros, la casa invita.
+				2: Oye, un millón de gracias. Toma amigo, aquí tienes un paquete gratis.
+				3: Nada mejor como una comida después de una larga caminata. Los precios no entran en esta conversación amigo, toma un paquete. ¡Es gratis!
 			}
 		}
 
 		Idle: {
-			0: Nothing quite like a long hike down into caves. Up until you're covered in nasty cobwebs. Kinda kills the mood.
-			1: My old pal used to grab Blinkroot to explore instead of using torches. "Safer", he said. Odd guy. Wonder what happened to him.
-			2: You ever use pins? They're really useful. And old friend carried them around everywhere...last I saw she was "learning how to get on those floating islands." Tough job, huh?
-			3: Sometimes I pass by a faerie, and they guide me to gold or platinum. I always act excited, but I don't have a pickaxe. I hope they appreciate it.
-			4: You always carry some extra supplies if you're smart. But my back is killing me, I brought way too much... i'll trade ya', if you've got some change burning a hole on your pocket, bahaha!
+			0: Nada como el senderismo dentro de las cuevas... hasta que terminas cubierto de telarañas desagradables. Eso sí que arruina el ánimo.
+			1: Una vieja amiga solía recoger raíz intermitente para explorar en lugar de usar antorchas. “Más seguro”, decía. Una tipa medio rara. Me pregunto qué habrá sido de ella.
+			2: ¿Has usado tachuelas? Son realmente útiles. Una vieja amiga las llevaba consigo a todas partes... la última vez que la vi estaba “buscando la manera de subir a esas islas flotantes”. Trabajo difícil, ¿eh?
+			3: A veces me cruzo con un hada y me guía hacia oro o platino. Siempre actúo emocionado, pero no tengo un pico. Espero que aprecien mi intención.
+			4: Siempre sueles llevar suministros extra si eres inteligente... pero demonios, mi espalda está hecha polvo, traje más de lo que podría cargar durante horas. Comerciaré contigo, solo si tienes unas monedas estorbando en tu bolsillo ¡bajaja!
 		}
 
 		Purchase: {
-			0: Hey, That's a load off my back! I'll trade a stiff back for heavy pockets any day.
-			1: Bahaha, much obliged pal! People always ask me, "Where the heck do you keep all your stuff?" but I don't ask you your business!
-			2: Well met stranger! Nothing makes a strong connection like a good trade.
-			3: Enjoy the extra space! I've heard if you put a bunch of Angel Statues - yes entire statues - in your bag, something crazy happens.
-			4: Thanks for the trade! I'd stop and smell the flowers, but there are some crazy plants out there. Be careful!
+			0: Hey, ¡eso es una carga menos para mi espalda! Siempre preferiré tener los bolsillos llenos pagando el precio de una espalda dañada sin importar el día.
+			1: Bajaja, ¡Muy agradecido amigo! La gente siempre me pregunta: “¿Dónde demonios guardas todas esas cosas?” ¡yo no te pregunto por tus asuntos!
+			2: ¡Buena presentación, extraño! Nada crea una conexión tan fuerte como un buen trueque.
+			3: ¡Disfruta el espacio extra! He oído que si metes un montón de estatuas de ángel —sí, estatuas enteras— en tu mochila, ocurre algo extraordinario.
+			4: ¡Gracias por el trueque! Me detendría a oler las flores, pero hay plantas bastante locas allá afuera. ¡Ten cuidado!
 		}
 
 		FailPurchase: {
-			0: Sorry, you'll need to show a little more coin before I can call this a trade. Unless some spare food is burning a hole in your pockets, bahaha!
-			1: Alas, my supplies stay with me. Come back with a little more coin. It'll be worth your time! And it'll save me some carry.
-			2: No can do, partner. I'm not here to barter. I'm just a little overprepared, that's all. I'm a little light on snacks though...
+			0: Lo siento, pero necesitarás mostrar un poco más de monedas antes de que pueda llamar a esto un trueque. A menos que tengas algo de comida extra estancada en tus bolsillos ¡bajaja!
+			1: Mis suministros se quedan conmigo. Vuelve cuando consigas más monedas. Valdrá la pena tu tiempo... ¡y me ahorrará cargar peso!
+			2: No se puede, compañero. No estoy aquí para regatear. Solo vine demasiado preparado, eso es todo. Aunque ando un poco corto de bocadillos.
 		}
 	}
 
@@ -369,21 +369,21 @@ Hiker: {
 		5: Porter
 	}
 
-	Entry: Jovial, easy going, deceptively strong - the Hiker knows his way around just about everywhere. The Jungle? Piece of cake. Deserts? Underground Tundra? Slide away. Space? Don't know how...but he'll get up there.
+	Entry: Jovial, relajado y engañosamente fuerte; el senderista conoce casi cualquier lugar. ¿La Jungla? Pan comido. ¿Los desiertos? ¿La Tundra subterránea? Sin ponerse las botas. ¿El espacio? No se sabe como... pero de alguna manera llegará allí tarde o temprano para seguir su hobbie.
 }
 
 HideZombieBig: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Hyenas have to hide from hide zombies or have their hides hijacked.
+	Entry: Las hienas tienen que esconderse de los zombis escondidos o verán sus escondites escandalizados.
 }
 
 HideZombieSmall: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Their outfit is all the vogue in latest undead fashion.
+	Entry: Su atuendo está totalmente a la moda en el catalogo de los no-muertos
 }
 
 PotterySlime: {
-	DisplayName: Pottery Slime
+	DisplayName: Slime alfarero
 
 	Names: {
 		0: Sable
@@ -416,30 +416,30 @@ PotterySlime: {
 	}
 
 	Chatter: {
-		0: Wubba dooble doo?
+		0: ¿Wubba dooble doo?
 		1: Plip plop. Blorp.
 		2: Wawa.
 	}
 
-	Entry: Believe it or not, this slime is world-renowned in the art of ceramics. You're in the presence of a contemporary master!
-	Census.SpawnCondition: Smash uncommon pots [i:SpiritReforged/BiomePotsCavernItem] in the cavern
+	Entry: Créelo o no, este slime es reconocido mundialmente en el arte de la cerámica. ¡Estás en presencia de un maestro contemporáneo!
+	Census.SpawnCondition: Rompe vasijas poco comunes [i:SpiritReforged/BiomePotsCavernItem] en el subterráneo.
 }
 
-StompableGnome.DisplayName: Stompable Gnome
+StompableGnome.DisplayName: Gnomo pisoteable
 
 DunceCrab: {
-	DisplayName: Dunce Crab
-	Entry: One of the most common causes for adventuring accidents, this cave-dwelling mollusk is usually quite the surprise. It feeds on mosses and lichen often found in caves.
+	DisplayName: Cangrejo zopenco
+	Entry: Una de las causas más comunes de accidentes en la aventura, este molusco cavernícola suele ser toda una sorpresa. Se alimenta de musgos y líquenes que se encuentran a menudo en las cuevas.
 }
 
 Wheezer: {
-	DisplayName: Wheezer
-	Entry: A wheezer is an extremely toxic relative of the salamander, known for aggressive behavior. Oddly enough, their favorite food is a budding holly plant, contradictory to their carnivorous tendencies.
+	DisplayName: Resollador
+	Entry: Un resollador es un pariente extremadamente tóxico de la salamandra, conocido por su comportamiento agresivo. Curiosamente, su comida favorita es una planta de acebo en brote, lo cual contradice sus tendencias carnívoras.
 }
 
 WorldFrog: {
-	DisplayName: Helpful Looking Frog
-	Button: Update World
+	DisplayName: Rana de aspecto servicial
+	Button: Actualizar mundo
 
 	Sounds: {
 		0: Croak
@@ -447,150 +447,150 @@ WorldFrog: {
 	}
 
 	Dialogue: {
-		0: If you wish to look for things to explore, I've got an offer for you - I implore!
-		1: You look for things new? Betwixt my hands, an offer I drew!
-		2: My magicks sense something missing in the air; but - you should not despair!
+		0: Si deseas cosas nuevas para explorar, tengo una oferta para ti, ¡he de implorar!
+		1: ¿Buscas cosa nueva? ¡Entre mis manos, una oferta tú comprueba!
+		2: Mis magia trucada preciente que falta algo en el ambiente; ¡y no debes ser indiferente!
 	}
 
 	Reports: {
-		CavesAndClubs_0: Hocus pocus - don't look so blue, I've filled your caves with pots to loot anew!
-		CavesAndClubs_1: Abra kadabra I bestow upon you pots anew; should you head underground you'll enjoy them true!
-		Spellbound_0: New tables for enchantments to bind; these tools in your world you shall find!
-		Spellbound_1: Now you can enjoy mirrors about, just waiting for new adventures to sprout!
+		CavesAndClubs_0: Hocus pocuste - no estés tan triste, ¡rellene tus cuevas con vasijas que incluso ya conociste!
+		CavesAndClubs_1: Abra karadaba - las vasijas de nuevo aseguraba; ¡tu exploración nuevamente comenzaba!
+		Spellbound_0: ¡Nuevas mesas de encantamientos por vincular; estas herramientas de conocimientos en tu mundo por encontrar!
+		Spellbound_1: ¡Ahora de espejos puedes disfrutar, esperando, nuevas aventuras por debutar!
 	}
 }
 
 MossSlime: {
-	DisplayName: Moss Slime
-	Entry: A curious group of slimes which somehow have moss covering them. They come in many varieties, though only in glowing mosses for...some reason. Free light source, maybe?
+	DisplayName: Slime de musgo
+	Entry: Un curioso grupo de slime cubiertos de musgo, por alguna razón. Vienen en muchas variedades, aunque sólo de musgos brillantes... ¿la razón? Quién sabe. ¿Quizá sean una fuente de luz gratuita?.
 }
 
-KryptonMossSlime.DisplayName: Krypton Moss Slime
-LavaMossSlime.DisplayName: Lava Moss Slime
-NeonMossSlime.DisplayName: Neon Moss Slime
-XenonMossSlime.DisplayName: Xenon Moss Slime
-ArgonMossSlime.DisplayName: Argon Moss Slime
-HeliumMossSlime.DisplayName: Helium Moss Slime
-OganessonMossSlime.DisplayName: Oganesson Moss Slime
-RadonMossSlime.DisplayName: Radon Moss Slime
+KryptonMossSlime.DisplayName: Slime de musgo de criptón
+LavaMossSlime.DisplayName: Slime de musgo de lava
+NeonMossSlime.DisplayName: Slime de musgo de neón
+XenonMossSlime.DisplayName: Slime de musgo de xenón
+ArgonMossSlime.DisplayName: Slime de musgo de argón
+HeliumMossSlime.DisplayName: Slime de musgo de helio
+OganessonMossSlime.DisplayName: Slime de musgo de oganesón
+RadonMossSlime.DisplayName: Slime de musgo de radón
 Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
 
 Flamingo: {
-	DisplayName: Flamingo
-	Entry: Gathering in large groups, they filter the water for the microscopic organisms that make up their diet.
+	DisplayName: Flamenco
+	Entry: Reuniéndose en grandes grupos, filtran el agua en busca de los organismos microscópicos que componen su dieta.
 }
 
 DivingBeetle: {
-	DisplayName: Diving Beetle
-	Entry: Traps air under its shell and swims through the water using enlarged hind legs. Fish are occasionally attracted to these.
+	DisplayName: Escarabajo buceador
+	Entry: Atrapa aire bajo su caparazón y nada a través del agua usando patas traseras agrandadas. A veces los peces se sienten atraídos por ellas.
 }
 
 GoldDivingBeetle: {
-	DisplayName: Gold Diving Beetle
+	DisplayName: Escarabajo buceador dorado
 	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
 }
 
 Jerboa: {
-	DisplayName: Jerboa
-	Entry: This jumpy speedster enjoys arid climates, where it can race across the flat desert sands and snack on bugs in the savanna grass.
+	DisplayName: Jerbo
+	Entry: Este velocista saltarín disfruta de los climas áridos, donde puede correr a toda velocidad sobre las arenas planas del desierto y comer insectos en la hierba de la sabana.
 }
 
 Grub: {
-	DisplayName: Scarab Larva
-	Entry: Scarabs are driven to guard their territory from the moment they hatch. This lil' anklebiter could grow to be quite fearsome!
+	DisplayName: Larva de escarabajo
+	Entry: Los escarabajos están impulsados a proteger su territorio desde el momento en que nacen. ¡Este pequeño mordedor de tobillos podría crecer y volverse bastante temible!
 }
 
 DesertStactus: {
-	DisplayName: Stactus
-	Entry: Stacti are actually very docile creatures, but struggle to make friends due to their prickly disposition.
+	DisplayName: Cacturio
+	Entry: Los cacturios son en realidad criaturas muy dóciles, pero tienen dificultades para hacer amigos debido a su disposición espinosa.
 }
 
 CorruptStactus: {
-	DisplayName: Corrupt Stactus
+	DisplayName: Cacturio corrompido
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 CrimsonStactus: {
-	DisplayName: Crimson Stactus
+	DisplayName: Cacturio carmesí
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 HallowedStactus: {
-	DisplayName: Hallowed Stactus
+	DisplayName: Cacturio sagrado
 	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
 }
 
 BrineShrimp: {
-	DisplayName: Brine Shrimp
-	Entry: Despite being colloquially known as "Sea Monkeys", they neither live in the sea, nor look anything like monkeys.
+	DisplayName: Camarón de salmuera
+	Entry: A pesar de ser conocidos coloquialmente como “Monos de Mar”, ni viven en el mar ni se parecen en nada a los monos.
 }
 
 GoldenBrineShrimp: {
-	DisplayName: Gold Brine Shrimp
-	Entry: Golden and rare, the Gold Brine Shrimp is said to turn the luckiest flamingo gold. The veracity of this is yet to be seen.
+	DisplayName: Camarón de salmuera dorado
+	Entry: Dorado y raro, se dice que el camarón de salmuera Dorado convierte en oro al flamenco más afortunado. La veracidad de esto aún está por verse.
 }
 
 Wisp: {
-	DisplayName: Wisp
-	Entry: Curious energies that drift passively through the flats, unless provoked. Wisps are known to vanish at the slightest hint of dawn.
+	DisplayName: Destello etéreo
+	Entry: Energías curiosas que flotan pasivamente por las llanuras, a menos que sean provocadas. Los destellos etéreos son conocidos por desvanecerse al más mínimo indicio del amanecer.
 }
 
 DecrepitMummy: {
-	DisplayName: Decrepit Mummy
-	Entry: Stirred to life by the presence of an intruder, these mummies rise from their tombs to protect their claims.
+	DisplayName: Momia decrepita
+	Entry: Inducidas a la vida por la presencia de un intruso, estas momias se levantan de sus tumbas para proteger sus dominios.
 }
 
 Graverobber: {
-	DisplayName: Graverobber
-	Entry: Their misfortune is to be hit like a pinata and for gold to rain out. It's almost as alluring as the valuables themselves...
-	HoldingLantern: When holding a lantern
+	DisplayName: Saqueador de sepulcros
+	Entry: Su desgracia es ser golpeados como una piñata y para que el oro llueva. Es casi tan seductor como los propios objetos de valor...
+	HoldingLantern: Al sostener una linterna
 }
 
-LootBag.DisplayName: Loot Bag
+LootBag.DisplayName: Saco de botín
 
 Scarabeus: {
-	DisplayName: Scarabeus
-	Title: Crested Idol
-	Entry: With its regal bearing and iridescent hue, this giant beetle was once worshipped by the ancient inhabitants of the Ziggurat. It remains to this day, awaiting tribute.
-	SpawnInfo: Use any gem item at the [i:SpiritReforged/ScarabAltarItem] Ancient Altar on the Ziggurat during daytime.
+	DisplayName: Escarabeus
+	Title: Ídolo crestado
+	Entry: Con su porte regio y su tono iridiscente, este escarabajo gigante fue alguna vez venerado por los antiguos habitantes del Zigurat. Permanece hasta el día de hoy esperando un nuevo tributo.
+	SpawnInfo: Usa cualquier gema en el [i:SpiritReforged/ScarabAltarItem] altar ancestral en el Zigurat durante el dia.
 }
 
 TinyGrub: {
-	DisplayName: Tiny Grub
-	Entry: Almost as full of potential as it is grossness.
+	DisplayName: Larva diminuta
+	Entry: Casi tan lleno de potencial como de repulsión.
 }
 
 CactusZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Of all the ways to go, dying by cacti has got to be one of the worst. Undying by cacti must also be pretty bad.
+	Entry: De todas las formas de morir, hacerlo por un cactus debe ser una de las peores. Volver a la no‑muerte por un cactus también debe ser bastante malo.
 }
 
 SunburntZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Now detesting the sun, this zombie goes about at night to prevent further damage to its rotting skin.
+	Entry: Ahora detestando el sol, este zombi deambula por la noche para evitar más daños en su putrefacta piel.
 }
 
 VeiledZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Dressing to beat the heat is only one part to surviving the desert. Bringing food and water is not a step that should be overlooked.
+	Entry: Vestirse para soportar el calor es solo una parte de sobrevivir al desierto. Llevar comida y agua es un paso que no debe pasarse por alto
 }
 
 Cricket: {
-	DisplayName: Cricket
-	Entry: At night, these little critters may appear in various grasses. They're largely responsible for the sound of night.
+	DisplayName: Grillo
+	Entry: Por la noche, estas pequeñas criaturas pueden aparecer entre diversas hierbas. Son en gran parte responsables del sonido nocturno.
 }
 
 GoldCricket: {
-	DisplayName: Gold Cricket
-	Entry: The townsfolk say that seeing a golden cricket brings good luck. Some may say this is because they sell well, and other say no...certainly not.
+	DisplayName: Grillo dorado
+	Entry: Los habitantes del pueblo dicen que ver un grillo dorado trae buena suerte. Algunos afirman que esto se debe a que se venden bien, y otros dicen que no... ciertamente no.
 }
 
 BeetleTownPet: {
-	DisplayName: Beetle
-	Entry: While they aren't good for cuddles, their clumsy affect makes them quite endearing.
-	Chitter0: *Happy chittering*
-	Chitter1: *Bug noises*
-	Chitter2: *Beetle noises*
+	DisplayName: Escarabajo
+	Entry: Aunque no son buenos para acurrucarse juntos, su torpe comportamiento los hace bastante entrañables.
+	Chitter0: *Chirrido feliz*
+	Chitter1: *Sonidos de insecto*
+	Chitter2: *Sonidos de escarabajo*
 
 	Names: {
 		RoyalScarab0: Azure
@@ -603,7 +603,7 @@ BeetleTownPet: {
 		RoyalScarab7: Minibeus
 		RoyalScarab8: Prince
 		RoyalScarab9: Queenie
-		RoyalScarab10: Scarb
+		RoyalScarab10: Escarabajo
 		RoyalScarab11: Sadie
 		RoyalScarab12: Sapphire
 		RoyalScarab13: Skippy
@@ -612,23 +612,23 @@ BeetleTownPet: {
 		DungBeetle0: Asbestos
 		DungBeetle1: Bit
 		DungBeetle2: Brick
-		DungBeetle3: Cannonball
+		DungBeetle3: Bola de cañón
 		DungBeetle4: Clay
 		DungBeetle5: Dave
 		DungBeetle6: Dirt
 		DungBeetle7: Greg
-		DungBeetle8: Grumpy
+		DungBeetle8: Gruñon
 		DungBeetle9: Hercules
 		DungBeetle10: Jeff
 		DungBeetle11: Licorice
-		DungBeetle12: Pebbles
+		DungBeetle12: Guijarros
 		DungBeetle13: Petey
 		DungBeetle14: Soot
-		DungBeetle15: Spoon
+		DungBeetle15: Cuchara
 		JewelBeetle0: Aubrey
 		JewelBeetle1: Bea
 		JewelBeetle2: Bonbon
-		JewelBeetle3: Caramel
+		JewelBeetle3: Caramelo
 		JewelBeetle4: Glinty
 		JewelBeetle5: Goldilocks
 		JewelBeetle6: Hummus
@@ -639,64 +639,64 @@ BeetleTownPet: {
 		JewelBeetle11: Saoirse
 		JewelBeetle12: Sheila
 		JewelBeetle13: Taffy
-		JewelBeetle14: Topaz
+		JewelBeetle14: Topacio
 		JewelBeetle15: Zahrah
-		Weevil0: Archibald
-		Weevil1: Boots
+		Weevil0: Archibaldo
+		Weevil1: Botas
 		Weevil2: Charlamagne
 		Weevil3: Dinky
 		Weevil4: Duchess
 		Weevil5: Eleanor
-		Weevil6: Hubert
+		Weevil6: Humberto
 		Weevil7: Ickabod
 		Weevil8: Jebediah
 		Weevil9: Johnson
 		Weevil10: Knievel
-		Weevil11: Lawrence
-		Weevil12: Lord Eggleston Esquire III
+		Weevil11: Lorenzo
+		Weevil12: Lorde escudero hueversón III
 		Weevil13: Poky
-		Weevil14: Sniffles
+		Weevil14: Mocoso
 		Weevil15: Winnifred
-		Maybug0: April
+		Maybug0: Abril
 		Maybug1: Charlotte
 		Maybug2: Clover
 		Maybug3: Dew
 		Maybug4: Dizzy
 		Maybug5: Fuzzy
 		Maybug6: Gigi
-		Maybug7: Holly
+		Maybug7: Acebo
 		Maybug8: Juniper
 		Maybug9: Mandy
 		Maybug10: Maya
 		Maybug11: Minky
 		Maybug12: Paprika
-		Maybug13: Piper
-		Maybug14: Popcorn
+		Maybug13: Pífano
+		Maybug14: Palomita
 		Maybug16: Velvet
 		Ladybug0: Basil
 		Ladybug1: Chacha
-		Ladybug2: Cinnamon
+		Ladybug2: Canela
 		Ladybug3: Dainty
 		Ladybug4: Dandy
 		Ladybug5: Diva
 		Ladybug6: Lady
-		Ladybug7: Lovely
+		Ladybug7: Encantador
 		Ladybug8: Missy
-		Ladybug9: Pin
+		Ladybug9: Tachuela
 		Ladybug10: Polka
 		Ladybug11: Rosa
 		Ladybug12: Scarlet
-		Ladybug13: Spots
+		Ladybug13: Manchas
 		Ladybug14: Titania
 		Ladybug15: Tulip
 	}
 
-	Census.SpawnCondition: Use a Beetle License [i:SpiritReforged/BeetleLicense], dropped by Scarabeus
+	Census.SpawnCondition: Usa una licencia de escarabajo [i:SpiritReforged/BeetleLicense], soltada por Escarabeus.
 }
 
 Enchanter: {
-	DisplayName: Enchanter
-	Entry: Perpetually tired but kind at heart, the Enchanter deals with various spells and magicks. If some weapons or tools need a little more spice, just ask!
+	DisplayName: Encantador
+	Entry: Perpetuamente cansado pero bondadoso de corazón, el encantador se ocupa de diversos conjuros y magias. Si creés que algunas armas o herramientas necesitan un poco más de chispa, ¡solo pídeselo!
 
 	Names: {
 		0: Albion
@@ -722,62 +722,62 @@ Enchanter: {
 	}
 
 	TownNPCMood: {
-		Content: I take a moment and feel... all is well.
-		NoHome: I don't imagine you've got a place for me to rest my weary bones?
-		FarFromHome: I am quite far for from my workspace, and my bed. May we return home soon?
-		LoveSpace: This town is very quaint. Enough people to have a nice chin-wag, but not so many it becomes overwhelming.
-		DislikeCrowded: I am finding it difficult to concentrate with all this hubbub.
-		HateCrowded: There are far too many people living here. I haven't gotten a good night's sleep in days.
-		LoveNPC: "{NPCName}'s hot chocolate is to die for! Oh and his parlor tricks, they're delightful!"
-		LikeNPC: I don't know what kind of magic {NPCName} uses to light up the sky like that, but it looks spectacular! Shame about the noise though, I had a headache for three days after...
-		DislikeNPC: "{NPCName}'s idea of 'improving' your gear is barbaric! How is denting it with a hammer supposed to help?!"
-		HateNPC: I swear, if {NPCName} tells one more of his stories about slaughtering kobolds at afternoon tea, I'll turn him into a sheep!
-		LikeBiome: Here above the clouds, I feel so much more attuned to the flows of magick. Not to mention the view!
-		DislikeBiome: Bees produce such high-quality wax, but oh why must they sting me so? I'm covered head to toe in welts!
-		LikeNPC_Princess: "{NPCName} is such a sweet little girl, but I can scarcely keep up with her. How can such a small body contain so much energy?"
-		Princess_LovesNPC: "{NPCName}'s magic is unlike any I've seen before! I wonder what its source may be?"
+		Content: Me tomo un momento y siento... que todo está bien.
+		NoHome: ¿No tendrás por casualidad un lugar para que descansen mis fatigados huesos?
+		FarFromHome: Estoy bastante lejos de mi espacio de trabajo y de mi cama. ¿Podemos volver a casa pronto?
+		LoveSpace: Este pueblo es muy pintoresco. Suficientes personas para tener una buena charla, pero no tantas como para que resulte abrumador.
+		DislikeCrowded: Es muy difícil concentrarme para hechizar con todo este alboroto.
+		HateCrowded: Hay demasiadas personas viviendo aquí. No he tenido un buen descanso en días.
+		LoveNPC: ¡El chocolate caliente de {NPCName} es brujería pura! Ah, y sus trucos de salón, ¡son encantadores!
+		LikeNPC: No tengo idea de que clase de magia usa {NPCName} para iluminar el cielo de esa manera, pero se ve espectacular. Lástima que por el ruido, tuve dolor de cabeza durante tres días...
+		DislikeNPC: ¡La idea de 'mejorar' tu equipo de {NPCName} es una barbarie! ¡¿Cómo se supone que golpearlo con un martillo va a ayudar en algo?!
+		HateNPC: Juro que si {NPCName} cuenta una historia más sobre masacrar kobolds durante el té de la tarde, ¡lo convertiré en una oveja!
+		LikeBiome: Aquí, sobre de las nubes, me siento mucho más en sintonía con los flujos de la magia. ¡Sin mencionar la vista claro!
+		DislikeBiome: La cera que producen las abejas es de tan alta calidad... pero, ¡auch!, ¿por qué tienen que picarme? Estoy cubierto de ronchas de pies a cabeza.
+		LikeNPC_Princess: "{NPCName} es una niña muy dulce, pero apenas puedo seguirle el ritmo. ¿Cómo puede un cuerpo tan pequeño contener tanta energía?"
+		Princess_LovesNPC: ¡La magia de {NPCName} es distinta a cualquier otra que haya visto! ¿Cuál será su fuente?
 	}
 
 	Dialogue: {
 		Idle: {
-			0: Do stop to smell the roses from time to time. Rest is good for you!
-			1: It's easy to lose track of time when you are snout deep in a good tome.
-			2: Have you come to learn about the wondrous properties of wax?
-			3: Would you like a cup of tea? I have black, green, herbal, chamomile, berry, citrus...
-			4: Greetings! What can I enchant for you today?
+			0: Detente a oler las rosas de vez en cuando. ¡Descansar es bueno para ti!
+			1: Es fácil perder la noción del tiempo cuando tienes metido el hocico en un buen tomo.
+			2: ¿Has venido a aprender sobre las maravillosas propiedades de la cera?
+			3: ¿Quieres una taza de té? Tengo negro, verde, de hierbas, manzanilla, frutos rojos, cítricos...
+			4: ¡Saludos! ¿Qué puedo encantar para ti hoy?
 		}
 
 		IdleNight: {
-			0: The moon is high, and my candles burn brighter than ever!
-			1: Fireflies dot the sky like small, dancing flames. There is magic everywhere we look.
-			2: It's far beyond my second bedtime. I kindly request you make this quick.
+			0: ¡La luna está en uno de sus puntos altos, y mis velas arden más brillantes que nunca!
+			1: Las luciérnagas salpican el cielo como pequeñas llamas danzantes. La magia existe en todas partes, solo hace falta mirar correctamente.
+			2: Ya es muy tarde en la noche, es mi segunda hora de dormir. Te ruego que lo hagas rápido.
 		}
 
 		BloodMoon: {
-			0: I cannot sleep on a night such as this. When I close my eyes, all I see is red.
-			1: My candles burn a grisly crimson shade. Something evil is afoot tonight.
+			0: No puedo dormir en una noche como esta. Cuando cierro los ojos, todo lo que veo es rojo.
+			1: Mis velas arden en un tono carmesí macabro. Algo maligno se cierne esta noche.
 		}
 
 		Rain: {
-			0: There's nothing quite like the sound of rain pattering against the windows.
-			1: I'm not going outside again. I only just got my hat dry from last time!
+			0: No hay nada como el sonido de la lluvia golpeando suavemente las ventanas.
+			1: ¡No pienso volver a salir! Apenas logré que mi sombrero se secara la última vez.
 		}
 
 		Graveyard: {
-			0: I usually like it quiet, but the air is completely still. It's unnerving.
-			1: I can't shake the feeling that something is watching me.
+			0: Normalmente me gusta el silencio, pero el aire está completamente inmóvil. Es inquietante.
+			1: No puedo quitarme la sensación de que algo me observa.
 		}
 
-		Thunderstorm: It's a perfect time to huddle around the fireplace and share spooky stories!
-		Eclipse: How am I meant to know when to put on afternoon tea when its neither day nor night?
-		Party: Your human festivities are fascinating, if a bit... raucous for my tastes. I might have to excuse myself soon.
-		Goblin: You can stick seals on many things, but {0} keeps asking me to enchant his various inventions. It typically doesn't end well...
-		Golfer: "{0} always invites me to play golf with the others, but I always find myself dozing off... I don't have the heart to reject his invitations."
-		Stylist: I let {0} talk me into getting my scales waxed, and I'm not sure what the appeal is. I glisten like a freshly caught fish!
-		WitchDoctor: "{0} has such a mysterious aura to him, but I'd like to get to know him better. Could you... perhaps introduce us?"
+		Thunderstorm: ¡Es el momento perfecto para acurrucarse junto a la chimenea y compartir historias espeluznantes!
+		Eclipse: ¿Cómo se supone que sepa cuándo preparar el té de la tarde si no es ni de día ni de noche?
+		Party: Sus festividades humanas son fascinantes, aunque un poco... ruidosas para mi gusto. Puede que tenga que retirarme pronto.
+		Goblin: Puedes pegar sellos en muchas cosas, pero {0} sigue pidiéndome que encante sus diversos inventos. Eso normalmente no termina muy bien...
+		Golfer: "{0} siempre me invita a jugar golf con los demás, pero termino quedándome dormido... No tengo el corazón para rechazar sus invitaciones."
+		Stylist: Dejé que {0} me convenciera de que me encerara las escamas, y no estoy seguro de cuál es el atractivo. ¡Brillo como un pez recién pescado!
+		WitchDoctor: "{0} desprende un aura tan misteriosa... me gustaría conocerlo un poco más. ¿Podrías, quizás, presentarnos?"
 	}
 
-	Census.SpawnCondition: Hold any enchanted item or Chromatic Wax [i:SpiritReforged/ChromaticWax], or beat a boss
+	Census.SpawnCondition: Sostén cera cromática o cualquier objeto encantado [i:SpiritReforged/ChromaticWax] ó derrota a cualquier jefe
 }
 
-SealedKnight.DisplayName: Sealed Knight
+SealedKnight.DisplayName: Caballero Sellado
