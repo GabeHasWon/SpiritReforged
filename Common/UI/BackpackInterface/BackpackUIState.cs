@@ -14,6 +14,7 @@ internal class BackpackUIState : AutoUIState
 	private BackpackUISlot _functionalSlot;
 	private BackpackUISlot _vanitySlot;
 	private BackpackUISlot _dyeSlot;
+	private UIImageFramed _pickupToggle;
 
 	private Item _lastBackpack;
 	private int _lastAdjustY;
@@ -34,6 +35,42 @@ internal class BackpackUIState : AutoUIState
 		_dyeSlot = new BackpackUISlot(false, true);
 		_dyeSlot.Left = new StyleDimension(_vanitySlot.Left.Pixels - 48, 1);
 		Append(_dyeSlot);
+
+		_pickupToggle = new UIImageFramed(ModContent.Request<Texture2D>("SpiritReforged/Common/UI/BackpackInterface/BackpackPickupIcon"), new(0, 0, 20, 24))
+		{
+			Width = StyleDimension.FromPixels(20),
+			Height = StyleDimension.FromPixels(24),
+			Top = new StyleDimension(UIHelper.GetMapHeight() + 174, 0),
+			Left = new StyleDimension(-310, 1)
+		};
+
+		_pickupToggle.OnUpdate += _ =>
+		{
+			if (Main.EquipPage != 2)
+			{
+				_pickupToggle.SetFrame(new Rectangle(0, 0, 1, 1));
+				return;
+			}
+
+			bool hover = _pickupToggle.ContainsPoint(Main.MouseScreen);
+
+			if (hover)
+				Main.LocalPlayer.mouseInterface = true;
+
+			Rectangle frame = new(Main.LocalPlayer.GetModPlayer<BackpackPlayer>().packPickup ? 0 : 22, hover ? 26 : 0, 20, 24);
+			_pickupToggle.SetFrame(frame);
+		};
+
+		_pickupToggle.OnLeftClick += (_, _) =>
+		{
+			if (Main.EquipPage != 2)
+				return;
+
+			ref bool pickup = ref Main.LocalPlayer.GetModPlayer<BackpackPlayer>().packPickup;
+			pickup = !pickup;
+		};
+
+		Append(_pickupToggle);
 
 		SetVariablePositions();
 
@@ -83,7 +120,13 @@ internal class BackpackUIState : AutoUIState
 		base.Update(gameTime);
 	}
 
-	private void SetVariablePositions() => _functionalSlot.Top = _vanitySlot.Top = _dyeSlot.Top = new StyleDimension(UIHelper.GetMapHeight() + 174, 0);
+	private void SetVariablePositions()
+	{
+		var baseY = new StyleDimension(UIHelper.GetMapHeight() + 174, 0);
+		_functionalSlot.Top = _vanitySlot.Top = _dyeSlot.Top = baseY;
+		_pickupToggle.Top = new StyleDimension(UIHelper.GetMapHeight() + 184, 0);
+		_pickupToggle.Left = new StyleDimension(-310, 1);
+	}
 
 	/// <summary> Adds or removes backpack slots with items according to the currently equipped backpack.<para/>
 	/// This is a snapshot, and must be called again if the <see cref="BackpackPlayer.backpack"/> instance has changed.<br/>

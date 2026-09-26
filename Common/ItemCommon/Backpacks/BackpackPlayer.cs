@@ -130,6 +130,7 @@ internal class BackpackPlayer : ModPlayer
 	public Item vanityBackpack = new();
 	public Item packDye = new();
 	public bool packVisible = true;
+	public bool packPickup = true;
 
 	private int _lastSelectedEquipPage = 0;
 	private bool _hadBackpack = false;
@@ -144,7 +145,9 @@ internal class BackpackPlayer : ModPlayer
 		if (player.HasItem(id))
 			return true;
 
-		if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+		BackpackPlayer plr = player.GetModPlayer<BackpackPlayer>();
+
+		if (plr.packPickup && plr.backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
 			return player.HasItem(id, back.Items);
 
 		return false;
