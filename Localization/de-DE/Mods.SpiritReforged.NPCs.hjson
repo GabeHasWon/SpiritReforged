@@ -1,0 +1,783 @@
+VanillaDialogue: {
+	Guide: {
+		WorldNPC: Vielleicht triffst du beim Erkunden der Welt auf andere Entdecker. Falls doch, könnt ihr euch vielleicht gegenseitig helfen!
+		Ecotone: Bei passendem Klima kann die Region zwischen Wüste und Dschungel eine weitläufige Savanne beherbergen. Die wollte ich schon immer mal sehen!
+		Savanna: Das Leder der Tiere hier könnte dir ziemlich schicke Ausrüstung bescheren, Kleiner.
+		Kelp: Iss nicht den Seetang.
+	}
+
+	ArmsDealer.Savanna: Jede Menge Großwild hier in der Gegend. Sogar jemand wie du könnte die treffen.
+
+	Stylist: {
+		Savanna: In diesem Klima ist es der reinste Horror, meine Frisur in Form zu halten.
+		Duststorm: Wenn ich noch einer Person Sand aus den Haaren kämmen muss, schwör ich dir...
+	}
+
+	TravellingMerchant: {
+		Cartographer1: Ich treff auf meinen Reisen oft eine ruhelose Kartografin. Ich schwör dir, die macht mir ganz schön Konkurrenz!
+		Cartographer2: Oh, das ist ja {0}! Sie hat mir letzten Monat den Weg gezeigt, kurz bevor sie direkt in einen Graben gefallen ist.
+		Discoveries: Manchmal stoß ich auf meiner Reise auf seltene Kuriositäten. Vielleicht findest du sie ja auch, wenn du die Augen offen hältst.
+	}
+
+	Demolitionist.HasBoomshroom: Du hast was? Einen Pilz, der GRÖSSERE Böller macht? Ich liebe Mutter Natur!
+
+	Nurse: {
+		Duststorm: Lass dich draußen nicht von all dem Staub aufschürfen! Das ist unter meiner Bezahlklasse.
+		Savanna: Nein, ich bin keine Tierärztin! Schafft mir jetzt diese Tiere hier weg.
+	}
+
+	PartyGirl: {
+		Duststorm: Ach, das ist kein Partywetter. Vielleicht können wir stattdessen was Gemütliches machen!
+		Savanna: Der ganze offene Platz hier ist perfekt für eine Party! Ooh, vielleicht eine Tagesparty!
+	}
+
+	Golfer: {
+		Duststorm: Der ganze Staub hier ist schuld, dass ich unter Par spiele!
+		Savanna: Hier ist alles ein Hindernis! Meine Bälle bleiben ständig in den Büschen und im Sand hängen ... und in den Bäumen!
+	}
+
+	Zoologist: {
+		Savanna1: Oh mein Gott - dieser Ort ist ja wie perfekt! Du musst dir unbedingt all die süßen kleinen Tiere hier ansehen!
+		Savanna2: Was?! Diese Hyänen haben dich gebissen? Aber die sind doch total niedlich!
+	}
+
+	Angler: {
+		Pager0: ...was versuchst du hier zu tun? Du kannst mir meinen Fisch nicht per Pager geben, du Dummkopf!
+		Pager1: Denk dran, mir den Fisch PERSÖNLICH zu bringen.
+	}
+
+	Wizard.SaltFlats: Die Steine in dieser Gegend würden eine perfekte Kristallkugel abgeben!
+	Painter.SaltFlats: Ich hab noch nie eine schönere Landschaft gesehen! Ich könnte hier den Rest meines Lebens malen.
+	Cyborg.SaltFlats: Es... es brennt.
+	Mechanic.SaltFlats: Ugh! All das Salz zerfrisst meine Ausrüstung. Holt mich hier raus!
+	Truffle.SaltFlats: Dieser Ort ist für unsere Art zutiefst unangenehm. Ich fühl mich so ausgetrocknet...
+}
+
+Crinoid: {
+	DisplayName: Seelilie
+	Entry: Diese seltsamen Kleintiere sind eng mit Seesternen verwandt. Sie ernähren sich von allem, was auf den Meeresgrund sinkt.
+}
+
+Pelican: {
+	DisplayName: Pelikan
+	Entry: Ein großer Seevogel mit einem besonderen Schnabel, um seine Beute festzuhalten. Ihn zu erschrecken könnte dazu führen, dass der Vogel seinen Fang fallen lässt, aber das wäre gemein.
+}
+
+TinyCrab: {
+	DisplayName: Blasskrabbe
+	Entry: Diese niedlichen kleinen Kritter sind nicht so feindselig wie ihre größeren Verwandten. Das Leben in tieferen Gewässern hat dazu geführt, dass sie ihre Farbe verloren haben, da sie weniger Sonnenlicht ausgesetzt sind.
+}
+
+Tubeworm: {
+	DisplayName: Röhrenwurm
+	Entry: Tief unter den glitzernden Gezeiten, wo kein Licht mehr hinreicht, leben faszinierende Kreaturen, die sich von dem Schwelgas ernähren können, das Hydrothermalschlote ausstoßen.
+}
+
+SandPiper: {
+	DisplayName: Strandläufer
+	Entry: Ein kleiner, mutiger Vogel, der die Küstenlinien nach Nahrung absucht, die von den Wellen freigelegt wird.
+}
+
+Gar: {
+	DisplayName: Knochenhecht
+	Entry: Knochenhechte sind scharfsinnige Jäger, die normalerweise in Süßwasser leben. Man muss beim Schwimmen mit einem Knochenhecht immer wachsam sein - sie können von der Seite, von vorn oder sogar von hinten angreifen.
+}
+
+GoldGar: {
+	DisplayName: Gold-Knochenhecht
+	Entry: Nur ein Monster würde einen seltenen Gold-Knochenhecht für seinen köstlichen Kaviar aufschlitzen. Nur ein Monster...
+}
+
+OceanSlime: {
+	DisplayName: Kokosnuss-Schleim
+	Entry: Pass von oben auf! Diese hinterlistigen Schleime halten sich am Strand auf, unauffällig als diese vertraute Frucht getarnt.
+}
+
+DiverZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Wer hätte gedacht, dass diese Sauerstoffflaschen auch tatsächlich Sauerstoff enthalten müssen?
+}
+
+KelpZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Fische fürchten mich, Frauen fürchten mich, Männer fürchten mich, Kinder fürchten mich, denn ich bin die Untote.
+}
+
+SailorZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Trotz ihres jetzigen Zustands haben sie früher dieses wirklich schicke Luxus-Kreuzfahrtschiff geführt, das du dir mal ansehen solltest.
+}
+
+TridentZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Ihr Dreizack hat ihnen zu Lebzeiten offensichtlich nicht viel genützt. Er ist aber immer noch ziemlich spitz, also pass auf.
+}
+
+Killifish: {
+	DisplayName: Killifisch
+	Entry: Ihrem Namen treu, sind Killifische für ihre eine bestimmende Eigenschaft bekannt: getötet zu werden. Ihre wunderschönen, schillernden Schuppen sind aber auch dabei.
+}
+
+GoldKillifish: {
+	DisplayName: Gold-Killifisch
+	Entry: Glänzend goldene Schuppen helfen dem Killifisch auch nicht gegen sein Leid.
+}
+
+Termite: {
+	DisplayName: Termite
+	Entry: Diese kleinen Käfer schwärmen zusammen, um riesige Nester mit komplexen Tunneln zu bauen. Sie haben einen erworbenen Geschmack für das trockene, knusprige Holz der Savanne entwickelt.
+}
+
+SavannaSandSlime: {
+	DisplayName: "{$NPCName.SandSlime}"
+	Entry: Etwas blättriger, ein bisschen weniger sandig, aber genauso gefährlich.
+}
+
+PeevedTumbler: {
+	DisplayName: Genervter Purzelbusch
+	Entry: Das Leben ist nicht leicht in der Savanne... aber auch nicht allzu schlimm. Hey, du wärst auch genervt, wenn du Sand in den Augen hättest.
+}
+
+Sparrow: {
+	Entry: Ganz wie sein Cousin aus dem Wald, der weltberühmte Vogel, ist der Spatz schlicht gestrickt. Er fliegt umher, pickt an Termiten herum und genießt die Savannenluft.
+	DisplayName: Spatz
+}
+
+SafariZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Immerhin, wenn du schon untot bist, können dir Schlangen nichts mehr anhaben.
+}
+
+TumbleZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Unter der untoten Fassade, unter all dem Blut und den Zweigen und der Galle, verbirgt sich eine herzerwärmende Geschichte darüber, wie ein Purzelbusch und ein Zombie unter den unwahrscheinlichsten Umständen Freunde wurden.
+}
+
+Hyena: {
+	DisplayName: Hyäne
+	Entry: Von schelmischer Art, jagt die Hyäne im Rudel und zielt auf schwache Wildtiere ab. Bei Terrarianern jedoch fliehen sie eher, als sich zu stellen.
+}
+
+Ostrich: {
+	DisplayName: Strauß
+	Entry: Obwohl er nicht fliegen kann, erreicht der Strauß dennoch täuschend hohe Landgeschwindigkeiten. Zum Glück nutzt er das, um nach Würmern zu suchen, statt nach dir.
+}
+
+ButterflyCritter: {
+	DisplayName: Ätherischer Schmetterling
+	Entry: Vielleicht findest du sie, wenn du in den Nachthimmel blickst, auch zwischen den Sternen. Sie flattern in einem Tanz, so vergänglich wie ihre Körper.
+}
+
+SavannaJungleSlime: {
+	DisplayName: Dschungelschleim
+	Entry: Er hat ein paar Blumen verschlungen! Fast zu niedlich, um ihn zu töten...
+}
+
+Cartographer: {
+	DisplayName: Kartografin
+	Buttons.Map: Karte
+
+	Names: {
+		0: Soleana
+		1: Kyra
+		2: Jesse
+		3: "'''\"Tollpatsch\"'''"
+		4: Wynn
+		5: Nessa
+	}
+
+	Dialogue: {
+		0: Kartieren ist harte Arbeit. Manchmal verliert man die Orientierung, und... moment.
+		1: Sag mal, hast du zufällig etwas gutes, robustes Papier dabei? Mir ist komplett die Puste ausgegangen.
+		2: Menno... einen Pin auf den Boden fallen zu lassen ist echt ärgerlich. Besonders die braunen.
+		3: Hey, hast du eine Karte? Macht's dir was aus, wenn ich mal reinschau? Die sollte aber gut in Schuss sein!
+		4: Den Weg einmal zu finden ist Glück. Ihn zweimal zu finden braucht eine gute Karte.
+
+		Map: {
+			FloatingIsland: {
+				0: Mal sehen... es war genau hier! Eine niedliche kleine schwebende Insel, die ich gefunden hab. Wie ich dort hingekommen bin? Nun, sagen wir einfach, Harpyien können einen VIEL weiter tragen, als man denkt.
+				1: Schau mal hier. Da ganz oben! Ich hab vor einer Weile ein bisschen Unfug getrieben und bin am Ende im Himmel gelandet! Ich glaub, da war irgendein Schatz, aber ich war zu sehr damit beschäftigt, mir zu überlegen, wie ich runterkomme.
+				2: Schau dir diese Stelle an! Ich hab vor ein paar Wochen eine Insel im Himmel gefunden, war cool, aber die Nachbarn waren echt nervig! Hoffentlich findest du dort was, was ich nicht gefunden hab.
+			}
+
+			EnchantedSword: {
+				0: Ich hab hier was gefunden... genau hier! Es war unten in einem schmalen Tunnel; würdest du's glauben, ein Schwert im Stein, ganz wie in den Legenden! Ich hab aber kalte Füße bekommen und bin zurückgeschreckt, ich bin's nicht wert.
+				1: Aha! Hier ist die Stelle. Sieht unscheinbar aus, aber da ist ein mächtig aussehendes Schwert unter der Erde versteckt. Ich hätt's genommen, aber meine Taschen waren voll mit seltenen Pilzen und Kartenpapier.
+				2: Da wären wir! Keine Ahnung, wie's dahin kam, aber ich hab ein Schwert gefunden, das in Stein eingebettet ist. Wie in der einen Legende... King Arthur, oder? Mit seltsamen Waffen leg ich mich aber nicht an; vielleicht ist das eher dein Ding.
+			}
+
+			Shimmer: {
+				0:
+					'''
+					Wo war's noch mal... da ist es! Ich bin durch eine dunkle, gefährliche Höhle gewandert. Und was seh ich am Horizont? Ein strahlendes, schimmerndes pinkes Leuchten. Wirklich wunderschön.
+					Weißt du, was das in der Natur bedeutet? Bleib weg. Also hab ich's getan.
+					'''
+				1:
+					'''
+					Ähm... ich glaub, es war hier in der Nähe. Bin gestolpert und hab mir auf dem Rückweg vom Ozean den Kopf gestoßen. Als ich aufgewacht bin, hatten mich kleine Feenwesen an diesen seltsamen, ungewöhnlichen Ort gebracht.
+					Ich erinner mich nicht mehr an viel danach, aber ich hab total durchgedreht. Diese Feenwesen haben mich ziemlich schnell wieder rausgebracht.
+					'''
+				2:
+					'''
+					Hier ist es. Hast du schon mal Wasser gesehen? Stell dir das vor, nur dass es leuchtet wie der Nachthimmel. Ein Lila wie aus einer anderen Welt.
+					Kann's nicht empfehlen, davon zu trinken, es fühlt sich an, als würde sich dein Körper falsch anfühlen. Ich weiß nicht, wie ich's erklären soll. Vertrau mir einfach.
+					'''
+			}
+
+			Savanna: {
+				0:
+					'''
+					Da wär's, der Pin geht aufs Haus. Ich hab das übliche gemacht: meinen Morgenspaziergang und wild gegen Bäume geboxt, um Äpfel zu bekommen. Nach ein paar Bäumen
+					schau ich auf. Irgendwie hat sich eine ganze Prärie an mich rangeschlichen. Nach ein paar Momenten hab ich weiter Bäume geboxt.
+					'''
+				1:
+					'''
+					Schau mal hier rüber. Bist du schon mal einfach geradeaus gelaufen, während du direkt auf den Boden gestarrt hast? Solltest du nicht. Aber vor einer Weile, als ich's getan hab, sah ich, wie das Gras langsam von einem satten Grün zu einem kränklichen Grün wechselte.
+					Ich schau auf; das größte Gras, das ich je gesehen hab. Auch verdammt dicht. Also was hab ich gemacht? Nun ja... ich bin weggegangen. VIEL zu viel Arbeit, da reinzulaufen.
+					'''
+				2:
+					'''
+					Also vor einer Weile hab ich geschaut, wie schnell ich vor Dschungelfledermäusen wegrennen kann, richtig? Und dann bumm, genau hier auf der Karte, wird die Luft richtig staubig. Eine Savanne breitet sich vor mir aus. Was für ein Anblick!
+					Und nur fürs Protokoll, ich hab rausgefunden, dass ich wirklich schnell rennen kann, wenn ich muss.
+					'''
+			}
+
+			Hive: {
+				0: Pin kommt... hierhin. Ganz im Vertrauen, ich empfehl diesen Dschungelort nicht. Der ist HART. Aber wenn du einen dieser großen Bienenstöcke siehst, ist Honig in der Nähe. Und das ist eine Belohnung, die so manchen Stich wert ist.
+				1: Da wär's! Ähm... ich sag's, wie's ist. Manchmal findest du flüssiges Gold, und es lohnt sich trotzdem NICHT, zu investieren. Fiese Bienen... bleib beim Wandern, nicht beim Geschäft.
+				2: Wenn du hier rechts schaust... genau hier, findest du was, das dich vielleicht interessiert. Ich fass mich aber kurz, Stacheln tun weh. Sei vorbereitet.
+			}
+
+			Curiosity: {
+				0:
+					'''
+					Hier wärst du. Weißt du, ich wandere viel rum. Seh mir die Gegend an, denk laut nach... naja, das alles zählt nicht mehr, wenn mich der Dreck beim Hinfallen küsst.
+					Ich bin hier drüben über was am Boden gestolpert, konnte dir aber nicht sagen, was es war. Ich war viel zu wütend, um hinzuschauen.
+					'''
+				1:
+					'''
+					Ich glaub, es war... hier? Nah genug dran. Man stößt auf jede Menge interessante Dinge, wenn man so viel erkundet wie ich. Manchmal sieht man was, das sich lohnt, näher anzusehen.
+					Wenn ich du wär, würd ich mich sputen. Wer weiß, vielleicht findet's jemand anders vor dir!
+					'''
+				2:
+					'''
+					Schau dich hier mal um. Ich bin doch Kartografin, oder? Ich kartiere. Und manchmal verlier ich den Überblick über alle meine Pins... naja, ich hab diese Karte hier festgesteckt und komplett vergessen, warum.
+					Nachdem ich den ganzen Weg dorthin und wieder zurück gegangen bin, hab ich's gleich nochmal vergessen. Du kannst sie stattdessen haben, vielleicht bin ich einfach vergesslich, aber ich will keinen verfluchten Kram.
+					'''
+			}
+
+			ButterflyShrine: {
+				0:
+					'''
+					Schau dir diese Stelle hier an. Es war eine kalte, unheimliche Nacht, eine kräftige Böe hat mir die Karten direkt aus dem Rucksack gerissen.
+					Ich bin zu Boden gegangen, um mein kostbares Werk zu holen, als ich es sah. Ein winziges, stecknadelgroßes Loch im Boden, und es leuchtete lila! Ich glaub nicht, dass ich mich damit anlegen werde, aber du wirkst wie der mutige, abenteuerlustige Typ.
+					'''
+				1:
+					'''
+					Genau hier, an diesem Punkt auf der Karte! Ich weiß nicht, wie ich's einleiten soll, aber hattest du schon mal so kleine Schwebeteilchen im Auge? Kleine Lichter, die du dir nicht erklären kannst?
+					Lach lieber nicht, aber ich schwör, ich hab kleine pinke Schmetterlinge an dieser Stelle gesehen. Aber die sind nicht echt! Ich hab versucht, sie zu fangen, aber sie bestehen aus Licht, ich kann's mir nicht erklären!
+					'''
+				2: Dieser Pin hier markiert, wo's passiert ist. Ich bin in meinem Leben schon über ein paar Löcher gestolpert. Aber noch nie hab ich eins gesehen, das lila leuchtet. Das ist Hokuspokus-Unsinn, mit dem ich nichts zu tun haben will, geh einfach weiter.
+			}
+
+			WulfrumBunker: {
+				0: Hoffentlich stimmt das. Ich bin so rumgelaufen wie immer, und hinter einem Baumhain seh ich diese komische grüne mechanische Anlage. Oben ist das voller Zeug und von unten hör ich ein mechanisches Surren... nein danke!
+				1: Hier war mein Lager, genau da. Ich hab mich von einem schönen, langen Tag des Herumlaufens ausgeruht, als dieser kleine Maschinen-Typ mit einer großen Hand meine Tasche GEKLAUT hat. Gut, dass ich mich etwas ausgeruht hatte, denn dieser kleine Kerl hat mich ganz schön lange rumgejagt.
+				2: Da ist es! Kann's nach all dem kaum vergessen. Man findet hier draußen nicht oft Industrie, was gut für mich ist. Ich mag den ganzen Lärm nicht so. Besonders als plötzlich ein Energiefeld auftauchte und Schrott auf mich zuflog.
+			}
+
+			BloodAltar: {
+				0: Und... da! Die Oberfläche zu kartieren ist eben nur, nun ja, die Oberfläche. Ich finde viele seltsame Dinge unter der Erde, und von vielen halt ich mich fern... Was? Ich bin Kartografin, keine Abenteurerin!
+				1: Sollte hier sein! Du wirkst wie der fähige Typ. Ich hab diesen untoten Kerl getroffen, der tatsächlich auf Vernunft gehört hat, was seltsam genug war, aber er hat mir diese... Hand verkauft. Ich bin gefolgt, wohin sie zeigte, und fand mich in einer beunruhigenden Gruft wieder... Vielleicht kannst du daraus was ziehen, ich geh da nicht wieder hin.
+				2: Bist du bereit für eine Herausforderung? Ich bin's nicht, so viel steht fest. Es gibt da einen Kerker mit einem Raum, der nach Blut stinkt... Und mit diesem seltsamen Altar in der Mitte, ja, ich bin nicht lang geblieben.
+			}
+
+			SaltFlat: {
+				0: Kann's nicht vergessen! Da, genau da, war das erste Mal, dass ich einen Spiegel zum Himmel gesehen hab. Ich hab nach unten geschaut, wie ich das so mach, und BAM! Wolken! Zuerst war ich besorgt, aber es war nur eine dünne Wasserschicht... wahrscheinlich. Vergewisser dich lieber, dass es sicher ist, damit ich's nicht muss.
+				1: Genau da! Bist du schon mal die Hänge in diesen verschneiten Gebieten runtergerutscht? Mit dem ganzen Eis und so? Nein? Nun, sagen wir, das macht's viel schwerer zu erkennen, was vor einem passiert, wenn man das tut. Natürlich mit Absicht. Der Ort hier sieht aber toll aus, ich würd's empfehlen, sobald du den Schnee losgeworden bist.
+				2: Normalerweise führt mich ein Sturz zu einer Entdeckung. Diesmal war ich vorsichtig. Kurz nachdem ich wegen überraschend nassem Boden in Panik geraten bin, erschien der Ausblick vor mir. Er war atemberaubend. Solang du deine Karten an der Hüfte trägst, bist du bereit für eine wundervolle Zeit.
+			}
+
+			Ziggurat: {
+				0: Hmm... da. Hab ich schon gesagt - ich bin Kartografin. Ich zeichne Karten. Wenn ich also eine große, einschüchternde Mauer aus rissigem, bröckelndem rotem Ziegel sehe, bin ich unglaublich gut darin, zu entscheiden, ob ich mich damit anlegen sollte. Ich hab Summen von drinnen gehört. Muss ich wohl kaum sagen, dass sie dir gehört.
+				1: Verstanden! Wüste macht's leicht zu merken. Nicht viel, an das man sich da erinnert, weißt du, also wenn Rauch ohne Erklärung aus dem Boden aufsteigt? Interessant. Du schaust runter und siehst die Fassade eines gewaltigen Bauwerks? Einprägsam. Nimm sie dir. Ich wollte kein Risiko mit Lava oder sowas eingehen.
+				2: Hier wärst du. Es gehört zu meinem Job, gelegentlich Ruinen zu finden. Keine Sorge, wir haben aus gutem Grund ein Protokoll. Aber Mann, reinzugehen und fast durch den Boden durchbohrt zu werden? Eine sanfte Erinnerung, dass ich manchmal eine ausgezeichnete Läuferin bin.
+			}
+
+			FirstPin: Ich hab diesen Pin hier zu deiner "Pin-Sammlung" hinzugefügt. Du kannst jederzeit von der unteren linken Ecke deiner Karte darauf zugreifen.
+		}
+	}
+
+	Entry: Eine seltsame Mischung aus leidenschaftlicher Entdeckerin und abgrundtief tollpatschig, geht die Kartografin an Orte, die... nun ja, fast niemand erkundet hat. Manchmal geht's dabei eher um Sicherheit als um Neues.
+}
+
+Hiker: {
+	DisplayName: Wanderer
+
+	Buttons: {
+		Feed: Füttern
+		Supplies: Vorräte
+		Silver: 20 Silber
+	}
+
+	Dialogue: {
+		Hungry: {
+			Asking: {
+				0: Hey, Fremder, magst du was zu knabbern teilen? Wenn du mir {0} leihen könntest, hätt ich vielleicht auch was Nettes für dich.
+				1: Warst du schon mal draußen und hast DANN gemerkt, dass du Hunger hast? Wär ich mal nicht... könntest du mir {0} abgeben?
+				2: Eine lange, bergauf führende Wanderung zehrt echt an einem. Ich bin so fertig, ich könnte {0} vertragen... hilfst du mir aus?
+				3: Ich hab meinen letzten Proteinriegel schon vor fünfundvierzig Minuten aufgegessen, ich bin am Ende meiner Kräfte. Könntest du mir eins von deinen {0} abgeben?
+			}
+
+			Thanks: {
+				0: Danke, Freund, ich kann mich immer auf großzügige Fremde verlassen. Nimm ein paar Vorräte, von einem Fremden zum anderen!
+				1: Bahaha, das trifft genau den Punkt! Ein gutes Häppchen macht mich immer großzügig, nimm ein paar Vorräte, geht aufs Haus.
+				2: Hey, tausend Dank. Hier, Freund, nimm ein Paket umsonst.
+				3: Nichts geht über eine Mahlzeit nach einer langen Wanderung. Preise sind aufgehoben, Kumpel, nimm ein Paket. Es ist kostenlos!
+			}
+		}
+
+		Idle: {
+			0: Nichts geht über eine lange Wanderung runter in die Höhlen. Bis man voller fieser Spinnweben ist. Verdirbt irgendwie die Stimmung.
+			1: Mein alter Kumpel hat immer Blinkwurzel zum Erkunden mitgenommen statt Fackeln zu benutzen. "Sicherer", hat er gesagt. Komischer Typ. Frag mich, was aus ihm geworden ist.
+			2: Benutzt du Pins? Die sind echt nützlich. Und eine alte Freundin hat sie immer überall mit sich rumgetragen... zuletzt hab ich gehört, sie "lernt, wie man auf die schwebenden Inseln kommt." Harter Job, was?
+			3: Manchmal lauf ich an einer Fee vorbei, und sie führen mich zu Gold oder Platin. Ich tu immer so, als wär ich aufgeregt, aber ich hab keine Spitzhacke. Hoffentlich wissen sie das zu schätzen.
+			4: Du trägst immer ein paar extra Vorräte mit dir, wenn du schlau bist. Aber mein Rücken bringt mich um, ich hab viel zu viel mitgenommen... ich tausch mit dir, wenn du ein bisschen Kleingeld übrig hast, bahaha!
+		}
+
+		Purchase: {
+			0: Hey, das ist eine Last von meinem Rücken! Ich tausch jederzeit einen steifen Rücken gegen volle Taschen.
+			1: Bahaha, vielen Dank, Kumpel! Die Leute fragen mich immer, "Wo zum Teufel bewahrst du all dein Zeug auf?", aber ich frag auch nicht nach deinen Angelegenheiten!
+			2: Gut getroffen, Fremder! Nichts schafft eine stärkere Verbindung als ein guter Tausch.
+			3: Genieß den extra Platz! Ich hab gehört, wenn du einen Haufen Engelsstatuen - ja, ganze Statuen - in deine Tasche packst, passiert was Verrücktes.
+			4: Danke für den Tausch! Ich würd gern anhalten und an den Blumen riechen, aber es gibt da draußen ein paar verrückte Pflanzen. Sei vorsichtig!
+		}
+
+		FailPurchase: {
+			0: Sorry, du musst mir etwas mehr Münzen zeigen, bevor ich das einen Tausch nennen kann. Es sei denn, du hast noch etwas Essen, das dir in der Tasche brennt, bahaha!
+			1: Ach, meine Vorräte bleiben bei mir. Komm mit etwas mehr Münzen zurück. Es wird sich lohnen! Und es erspart mir etwas zu tragen.
+			2: Geht nicht, Partner. Ich bin nicht hier zum Feilschen. Ich bin nur ein bisschen überversorgt, das ist alles. Bei Snacks bin ich allerdings etwas knapp...
+		}
+	}
+
+	Name: {
+		0: Gary
+		1: Shawn
+		2: Geo
+		3: Geoff
+		4: Rocky
+		5: Porter
+	}
+
+	Entry: Jovial, entspannt, trügerisch stark - der Wanderer kennt sich so ziemlich überall aus. Der Dschungel? Ein Kinderspiel. Wüsten? Unterirdische Tundra? Kein Problem. Weltraum? Weiß nicht wie... aber er schafft's dort hoch.
+}
+
+HideZombieBig: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Hyänen müssen sich vor Fell-Zombies verstecken, oder ihr Fell wird geklaut.
+}
+
+HideZombieSmall: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Ihr Outfit ist der letzte Schrei in der neuesten untoten Mode.
+}
+
+PotterySlime: {
+	DisplayName: Töpferschleim
+
+	Names: {
+		0: Sable
+		1: Saki
+		2: Sal
+		3: Santra
+		4: Sark
+		5: Sassafrass
+		6: Satya
+		7: Sawyl
+		8: Seppo
+		9: Shammy
+		10: Shard
+		11: Shio
+		12: Silas
+		13: Silica
+		14: Silty
+		15: Sleet
+		16: Sloan
+		17: Snap
+		18: Soggy
+		19: Soda
+		20: Sonya
+		21: Sparta
+		22: Splet
+		23: Spot
+		24: Stratton
+		25: Sullivan
+		26: Swain
+	}
+
+	Chatter: {
+		0: Wubba dooble doo?
+		1: Plip plop. Blorp.
+		2: Wawa.
+	}
+
+	Entry: Ob du's glaubst oder nicht, dieser Schleim ist weltberühmt in der Kunst der Keramik. Du befindest dich in der Gegenwart eines zeitgenössischen Meisters!
+	Census.SpawnCondition: Zerschlage seltene Töpfe [i:SpiritReforged/BiomePotsCavernItem] in der Höhle
+}
+
+StompableGnome.DisplayName: Zertrampelbarer Gnom
+
+DunceCrab: {
+	DisplayName: Trottelkrabbe
+	Entry: Eine der häufigsten Ursachen für Abenteuer-Unfälle, diese höhlenbewohnende Molluske ist meist eine ziemliche Überraschung. Sie ernährt sich von Moosen und Flechten, die oft in Höhlen zu finden sind.
+}
+
+Wheezer: {
+	DisplayName: Wheezer
+	Entry: Ein Wheezer ist ein extrem giftiger Verwandter des Salamanders, bekannt für aggressives Verhalten. Seltsamerweise ist ihre Lieblingsspeise eine knospende Stechpalme, im Widerspruch zu ihren fleischfressenden Neigungen.
+}
+
+WorldFrog: {
+	DisplayName: Hilfsbereit Aussehender Frosch
+	Button: Welt aktualisieren
+
+	Sounds: {
+		0: Quak
+		1: Quaak
+	}
+
+	Dialogue: {
+		0: Wenn du nach Dingen zum Erkunden suchst, hab ich ein Angebot für dich - ich beschwör's herbei!
+		1: Du suchst nach neuen Dingen? Zwischen meinen Händen, ein Angebot, das ich zog!
+		2: Meine Magie spürt, dass etwas in der Luft fehlt; aber - du sollst nicht verzagen!
+	}
+
+	Reports: {
+		CavesAndClubs_0: Hokuspokus - schau nicht so blau drein, ich hab deine Höhlen mit neuen Töpfen zum Plündern gefüllt!
+		CavesAndClubs_1: Abrakadabra, ich schenk dir neue Töpfe; wenn du unter die Erde gehst, wirst du sie wirklich genießen!
+		Spellbound_0: Neue Tische, um Verzauberungen zu binden; diese Werkzeuge findest du jetzt in deiner Welt!
+		Spellbound_1: Jetzt kannst du Spiegel genießen, die nur darauf warten, dass neue Abenteuer daraus erwachsen!
+	}
+}
+
+MossSlime: {
+	DisplayName: Moosschleim
+	Entry: Eine merkwürdige Gruppe von Schleimen, die irgendwie mit Moos bedeckt sind. Sie kommen in vielen Varianten vor, allerdings nur in leuchtenden Moosen aus... irgendeinem Grund. Kostenlose Lichtquelle, vielleicht?
+}
+
+KryptonMossSlime.DisplayName: Krypton-Moosschleim
+LavaMossSlime.DisplayName: Lava-Moosschleim
+NeonMossSlime.DisplayName: Neon-Moosschleim
+XenonMossSlime.DisplayName: Xenon-Moosschleim
+ArgonMossSlime.DisplayName: Argon-Moosschleim
+HeliumMossSlime.DisplayName: Helium-Moosschleim
+OganessonMossSlime.DisplayName: Oganesson-Moosschleim
+RadonMossSlime.DisplayName: Radon-Moosschleim
+Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
+
+Flamingo: {
+	DisplayName: Flamingo
+	Entry: Sie versammeln sich in großen Gruppen und filtern das Wasser nach den mikroskopisch kleinen Organismen, die ihre Nahrung ausmachen.
+}
+
+DivingBeetle: {
+	DisplayName: Taucherkäfer
+	Entry: Fängt Luft unter seinem Panzer und schwimmt mithilfe vergrößerter Hinterbeine durchs Wasser. Fische fühlen sich gelegentlich davon angezogen.
+}
+
+GoldDivingBeetle: {
+	DisplayName: Gold-Taucherkäfer
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
+}
+
+Jerboa: {
+	DisplayName: Springmaus
+	Entry: Dieser hüpfende Schnellläufer liebt trockenes Klima, wo er über den flachen Wüstensand flitzen und in den Savannengräsern nach Käfern schnabulieren kann.
+}
+
+Grub: {
+	DisplayName: Skarabäus-Larve
+	Entry: Skarabäen sind von dem Moment an, in dem sie schlüpfen, darauf getrieben, ihr Territorium zu verteidigen. Dieser kleine Wadenbeißer könnte zu etwas ziemlich Furchteinflößendem heranwachsen!
+}
+
+DesertStactus: {
+	DisplayName: Stachtus
+	Entry: Stachtusse sind eigentlich sehr sanftmütige Kreaturen, tun sich aber wegen ihres stacheligen Wesens schwer, Freunde zu finden.
+}
+
+CorruptStactus: {
+	DisplayName: Korrupter Stachtus
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+CrimsonStactus: {
+	DisplayName: Crimson-Stachtus
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+HallowedStactus: {
+	DisplayName: Geheiligter Stachtus
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+BrineShrimp: {
+	DisplayName: Salinenkrebs
+	Entry: Obwohl sie umgangssprachlich als "Seeaffen" bekannt sind, leben sie weder im Meer, noch sehen sie in irgendeiner Weise wie Affen aus.
+}
+
+GoldenBrineShrimp: {
+	DisplayName: Gold-Salinenkrebs
+	Entry: Golden und selten, so heißt es, verwandelt der Gold-Salinenkrebs den glücklichsten Flamingo in Gold. Ob das stimmt, muss sich erst noch zeigen.
+}
+
+Wisp: {
+	DisplayName: Irrlicht
+	Entry: Seltsame Energien, die passiv durch die Ebenen treiben, solange man sie nicht reizt. Irrlichter sind dafür bekannt, beim geringsten Anzeichen der Morgendämmerung zu verschwinden.
+}
+
+DecrepitMummy: {
+	DisplayName: Verfallene Mumie
+	Entry: Durch die Anwesenheit eines Eindringlings zum Leben erweckt, erheben sich diese Mumien aus ihren Gräbern, um ihre Ansprüche zu verteidigen.
+}
+
+Graverobber: {
+	DisplayName: Grabräuber
+	Entry: Ihr Unglück ist es, wie eine Piñata verprügelt zu werden, während Gold heraus regnet. Fast so verlockend wie die Wertsachen selbst...
+	HoldingLantern: Wenn eine Laterne getragen wird
+}
+
+LootBag.DisplayName: Beutebeutel
+
+Scarabeus: {
+	DisplayName: Scarabeus
+	Title: Geschmücktes Idol
+	Entry: Mit seiner majestätischen Haltung und schillernden Färbung wurde dieser riesige Käfer einst von den uralten Bewohnern der Ziggurat verehrt. Bis heute verharrt er dort und erwartet Tribut.
+	SpawnInfo: Benutze einen beliebigen Edelstein-Gegenstand am [i:SpiritReforged/ScarabAltarItem] Uralten Altar auf der Ziggurat bei Tageslicht.
+}
+
+TinyGrub: {
+	DisplayName: Winzige Larve
+	Entry: Fast so voller Potenzial wie voller Ekligkeit.
+}
+
+CactusZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Von allen Todesarten muss das Sterben durch Kakteen wohl eine der schlimmsten sein. Nicht-Sterben durch Kakteen muss auch ziemlich übel sein.
+}
+
+SunburntZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Da er jetzt die Sonne verabscheut, geht dieser Zombie nachts umher, um weiteren Schaden an seiner verrottenden Haut zu vermeiden.
+}
+
+VeiledZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Sich der Hitze entsprechend zu kleiden ist nur ein Teil des Überlebens in der Wüste. Essen und Wasser mitzubringen ist ein Schritt, den man nicht übersehen sollte.
+}
+
+Cricket: {
+	DisplayName: Grille
+	Entry: Nachts tauchen diese kleinen Kritter in verschiedenen Gräsern auf. Sie sind größtenteils verantwortlich für das Geräusch der Nacht.
+}
+
+GoldCricket: {
+	DisplayName: Goldgrille
+	Entry: Die Dorfbewohner sagen, eine goldene Grille zu sehen bringe Glück. Manche behaupten, das liege daran, dass sie sich gut verkaufen, andere sagen nein... sicher nicht.
+}
+
+BeetleTownPet: {
+	DisplayName: Käfer
+	Entry: Auch wenn sie nicht zum Kuscheln taugen, macht ihr tollpatschiges Wesen sie ziemlich liebenswert.
+	Chitter0: *Fröhliches Zirpen*
+	Chitter1: *Käfergeräusche*
+	Chitter2: *Käfergeräusche*
+
+	Names: {
+		RoyalScarab0: Azure
+		RoyalScarab1: Berry
+		RoyalScarab2: Bluey
+		RoyalScarab3: Crowno
+		RoyalScarab4: Khepri
+		RoyalScarab5: Lapis
+		RoyalScarab6: Lumi
+		RoyalScarab7: Minibeus
+		RoyalScarab8: Prince
+		RoyalScarab9: Queenie
+		RoyalScarab10: Scarb
+		RoyalScarab11: Sadie
+		RoyalScarab12: Sapphire
+		RoyalScarab13: Skippy
+		RoyalScarab14: Sunny
+		RoyalScarab15: Scab
+		DungBeetle0: Asbestos
+		DungBeetle1: Bit
+		DungBeetle2: Brick
+		DungBeetle3: Cannonball
+		DungBeetle4: Clay
+		DungBeetle5: Dave
+		DungBeetle6: Dirt
+		DungBeetle7: Greg
+		DungBeetle8: Grumpy
+		DungBeetle9: Hercules
+		DungBeetle10: Jeff
+		DungBeetle11: Licorice
+		DungBeetle12: Pebbles
+		DungBeetle13: Petey
+		DungBeetle14: Soot
+		DungBeetle15: Spoon
+		JewelBeetle0: Aubrey
+		JewelBeetle1: Bea
+		JewelBeetle2: Bonbon
+		JewelBeetle3: Caramel
+		JewelBeetle4: Glinty
+		JewelBeetle5: Goldilocks
+		JewelBeetle6: Hummus
+		JewelBeetle7: Kylie
+		JewelBeetle8: Mallow
+		JewelBeetle9: Mina
+		JewelBeetle10: Obol
+		JewelBeetle11: Saoirse
+		JewelBeetle12: Sheila
+		JewelBeetle13: Taffy
+		JewelBeetle14: Topaz
+		JewelBeetle15: Zahrah
+		Weevil0: Archibald
+		Weevil1: Boots
+		Weevil2: Charlamagne
+		Weevil3: Dinky
+		Weevil4: Duchess
+		Weevil5: Eleanor
+		Weevil6: Hubert
+		Weevil7: Ickabod
+		Weevil8: Jebediah
+		Weevil9: Johnson
+		Weevil10: Knievel
+		Weevil11: Lawrence
+		Weevil12: Lord Eggleston Esquire III
+		Weevil13: Poky
+		Weevil14: Sniffles
+		Weevil15: Winnifred
+		Maybug0: April
+		Maybug1: Charlotte
+		Maybug2: Clover
+		Maybug3: Dew
+		Maybug4: Dizzy
+		Maybug5: Fuzzy
+		Maybug6: Gigi
+		Maybug7: Holly
+		Maybug8: Juniper
+		Maybug9: Mandy
+		Maybug10: Maya
+		Maybug11: Minky
+		Maybug12: Paprika
+		Maybug13: Piper
+		Maybug14: Popcorn
+		Maybug16: Velvet
+		Ladybug0: Basil
+		Ladybug1: Chacha
+		Ladybug2: Cinnamon
+		Ladybug3: Dainty
+		Ladybug4: Dandy
+		Ladybug5: Diva
+		Ladybug6: Lady
+		Ladybug7: Lovely
+		Ladybug8: Missy
+		Ladybug9: Pin
+		Ladybug10: Polka
+		Ladybug11: Rosa
+		Ladybug12: Scarlet
+		Ladybug13: Spots
+		Ladybug14: Titania
+		Ladybug15: Tulip
+	}
+
+	Census.SpawnCondition: Benutze eine Käfer-Lizenz [i:SpiritReforged/BeetleLicense], die von Scarabeus fallen gelassen wird
+}
+
+Enchanter: {
+	DisplayName: Verzauberer
+	Entry: Stets müde, aber gutherzig, beschäftigt sich der Verzauberer mit allerlei Zaubersprüchen und Magie. Wenn manche Waffen oder Werkzeuge etwas mehr Würze brauchen, einfach fragen!
+
+	Names: {
+		0: Albion
+		1: Bertilak
+		2: Eango
+		3: Enki
+		4: Gil
+		5: Heka
+		6: Ilmarinen
+		7: Itani
+		8: Kokabiel
+		9: Mallyck
+		10: Mazdak
+		11: Morrigan
+		12: Myrrdin
+		13: Oeti
+		14: Ose
+		15: Sulyvahn
+		16: Tethra
+		17: Themisto
+		18: Vorv
+		19: Ywain
+	}
+
+	TownNPCMood: {
+		Content: Ich halte einen Moment inne und spüre... alles ist gut.
+		NoHome: Ich nehme nicht an, dass du einen Platz für mich hast, wo ich meine müden Knochen ausruhen kann?
+		FarFromHome: Ich bin ziemlich weit weg von meinem Arbeitsplatz und meinem Bett. Können wir bald nach Hause zurückkehren?
+		LoveSpace: Diese Stadt ist sehr reizend. Genug Leute für ein nettes Schwätzchen, aber nicht so viele, dass es überwältigend wird.
+		DislikeCrowded: Ich finde es schwierig, mich bei all diesem Trubel zu konzentrieren.
+		HateCrowded: Es leben hier viel zu viele Menschen. Ich hab seit Tagen keine gute Nachtruhe mehr gehabt.
+		LoveNPC: "{NPCName}s heiße Schokolade ist einfach zum Sterben schön! Oh, und seine Zaubertricks, die sind entzückend!"
+		LikeNPC: Ich weiß nicht, welche Art von Magie {NPCName} benutzt, um den Himmel so zum Leuchten zu bringen, aber es sieht spektakulär aus! Schade um den Lärm allerdings, ich hatte danach drei Tage lang Kopfschmerzen...
+		DislikeNPC: "{NPCName}s Vorstellung davon, deine Ausrüstung zu 'verbessern', ist barbarisch! Wie soll es helfen, sie mit einem Hammer einzudellen?!"
+		HateNPC: Ich schwöre, wenn {NPCName} noch eine seiner Geschichten übers Abschlachten von Kobolden beim Nachmittagstee erzählt, verwandel ich ihn in ein Schaf!
+		LikeBiome: Hier über den Wolken fühl ich mich so viel mehr im Einklang mit den Strömungen der Magie. Ganz zu schweigen von der Aussicht!
+		DislikeBiome: Bienen produzieren so hochwertiges Wachs, aber warum müssen sie mich bloß so stechen? Ich bin von Kopf bis Fuß mit Quaddeln bedeckt!
+		LikeNPC_Princess: "{NPCName} ist so ein süßes kleines Mädchen, aber ich kann ihr kaum folgen. Wie kann so ein kleiner Körper nur so viel Energie enthalten?"
+		Princess_LovesNPC: "{NPCName}s Magie ist anders als alles, was ich je gesehen hab! Ich frag mich, woher sie wohl stammt?"
+	}
+
+	Dialogue: {
+		Idle: {
+			0: Halt doch ab und zu inne, um an den Rosen zu riechen. Ruhe tut dir gut!
+			1: Es ist leicht, die Zeit zu vergessen, wenn man bis über beide Ohren in einem guten Buch steckt.
+			2: Bist du gekommen, um mehr über die wundersamen Eigenschaften von Wachs zu erfahren?
+			3: Möchtest du eine Tasse Tee? Ich hab schwarzen, grünen, Kräuter-, Kamillen-, Beeren-, Zitrustee...
+			4: Willkommen! Was darf ich heute für dich verzaubern?
+		}
+
+		IdleNight: {
+			0: Der Mond steht hoch, und meine Kerzen brennen heller denn je!
+			1: Glühwürmchen tupfen den Himmel wie kleine, tanzende Flammen. Überall, wohin wir schauen, ist Magie.
+			2: Es ist weit über meine zweite Schlafenszeit hinaus. Ich bitte dich höflich, dich kurz zu fassen.
+		}
+
+		BloodMoon: {
+			0: Ich kann in einer Nacht wie dieser nicht schlafen. Wenn ich die Augen schließe, sehe ich nur Rot.
+			1: Meine Kerzen brennen in einem grausigen Karminrot. Heute Nacht liegt etwas Böses in der Luft.
+		}
+
+		Rain: {
+			0: Es gibt nichts Schöneres als das Geräusch von Regen, der gegen die Fenster prasselt.
+			1: Ich geh nicht noch mal nach draußen. Mein Hut ist gerade erst vom letzten Mal wieder trocken geworden!
+		}
+
+		Graveyard: {
+			0: Normalerweise mag ich es still, aber die Luft steht vollkommen still. Es ist beunruhigend.
+			1: Ich kann das Gefühl nicht abschütteln, dass mich etwas beobachtet.
+		}
+
+		Thunderstorm: Es ist die perfekte Zeit, um sich am Kamin zusammenzukauern und gruselige Geschichten zu erzählen!
+		Eclipse: Wie soll ich wissen, wann ich den Nachmittagstee auftischen soll, wenn es weder Tag noch Nacht ist?
+		Party: Eure menschlichen Feierlichkeiten sind faszinierend, wenn auch ein bisschen... lärmend für meinen Geschmack. Ich muss mich vielleicht bald entschuldigen.
+		Goblin: Man kann auf viele Dinge Siegel kleben, aber {0} bittet mich ständig, seine verschiedenen Erfindungen zu verzaubern. Das endet normalerweise nicht gut...
+		Golfer: "{0} lädt mich immer ein, mit den anderen Golf zu spielen, aber ich erwisch mich immer dabei, wie ich eindöse... ich bring's nicht übers Herz, seine Einladungen abzulehnen."
+		Stylist: Ich hab mich von {0} überreden lassen, mir die Schuppen wachsen zu lassen, und ich bin mir nicht sicher, was daran so reizvoll ist. Ich glänz wie ein frisch gefangener Fisch!
+		WitchDoctor: "{0} hat so eine geheimnisvolle Aura, aber ich würd ihn gern besser kennenlernen. Könntest du... uns vielleicht vorstellen?"
+	}
+
+	Census.SpawnCondition: Halte einen beliebigen verzauberten Gegenstand oder Chromatisches Wachs [i:SpiritReforged/ChromaticWax], oder besiege einen Boss
+}
+
+SealedKnight.DisplayName: Versiegelter Ritter

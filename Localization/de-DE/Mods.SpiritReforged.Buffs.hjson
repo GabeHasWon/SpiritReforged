@@ -1,0 +1,174 @@
+EmpoweredSwim: {
+	DisplayName: Verstärktes Schwimmen
+	Description: Du fühlst dich im Wasser viel schneller
+}
+
+MantarayBuff: {
+	DisplayName: Rettungsstrahl
+	Description: Flink wie die Gezeiten!
+}
+
+JellyfishMinion_Buff: {
+	DisplayName: Qualle
+	Description: Eine niedliche, hüpfende Qualle kämpft für dich!
+}
+
+JellyfishPet_Buff: {
+	DisplayName: Freundliche Qualle
+	Description: Diese lebhafte Qualle folgt dir gerne überall hin!
+}
+
+DoubleJumpPotionBuff: {
+	DisplayName: Zephir-Sprung
+	Description: Gewährt vorübergehend einen zusätzlichen Sprung
+}
+
+FlightPotionBuff: {
+	DisplayName: Höhenflug
+	Description: Erhöht die Flugdauer um 25%
+}
+
+BottleMountBuff: {
+	DisplayName: Floß
+	Description: Sendet ein SOS aus
+}
+
+FairyMinion_Buff: {
+	DisplayName: Feen
+	Description: Hey! Pass auf!
+}
+
+Impaled: {
+	DisplayName: Aufgespießt
+	Description: Du wurdest von einem Spieß aufgespießt. Autsch!
+}
+
+KoiTotemBuff: {
+	DisplayName: Koi-Totem
+	Description: Erhöhte Angelfertigkeit
+}
+
+ButterflyMinion_Buff: {
+	DisplayName: Ätherischer Schmetterling
+	Description: Der ätherische Schmetterling kämpft für dich
+}
+
+ToucanMinion_Buff: {
+	DisplayName: Toucane
+	Description: Der Tukan kämpft für dich
+}
+
+QuenchPotion_Buff: {
+	DisplayName: Gestillt
+	Description: Andere Tränke halten 25% länger
+}
+
+TumblerPet_Buff: {
+	DisplayName: Ambivalenter Purzelbusch
+	Description: Ein freundlicher Steppenläufer folgt dir
+}
+
+Frozen: {
+	DisplayName: Eingefroren
+	Description: Verringerte Bewegungsgeschwindigkeit des Gegners
+}
+
+GildedScarabBuff: {
+	DisplayName: Skarabäus-Schild
+	Description: Verteidigung um {0} erhöht
+}
+
+Bubbled: {
+	DisplayName: Eingeblasen
+	Description: Du hast den geheimen Spirit-Lore-Kodex gefunden... Bleib dran für unseren Superboss Darksteel, den Gefallenen Stern!
+}
+
+ExplorerSpeed: {
+	DisplayName: Entdecker-Geschwindigkeit
+	Description: Deine Geschwindigkeit ist stark verbessert
+}
+
+RemedyPotionBuff: {
+	DisplayName: Heilmittel
+	Description: Immunität gegen manche schädliche Effekte
+}
+
+OpenWounds: {
+	DisplayName: Offene Wunden
+	Description: Anfällig für Blutungen
+}
+
+ExplorerPot: {
+	DisplayName: Entdeckerlust
+	Description: Du bist erpicht auf mehr!
+}
+
+ExplorerMine: {
+	DisplayName: Entdecker-Tatendrang
+	Description: Grab weiter!
+}
+
+JinxMark: {
+	DisplayName: Fluchmarkierung
+	Description: Vom Fluchbogen markiert
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: Waffen-Tränkung: Gefrierend
+	Description: Nahkampf- und Peitschenangriffe frieren Gegner ein
+}
+
+Slowed: {
+	DisplayName: Verlangsamt
+	Description: Deine Bewegung wird träge
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: Toucane
+	Description: Der Toucane kämpft für dich?
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: Kleiner Drache
+	Description: Ein kleiner Drache folgt dir
+}
+
+EnlilBuff: {
+	DisplayName: Enlils Beistand
+	Description: Erhöhte vertikale Beweglichkeit
+}
+
+ScarabLightPetBuff: {
+	DisplayName: Skarabäulein
+	Description: "'Es heckt etwas aus...'"
+}
+
+ScarabMountBuff: {
+	DisplayName: Kugelasseln-Reittier
+	Description: "'Halt dich fest!'"
+}
+
+DivineStrike: {
+	DisplayName: Göttlicher Schlag
+	Description: Dein nächster Angriff ist verstärkt
+}
+
+RotDebuff: {
+	DisplayName: Verrottend [{0}]
+	Description: "'Deine Haut wird grün'"
+}
+
+SanguineStackingBuff: {
+	DisplayName: Blutrote Energie [{0}]
+	Description: Schaden um {0}% erhöht
+}
+
+BlazeDebuff: {
+	DisplayName: Lodernd
+	Description: Alles im grünen Bereich!
+}
+
+RageGlyphBuff: {
+	DisplayName: Zorniger Schaden [{0}]
+	Description: Gespeicherter Schaden: {0}
+}

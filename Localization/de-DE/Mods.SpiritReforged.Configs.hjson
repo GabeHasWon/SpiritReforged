@@ -1,0 +1,85 @@
+ReforgedClientConfig: {
+	DisplayName: Reforged-Client-Konfiguration
+
+	ReflectionDetail: {
+		Label: Reflexionsdetail
+		Tooltip:
+			'''
+			Bestimmt das Detaillevel aller Reflexionen
+			Höhere Werte bedeuten mehr Detail und einen größeren Performance-Aufwand
+			'''
+	}
+
+	AmbientSounds: {
+		Label: Umgebungsgeräusche
+		Tooltip: Spielt Umgebungsgeräusche in bestimmten Biomen ab
+	}
+
+	ScreenshakeStrength: {
+		Label: Bildschirmwackel-Stärke
+		Tooltip: Steuert, wie stark das gesamte Bildschirmwackeln von Reforged ist.
+	}
+
+	DisableWater: {
+		Label: Wasser-Visuals deaktivieren
+		Tooltip: Deaktiviert die Reforged-Wasser-Visuals.
+	}
+
+	DebugEcotones: {
+		Label: Ökoton-Debugging (mit WorldGen Previewer)
+		Tooltip:
+			'''
+			ERFORDERT WorldGen Previewer.
+			Erlaubt es Entwicklern und Spielern, die das Ökoton-System nutzen, Probleme mit Ökotonen mithilfe eines hilfreichen Overlays zu debuggen und zu verstehen.
+			'''
+	}
+
+	Headers.Developer: Entwickler-Werkzeuge
+
+	GlyphProjectileVisualEffects: {
+		Label: Glyphen-Projektil-Effekte
+		Tooltip: Bestimmt, ob Projektile mit Glyphen visuelle Effekte erzeugen sollen
+	}
+
+	GlyphItemVisualEffects: {
+		Label: Glyphen-Item-Effekte
+		Tooltip: Bestimmt, ob Items mit Glyphen Shader und visuelle Effekte haben sollen, wenn sie in der Welt liegen
+	}
+
+	BannerJingle: {
+		Label: Banner-Klingelton
+		Tooltip: Aktiviert den Banner-Klingelton, der abgespielt wird, wenn das erste Banner für einen NPC-Typ erscheint.
+	}
+}
+
+ReforgedServerConfig: {
+	DisplayName: Reforged-Server-Konfiguration
+
+	VentCritters: {
+		Label: Schlot-Kleintiere
+		Tooltip:
+			'''
+			Aktiviert das Erscheinen zahlreicher Kleintiere rund um Hydrothermalschlote
+			Diese Kleintiere beeinflussen nicht die regulären Gegner-Spawnraten
+			Sie zählen jedoch zum maximalen NPC-Limit
+			'''
+	}
+
+	MaxFloatingItemCount: {
+		Label: Schwebende-Items-Obergrenze
+		Tooltip: Bestimmt, wie viele schwebende Items gleichzeitig in der Welt aktiv sein können.
+	}
+
+	AutoloadHeldProjectiles: {
+		Label: Gehaltene Projektile automatisch laden
+		Tooltip:
+			'''
+			Aktiviert ein System, das automatisch 'gehaltene Projektile' während des Ladevorgangs erkennt.
+			Dies kann die Ladezeiten erheblich erhöhen oder Ladefehler verursachen, wenn es zusammen mit anderen Mods aktiviert ist,
+			kann aber manche Probleme mit bestimmten Mechaniken (wie Glyphen) im Spiel beheben.
+			Idealerweise verwenden andere Mods das benannte Projektil-Set HeldProjectile (bool) für stabile Kompatibilität.
+
+			Dies hat KEINE Auswirkung auf Vanilla- oder Reforged-Projektile, die bereits gesetzt sind.
+			'''
+	}
+}

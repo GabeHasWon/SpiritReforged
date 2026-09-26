@@ -1,0 +1,125 @@
+Biomes: {
+	SavannaBiome: {
+		DisplayName: Savanne
+		TownNPCDialogueName: der Savanne
+	}
+
+	SaltBiome: {
+		DisplayName: Salzebene
+		TownNPCDialogueName: der Salzebene
+	}
+
+	ZigguratBiome: {
+		DisplayName: Ziggurat
+		TownNPCDialogueName: der Ziggurat
+	}
+}
+
+SlotContexts.Backpack: Rucksack
+
+Conditions: {
+	InSavanna: In der Savanne
+	PeevedTumbler: Beim Glitzern
+	Discovered: Entdeckung
+	Submerged: Untergetaucht
+	InSaltFlats: In der Salzebene
+	IsPrickly: Wenn stachelig
+	InZiggurat: In der Ziggurat
+	InSpace: Im Weltraum
+	NotSnow: Nicht im Schnee
+}
+
+Misc: {
+	Pins: {
+		Move: Pin verschieben
+		Obtained: Diesen Pin besitzt du bereits
+		UseItem: Rechtsklick, um diesen Pin zu deiner Sammlung hinzuzufügen
+	}
+
+	Enchantment: {
+		PlaceToEnchant: Platziere einen Gegenstand hier, um ihn zu verzaubern
+		Enchant: Verzaubern
+		Cost: "{0} [c/{1}:Chromatisches Wachs]"
+		Clear: Verzauberung entfernen
+		Random: Verzauberung zufällig auswählen
+	}
+
+	NoStock: Ausverkauft
+	GraveText: <wavy>Der Text ist alt und verblasst; du kannst nicht ganz erkennen, was dort steht.
+	MenuButton: Menü-Stil verwenden
+	UnchangedMap: Die Karte hat keine Änderungen.
+	ShareMap: Karte wurde geteilt.
+	ShareAndUpdateMap: Karte wurde geteilt & aktualisiert.
+}
+
+DamageSources: {
+	Impaling: {
+		0: "{0} wurde aufgespießt."
+		1: "{0} wurde durchbohrt."
+	}
+}
+
+GameTips: {
+	# Release
+	ReforgedTip0: Trag immer Essen mit dir herum. Man weiß nie, wann es nützlich sein könnte!
+	ReforgedTip1: Selten kann man Schmetterlinge finden, die sich in unterirdischen Hainen verstecken.
+	ReforgedTip2: Pins sind nützlich! Schau in deinem Pin-Inventar unten links auf der Karte nach.
+	ReforgedTip3: Savannentiere können nicht mit dem Insektennetz gefangen werden.
+	ReforgedTip4: Rucksäcke. Jetzt hast du mehr Platz.
+	ReforgedTip5: Die Tiefen des Ozeans bergen viele interessante Dinge.
+	ReforgedTip6: Sterngras bietet eine schöne Verschnaufpause in der Dunkelheit der Nacht.
+	ReforgedTip7: Wolkenstängel wächst immer unter Wolken. Vergiss nicht, nach oben zu schauen!
+	ReforgedTip8: Du kannst auf Akazienbäumen stehen, wenn du etwas Höhe brauchst.
+	ReforgedTip9: Manchmal spült es Dinge im Ozean an; schau ab und zu mal vorbei!
+	# Caves & Clubs
+	ReforgedTip10: Viele Töpfe sind in den Höhlen unter deinen Füßen verstreut! Halt die Augen offen.
+	ReforgedTip11: Keulen bieten starken, fokussierten Schaden gegen einzelne Ziele.
+	# Sunscorched
+	ReforgedTip12: Legenden erzählen von einer Opfergabe aus Edelsteinen auf einem uralten Altar...
+	ReforgedTip13: Vorsicht beim Erkunden der uralten Ziggurat! Überraschungen lauern an jeder Ecke.
+	ReforgedTip14: Versunkene Oasen können eine dringend benötigte Verschnaufpause vom Chaos der unterirdischen Wüste bieten.
+	ReforgedTip15: Bernstein verbirgt Geheimnisse! Vielleicht findest du etwas darin...
+	ReforgedTip16: Vorsicht beim Herumlaufen in den Ruinen der Wüste! Manche Böden sind weniger stabil, als du denkst.
+	# Spellbound
+	ReforgedTip17: Glyphen verleihen deinen Waffen mächtige Effekte, die ihre Verwendung grundlegend verändern!
+	ReforgedTip18: Chromatisches Wachs findet man in Töpfen, Kisten und als Beute beim Besiegen bestimmter Gegner.
+	ReforgedTip19: Der Verzauberer kann deine Waffe mit einer Vielzahl einzigartiger Glyphen versehen. Probier sie alle aus!
+}
+
+Emotes: {
+	CartographerEmote.Command: kartograf
+	HikerEmote.Command: wanderer
+	EnchanterEmote.Command: verzaubereremote
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: Rechnungsbuch
+		Description: Preis-Tooltips werden angezeigt
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: Schimmersicht
+		Description: Shimmer-Tooltips werden angezeigt
+	}
+}
+
+Ecotones: {
+	SaltFlatsEcotone: Salzebene
+	SavannaEcotone: Savanne
+}
+
+EcotoneEdges: {
+	Forest: Wald
+	Desert: Wüste
+	Ocean: Ozean
+	Snow: Schnee
+	Jungle: Dschungel
+	Corruption: Korruption
+	Crimson: Crimson
+	Hallow: Hallow
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+}
+
+DamageClasses.HybridDamageClass.DisplayName: Hybrid-Schadensklasse
