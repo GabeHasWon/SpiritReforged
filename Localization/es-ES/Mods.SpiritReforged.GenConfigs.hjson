@@ -1,0 +1,877 @@
+UI: {
+	Min: Todo al mínimo
+	MinDescription:
+		'''
+		Configura todos los parámetros en los valores que reduzcan al máximo la generación 
+		Así que un valor como “máxima profundidad del cañón” se establecerá a su mínimo
+		pero un valor para “probabilidad de árbol (1/x)” se establecerá en su máximo
+		'''
+	Max: Todo al máximo
+	MaxDescription:
+		'''
+		Configura todos los parámetros en los valores que maximicen la generación 
+		Por lo que un valor como “máximo de árboles” se establecerá a su máximo 
+		pero un valor como “probabilidad de árbol (1/x)” se establecerá en su mínimo
+		'''
+	Preset: Preajuste:
+	NoPresets: (Sin preajustes)
+	None: Ninguno
+	Reset: Restablecer
+	ResetAll: Restablecer todos
+	Prior: Priorizar:
+	Next: Siguiente:
+	True: Activado
+	False: Desactivado
+	Total: "{0} en total"
+	CustomPresetTooltip: ¡Este es un ajuste personalizado!
+	Create: Guardar como preajuste customizado
+	CantSave: (No puedes guardar un ajuste por defecto de Spirit)
+	Load: Importar un ajuste personalizado
+	LoadFolder: Importar una carpeta de ajustes personalizados
+	HoverDescription: Configurar aspectos específicos de la generación de Spirit Reforged
+	FailedToLoad: El preajuste no es para esta página. Página esperada: {0}
+	ConfigNotice:
+		'''
+		[c/AAAAFF:Ranges] funciona estableciendo el mínimo junto a una adición aleatoria.
+		El valor mostrado es el rango real usado en el juego al crear aleatoriamente.
+		'''
+	LoadError: Ha ocurrido un error al cargar un preajuste ({0}). Informa esto en el Discord (y revisa client.log):
+	Duplicate: (Preajustes duplicados no añadidos - {0})
+	From: de
+}
+
+Pages: {
+	Savanna: {
+		Name: "{$Ecotones.SavannaEcotone}"
+		Description: Controla aspectos específicos de la generación del ecotono Sabana.
+
+		Presets: {
+			Domesticated: {
+				Name: "[i:224] Domesticada"
+				Tooltip: Una sabana más vivida, con más vasijas y menos fauna silvestre.
+			}
+
+			Infested: {
+				Name: "[i:SpiritReforged/TermiteJar] Infestada"
+				Tooltip: ¡Ups! ¡Termitas por todas partes! Los árboles pueden ser difíciles de encontrar.
+			}
+
+			Bumpy: {
+				Name: "[i:SpiritReforged/Drypowder] Irregular"
+				Tooltip: ¡Cuidado al caminar! Baches y colinas te esperan en esta salvaje sabana.
+			}
+		}
+
+		Members: {
+			OverSpawn: {
+				DisplayName: "[i:50] Sobre la generación"
+				Tooltip: Determina si la sabana debe generarse sobre el punto de aparición, al estilo de la semilla "savanna".
+			}
+
+			Steps: {
+				DisplayName: "[i:SpiritReforged/DrywoodPlatformItem] Escalones"
+				Tooltip: El número de escalones planos con los que se genera la sabana.
+			}
+
+			CampsiteChance: {
+				DisplayName: "[i:SpiritReforged/SavannaCampfireItem] Probabilidad de campamento"
+				Tooltip: El denominador (1/x) de la probabilidad de generar un campamento.
+			}
+
+			BaseTreeChance: {
+				DisplayName: "[i:27] Probabilidad de árbol de acacia"
+				Tooltip:
+					'''
+					El denominador (1/x) de la probabilidad de generar un árbol en determinados bloques.
+					Esta probabilidad aumenta progresivamente hasta que se genera un árbol, y luego se reinicia.
+					'''
+			}
+
+			PotChance: {
+				DisplayName: "[i:SpiritReforged/CommonPotsSavannaItem] Probabilidad de vasija"
+				Tooltip:
+					'''
+					El denominador (1/x) de la probabilidad de generar una vasija al decorar. 
+					Esto no sobrescribe los bloques, por lo que un valor de uno NO generará una vasija en cada bloque.
+					'''
+			}
+
+			TermiteChance: {
+				DisplayName: "[i:SpiritReforged/TermiteJar] Probabilidad de termita"
+				Tooltip: El denominador (1/x) de la probabilidad de generar un montículo de termitas al decorar.
+			}
+		}
+	}
+
+	SaltFlats: {
+		Name: "{$Ecotones.SaltFlatsEcotone}"
+		Description: Controla aspectos específicos de la generación del ecotono Salar.
+
+		Presets: {
+			SunkenRuin: {
+				Name: "[i:SpiritReforged/CobbledBrickItem] Ruinas hundidas"
+				Tooltip: Las ruinas de una civilización antigua han sido lavadas y desgastadas con el tiempo.
+			}
+
+			BlankCanvas: {
+				Name: "[i:SpiritReforged/GlidingItem] Lienzo en blanco"
+				Tooltip: Un reflejo vacío e infinito yace ante ti.
+			}
+
+			Dessicated: {
+				Name: "[i:1274] Desecado"
+				Tooltip: No hay ni una gota de agua a la vista. Todos los árboles se han marchitado.
+			}
+		}
+
+		Members: {
+			OverSpawn: {
+				DisplayName: "[i:50] Sobre la generación"
+				Tooltip: Determina si el salar debe generarse sobre el punto de aparición, al estilo de la semilla "salt".
+			}
+
+			RuinQty: {
+				DisplayName: "[i:SpiritReforged/CalmingBellItem] Ruinas del salar"
+				Tooltip: El límite superior para las ruinas generadas en el salar. Es posible que no se generen todas.
+			}
+
+			LakeRadius: {
+				DisplayName: "[i:206] Radio de lagos"
+				Tooltip: El radio de los lagos del salar. Los radios más grandes corresponden a lagos más grandes.
+			}
+
+			CaveRadius: {
+				DisplayName: "[i:SpiritReforged/SaltWallItem] Radio de cavernas"
+				Tooltip: El radio de las cavernas del salar. Los radios más grandes corresponden a cavernas más grandes.
+			}
+
+			MaxSteps: {
+				DisplayName: "[i:SpiritReforged/SaltBlockReflectiveItem] Pasos máximos"
+				Tooltip: El número máximo de llanuras reflectantes dentro de un salar.
+			}
+
+			StupaChance: {
+				DisplayName: "[i:SpiritReforged/StoneStupasItem] Probabilidad de estupa"
+				Tooltip:
+					'''
+					El denominador (1/x) de la probabilidad de generar una piedra de estupa al decorar. 
+					Esto no sobrescribe los bloques, por lo que un valor de uno NO generará una estupa en cada bloque.
+					'''
+			}
+
+			TreeChance: {
+				DisplayName: "[i:27] Probabilidad de árbol muerto"
+				Tooltip:
+					'''
+					El denominador (1/x) de la probabilidad de generar un árbol en determinados bloques.
+					Esta probabilidad aumenta progresivamente hasta que se genere un árbol, y luego se reinicia.
+					'''
+			}
+		}
+	}
+
+	Surface: {
+		Name: Superficie
+		Description: Controla aspectos específicos de las adiciones y ediciones de Reforged para la Superficie.
+
+		Presets: {
+			Whimsical: {
+				Name: "[i:SpiritReforged/MidnightApple] Fantasioso"
+				Tooltip: Cuevas gigantes y frondosas, colinas de césped de estrellas y tranquilos campos de trigo... ¿qué podría salir mal?
+			}
+
+			Treacherous: {
+				Name: "[i:SpiritReforged/LeatherBackpack] Traicionero"
+				Tooltip: Vastas gargantas pueden salpicar el paisaje. ¡No mires hacia abajo!
+			}
+		}
+
+		Members: {
+			HalfWidth: {
+				DisplayName: "[i:133] Semiancho del cañón"
+				Tooltip: Controla el semiancho del montículo de un cañón, si está lo suficientemente cerca de la superficie.
+			}
+
+			MaxDepth: {
+				DisplayName: "[i:133] Máxima profundidad del cañón"
+				Tooltip: Controla la profundidad máxima de un cañón.
+			}
+
+			SizeMultiplier: {
+				DisplayName: "[i:747] Multiplicador de tamaño (Karst)"
+				Tooltip: Multiplicador en el tamaño de todas las operaciones de excavación para los karsts (cuevas frondosas).
+			}
+
+			FieldSize: {
+				DisplayName: "[i:SpiritReforged/BotanistHat] Longitud del campo de trigo"
+				Tooltip: Controla la anchura del campo de trigo del espantapájaros
+			}
+
+			ButterflyCountMax: {
+				DisplayName: "[i:SpiritReforged/ButterflyStaff] Máximo de Santuarios de Mariposas"
+				Tooltip: El número máximo de santuarios de mariposas que pueden generarse. Es posible que no se generen todos.
+			}
+
+			HeroChance: {
+				DisplayName: "[i:SpiritReforged/HerosMemorialStatueItem] Probabilidad de el memorial del héroe"
+				Tooltip: El denominador (1/x) de la probabilidad de generar el memorial del héroe.
+			}
+
+			MaxStargrassCount: {
+				DisplayName: "[i:SpiritReforged/StarPowder] Conteo de parches (Césped de estrellas)"
+				Tooltip: El número máximo de parches de césped de estrellas que pueden generarse. Es posible que no se generen todos, o que se superpongan.
+			}
+
+			ReforgedCaveWeight: {
+				DisplayName: "[i:30] Peso de cuevas personalizadas"
+				Tooltip: El peso para que una cueva personalizada de Reforged aparezca en lugar de una cueva 'montaña' vanilla.
+			}
+		}
+	}
+
+	Ocean: {
+		Name: Océano
+		Description: Controla aspectos específicos del Océano renovado de Reforged.
+
+		Presets: {
+			KelpForest: {
+				Name: "[i:SpiritReforged/Kelp] Bosque de algas"
+				Tooltip: ¡Puedes ver los campos de algas desde la orilla!
+			}
+
+			Volcanic: {
+				Name: "[i:SpiritReforged/GravelItem] Volcánico"
+				Tooltip: Un océano escarpado y magmático con apenas flora.
+			}
+		}
+
+		Members: {
+			WaterChestCount: {
+				DisplayName: "[i:1298] Máximo de cofres de agua"
+				Tooltip: El número máximo de cofres de agua que pueden generarse en el océano. Es posible que no se generen todos.
+			}
+
+			SunkenTreasureCount: {
+				DisplayName: "[i:SpiritReforged/SunkenTreasure] Máximo de tesoros hundidos"
+				Tooltip: El número máximo de tesoros hundidos que pueden generarse en el océano. Es posible que no se generen todos.
+			}
+
+			SandDepth: {
+				DisplayName: "[i:169] Profundidad de la arena"
+				Tooltip: Qué tan profundo llega la arena bajo el océano.
+			}
+
+			SandRange: {
+				DisplayName: "[i:169] Rango de la arena"
+				Tooltip: El límite superior en el océano para el rango aleatorio de profundidad de la arena.
+			}
+
+			CoralLowChance: {
+				DisplayName: "[i:275] Probabilidad de coral (Bajo)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar coral en los niveles inferiores del océano.
+			}
+
+			CoralHighChance: {
+				DisplayName: "[i:275] Probabilidad de coral (Alto)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar coral en los niveles superiores del océano.
+			}
+
+			DecorLowChance: {
+				DisplayName: "[i:4090] Probabilidad de decoración (Bajo)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar decoración en los niveles inferiores del océano.
+			}
+
+			DecorHighChance: {
+				DisplayName: "[i:4090] Probabilidad de decoración (Alto)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar decoración en los niveles superiores del océano.
+			}
+
+			KelpChance: {
+				DisplayName: "[i:SpiritReforged/Kelp] Probabilidad de alga"
+				Tooltip: El denominador (1/x) de la probabilidad de generar algas en el océano.
+			}
+
+			KelpMaxHeight: {
+				DisplayName: "[i:SpiritReforged/Kelp] Altura de las algas"
+				Tooltip: La altura máxima en bloques para generar algas.
+			}
+
+			GravelMultiplier: {
+				DisplayName: "[i:SpiritReforged/GravelItem] Multiplicador de tamaño (Grava)"
+				Tooltip: El modificador en el tamaño de los parches de grava oceánica (incluye la piedra magmática).
+			}
+
+			Shape: {
+				DisplayName: "[i:4460] Forma del océano"
+				Tooltip: La forma que toma el océano
+			}
+		}
+	}
+
+	Pots: {
+		Name: Vasijas
+		Description: Controla las tasas y probabilidades de generación de las nuevas vasijas de Reforged.
+
+		Members: {
+			WorldMultiplierMultiplier: {
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] Multiplicador total"
+				Tooltip: Multiplicador global de la tasa de generación de vasijas en el mundo.
+			}
+
+			RollingPotChance: {
+				DisplayName: "[i:SpiritReforged/RollingPotsItem] Probabilidad de roca vasija"
+				Tooltip: El denominador (1/x) de la probabilidad de reemplazar una roca con una roca vasija.
+			}
+
+			OrnateScale: {
+				DisplayName: "[i:SpiritReforged/OrnatePotsItem] Escala de vasija ornamentada"
+				Tooltip: Multiplicador de intentos para generar vasijas ornamentadas en el mundo.
+			}
+
+			PotionScale: {
+				DisplayName: "[i:SpiritReforged/PotionVatsCloningItem] Escala de depósito de poción"
+				Tooltip: Multiplicador de intentos para generar depósitos de poción en el mundo.
+			}
+
+			ScryingScale: {
+				DisplayName: "[i:SpiritReforged/ScryingPotItem] Escala de vasija vidente"
+				Tooltip: Multiplicador de intentos para generar vasijas videntes en el mundo.
+			}
+
+			StuffedScale: {
+				DisplayName: "[i:SpiritReforged/StuffedPotsItem] Escala de vasija desbordada"
+				Tooltip: Multiplicador de intentos para generar vasijas desbordadas en el mundo.
+			}
+
+			WormScale: {
+				DisplayName: "[i:SpiritReforged/WormPotItem] Escala de vasija gusano"
+				Tooltip: Multiplicador de intentos para generar vasijas gusano en el mundo.
+			}
+
+			PlatterScale: {
+				DisplayName: "[i:SpiritReforged/SilverPlattersItem] Escala de bandeja de plata"
+				Tooltip: Multiplicador de intentos para generar bandejas de plata en el mundo.
+			}
+
+			AetherScale: {
+				DisplayName: "[i:SpiritReforged/AetherShipmentItem] Escala de carga de éter"
+				Tooltip: Multiplicador de intentos para generar cargas de éter en el mundo.
+			}
+
+			UpsideDownScale: {
+				DisplayName: "[i:SpiritReforged/UpsideDownPotItem] Escala de vasija de cabeza"
+				Tooltip: Multiplicador de intentos para generar vasijas de cabeza en el mundo.
+			}
+
+			BoulderScale: {
+				DisplayName: "[i:SpiritReforged/RollingPotsItem] Escala de roca vasija"
+				Tooltip: Multiplicador de intentos para generar rocas de vasija en el mundo.
+			}
+
+			PicnicScale: {
+				DisplayName: "[i:SpiritReforged/WickerBasketsItem] Escala de cesta de mimbre"
+				Tooltip: Multiplicador de intentos para generar cestas de mimbre en el mundo.
+			}
+
+			StackScale: {
+				DisplayName: "[i:SpiritReforged/PotsCavernItem] Escala de vasijas apiladas"
+				Tooltip: Multiplicador de intentos para generar vasijas apiladas en el mundo.
+			}
+
+			UncommonScale: {
+				DisplayName: "[i:SpiritReforged/BiomePotsGraniteItem] Escala de vasijas poco comunes"
+				Tooltip: Multiplicador de intentos para generar vasijas poco comunes en el mundo.
+			}
+
+			ZenithScale: {
+				DisplayName: "[i:SpiritReforged/ZenithPotsItem] Escala de vasija cénit"
+				Tooltip: Multiplicador de intentos para generar vasijas cénit en el mundo.
+			}
+
+			WaxScale: {
+				DisplayName: "[i:SpiritReforged/WaxPotItem] Escala de vasija de cera"
+				Tooltip: Multiplicador de intentos para generar vasijas de cera en el mundo.
+			}
+		}
+
+		Presets: {
+			Tasty: {
+				Name: "[i:4029] Sabroso"
+				Tooltip: Alguien ha dejado una cantidad francamente absurda de comida tirada por ahí. ¿Quién hizo todo esto?
+			}
+
+			Occult: {
+				Name: "[i:SpiritReforged/ScryingPotItem] Oculto"
+				Tooltip: Los fracasados experimentos de incontables magos y hechiceros cubren las cavernas.
+			}
+		}
+	}
+
+	Caves: {
+		Name: Cuevas
+		Description: Controla las adiciones misceláneas de las Cuevas.
+
+		Members: {
+			SignChance: {
+				DisplayName: "[i:171] Probabilidad de letrero (Casas)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar un letrero en las casas del subterráneo.
+			}
+
+			MannequinChance: {
+				DisplayName: "[i:498] Probabilidad de maniquí (Casas)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar un maniquí en las casas del subterráneo.
+			}
+
+			LoomChance: {
+				DisplayName: "[i:332] Probabilidad de telar (Casas)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar una "casa de telar" — lo que añade estandartes y un telar.
+			}
+
+			RareSignChance: {
+				DisplayName: "[i:3617] Tasa de letrero poco común (Casas)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar un letrero subterráneo que contenga un mensaje poco común.
+			}
+
+			CartSpawnRate: {
+				DisplayName: "[i:13] Tasa de vagoneta (Decoración)"
+				Tooltip: El multiplicador de la cantidad máxima de vagonetas con mineral que se generan en el mundo.
+			}
+
+			BoomshroomRate: {
+				DisplayName: "[i:SpiritReforged/BoomShroom] Tasa de champibomba (Decoración)"
+				Tooltip: El multiplicador de la cantidad máxima de champibombas que se generan en el mundo.
+			}
+
+			CovesSpawnRate: {
+				DisplayName: "[i:SpiritReforged/KoiTotem] Tasa de estanques"
+				Tooltip:
+					'''
+					El multiplicador de la cantidad máxima de estanques de pesca que se generan en un mundo.
+					Esto puede causar problemas con otros mods que generen estructuras.
+					'''
+			}
+
+			NeonMossChance: {
+				DisplayName: "[i:SpiritReforged/FlaskRadon] Probabilidad de musgo personalizado (Musgo de neón)"
+				Tooltip: El denominador (x/6) de la probabilidad de generar musgo brillante personalizado de Reforged en lugar de uno vanilla.
+			}
+
+			StatueCountModifier: {
+				DisplayName: "[i:SpiritReforged/WheezerStatueItem] Máximo de estatuas"
+				Tooltip: El número máximo de estatuas de Reforged que se generan en el mundo.
+			}
+
+			StructuresMax: {
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] Multiplicador (Alfarería)"
+				Tooltip: El multiplicador de la cantidad de estructuras de alfarería que se generan en el mundo.
+			}
+
+			StructureScale: {
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] Tamaño (Alfarería)"
+				Tooltip: El tamaño aplicado a las estructuras de alfarería.
+			}
+
+			PotSpam: {
+				DisplayName: "[i:SpiritReforged/PotteryWheelItem] Escala de alfarería (Alfarería)"
+				Tooltip: Multiplicador de intentos para generar estructuras de alfarería en el mundo.
+			}
+
+			EnchantedWorkbenchChance: {
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] Probabilidad de prensa de cera (Casas)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar una prensa de cera en las casas del subterráneo.
+			}
+
+			DisplayCaseChance: {
+				DisplayName: "[i:SpiritReforged/DisplayCaseItem] Probabilidad de vitrina (Casas)"
+				Tooltip: El denominador (1/x) de la probabilidad de generar una vitrina de cera en las casas del subterráneo.
+			}
+
+			MirrorRate: {
+				DisplayName: "[i:SpiritReforged/EnchantedMirrorItem] Probabilidad de espejo del vinculo eterno (Decoración)"
+				Tooltip: El multiplicador de la cantidad de espejos del vinculo eterno que se generan en el mundo.
+			}
+		}
+
+		Presets: {
+			Inhabited: {
+				Name: "[i:498] Habitado"
+				Tooltip: Hay señales de amigables exploradores por todo el Subterráneo... ¿qué les pasó?
+			}
+
+			Empty: {
+				Name: "[i:1176] Vacío"
+				Tooltip: ¿Hay alguien ahí afuera?
+			}
+		}
+	}
+
+	Ziggurat: {
+		Name: Zigurat
+		Description: Controla aspectos del Zigurat y su contenido.
+
+		Members: {
+			UsedWidth: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Ancho"
+				Tooltip:
+					'''
+					El ancho usado para determinar el tamaño del Zigurat, no necesariamente el ancho real.
+					Valores más altos que los predeterminados obligarán al Zigurat a generarse sobre una pirámide, ya que de otro modo podría no generarse en lo absoluto.
+					'''
+			}
+
+			UsedHeight: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Alto"
+				Tooltip:
+					'''
+					La altura usada para determinar el tamaño del Zigurat, no necesariamente el alto real.
+					Valores más altos que los predeterminados obligarán al Zigurat a generarse sobre una pirámide, ya que de otro modo podría no generarse en lo absoluto.
+					'''
+			}
+
+			MaxInfections: {
+				DisplayName: "[i:SpiritReforged/PaleHiveItem] Máximo de infecciones"
+				Tooltip: El numero máximo de infecciones (nidos) por piso del Zigurat. Varía de 0 hasta el valor establecido.
+			}
+
+			PotChance: {
+				DisplayName: "[i:SpiritReforged/BronzePotsItem] Probabilidad de vasija de bronce"
+				Tooltip: La probabilidad de generar vasijas en el Zigurat.
+			}
+
+			LapisPotChance: {
+				DisplayName: "[i:SpiritReforged/LapisPotsItem] Probabilidad de vasija de lapislázuli"
+				Tooltip: La probabilidad de generar vasijas de lapislázuli en el Zigurat.
+			}
+
+			UncommonChance: {
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] Probabilidad de vasija poco común"
+				Tooltip: La probabilidad de generar vasijas poco comunes en el Zigurat.
+			}
+
+			MaxSpikeStripWidth: {
+				DisplayName: "[i:SpiritReforged/NeedleTrapItem] Ancho máximo de franja de pinchos"
+				Tooltip: El máximo ancho de las franjas de pinchos en el Zigurat.
+			}
+
+			SpikeStripChance: {
+				DisplayName: "[i:SpiritReforged/NeedleTrapItem] Probabilidad de franja de pinchos"
+				Tooltip: La probabilidad de generar franjas de pinchos en salas no especiales en el Zigurat.
+			}
+
+			SpecialRoomChance: {
+				DisplayName: "[i:SpiritReforged/CarvedLapisWallItem] Probabilidad de salas especiales"
+				Tooltip:
+					'''
+					La probabilidad de generar una sala del Zigurat como una sala especial; es decir, cualquiera de estas:
+					Sala de biblioteca, sala de almacenamiento, sala de entierro
+					'''
+			}
+
+			SkipRoomChance: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneBrickCrackedWallItem] Probabilidad de omitir sala"
+				Tooltip: La probabilidad de omitir una sala del Zigurat en lugar de construirla.
+			}
+
+			ChestNormalization: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] Normalización de cofres"
+				Tooltip:
+					'''
+					El factor con el cual se normaliza el conjunto de botín de los cofres.
+					Cuanto mayor sea este valor, serán más “uniformes” las probabilidades de obtener cualquier objeto.
+					'''
+			}
+
+			DresserNormalization: {
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] Normalización de aparador"
+				Tooltip:
+					'''
+					El factor con el cual se normaliza el conjunto de botín de los aparadores.
+					Cuanto mayor sea este valor, serán más “uniformes” las probabilidades de obtener cualquier objeto.
+					'''
+			}
+
+			AncientBannerChance: {
+				DisplayName: "[i:SpiritReforged/AncientBannerItem] Probabilidad de estandarte ancestral"
+				Tooltip: La probabilidad de generar estandartes ancestrales en el Zigurat.
+			}
+
+			BannerChance: {
+				DisplayName: "[i:340] Probabilidad de estandarte"
+				Tooltip: La probabilidad de generar estandartes en el Zigurat.
+			}
+
+			CenserChance: {
+				DisplayName: "[i:SpiritReforged/CenserItem] Probabilidad de incensario"
+				Tooltip: La probabilidad de generar incensarios en el Zigurat.
+			}
+
+			TabletChance: {
+				DisplayName: "[i:SpiritReforged/ScarabTabletOneItem] Probabilidad de tablilla ancestral"
+				Tooltip: La probabilidad de generar tablillas ancestrales en salas que no son del tesoro.
+			}
+
+			FloorDivotChance: {
+				DisplayName: "[i:SpiritReforged/CrackedSandstoneItem] Probabilidad de hendidura en el piso"
+				Tooltip: La probabilidad de que ocurra una hendidura en el piso (efecto de desgaste aleatorio).
+			}
+
+			SandSplatChance: {
+				DisplayName: "[i:169] Probabilidad de mancha de arena"
+				Tooltip: La probabilidad de que ocurra una “mancha de arena” (efecto de desgaste aleatorio).
+			}
+
+			PillarChance: {
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] Probabilidad de viga"
+				Tooltip: La probabilidad de generar vigas en el Zigurat.
+			}
+
+			LightChance: {
+				DisplayName: "[i:SpiritReforged/SunDropper] Probabilidad de luz"
+				Tooltip: La probabilidad de generar un rayo de luz en el Zigurat.
+			}
+
+			ChestItemRange: {
+				DisplayName: "[i:SpiritReforged/LapisChestItem] Cantidad de botín en los cofres"
+				Tooltip: Determina el rango para la cantidad de objetos en un cofre. Tres objetos están garantizados por cofre.
+			}
+
+			DresserItemRange: {
+				DisplayName: "[i:SpiritReforged/LapisDresserItem] Cantidad de botín en los aparadores"
+				Tooltip: Determina el rango para la cantidad de objetos en un aparador.
+			}
+
+			DebrisMinimum: {
+				DisplayName: "[i:3271] Mínimo de escombros (Ruinas)"
+				Tooltip: El numero mínimo de escombros aleatorios que pueden generarse en el Zigurat.
+			}
+
+			DebrisRange: {
+				DisplayName: "[i:3271] Rango de escombros (Ruinas)"
+				Tooltip: El rango de escombros aleatorios que pueden generarse en el Zigurat.
+			}
+
+			TopPlatChance: {
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem] Probabilidad de plataforma superior (Ruinas)"
+				Tooltip: La probabilidad de generar plataformas en la parte superior de una estructura.
+			}
+
+			BottomPlatChance: {
+				DisplayName: "[i:SpiritReforged/BronzePlatformItem] Probabilidad de plataforma inferior (Ruinas)"
+				Tooltip: La probabilidad de generar plataformas en la parte inferior de una estructura.
+			}
+
+			FlagpoleChance: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] Probabilidad de mástil de bandera (Ruinas)"
+				Tooltip: La probabilidad de generar mástiles de bandera en el Zigurat.
+			}
+
+			FlagpoleCountMinimum: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] Conteo mínimo de mástil de bandera (Ruinas)"
+				Tooltip: El número mínimo de mástiles de bandera que pueden generarse en el Zigurat.
+			}
+
+			FlagpoleCountRange: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] Rango de mástil de bandera (Ruinas)"
+				Tooltip: El rango de generación de mástiles de bandera en el Zigurat.
+			}
+
+			FlagpoleHeightMin: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] Altura de mástil de bandera (Ruinas)"
+				Tooltip: La altura mínima de generación de mástiles de banderas en el Zigurat.
+			}
+
+			FlagpoleHeightRange: {
+				DisplayName: "[i:SpiritReforged/FlagRingItem] Rango de mástil de bandera (Ruinas)"
+				Tooltip: El rango de altura de los mástiles de bandera que pueden generarse en el Zigurat.
+			}
+
+			PotMultiplier: {
+				DisplayName: "[i:SpiritReforged/PotsDesertItem] Multiplicador de vasijas (Ruinas)"
+				Tooltip: El multiplicador de la cantidad de vasijas que pueden generarse en el Zigurat.
+			}
+
+			ChestChance: {
+				DisplayName: "[i:4267] Probabilidad de cofre (Ruinas)"
+				Tooltip: La probabilidad de generar cofres en el Zigurat.
+			}
+
+			UncommonPotChance: {
+				DisplayName: "[i:SpiritReforged/BiomePotsDesertItem] Probabilidad de vasija poco común (Ruinas)"
+				Tooltip: La probabilidad de generar vasijas poco comunes en el Zigurat.
+			}
+
+			AbovegroundPillarChance: {
+				DisplayName: "[i:SpiritReforged/RuinedSandstonePillarItem] Probabilidad de viga por encima del suelo (Ruinas)"
+				Tooltip: La probabilidad de generar vigas adicionales en el Zigurat.
+			}
+		}
+
+		Presets: {
+			Plagued: {
+				Name: "[i:SpiritReforged/PaleHiveItem] Plagado"
+				Tooltip: Este Zigurat ha visto días mejores. Las partes que no han sido enterradas por la arena están infestadas de escarabajos.
+			}
+
+			Opulent: {
+				Name: "[i:SpiritReforged/LapisPotsItem] Opulento"
+				Tooltip: Quienquiera que haya construido este Zigurat no escatimó gastos.
+			}
+
+			Perilous: {
+				Name: "[i:SpiritReforged/NeedleTrapItem] Riesgo-recompensa"
+				Tooltip: Más botín, pero más trampas. Una perspectiva tentadora.
+			}
+		}
+	}
+
+	Desert: {
+		Name: Desierto
+		Description: Controla varios aspectos de la generación del Desierto de Reforged.
+
+		Members: {
+			PalmChanceLow: {
+				DisplayName: "[i:2504] Probabilidad de palmera (Baja) (Oasis)"
+				Tooltip: La probabilidad de generar una palmera después de que al menos una haya sido generada.
+			}
+
+			PalmChanceHigh: {
+				DisplayName: "[i:2504] Probabilidad de palmera (Alta) (Oasis)"
+				Tooltip: La probabilidad de generar una palmera antes de que al menos una haya sido generada.
+			}
+
+			CattailChance: {
+				DisplayName: "[i:2996] Probabilidad de junco (Oasis)"
+				Tooltip: La probabilidad de generar juncos en el oasis.
+			}
+
+			OasisPlantChance: {
+				DisplayName: "[i:SpiritReforged/PineappleSeeds] Probabilidad de planta de oasis (Oasis)"
+				Tooltip: La probabilidad de generar plantas en el oasis.
+			}
+
+			GlowflowerChance: {
+				DisplayName: "[i:4045] Probabilidad de cempasúchil (Oasis)"
+				Tooltip: La probabilidad de generar cempasúchil en el oasis.
+			}
+
+			PineappleChance: {
+				DisplayName: "[i:4294] Probabilidad de piña (Oasis)"
+				Tooltip: La probabilidad de generar piñas en el oasis.
+			}
+
+			SeaOatsChance: {
+				DisplayName: "[i:SpiritReforged/WheatgrassSeedPouch] Probabilidad de avena de mar (Oasis)"
+				Tooltip: La probabilidad de generar avena de mar. La avena de mar son plantas de grano con aspecto de hierba que crecen cerca del océano o en los oasis.
+			}
+
+			PoolWidth: {
+				DisplayName: "[i:206] Ancho de la laguna (Oasis)"
+				Tooltip: El rango del ancho de la laguna de un oasis subterráneo (en bloques).
+			}
+
+			PoolDepth: {
+				DisplayName: "[i:206] Profundidad de la laguna (Oasis)"
+				Tooltip: El rango de profundidad de la laguna de un oasis subterráneo (en bloques)..
+			}
+
+			MainNormalization: {
+				DisplayName: "[i:1298] Normalización general (Oasis)"
+				Tooltip:
+					'''
+					El factor con el cual se normaliza el conjunto de botín de objetos en general.
+					Cuanto mayor sea este valor, serán más "uniformes" las probabilidades de obtener cualquier objeto.
+					'''
+			}
+
+			ItemNormalization: {
+				DisplayName: "[i:1298] Otra normalización (Oasis)"
+				Tooltip:
+					'''
+					El factor con el cual se normaliza el conjunto de botín de objetos que no son principales.
+					Cuanto mayor sea este valor, serán más "uniformes" las probabilidades de obtener cualquier objeto.
+					'''
+			}
+
+			FossilCount: {
+				DisplayName: "[i:SpiritReforged/PolishedAmberItem] Conteo de depósitos (Ámbar)"
+				Tooltip: El número máximo de vetas de ámbar en el desierto subterráneo.
+			}
+
+			FossilMultiplier: {
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Multiplicador del mundo (Ámbar)"
+				Tooltip: El multiplicador aplicado al número de vetas de ámbar según el tamaño del mundo.
+			}
+
+			PatchScale: {
+				DisplayName: "[i:SpiritReforged/AmberFossilSafeItem] Tamaño del deposito (Ámbar)"
+				Tooltip: El tamaño aplicado a una veta de ámbar.
+			}
+
+			RuinCount: {
+				DisplayName: "[i:SpiritReforged/GildedRedSandstoneItem] Rango de generación (Ruinas)"
+				Tooltip: El rango del número de ruinas del desierto subterráneo que se generan por Oasis.
+			}
+
+			LightRange: {
+				DisplayName: "[i:SpiritReforged/SunDropper] Conteo de rayos de luz (Oasis)"
+				Tooltip: El mínimo y el rango aleatorio adicional para la cantidad de rayos de luz en un oasis subterráneo.
+			}
+
+			ChestItemRange: {
+				DisplayName: "[i:1298] Rango de objetos en cofre del oasis (Oasis)"
+				Tooltip: El rango del número de objetos que pueden generarse en un cofre del oasis subterráneo.
+			}
+
+			RuinSegments: {
+				DisplayName: "[i:SpiritReforged/RedSandstoneSlabItem] Rango de segmentos de las ruinas (Ruinas)"
+				Tooltip: El rango del número de segmentos puede tener una ruina subterránea.
+			}
+		}
+
+		Presets: {
+			Overgrown: {
+				Name: "[i:2996] Vegetación"
+				Tooltip: Los oasis de este desierto son salvajes y están cubiertos de vegetación. ¿Cómo prosperan?.
+			}
+
+			Petrified: {
+				Name: "[i:154] Petrificado"
+				Tooltip: Las arenas albergan eones de ecosistemas fosilizados. ¿Podrás encontrarlos todos?.
+			}
+
+			Ruined: {
+				Name: "[i:SpiritReforged/RedSandstoneSlabItem] Ruinoso"
+				Tooltip: Una civilización antigua y olvidada prosperó bajo el desierto alguna vez. Sus ruinas permanecen.
+			}
+		}
+	}
+}
+
+Enums: {
+	OceanShape: {
+		Default: {
+			DisplayName: Vanilla
+			Tooltip: La generación predeterminada del océano de Vanilla. Esto desactiva la mayoría de los cambios de Reforged.
+		}
+
+		SlantedSine: {
+			DisplayName: Seno inclinado
+			Tooltip: Una forma modificada del océano que se define por una onda seno inclinada.
+		}
+
+		Piecewise: {
+			DisplayName: Por tramos
+			Tooltip: La forma del océano se define por una función más compleja hecha por tramos.
+		}
+
+		Piecewise_M: {
+			DisplayName: Por tramos (M)
+			Tooltip: Una versión modificada de la función por tramos con pendientes ligeramente diferentes.
+		}
+
+		Piecewise_V: {
+			DisplayName: Reforjada
+			Tooltip: La versión finalizada del preajuste por tramos con varias modificaciones menores.
+		}
+	}
+}

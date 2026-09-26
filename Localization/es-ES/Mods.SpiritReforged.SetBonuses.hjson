@@ -1,0 +1,40 @@
+Cascade:
+	'''
+	Infligir daño a los enemigos acumula un escudo de burbuja
+	Al alcanzar su tamaño máximo, otorga una gran resistencia al daño contra el siguiente ataque,
+	dañando y derribando a los enemigos cercanos.
+	'''
+Driftwood:
+	'''
+	Permite flotar en el agua
+	Aumenta la capacidad de pesca
+	'''
+Drywood: Aumenta la velocidad de movimiento al desplazarse sobre cualquier superficie
+Botanist:
+	'''
+	Aumenta la recolección de plantas de alquimia y diversas hierbas
+	Tienes buen ojo para detectar hierbas
+	'''
+Marksman:
+	'''
+	Acumula concentración
+	Al concentrarte, tu siguiente ataque es crítico y causa más daño
+	La concentración se interrumpe al recibir daño, pero se carga más rápido al permanecer quieto
+	'''
+Wayfarer:
+	'''
+	Los enemigos dejan caer más oro
+	Aumenta la velocidad de movimiento temporalmente al romper vasijas
+	Aumenta la velocidad de excavación al minar oro
+	'''
+Granite:
+	'''
+	Toca dos veces {0} para dar un pisotón
+	Al golpear el suelo libera una onda de choque que escala con la altura recorrida
+	'''
+Sundancer:
+	'''
+	La luz difracta tu imagen y te sigue con medio segundo de retraso
+	Al gastar 30 de maná, tu próximo ataque mágico cuesta 0 maná y es duplicado por tu difracción 
+	'''
+Bedouin: Toca dos veces una dirección para lanzarte envuelto en un torbellino, esquivando ataques

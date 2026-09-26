@@ -1,0 +1,69 @@
+Discoveries: Añadiendo descubrimientos
+Stargrass: Cultivando césped estelar
+HerosMemorial: Recordando a un héroe
+Butterfly: Ocultando santuarios de mariposas
+FishingCoves: Añadiendo zonas de pesca
+PopulateOcean: Poblando el océano
+Gravel: Colocando grava
+SavannaTerrain: Creando mesetas
+SavannaObjects: Poblando la sabana
+SaltFlats: Añadiendo sal
+Ecotones: Mapeando ecotonos
+Caves: Decorando cuevas
+DesertExtras: Ocultando secretos en las arenas
+NeonMosses: Musgo brillante
+Pottery: Escondiendo vasijas
+Scarecrow: Asustando aves
+
+Mapping: {
+	Exit: Presiona la tecla Escape para salir del mapeo temprano (si esta pausado)
+	Tilde: Mantén presionada la tecla Tilde (~) para ocultar la superposición
+	Help:
+		'''
+		Los ecotonos se mapean varias veces a lo largo de la superficie del mundo
+		Tienen tres "definiciones" asociadas: borde izquierdo, actual y borde derecho
+		Esto sería algo como Bosque < Desierto < Bosque
+		    El borde izquierdo es un bosque
+		    El bioma actual es un desierto
+		    El borde derecho es un bosque
+		Su rectángulo rojo representa los límites de sus mínimos y máximos
+		El rectángulo azul representa el tamaño de inicio a fin, es decir, el inicio y el final de la superficie mapeada
+		El tamaño mostrado arriba del ecotono es el tamaño del rectángulo rojo, junto con la altura del azul
+		'''
+	Toggle: Haz clic en {0} para la selección manual de ecotono durante la generación del mundo
+	Enable: habilitar
+	Disable: deshabilitar
+	Select: Haz clic en las áreas para forzar que {0} aparezca allí
+	Continue: Haz clic en este texto para continuar
+	OrEscape: (o presiona la tecla Escape)
+	Step: Mapeando {0}
+	Invalid: ({0} - no es valido)
+}
+
+Signs: {
+	Underground: {
+		Common: {
+			0: <wavy>Las vasijas guardan el secreto...
+			1: <wavy>El texto está demasiado desvanecido para leerse...
+			2: <colorful:255,80,80>El letrero está cubierto de garabatos ininteligibles con un líquido de dudosa procedencia.
+			3: <wavy>......Las mercancías de er.
+			4: <wavy>El viejo letrero casi se ha vuelto polvo.
+			5: <wavy>Un esqueleto dibujado de forma tosca haciendo señas.
+			6: <wavy>Si estás leyendo esto, ya estoy muerto.
+			7: Si estás leyendo esto, estoy de maravilla.
+			8: <wavy>Beware: Gusanos
+			9: El letrero divaga sobre algo que no logras comprender. No vale la pena seguir leyendo.
+			10: Hay una letra enana garabateada por todo el letrero. No puedes leer nada de ella.
+		}
+
+		Rare: {
+			0: <wavy>Recoge mis páginas...
+			1: Parece que no hay bolas de viscosidad por aquí. —Quien pinta los letreros
+			2:
+				'''
+				<wavy>0
+				días desde el incidente en la cueva
+				'''
+		}
+	}
+}

@@ -1,0 +1,783 @@
+VanillaDialogue: {
+	Guide: {
+		WorldNPC: Podrías encontrarte con otros exploradores mientras recorres el mundo. Si lo haces, ¡quizás puedan ayudarse mutuamente!
+		Ecotone: Si el clima es adecuado, la región entre el Desierto y la Jungla puede albergar una vasta Sabana. ¡Siempre he querido verla!
+		Savanna: El cuero de los animales que habitan aquí podría fabricarte un muy buen equipo, chico.
+		Kelp: No comas el alga marina.
+	}
+
+	ArmsDealer.Savanna: Hay un montón de animales grandes por aquí. Incluso alguien como tú podría derribarlos.
+
+	Stylist: {
+		Savanna: Es ridículo lo difícil que es mantener mi peinado en este clima.
+		Duststorm: Si tengo que sacar la arena del cabello de una persona más, te juro que...
+	}
+
+	TravellingMerchant: {
+		Cartographer1: A menudo me encuentro con una cartógrafa medio zafada en mis viajes. Lo juro, ¡es mi archienemiga!
+		Cartographer2: ¡Ah, es {0}! El mes pasado me dio indicaciones antes de caer en un foso.
+		Discoveries: A veces me tropiezo con cosas curiosas y raras en mis viajes. Tal vez tú también puedas encontrarlas si tienes buen ojo.
+	}
+
+	Demolitionist.HasBoomshroom: ¿Que tienes qué? ¿Un hongo que hace las explosiones más grandes? ¡Me encanta la madre naturaleza!
+
+	Nurse: {
+		Duststorm: ¡No te ensucies con todo ese polvo de allá afuera! Eso está por debajo de lo que me pagas.
+		Savanna: ¡No, no soy veterinaria! Ahora saca a esos animales de aquí.
+	}
+
+	PartyGirl: {
+		Duststorm: Awwh, no es clima para una fiesta. ¡Quizás podamos hacer una reunión tranquila en su lugar!
+		Savanna: ¡Todo este espacio abierto es perfecto para una fiesta! Ooh, ¡quizás una reunión divertida!
+	}
+
+	Golfer: {
+		Duststorm: ¡Es culpa de todo este polvo que estoy jugando por debajo de mi nivel!
+		Savanna: ¡Todo aquí es un peligro! Mis pelotas se quedan atascadas en los arbustos, en la arena... ¡y hasta en los árboles!
+	}
+
+	Zoologist: {
+		Savanna1: ¡Por dios, este lugar es, perfecto! ¡Tienes que ver todos los lindos animalitos que hay aquí!
+		Savanna2: ¡¿Qué?! ¿Esas hienas te mordieron? ¡Pero si son totalmente adorables!
+	}
+
+	Angler: {
+		Pager0: ...¿Qué estás intentando hacer? ¡No puedes darme mi pescado a través del walkie talkie tonto!
+		Pager1: Recuerda traerme el pez EN PERSONA.
+	}
+
+	Wizard.SaltFlats: ¡Las rocas de esta zona serían perfectas para una bola de cristal!
+	Painter.SaltFlats: ¡Nunca habia visto un paisaje tan hermoso! Podría pintar aquí por el resto de mi vida.
+	Cyborg.SaltFlats: Eso... eso quema.
+	Mechanic.SaltFlats: ¡Ugh! ¡Toda esta sal está corroyendo mi equipo! ¡Sácame de aquí!
+	Truffle.SaltFlats: Este lugar es profundamente incómodo para los de mi especie. Me siento tan seco...
+}
+
+Crinoid: {
+	DisplayName: Crinoideo
+	Entry: ¡Estas curiosas criaturas están estrechamente relacionadas con las estrellas de mar! Se alimentan de todo lo que se hunde hasta el fondo del mar.
+}
+
+Pelican: {
+	DisplayName: Pelicano
+	Entry: Un ave marina grande con un pico especial para sostener a su presa. Asustarla podría hacer que el ave suelte lo que atrapó, pero eso sería cruel.
+}
+
+TinyCrab: {
+	DisplayName: Cangrejo pálido
+	Entry: ¡Estas adorables criaturitas no son tan hostiles como sus parientes más grandes! Vivir en aguas más profundas ha hecho que pierdan coloración, ya que tienen menos exposición a la luz solar.
+}
+
+Tubeworm: {
+	DisplayName: Poliqueto tubícola
+	Entry: En lo profundo de las mareas relucientes, donde la luz casi no llega, viven criaturas fascinantes, capaces de alimentarse del humo que emanan los respiraderos hidrotermales.
+}
+
+SandPiper: {
+	DisplayName: Correlimo
+	Entry: Un ave pequeña y valiente que patrulla las costas en busca de alimento descubierto por las olas.
+}
+
+Gar: {
+	DisplayName: Esturión
+	Entry: Los pejelagartos son cazadores astutos que normalmente habitan cuerpos de agua dulce. Siempre hay que estar alerta al nadar cerca de uno ya que pueden atacar desde el costado, el frente o incluso por detrás.
+}
+
+GoldGar: {
+	DisplayName: Esturíón dorado
+	Entry: Sólo un monstruo abriría un raro esturión dorado para obtener su suculento caviar. Sólo un monstruo...
+}
+
+OceanSlime: {
+	DisplayName: Slime coco
+	Entry: ¡Cuidado con la cabeza! Estos astutos slimes habitan en la costa, camuflándose de manera discreta como esta fruta familiar.
+}
+
+DiverZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: ¿Quién hubiera imaginado que esos tanques de oxígeno necesitaban tener oxígeno dentro?
+}
+
+KelpZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Los peces me temen, las mujeres me temen, los hombres me temen, los niños me temen, porque soy el no-muerto.
+}
+
+SailorZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: A pesar de su estado actual, solían dirigir un lujoso crucero realmente agradable que deberías visitar algúna vez.
+}
+
+TridentZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Su tridente claramente no les sirvió de mucho en vida. Todavía es bastante puntiagudo, así que cuidado.
+}
+
+Killifish: {
+	DisplayName: Killi
+	Entry: Fieles a su nombre, los killi son conocidos por su rasgo definitorio: Ser asesinados. Sus hermosas escamas iridiscentes también están ahí.
+}
+
+GoldKillifish: {
+	DisplayName: Killi dorado
+	Entry: Las brillantes escamas doradas no alivian las desgracias de los killis.
+}
+
+Termite: {
+	DisplayName: Termita
+	Entry: Estos pequeños insectos se agrupan para construir enormes nidos con túneles complejos. Han adquirido un gusto especial por la madera seca y crujiente de la sabana.
+}
+
+SavannaSandSlime: {
+	DisplayName: "{$NPCName.SandSlime}"
+	Entry: Un poco más frondoso, un poco menos arenoso, pero con el mismo peligro.
+}
+
+PeevedTumbler: {
+	DisplayName: Rodapaja molesto
+	Entry: La vida no es fácil en la sabana... pero tampoco es tan mala. Oye, tú también te molestarías si tuvieras arena en los ojos.
+}
+
+Sparrow: {
+	Entry: Al igual que su primo del bosque, el mundialmente famoso pájaro, los gorriones son sencillos. Vuelan recogiendo termitas y disfrutando del aire de la sabana.
+	DisplayName: Gorrión
+}
+
+SafariZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Por el lado positivo, si ya eres un no-muerto, las serpientes no significan una amenaza.
+}
+
+TumbleZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Bajo la fachada de no-muerto, bajo toda esa sangre, ramas y bilis, yace una conmovedora historia de un rodapaja y un zombi que se hicieron amigos en las circunstancias más improbables.
+}
+
+Hyena: {
+	DisplayName: Hiena
+	Entry: De naturaleza traviesa, las hienas cazan en manada, apuntando a la fauna más débil. Sin embargo, frente a los terrarianos prefieren huir antes que enfrentarse.
+}
+
+Ostrich: {
+	DisplayName: Avestruz
+	Entry: A pesar de no poder volar, el avestruz disfruta de velocidades terrestres sorprendentemente rápidas. Por suerte, rebuscan gusanos en lugar de perseguirte a ti.
+}
+
+ButterflyCritter: {
+	DisplayName: Mariposa etérea
+	Entry: Quizás, si miras al cielo nocturno, también las encuentres entre las estrellas. Revolotean en una danza tan efímera como sus cuerpos.
+}
+
+SavannaJungleSlime: {
+	DisplayName: Slime de la jungla
+	Entry: Se ha tragado un par de flores. ¡Casi demasiado adorable para matarlo...!
+}
+
+Cartographer: {
+	DisplayName: Cartógrafa
+	Buttons.Map: Mapa
+
+	Names: {
+		0: Soleana
+		1: Kira
+		2: Jessica
+		3: '''"Torpe"'''
+		4: Wynn
+		5: Nessa
+	}
+
+	Dialogue: {
+		0: El trabajo de cartografía es duro. A veces pierdes tu en un lugar y... espera.
+		1: ¿Tendrás de casualidad algún buen papel resistente? Yo ya me quede sin nada.
+		2: Diablos... dejar caer una tachuela al suelo nunca es buena idea. Especialmente los cafés.
+		3: Oye, ¿tienes un mapa? ¿Te importa si le echo un vistazo? ¡Más vale que esté bien cuidado!
+		4: Encontrar el camino una vez es suerte. Encontrarlo dos veces requiere de un buen mapa.
+
+		Map: {
+			FloatingIsland: {
+				0: Veamos... ¡estaba justo aquí! Una pequeña y adorable isla flotante que encontré. ¿Que cómo llegué allá arriba? Bueno, digamos que las arpías pueden llevarte MUCHO más lejos de lo que esperarías.
+				1: Échale un vistazo aquí. ¡muuuy arriba! Hace un tiempo me metí en algunos problemas ¡y terminé en el cielo!. Creo haber visto un tesoro, pero estaba demasiado preocupada pensando en como bajar.
+				2: ¡Mira este lugar! Hace unas semanas encontré una isla en el cielo; era genial, pero los vecinos eran molestos. ¡Espero que encuentres algo que yo no pude!
+			}
+
+			EnchantedSword: {
+				0: ¡Habia encontrado algo... aquí! Estaba en un túnel estrecho; ¿lo creerías? Una espada en una piedra, justo como dicen las leyendas. Pero me acobardé y me alejé del lugar... no soy digna.
+				1: ¡Ajá! Este era el lugar. Parece poco llamativo, pero hay una espada imponente escondida bajo tierra. La habría tomado, pero mis bolsillos completamente llenos de hongos raros y papel cartográfico.
+				2: ¡Aquí estamos! No sé cómo llegó allí, pero encontré una espada incrustada en una piedra. Como en esa leyenda... ¿era el rey arturo? Mira yo no me meto con armas extrañas; quizá eso sea más lo tuyo.
+			}
+
+			Shimmer: {
+				0:
+					'''
+					¿Dónde estaba... ¡ahí está! Estaba caminando por una cueva oscura y peligrosa. ¿Y qué veo en el horizonte? Un brillante resplandor rosado y reluciente. Realmente hermoso.
+					¿Sabes lo que eso significa en la naturaleza? Mantente alejado. Así que lo hice.
+					'''
+				1:
+					'''
+					Um... creo que fue por aquí. Tropecé y me golpeé la cabeza cuando volvía del océano. Cuando desperté, unas pequeñas criaturas feéricas me habían llevado a este lugar extraño e inusual.
+					No recuerdo mucho después de eso, pero empecé a entrar en pánico. Esas criaturas brillantes me sacaron inmediatamente.
+					'''
+				2:
+					'''
+					Aquí está. ¿Alguna vez has visto agua? Imagina eso, pero brillando como el cielo nocturno. Un púrpura de otro mundo.
+					No te recomiendo beberlo, hace que tu cuerpo se sienta falso. No sé cómo explicarlo. Confía en mí en esta.
+					'''
+			}
+
+			Savanna: {
+				0:
+					'''
+					Y listo, tachuela colocada. Estaba en lo de siempre: dando mi paseo matutino y golpeando árboles con furia para conseguir manzanas. Después de golpear un par de árboles...
+					Levanto la mirada. De alguna manera, una pradera entera se me apareció de repente. Volví a golpear árboles después del momento de sorpresa.
+					'''
+				1:
+					'''
+					Mira por aquí. ¿Alguna vez has caminado recto mirando fijamente el suelo? No deberías. Pero hace un rato, cuando lo hice, vi cómo la hierba pasaba lentamente de un verde vibrante y bonito a un verde enfermizo.
+					Miro hacia arriba; la hierba más larga que he visto. También increíblemente gruesa. ¿Qué hice entonces? Bueno... me alejé. Es demasiado trabajo intentar caminar por allí.
+					'''
+				2:
+					'''
+					Resulta que hace un tiempo estaba viendo qué tan rápido podía correr para escapar de los murciélagos de la jungla, ¿necesario verdad? Y entonces ¡boom!, justo aquí en el mapa, el aire se volvió muy polvoriento. Una sabana se extendía frente a mí. ¡caray que vista!
+					Y para que conste, descubrí que puedo correr MUY rápido cuando lo necesito.
+					'''
+			}
+
+			Hive: {
+				0: La tachuela va... aquí. Entre nos, no recomiendo nada ese lugar de la jungla. Es DURO. Pero cuando ves uno de esos grandes panales, hay miel cerca. Y esa es una delicia que vale muchas picaduras.
+				1: ¡Ahí lo tienes! Eh... seré sincera. A veces encuentras oro líquido y AÚN ASÍ no vale la pena invertir en ello. Con esas desagradables avispas... mantenlo como excursión, no como negocio.
+				2: Si miras justo... aquí, encontrarás algo que puede interesarte. Lo mantendré simple, las picaduras duelen; prepárate.
+			}
+
+			Curiosity: {
+				0:
+					'''
+					Ahí estas. Sabes, deambulo mucho. Contemplando el paisaje, pensando en voz alta... bueno, nada de eso importa cuando la tierra besa mi cara al tropezarme.
+					Me tropecé con algo por aquí, pero no podría decirte qué era. Estaba demasiado enojada para mirar.
+					'''
+				1:
+					'''
+					Creo que fue... ¿aquí? Esta por esta zona. Te topas con muchas cosas interesantes cuando exploras tanto como yo. A veces, ves algo que vale la pena revisar.
+					Si fuera tú, me daría prisa en llegar. ¡Quién sabe, alguien más rondando por ahí podría encontrarlo antes que tú!.
+					'''
+				2:
+					'''
+					Dale un vistazo a esta zona. Soy cartógrafa ¿no?, Yo mapeo. Y a veces le pierdo la pista a mis tachuelas... bueno, clavé esta en el mapa y olvidé por completo por qué lo hice.
+					Veras, después de atravesar todo el camino hasta allá y regresar de nuevo todo ese camino de vuelta, lo olvidé otra vez. Puedes quedártelo tú en su lugar, quizá solo soy olvidadiza pero no quiero ningún cachivache maldito.
+					'''
+			}
+
+			ButterflyShrine: {
+				0:
+					'''
+					Mira este lugar; justo aquí. Era una noche fría y escalofriante, una fuerte brisa lanzó mis mapas de mi mochila.
+					Me agaché para recuperar mi preciado trabajo, cuando lo vi. Un pequeño agujero del tamaño de un alfiler en el suelo, ¡y brillaba de color púrpura! No creo que vaya a meterme con eso, pero tú pareces expresar valentía y gusto por las aventuras.
+					'''
+				1:
+					'''
+					Justo aquí, en este punto del mapa. No sé cómo decirlo, pero ¿alguna vez te han aparecido esas pequeñas motitas flotantes en el ojo? Esas lucecitas que no puedes explicar.
+					No te rías, pero juro que he visto pequeñas mariposas rosas rondando este lugar. ¡Pero no son reales! Intenté atraparlas, pero están hechas de luz, no puedo explicarlo.
+					'''
+				2: Este es el lugar, en esta tachuela es donde ocurrió. Me he tropezado con algunos agujeros en mi vida, pero nunca había visto uno que brillara de color púrpura. Eso es un asunto de magia extraña en el que no quiero involucrarme, así que seguí caminando.
+			}
+
+			WulfrumBunker: {
+				0: Esperemos que aquí este correcto. Mientras caminaba como suelo hacerlo, detrás de un grupo de árboles vi aquel extraño y verde sitio mecánico. La parte superior estaba llena de cosas y se escuchaba que provenia desde abajo un zumbido mecánico... no gracias.
+				1: Aquí fue donde estaba mi campamento, justo aquí. Estaba descansando tras un largo día de caminata, cuando apareció ese pequeño tipo mecánico con una gran mano y ¡ME ROBO mi bolsa! Menos mal habia descansado un poco, porque ese pequeñín me tuvo corriendo un buen rato.
+				2: Ahí está, imposible olvidarlo después de todo. No se suele encontrar industria por aquí, lo cual me viene bien. No me agrada todo ese ruido, especialmente cuando una vez apareció un campo de energía y la chatarra empezó a volar hacia mí.
+			}
+
+			BloodAltar: {
+				0: Y... ¡ahí está! Trazar la superficie es solo eso, la superficie. Encuentro muchas cosas extrañas bajo tierra, y de muchas me mantengo bien alejada... ¿Qué esperabas? Soy cartógrafa, no aventurera.
+				1: ¡Debería de ser aquí! Pareces ser capaz. Encontré a un sujeto no-muerto que, sorprendentemente, escuchaba a la razón, lo cual ya era bastante extraño, pero me vendió esta... mano. Seguí la dirección a la que apuntaba y terminé en una cripta inquietante... Tal vez tú puedas sacar algo de todo esto, porque yo no pienso volver allí.
+				2: ¿Listo para un desafío? Yo no, eso es algo seguro. Hay una mazmorra con una sala que apesta a sangre... Y con ese extraño altar en el centro, así es, no me quedé mucho tiempo.
+			}
+
+			SaltFlat: {
+				0: ¡No puedo olvidarlo! Justo ahí, fue la primera vez que vi un espejo hacia el cielo. Estaba mirando hacia abajo, como suelo hacer, y ¡BAM! ¡Nubes! Al principio me preocupé, pero solo era una fina capa de agua... probablemente. Asegúrate de que sea un lugar seguro para que yo no tenga que hacerlo.
+				1: ¡Justo ahí! ¿Alguna vez te has deslizado por las laderas en esas zonas nevadas? Con todo ese hielo y demás. ¿No? Bueno, digamos que es mucho más difícil saber qué ocurre frente a ti cuando lo haces. Intencionalmente, claro. Este lugar se ve increíble, lo recomendaría una vez que te sacudas la nieve.
+				2: Por lo general, una caída torpe me lleva a un descubrimiento. Esta vez fui diligente. Poco después de entrar en pánico por un suelo sorprendentemente húmedo, apareció la vista ante mí. Era impresionante. Mientras mantengas tus mapas en la cadera, tendrás un tiempo maravilloso.
+			}
+
+			Ziggurat: {
+				0: Hmm... aquí. Ya lo he dicho antes: soy cartógrafa. Yo dibujo mapas. Así que cuando veo una gran e imponente pared de ladrillo rojo agrietado y desmoronado, soy increíblemente hábil para determinar si es algo con lo que debería meterme. Escuché un zumbido ahí dentro. No hace falta decirlo, es todo tuyo.
+				1: ¡Lo tengo! El desierto lo hace fácil de recordar. No hay mucho que rememorar ahí, así que ¿ver humo salir del suelo sin explicación? interesante. Miras hacia abajo y ves la fachada de una estructura enorme... inolvidable. Adelante, es toda tuya. Yo no iba a arriesgarme con lava ni nada parecido.
+				2: Aquí estás. Es parte de mi trabajo encontrar alguna que otra ruina. No pasa nada, tenemos un protocolo por una razón. Pero vaya, entrar y casi ser atravesada por el suelo... un recordatorio amable de que, a veces, soy una excelente corredora.
+			}
+
+			FirstPin: He agregado esta tachuela a tu “Colección de tachuelas”. Puedes acceder a ella en cualquier momento desde la esquina inferior izquierda de tu mapa.
+		}
+	}
+
+	Entry: Una mezcla peculiar de exploradora apasionada y torpeza abismal, la Cartógrafa va a lugares que... bueno, casi nadie ha explorado. A veces se trata de estar a salvo, no de ser novedoso.
+}
+
+Hiker: {
+	DisplayName: Senderista
+
+	Buttons: {
+		Feed: Alimentar
+		Supplies: Suministros
+		Silver: 20 de plata
+	}
+
+	Dialogue: {
+		Hungry: {
+			Asking: {
+				0: Que tal extraño. ¿Te importaría compartir algún almuerzo? Si puedes regalarme un {0}, entonces quizá tenga algo agradable para ti también.
+				1: ¿Alguna vez sales de casa y ENTONCES justo después, te das cuenta de que tienes hambre? Ojalá no me pasara... ¿podrías darme un {0}?
+				2: Una larga caminata cuesta arriba realmente pide mucho. Estoy tan acabado que podría ir a buscar algo de {0}... ¿Ayudarías a un compañero?
+				3: Me acabé mi última barra de proteína hace ya cuarenta y cinco minutos, estoy en mi fin del sendero. ¿Podrías darme uno de tus {0}?
+			}
+
+			Thanks: {
+				0: Gracias amigo. Siempre puedo contar con extraños generosos. ¡Toma algunos suministros, de un extraño a otro!
+				1: Bajaja, ¡Esa delicia sí que dio en el clavo! Un buen bocadillo siempre me pone generoso, aquí tienes algunos suministros, la casa invita.
+				2: Oye, un millón de gracias. Toma amigo, aquí tienes un paquete gratis.
+				3: Nada mejor como una comida después de una larga caminata. Los precios no entran en esta conversación amigo, toma un paquete. ¡Es gratis!
+			}
+		}
+
+		Idle: {
+			0: Nada como el senderismo dentro de las cuevas... hasta que terminas cubierto de telarañas desagradables. Eso sí que arruina el ánimo.
+			1: Una vieja amiga solía recoger raíz intermitente para explorar en lugar de usar antorchas. “Más seguro”, decía. Una tipa medio rara. Me pregunto qué habrá sido de ella.
+			2: ¿Has usado tachuelas? Son realmente útiles. Una vieja amiga las llevaba consigo a todas partes... la última vez que la vi estaba “buscando la manera de subir a esas islas flotantes”. Trabajo difícil, ¿eh?
+			3: A veces me cruzo con un hada y me guía hacia oro o platino. Siempre actúo emocionado, pero no tengo un pico. Espero que aprecien mi intención.
+			4: Siempre sueles llevar suministros extra si eres inteligente... pero demonios, mi espalda está hecha polvo, traje más de lo que podría cargar durante horas. Comerciaré contigo, solo si tienes unas monedas estorbando en tu bolsillo ¡bajaja!
+		}
+
+		Purchase: {
+			0: Hey, ¡eso es una carga menos para mi espalda! Siempre preferiré tener los bolsillos llenos pagando el precio de una espalda dañada sin importar el día.
+			1: Bajaja, ¡Muy agradecido amigo! La gente siempre me pregunta: “¿Dónde demonios guardas todas esas cosas?” ¡yo no te pregunto por tus asuntos!
+			2: ¡Buena presentación, extraño! Nada crea una conexión tan fuerte como un buen trueque.
+			3: ¡Disfruta el espacio extra! He oído que si metes un montón de estatuas de ángel —sí, estatuas enteras— en tu mochila, ocurre algo extraordinario.
+			4: ¡Gracias por el trueque! Me detendría a oler las flores, pero hay plantas bastante locas allá afuera. ¡Ten cuidado!
+		}
+
+		FailPurchase: {
+			0: Lo siento, pero necesitarás mostrar un poco más de monedas antes de que pueda llamar a esto un trueque. A menos que tengas algo de comida extra estancada en tus bolsillos ¡bajaja!
+			1: Mis suministros se quedan conmigo. Vuelve cuando consigas más monedas. Valdrá la pena tu tiempo... ¡y me ahorrará cargar peso!
+			2: No se puede, compañero. No estoy aquí para regatear. Solo vine demasiado preparado, eso es todo. Aunque ando un poco corto de bocadillos.
+		}
+	}
+
+	Name: {
+		0: Gary
+		1: Shawn
+		2: Geo
+		3: Geoff
+		4: Rocky
+		5: Porter
+	}
+
+	Entry: Jovial, relajado y engañosamente fuerte; el senderista conoce casi cualquier lugar. ¿La Jungla? Pan comido. ¿Los desiertos? ¿La Tundra subterránea? Sin ponerse las botas. ¿El espacio? No se sabe como... pero de alguna manera llegará allí tarde o temprano para seguir su hobbie.
+}
+
+HideZombieBig: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Las hienas tienen que esconderse de los zombis escondidos o verán sus escondites escandalizados.
+}
+
+HideZombieSmall: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Su atuendo está totalmente a la moda en el catalogo de los no-muertos
+}
+
+PotterySlime: {
+	DisplayName: Slime alfarero
+
+	Names: {
+		0: Sable
+		1: Saki
+		2: Sal
+		3: Santra
+		4: Sark
+		5: Sassafrass
+		6: Satya
+		7: Sawyl
+		8: Seppo
+		9: Shammy
+		10: Shard
+		11: Shio
+		12: Silas
+		13: Silica
+		14: Silty
+		15: Sleet
+		16: Sloan
+		17: Snap
+		18: Soggy
+		19: Soda
+		20: Sonya
+		21: Sparta
+		22: Splet
+		23: Spot
+		24: Stratton
+		25: Sullivan
+		26: Swain
+	}
+
+	Chatter: {
+		0: ¿Wubba dooble doo?
+		1: Plip plop. Blorp.
+		2: Wawa.
+	}
+
+	Entry: Créelo o no, este slime es reconocido mundialmente en el arte de la cerámica. ¡Estás en presencia de un maestro contemporáneo!
+	Census.SpawnCondition: Rompe vasijas poco comunes [i:SpiritReforged/BiomePotsCavernItem] en el subterráneo.
+}
+
+StompableGnome.DisplayName: Gnomo pisoteable
+
+DunceCrab: {
+	DisplayName: Cangrejo zopenco
+	Entry: Una de las causas más comunes de accidentes en la aventura, este molusco cavernícola suele ser toda una sorpresa. Se alimenta de musgos y líquenes que se encuentran a menudo en las cuevas.
+}
+
+Wheezer: {
+	DisplayName: Resollador
+	Entry: Un resollador es un pariente extremadamente tóxico de la salamandra, conocido por su comportamiento agresivo. Curiosamente, su comida favorita es una planta de acebo en brote, lo cual contradice sus tendencias carnívoras.
+}
+
+WorldFrog: {
+	DisplayName: Rana de aspecto servicial
+	Button: Actualizar mundo
+
+	Sounds: {
+		0: Croak
+		1: Ribbit
+	}
+
+	Dialogue: {
+		0: Si deseas cosas nuevas para explorar, tengo una oferta para ti, ¡he de implorar!
+		1: ¿Buscas cosa nueva? ¡Entre mis manos, una oferta tú comprueba!
+		2: Mis magia trucada preciente que falta algo en el ambiente; ¡y no debes ser indiferente!
+	}
+
+	Reports: {
+		CavesAndClubs_0: Hocus pocuste - no estés tan triste, ¡rellene tus cuevas con vasijas que incluso ya conociste!
+		CavesAndClubs_1: Abra karadaba - las vasijas de nuevo aseguraba; ¡tu exploración nuevamente comenzaba!
+		Spellbound_0: ¡Nuevas mesas de encantamientos por vincular; estas herramientas de conocimientos en tu mundo por encontrar!
+		Spellbound_1: ¡Ahora de espejos puedes disfrutar, esperando, nuevas aventuras por debutar!
+	}
+}
+
+MossSlime: {
+	DisplayName: Slime de musgo
+	Entry: Un curioso grupo de slime cubiertos de musgo, por alguna razón. Vienen en muchas variedades, aunque sólo de musgos brillantes... ¿la razón? Quién sabe. ¿Quizá sean una fuente de luz gratuita?.
+}
+
+KryptonMossSlime.DisplayName: Slime de musgo de criptón
+LavaMossSlime.DisplayName: Slime de musgo de lava
+NeonMossSlime.DisplayName: Slime de musgo de neón
+XenonMossSlime.DisplayName: Slime de musgo de xenón
+ArgonMossSlime.DisplayName: Slime de musgo de argón
+HeliumMossSlime.DisplayName: Slime de musgo de helio
+OganessonMossSlime.DisplayName: Slime de musgo de oganesón
+RadonMossSlime.DisplayName: Slime de musgo de radón
+Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
+
+Flamingo: {
+	DisplayName: Flamenco
+	Entry: Reuniéndose en grandes grupos, filtran el agua en busca de los organismos microscópicos que componen su dieta.
+}
+
+DivingBeetle: {
+	DisplayName: Escarabajo buceador
+	Entry: Atrapa aire bajo su caparazón y nada a través del agua usando patas traseras agrandadas. A veces los peces se sienten atraídos por ellas.
+}
+
+GoldDivingBeetle: {
+	DisplayName: Escarabajo buceador dorado
+	Entry: "{$CommonBestiaryFlavor.GoldBaitCritter}"
+}
+
+Jerboa: {
+	DisplayName: Jerbo
+	Entry: Este velocista saltarín disfruta de los climas áridos, donde puede correr a toda velocidad sobre las arenas planas del desierto y comer insectos en la hierba de la sabana.
+}
+
+Grub: {
+	DisplayName: Larva de escarabajo
+	Entry: Los escarabajos están impulsados a proteger su territorio desde el momento en que nacen. ¡Este pequeño mordedor de tobillos podría crecer y volverse bastante temible!
+}
+
+DesertStactus: {
+	DisplayName: Cacturio
+	Entry: Los cacturios son en realidad criaturas muy dóciles, pero tienen dificultades para hacer amigos debido a su disposición espinosa.
+}
+
+CorruptStactus: {
+	DisplayName: Cacturio corrompido
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+CrimsonStactus: {
+	DisplayName: Cacturio carmesí
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+HallowedStactus: {
+	DisplayName: Cacturio sagrado
+	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+}
+
+BrineShrimp: {
+	DisplayName: Camarón de salmuera
+	Entry: A pesar de ser conocidos coloquialmente como “Monos de Mar”, ni viven en el mar ni se parecen en nada a los monos.
+}
+
+GoldenBrineShrimp: {
+	DisplayName: Camarón de salmuera dorado
+	Entry: Dorado y raro, se dice que el camarón de salmuera Dorado convierte en oro al flamenco más afortunado. La veracidad de esto aún está por verse.
+}
+
+Wisp: {
+	DisplayName: Destello etéreo
+	Entry: Energías curiosas que flotan pasivamente por las llanuras, a menos que sean provocadas. Los destellos etéreos son conocidos por desvanecerse al más mínimo indicio del amanecer.
+}
+
+DecrepitMummy: {
+	DisplayName: Momia decrepita
+	Entry: Inducidas a la vida por la presencia de un intruso, estas momias se levantan de sus tumbas para proteger sus dominios.
+}
+
+Graverobber: {
+	DisplayName: Saqueador de sepulcros
+	Entry: Su desgracia es ser golpeados como una piñata y para que el oro llueva. Es casi tan seductor como los propios objetos de valor...
+	HoldingLantern: Al sostener una linterna
+}
+
+LootBag.DisplayName: Saco de botín
+
+Scarabeus: {
+	DisplayName: Escarabeus
+	Title: Ídolo crestado
+	Entry: Con su porte regio y su tono iridiscente, este escarabajo gigante fue alguna vez venerado por los antiguos habitantes del Zigurat. Permanece hasta el día de hoy esperando un nuevo tributo.
+	SpawnInfo: Usa cualquier gema en el [i:SpiritReforged/ScarabAltarItem] altar ancestral en el Zigurat durante el dia.
+}
+
+TinyGrub: {
+	DisplayName: Larva diminuta
+	Entry: Casi tan lleno de potencial como de repulsión.
+}
+
+CactusZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: De todas las formas de morir, hacerlo por un cactus debe ser una de las peores. Volver a la no‑muerte por un cactus también debe ser bastante malo.
+}
+
+SunburntZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Ahora detestando el sol, este zombi deambula por la noche para evitar más daños en su putrefacta piel.
+}
+
+VeiledZombie: {
+	DisplayName: "{$NPCName.Zombie}"
+	Entry: Vestirse para soportar el calor es solo una parte de sobrevivir al desierto. Llevar comida y agua es un paso que no debe pasarse por alto
+}
+
+Cricket: {
+	DisplayName: Grillo
+	Entry: Por la noche, estas pequeñas criaturas pueden aparecer entre diversas hierbas. Son en gran parte responsables del sonido nocturno.
+}
+
+GoldCricket: {
+	DisplayName: Grillo dorado
+	Entry: Los habitantes del pueblo dicen que ver un grillo dorado trae buena suerte. Algunos afirman que esto se debe a que se venden bien, y otros dicen que no... ciertamente no.
+}
+
+BeetleTownPet: {
+	DisplayName: Escarabajo
+	Entry: Aunque no son buenos para acurrucarse juntos, su torpe comportamiento los hace bastante entrañables.
+	Chitter0: *Chirrido feliz*
+	Chitter1: *Sonidos de insecto*
+	Chitter2: *Sonidos de escarabajo*
+
+	Names: {
+		RoyalScarab0: Azure
+		RoyalScarab1: Berry
+		RoyalScarab2: Bluey
+		RoyalScarab3: Crowno
+		RoyalScarab4: Khepri
+		RoyalScarab5: Lapis
+		RoyalScarab6: Lumi
+		RoyalScarab7: Minibeus
+		RoyalScarab8: Prince
+		RoyalScarab9: Queenie
+		RoyalScarab10: Escarabajo
+		RoyalScarab11: Sadie
+		RoyalScarab12: Sapphire
+		RoyalScarab13: Skippy
+		RoyalScarab14: Sunny
+		RoyalScarab15: Scab
+		DungBeetle0: Asbestos
+		DungBeetle1: Bit
+		DungBeetle2: Brick
+		DungBeetle3: Bola de cañón
+		DungBeetle4: Clay
+		DungBeetle5: Dave
+		DungBeetle6: Dirt
+		DungBeetle7: Greg
+		DungBeetle8: Gruñon
+		DungBeetle9: Hercules
+		DungBeetle10: Jeff
+		DungBeetle11: Licorice
+		DungBeetle12: Guijarros
+		DungBeetle13: Petey
+		DungBeetle14: Soot
+		DungBeetle15: Cuchara
+		JewelBeetle0: Aubrey
+		JewelBeetle1: Bea
+		JewelBeetle2: Bonbon
+		JewelBeetle3: Caramelo
+		JewelBeetle4: Glinty
+		JewelBeetle5: Goldilocks
+		JewelBeetle6: Hummus
+		JewelBeetle7: Kylie
+		JewelBeetle8: Mallow
+		JewelBeetle9: Mina
+		JewelBeetle10: Obol
+		JewelBeetle11: Saoirse
+		JewelBeetle12: Sheila
+		JewelBeetle13: Taffy
+		JewelBeetle14: Topacio
+		JewelBeetle15: Zahrah
+		Weevil0: Archibaldo
+		Weevil1: Botas
+		Weevil2: Charlamagne
+		Weevil3: Dinky
+		Weevil4: Duchess
+		Weevil5: Eleanor
+		Weevil6: Humberto
+		Weevil7: Ickabod
+		Weevil8: Jebediah
+		Weevil9: Johnson
+		Weevil10: Knievel
+		Weevil11: Lorenzo
+		Weevil12: Lorde escudero hueversón III
+		Weevil13: Poky
+		Weevil14: Mocoso
+		Weevil15: Winnifred
+		Maybug0: Abril
+		Maybug1: Charlotte
+		Maybug2: Clover
+		Maybug3: Dew
+		Maybug4: Dizzy
+		Maybug5: Fuzzy
+		Maybug6: Gigi
+		Maybug7: Acebo
+		Maybug8: Juniper
+		Maybug9: Mandy
+		Maybug10: Maya
+		Maybug11: Minky
+		Maybug12: Paprika
+		Maybug13: Pífano
+		Maybug14: Palomita
+		Maybug16: Velvet
+		Ladybug0: Basil
+		Ladybug1: Chacha
+		Ladybug2: Canela
+		Ladybug3: Dainty
+		Ladybug4: Dandy
+		Ladybug5: Diva
+		Ladybug6: Lady
+		Ladybug7: Encantador
+		Ladybug8: Missy
+		Ladybug9: Tachuela
+		Ladybug10: Polka
+		Ladybug11: Rosa
+		Ladybug12: Scarlet
+		Ladybug13: Manchas
+		Ladybug14: Titania
+		Ladybug15: Tulip
+	}
+
+	Census.SpawnCondition: Usa una licencia de escarabajo [i:SpiritReforged/BeetleLicense], soltada por Escarabeus.
+}
+
+Enchanter: {
+	DisplayName: Encantador
+	Entry: Perpetuamente cansado pero bondadoso de corazón, el encantador se ocupa de diversos conjuros y magias. Si creés que algunas armas o herramientas necesitan un poco más de chispa, ¡solo pídeselo!
+
+	Names: {
+		0: Albion
+		1: Bertilak
+		2: Eango
+		3: Enki
+		4: Gil
+		5: Heka
+		6: Ilmarinen
+		7: Itani
+		8: Kokabiel
+		9: Mallyck
+		10: Mazdak
+		11: Morrigan
+		12: Myrrdin
+		13: Oeti
+		14: Ose
+		15: Sulyvahn
+		16: Tethra
+		17: Themisto
+		18: Vorv
+		19: Ywain
+	}
+
+	TownNPCMood: {
+		Content: Me tomo un momento y siento... que todo está bien.
+		NoHome: ¿No tendrás por casualidad un lugar para que descansen mis fatigados huesos?
+		FarFromHome: Estoy bastante lejos de mi espacio de trabajo y de mi cama. ¿Podemos volver a casa pronto?
+		LoveSpace: Este pueblo es muy pintoresco. Suficientes personas para tener una buena charla, pero no tantas como para que resulte abrumador.
+		DislikeCrowded: Es muy difícil concentrarme para hechizar con todo este alboroto.
+		HateCrowded: Hay demasiadas personas viviendo aquí. No he tenido un buen descanso en días.
+		LoveNPC: ¡El chocolate caliente de {NPCName} es brujería pura! Ah, y sus trucos de salón, ¡son encantadores!
+		LikeNPC: No tengo idea de que clase de magia usa {NPCName} para iluminar el cielo de esa manera, pero se ve espectacular. Lástima que por el ruido, tuve dolor de cabeza durante tres días...
+		DislikeNPC: ¡La idea de 'mejorar' tu equipo de {NPCName} es una barbarie! ¡¿Cómo se supone que golpearlo con un martillo va a ayudar en algo?!
+		HateNPC: Juro que si {NPCName} cuenta una historia más sobre masacrar kobolds durante el té de la tarde, ¡lo convertiré en una oveja!
+		LikeBiome: Aquí, sobre de las nubes, me siento mucho más en sintonía con los flujos de la magia. ¡Sin mencionar la vista claro!
+		DislikeBiome: La cera que producen las abejas es de tan alta calidad... pero, ¡auch!, ¿por qué tienen que picarme? Estoy cubierto de ronchas de pies a cabeza.
+		LikeNPC_Princess: "{NPCName} es una niña muy dulce, pero apenas puedo seguirle el ritmo. ¿Cómo puede un cuerpo tan pequeño contener tanta energía?"
+		Princess_LovesNPC: ¡La magia de {NPCName} es distinta a cualquier otra que haya visto! ¿Cuál será su fuente?
+	}
+
+	Dialogue: {
+		Idle: {
+			0: Detente a oler las rosas de vez en cuando. ¡Descansar es bueno para ti!
+			1: Es fácil perder la noción del tiempo cuando tienes metido el hocico en un buen tomo.
+			2: ¿Has venido a aprender sobre las maravillosas propiedades de la cera?
+			3: ¿Quieres una taza de té? Tengo negro, verde, de hierbas, manzanilla, frutos rojos, cítricos...
+			4: ¡Saludos! ¿Qué puedo encantar para ti hoy?
+		}
+
+		IdleNight: {
+			0: ¡La luna está en uno de sus puntos altos, y mis velas arden más brillantes que nunca!
+			1: Las luciérnagas salpican el cielo como pequeñas llamas danzantes. La magia existe en todas partes, solo hace falta mirar correctamente.
+			2: Ya es muy tarde en la noche, es mi segunda hora de dormir. Te ruego que lo hagas rápido.
+		}
+
+		BloodMoon: {
+			0: No puedo dormir en una noche como esta. Cuando cierro los ojos, todo lo que veo es rojo.
+			1: Mis velas arden en un tono carmesí macabro. Algo maligno se cierne esta noche.
+		}
+
+		Rain: {
+			0: No hay nada como el sonido de la lluvia golpeando suavemente las ventanas.
+			1: ¡No pienso volver a salir! Apenas logré que mi sombrero se secara la última vez.
+		}
+
+		Graveyard: {
+			0: Normalmente me gusta el silencio, pero el aire está completamente inmóvil. Es inquietante.
+			1: No puedo quitarme la sensación de que algo me observa.
+		}
+
+		Thunderstorm: ¡Es el momento perfecto para acurrucarse junto a la chimenea y compartir historias espeluznantes!
+		Eclipse: ¿Cómo se supone que sepa cuándo preparar el té de la tarde si no es ni de día ni de noche?
+		Party: Sus festividades humanas son fascinantes, aunque un poco... ruidosas para mi gusto. Puede que tenga que retirarme pronto.
+		Goblin: Puedes pegar sellos en muchas cosas, pero {0} sigue pidiéndome que encante sus diversos inventos. Eso normalmente no termina muy bien...
+		Golfer: "{0} siempre me invita a jugar golf con los demás, pero termino quedándome dormido... No tengo el corazón para rechazar sus invitaciones."
+		Stylist: Dejé que {0} me convenciera de que me encerara las escamas, y no estoy seguro de cuál es el atractivo. ¡Brillo como un pez recién pescado!
+		WitchDoctor: "{0} desprende un aura tan misteriosa... me gustaría conocerlo un poco más. ¿Podrías, quizás, presentarnos?"
+	}
+
+	Census.SpawnCondition: Sostén cera cromática o cualquier objeto encantado [i:SpiritReforged/ChromaticWax] ó derrota a cualquier jefe
+}
+
+SealedKnight.DisplayName: Caballero Sellado
