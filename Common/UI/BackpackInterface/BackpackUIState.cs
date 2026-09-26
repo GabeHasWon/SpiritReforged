@@ -1,14 +1,46 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.System;
+using System.IO;
 using Terraria.GameContent.UI.Elements;
+using Terraria.ModLoader.UI;
 using Terraria.UI;
 
 namespace SpiritReforged.Common.UI.BackpackInterface;
 
 internal class BackpackUIState : AutoUIState
 {
+	internal class BackpackPickupPacket(bool enabled, short player = -1) : PacketData
+	{
+		readonly bool Enabled = enabled;
+		readonly short Player = player;
+
+		public BackpackPickupPacket() : this(false, -1)
+		{
+		}
+
+		public override void OnSend(ModPacket modPacket)
+		{
+			if (Player != -1)
+				modPacket.Write((byte)Player);
+
+			modPacket.Write(Enabled);
+		}
+
+		public override void OnReceive(BinaryReader reader, int whoAmI)
+		{
+			int player = Main.dedServ ? whoAmI : reader.ReadByte();
+			bool enabled = reader.ReadBoolean();
+
+			if (Main.dedServ)
+				new BackpackPickupPacket(enabled, (short)whoAmI).Send();
+
+			Main.player[player].GetModPlayer<BackpackPlayer>().packPickup = enabled;
+		}
+	}
+
 	internal static bool HasPotionSlotMod { get; private set; }
 
 	private BackpackUISlot _functionalSlot;
@@ -36,26 +68,33 @@ internal class BackpackUIState : AutoUIState
 		_dyeSlot.Left = new StyleDimension(_vanitySlot.Left.Pixels - 48, 1);
 		Append(_dyeSlot);
 
+		SetVariablePositions();
+
+		On_Main.DrawInventory += TryOpenUI;
+	}
+
+	private void MakePickupIcon(Vector2 position)
+	{
+		_pickupToggle?.Remove();
+
 		_pickupToggle = new UIImageFramed(ModContent.Request<Texture2D>("SpiritReforged/Common/UI/BackpackInterface/BackpackPickupIcon"), new(0, 0, 20, 24))
 		{
 			Width = StyleDimension.FromPixels(20),
 			Height = StyleDimension.FromPixels(24),
-			Top = new StyleDimension(UIHelper.GetMapHeight() + 174, 0),
-			Left = new StyleDimension(-310, 1)
+			Left = new StyleDimension((int)position.X, 0),
+			Top = new StyleDimension((int)position.Y, 0),
 		};
 
 		_pickupToggle.OnUpdate += _ =>
 		{
-			if (Main.EquipPage != 2)
-			{
-				_pickupToggle.SetFrame(new Rectangle(0, 0, 1, 1));
-				return;
-			}
-
 			bool hover = _pickupToggle.ContainsPoint(Main.MouseScreen);
 
 			if (hover)
+			{
 				Main.LocalPlayer.mouseInterface = true;
+				Main.LocalPlayer.cursorItemIconEnabled = false;
+				Main.LocalPlayer.cursorItemIconID = -1;
+			}
 
 			Rectangle frame = new(Main.LocalPlayer.GetModPlayer<BackpackPlayer>().packPickup ? 0 : 22, hover ? 26 : 0, 20, 24);
 			_pickupToggle.SetFrame(frame);
@@ -63,18 +102,14 @@ internal class BackpackUIState : AutoUIState
 
 		_pickupToggle.OnLeftClick += (_, _) =>
 		{
-			if (Main.EquipPage != 2)
-				return;
-
 			ref bool pickup = ref Main.LocalPlayer.GetModPlayer<BackpackPlayer>().packPickup;
 			pickup = !pickup;
+
+			if (Main.netMode == NetmodeID.MultiplayerClient)
+				new BackpackPickupPacket(pickup).Send();
 		};
 
 		Append(_pickupToggle);
-
-		SetVariablePositions();
-
-		On_Main.DrawInventory += TryOpenUI;
 	}
 
 	private static void TryOpenUI(On_Main.orig_DrawInventory orig, Main self)
@@ -124,8 +159,6 @@ internal class BackpackUIState : AutoUIState
 	{
 		var baseY = new StyleDimension(UIHelper.GetMapHeight() + 174, 0);
 		_functionalSlot.Top = _vanitySlot.Top = _dyeSlot.Top = baseY;
-		_pickupToggle.Top = new StyleDimension(UIHelper.GetMapHeight() + 184, 0);
-		_pickupToggle.Left = new StyleDimension(-310, 1);
 	}
 
 	/// <summary> Adds or removes backpack slots with items according to the currently equipped backpack.<para/>
@@ -180,9 +213,14 @@ internal class BackpackUIState : AutoUIState
 			var backpack = mPlayer.backpack.ModItem as BackpackItem;
 			var items = backpack.Items;
 
-			for (int i = 0; i < items.Length; ++i) //Add backpack storage slots
+			for (int i = 0; i < items.Length + 1; ++i) //Add backpack storage slots
 			{
-				Append(backpack.SetupSlot(i, new(baseX + xOff * spacing, 105 + yOff * spacing)));
+				Vector2 position = new(baseX + xOff * spacing, 105 + yOff * spacing);
+
+				if (i == items.Length)
+					MakePickupIcon(position);
+				else
+					Append(backpack.SetupSlot(i, position));
 
 				if (++yOff >= 4)
 				{
@@ -190,6 +228,25 @@ internal class BackpackUIState : AutoUIState
 					yOff = 0;
 				}
 			}
+		}
+	}
+
+	protected override void DrawChildren(SpriteBatch spriteBatch)
+	{
+		foreach (UIElement element in Elements)
+		{
+			if (element == _pickupToggle)
+			{
+				element.Draw(spriteBatch);
+
+				if (element.ContainsPoint(Main.MouseScreen))
+				{
+					string key = Main.LocalPlayer.GetModPlayer<BackpackPlayer>().packPickup ? "BackpackPickupEnabled" : "BackpackPickupDisabled";
+					UICommon.TooltipMouseText(Language.GetTextValue("Mods.SpiritReforged." + key));
+				}
+			}
+			else
+				element.Draw(spriteBatch);
 		}
 	}
 }

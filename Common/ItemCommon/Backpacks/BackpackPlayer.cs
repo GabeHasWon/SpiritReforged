@@ -14,7 +14,9 @@ internal class BackpackPlayer : ModPlayer
 	{
 		public override bool ItemSpace(Item incomingItem, Player player)
 		{
-			if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			BackpackPlayer backPack = player.GetModPlayer<BackpackPlayer>();
+
+			if (backPack.packPickup && backPack.backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
 			{
 				foreach (Item item in back.Items)
 					if (item.IsAir || item.type == ItemID.None || ItemCanStack(incomingItem, item))
@@ -26,7 +28,9 @@ internal class BackpackPlayer : ModPlayer
 
 		public override bool OnPickup(Item incomingItem, Player player)
 		{
-			if (player.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			BackpackPlayer backPlr = player.GetModPlayer<BackpackPlayer>();
+
+			if (backPlr.packPickup && backPlr.backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
 			{
 				if (ItemID.Sets.IsAPickup[incomingItem.type] || ItemID.Sets.NebulaPickup[incomingItem.type] || ItemID.Sets.ItemsThatShouldNotBeInInventory[incomingItem.type])
 					return true;
@@ -356,7 +360,6 @@ internal class BackpackPlayer : ModPlayer
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			// Track current & old state so we can sync as needed
-
 			_oldState = _state;
 			_state = BackpackState.None;
 
@@ -370,7 +373,7 @@ internal class BackpackPlayer : ModPlayer
 				_state |= BackpackState.HasDye;
 
 			if (_oldState != _state)
-				new BackpackPlayerData(packVisible, (byte)Player.whoAmI).Send();
+				new BackpackPlayerData(packVisible, packPickup, (byte)Player.whoAmI).Send();
 		}
 	}
 
@@ -406,6 +409,7 @@ internal class BackpackPlayer : ModPlayer
 			tag.Add("dye", ItemIO.Save(packDye));
 
 		tag.Add(nameof(packVisible), packVisible);
+		tag.Add(nameof(packPickup), packPickup);
 	}
 
 	public override void LoadData(TagCompound tag)
@@ -419,27 +423,31 @@ internal class BackpackPlayer : ModPlayer
 		if (tag.TryGet("dye", out TagCompound dye))
 			packDye = ItemIO.Load(dye);
 
-		packVisible = tag.Get<bool>(nameof(packVisible));
+		packVisible = tag.GetBool(nameof(packVisible));
+		packPickup = tag.GetBool(nameof(packPickup));
 	}
 
-	public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) => new BackpackPlayerData(packVisible, (byte)Player.whoAmI).Send();
+	public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) => new BackpackPlayerData(packVisible, packPickup, (byte)Player.whoAmI).Send();
 }
 
 internal class BackpackPlayerData : PacketData
 {
 	private readonly bool _visibility;
+	private readonly bool _pickup;
 	private readonly byte _playerIndex;
 
 	public BackpackPlayerData() { }
-	public BackpackPlayerData(bool value, byte playerIndex)
+	public BackpackPlayerData(bool value, bool pickup, byte playerIndex)
 	{
 		_visibility = value;
+		_pickup = pickup;
 		_playerIndex = playerIndex;
 	}
 
 	public override void OnReceive(BinaryReader reader, int whoAmI)
 	{
 		bool visibility = reader.ReadBoolean();
+		bool pickup = reader.ReadBoolean();
 		byte who = reader.ReadByte();
 
 		Item backpack = ItemIO.Receive(reader);
@@ -448,6 +456,7 @@ internal class BackpackPlayerData : PacketData
 
 		Player player = Main.player[who];
 		player.GetModPlayer<BackpackPlayer>().packVisible = visibility;
+		player.GetModPlayer<BackpackPlayer>().packPickup = pickup;
 
 		if (Main.myPlayer != who) // Don't override backpack on player who sent the packet
 		{
@@ -457,12 +466,13 @@ internal class BackpackPlayerData : PacketData
 		}
 
 		if (Main.netMode == NetmodeID.Server)
-			new BackpackPlayerData(visibility, who).Send(ignoreClient: who);
+			new BackpackPlayerData(visibility, pickup, who).Send(ignoreClient: who);
 	}
 
 	public override void OnSend(ModPacket modPacket)
 	{
 		modPacket.Write(_visibility);
+		modPacket.Write(_pickup);
 		modPacket.Write(_playerIndex);
 
 		BackpackPlayer player = Main.player[_playerIndex].GetModPlayer<BackpackPlayer>();

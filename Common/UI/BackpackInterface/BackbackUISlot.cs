@@ -149,7 +149,7 @@ public class BackpackUISlot : UIElement
 				SoundEngine.PlaySound(SoundID.MenuTick);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
-					new BackpackPlayerData(mPlayer.packVisible, (byte)Main.myPlayer).Send();
+					new BackpackPlayerData(mPlayer.packVisible, mPlayer.packPickup, (byte)Main.myPlayer).Send();
 			}
 
 			Main.HoverItem = new Item();

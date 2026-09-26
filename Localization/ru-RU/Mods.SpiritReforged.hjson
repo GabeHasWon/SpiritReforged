@@ -127,3 +127,5 @@ EcotoneEdges: {
 }
 
 DamageClasses.HybridDamageClass.DisplayName: ед. гибридного урона
+// BackpackPickupEnabled: Direct pickup: Enabled
+// BackpackPickupDisabled: Direct pickup: Disabled
