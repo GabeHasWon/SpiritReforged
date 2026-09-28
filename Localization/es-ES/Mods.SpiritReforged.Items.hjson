@@ -87,7 +87,7 @@ CascadeHelmet: {
 
 CascadeLeggings: {
 	DisplayName: Grebas de cazador de arrecifes
-	Tooltip: Aumenta un 15% la velocidad de movimiento bajo el agua
+	Tooltip: Aumenta en un 15% la velocidad de movimiento bajo el agua
 }
 
 JellyfishJamJar: {
@@ -105,7 +105,7 @@ Lifesaver: {
 }
 
 ClawCannon: {
-	DisplayName: Tenaza turbo-burbuja
+	DisplayName: Tenaza turboburbuja
 	Tooltip: ""
 }
 
@@ -193,7 +193,7 @@ CrystalFish: {
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed2}
-		Boosts magic power
+		Aumenta los poderes mágicos 
 		'''
 }
 
@@ -231,7 +231,7 @@ CoconutMilk: {
 	Tooltip:
 		'''
 		{$BuffDescription.WellFed}
-		'¡No necesitas taza!'
+		'¡No necesitas una taza!'
 		'''
 }
 
@@ -306,12 +306,12 @@ SmallDriftwoodItem: {
 
 MediumDriftwoodItem: {
 	DisplayName: Restos de madera a la deriva mediano
-	Tooltip: "'Aesthetically pleasing'"
+	Tooltip: "'Estéticamente placentero'"
 }
 
 LargeDriftwoodItem: {
 	DisplayName: Restos de madera a la deriva grande
-	Tooltip: "'Aesthetically pleasing'"
+	Tooltip: "'Estéticamente placentero'"
 }
 
 DriftwoodChestplate: {
@@ -852,7 +852,7 @@ BotanistHat: {
 
 BotanistLegs: {
 	DisplayName: Pants de botánico
-	Tooltip: Aumenta un 10% la velocidad de movimiento
+	Tooltip: Aumenta en un 10% la velocidad de movimiento
 }
 
 BeachTowel: {
@@ -948,7 +948,7 @@ MineralSlag: {
 }
 
 HyenaBannerItem.DisplayName: Estandarte de hiena
-OstrichBannerItem.DisplayName: Ostrich Banner
+OstrichBannerItem.DisplayName: Estandarte de avestruz
 
 SavannaCampfireItem: {
 	DisplayName: Hoguera de sabana
@@ -1062,7 +1062,7 @@ LeatherCloakItem: {
 		'''
 		Inmunidad contra los formidables vientos de las tormentas de arena
 		Aumenta un 15% la aceleración 
-		Aumenta un 5% la velocidad de movimiento
+		Aumenta en un 5% la velocidad de movimiento
 		'''
 }
 
@@ -1224,7 +1224,7 @@ DyeCrateItem: {
 }
 
 SavannaNightMusicBoxItem: {
-	DisplayName: Caja de música (Noche en la sabana)
+	DisplayName: Caja de música (Noche de la Sabana)
 	Tooltip: ""
 }
 
@@ -1309,7 +1309,7 @@ CloudstalkBoxItem: {
 OceanSlimeBannerItem.DisplayName: Estandarte de slime coco
 
 OceanDepthsBoxItem: {
-	DisplayName: Caja de música (Océano profundo)
+	DisplayName: Caja de música (Océano Profundo)
 	Tooltip: ""
 }
 
@@ -1350,12 +1350,12 @@ WayfarerHead: {
 
 WayfarerBody: {
 	DisplayName: Mochila de peregrino
-	Tooltip: Aumenta un 5% la velocidad de movimiento
+	Tooltip: Aumenta en un 5% la velocidad de movimiento
 }
 
 WayfarerLegs: {
 	DisplayName: Pantalones de peregrino
-	Tooltip: Aumenta un 7% la velocidad de movimiento
+	Tooltip: Aumenta en un 7% la velocidad de movimiento
 }
 
 AncientKoiTotem: {
@@ -1791,17 +1791,17 @@ ZenithPotsPaleItem: {
 }
 
 OtherworldSavannaMusicBoxItem: {
-	DisplayName: Caja de música de otro mundo (Dia en la sabana)
+	DisplayName: Caja de música de otro mundo (Día en la Sabana)
 	Tooltip: ""
 }
 
 OtherworldSavannaNightMusicBoxItem: {
-	DisplayName: Caja de música de otro mundo (Noche en la sabana)
+	DisplayName: Caja de música de otro mundo (Noche en la Sabana)
 	Tooltip: ""
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	DisplayName: Caja de música de otro mundo (Tormenta de polvo)
+	DisplayName: Caja de música de otro mundo (Tormenta de Polvo)
 	Tooltip: ""
 }
 
@@ -1812,7 +1812,7 @@ SavannaTorchItem: {
 
 FlaskBlue: {
 	DisplayName: Cápsula de musgo azul
-	Tooltip: Spreads moss on impact
+	Tooltip: Extiende musgo al impactar
 }
 
 FlaskBrown: {
@@ -1841,7 +1841,7 @@ FlaskRed: {
 }
 
 TitleMusicBoxItem: {
-	DisplayName: Caja de música (Titulo De Spirit)
+	DisplayName: Caja de música (Titulo de Spirit)
 	Tooltip: ""
 }
 
@@ -1929,7 +1929,7 @@ ExplosiveRum: {
 }
 
 Flarepowder: {
-	DisplayName: Polvo vengala
+	DisplayName: Polvo véngala
 	Tooltip: Libera una nube de polvo mágico flotante
 }
 
@@ -2054,10 +2054,10 @@ FlaskOfFrost: {
 }
 
 HardlightVisor: {
-	DisplayName: Visor aurico
+	DisplayName: Visor áurico
 	Tooltip: ""
 	AltDisplayName: Visor con aura
-	AltTooltip: "'No confundir con los visores auricos'"
+	AltTooltip: "'No confundir con los visores áuricos'"
 }
 
 PolishedAmberItem: {
@@ -2337,7 +2337,7 @@ RedSandstoneBrickWallItem: {
 }
 
 PolishedSandstoneWallItem: {
-	DisplayName: Pared de arenizca suave
+	DisplayName: Pared de arenisca suave
 	Tooltip: ""
 }
 
@@ -2487,37 +2487,37 @@ TrellisShadewoodItem: {
 }
 
 TrellisTwoItem: {
-	DisplayName: Celosía de jardín cruzada
+	DisplayName: Celosía de jardín en forma de cruz
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoBorealItem: {
-	DisplayName: Celosía de jardín cruzada de madera boreal
+	DisplayName: Celosía de jardín en forma de cruz de madera boreal
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoEbonwoodItem: {
-	DisplayName: Celosía de jardín cruzada de madera de ébano
+	DisplayName: Celosía de jardín en forma de cruz de madera de ébano
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoMahoganyItem: {
-	DisplayName: Celosía de jardín cruzada de madera de caoba rica
+	DisplayName: Celosía de jardín en forma de cruz de madera de caoba rica
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPalmItem: {
-	DisplayName: Celosía de jardín cruzada de madera de palmera
+	DisplayName: Celosía de jardín en forma de cruz de madera de palmera
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoPearlwoodItem: {
-	DisplayName: Celosía de jardín cruzada de madera perlada
+	DisplayName: Celosía de jardín en forma de cruz de madera perlada
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoShadewoodItem: {
-	DisplayName: Celosía de jardín cruzada de madera sombría
+	DisplayName: Celosía de jardín en forma de cruz de madera sombría
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
@@ -2577,17 +2577,17 @@ TrellisDrywoodItem: {
 }
 
 TrellisTwoDrywoodItem: {
-	DisplayName: Celosía de jardín cruzada de madera seca
+	DisplayName: Celosía de jardín en forma de cruz de madera seca
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 BronzeGrateItem: {
-	DisplayName: Bronze Grate Wall
+	DisplayName: Pared de verjas de bronce
 	Tooltip: ""
 }
 
 BronzePlatingItem: {
-	DisplayName: Bronze Plating
+	DisplayName: Placa de bronce
 	Tooltip: ""
 }
 
@@ -2628,7 +2628,7 @@ SaltPylonItem: {
 
 SaltNightMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: Caja de música (Noche en el Salar)
+	DisplayName: Caja de música (Noche del Salar)
 }
 
 SaltMusicBoxItem: {
@@ -2642,7 +2642,7 @@ PineappleSeeds: {
 }
 
 Dragonsong: {
-	DisplayName: Cantico Dragónico
+	DisplayName: Cantico dragónico
 	Tooltip:
 		'''
 		Usa gel como munición
@@ -2712,7 +2712,7 @@ PinZiggurat: {
 
 BangleOfStrength: {
 	DisplayName: Brazalete de la fortaleza
-	Tooltip: Fortalece periodicamente los golpes de armas cuerpo a cuerpo
+	Tooltip: Fortalece periódicamente los golpes de armas cuerpo a cuerpo
 }
 
 ScarabTabletOneItem: {
@@ -2736,8 +2736,8 @@ RedSandstoneBrickCrackedWallItem: {
 }
 
 AncientBooksItem: {
-	DisplayName: Ancient Book
-	Tooltip: "'Rendered unreadable by time'"
+	DisplayName: Libro ancestral
+	Tooltip: "'Convertido en ilegible debido al tiempo'"
 }
 
 SaltGlassWallItem: {
@@ -2827,7 +2827,7 @@ SaltFountainItem: {
 }
 
 SaltskipperQuestFish: {
-	Description: ¡Esos salares son tan alucinantes! No podía distinguir siquiera dónde terminaba la sal y comenzaba el agua. Cuando finalmente puse mi anzuelo en el agua, ese pez de aspecto desagradable simplemente salió dando coletazos junto a mí y empezó a respirar AIRE. ¡Atrápalo para mí para que pueda pasear a mi nuevo pez mascota!.
+	Description: ¡Esos salares son tan alucinantes! No podía distinguir siquiera dónde terminaba la sal y donde comenzaba el agua. Cuando finalmente puse mi anzuelo en el agua, ese pez de aspecto desagradable simplemente salió dando coletazos junto a mí y empezó a respirar AIRE. ¡Atrápalo para mí para que pueda pasear a mi nuevo pez mascota!
 	CatchLocation: El Salar
 	DisplayName: Volatinero salado
 	Tooltip: "'Se encuentra en el salar'"
@@ -2867,7 +2867,7 @@ EnlilStatueItem: {
 }
 
 SerratedClaws: {
-	DisplayName: Garras Serradas
+	DisplayName: Garras serradas
 	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
@@ -2887,7 +2887,7 @@ CobbledBrickItem: {
 }
 
 BronzeGrateDoorItem: {
-	DisplayName: Puerta de verja de bronce
+	DisplayName: Puerta de verjas de bronce
 	Tooltip: Permite que pasen líquidos, incluso si esta cerrada
 }
 
@@ -2913,7 +2913,7 @@ GildedRedSandstoneItem: {
 
 BronzeGrateBlockItem: {
 	DisplayName: Verja de bronce
-	Tooltip: Solo permite que pasen liquidos
+	Tooltip: Solo permite que pasen líquidos
 }
 
 BedouinBreastplate: {
@@ -2928,7 +2928,7 @@ BedouinCowl: {
 
 BedouinLeggings: {
 	DisplayName: Pantalones de beduina
-	Tooltip: Aumenta un 10% la velocidad de movimiento
+	Tooltip: Aumenta en un 10% la velocidad de movimiento
 }
 
 ZigguratTikiTorchItem: {
@@ -2986,22 +2986,22 @@ BagOScarabs: {
 }
 
 ScarabMask: {
-	DisplayName: Máscara de escarabeus
+	DisplayName: Máscara de Escarabeus
 	Tooltip: ""
 }
 
 ScarabRelic: {
-	DisplayName: Reliquia de escarabeus
+	DisplayName: Reliquia de Escarabeus
 	Tooltip: ""
 }
 
 ScarabTrophy: {
-	DisplayName: Trofeo de escarabeus
+	DisplayName: Trofeo de Escarabeus
 	Tooltip: ""
 }
 
 ScarabRadio: {
-	DisplayName: Radio Escarabajo
+	DisplayName: Radio escarabajo
 	Tooltip: ""
 }
 
@@ -3052,8 +3052,8 @@ BeetleLicense: {
 	DisplayName: Licencia de escarabajo
 	Tooltip:
 		'''
-		Usala para adoptar un escarabajo para tu pueblo
-		¿Que ya tienes uno?
+		Úsala para adoptar un escarabajo para tu pueblo
+		¿Qué ya tienes uno?
 		¡Usa más licencias para activar el programa de intercambio de mascotas!
 		¡Encuentra lo que más os convenga a ti y a tu escarabajo!
 		'''
@@ -3076,87 +3076,87 @@ SandySandstoneItem: {
 }
 
 TerracottaTombstoneItem: {
-	DisplayName: Terracotta Tombstone
+	DisplayName: Tumba de terracota
 	Tooltip: ""
 }
 
 TerracottaGraveMarkerItem: {
-	DisplayName: Terracotta Grave Marker
+	DisplayName: Lápida de terracota
 	Tooltip: ""
 }
 
 TerracottaGravestoneItem: {
-	DisplayName: Terracotta Gravestone
+	DisplayName: Lápida sepulcral de terracota
 	Tooltip: ""
 }
 
 TerracottaObeliskItem: {
-	DisplayName: Terracotta Obelisk
+	DisplayName: Obelisco de terracota
 	Tooltip: ""
 }
 
 DrywoodTombstoneItem: {
-	DisplayName: Drywood Tombstone
+	DisplayName: Tumba de madera seca
 	Tooltip: ""
 }
 
 SavannaGravestoneItem: {
-	DisplayName: Savanna Gravestone
+	DisplayName: Lápida de sabana
 	Tooltip: ""
 }
 
 DrywoodGraveMarkerItem: {
-	DisplayName: Drywood Grave Marker
+	DisplayName: Lápida de madera seca
 	Tooltip: ""
 }
 
 DrywoodCrossGraveMarkerItem: {
-	DisplayName: Drywood Cross Grave Marker
+	DisplayName: Lápida de madera seca en forma de cruz
 	Tooltip: ""
 }
 
 ModernObeliskItem: {
-	DisplayName: Modern Obelisk
+	DisplayName: Obelisco moderno
 	Tooltip: ""
 }
 
 ModernTombscreenItem: {
-	DisplayName: Modern Tombscreen
+	DisplayName: Tumpantalla moderna
 	Tooltip: ""
 }
 
 ModernGravestoneItem: {
-	DisplayName: Modern Gravestone
+	DisplayName: Lápida moderna
 	Tooltip: ""
 }
 
 ModernHeadstoneItem: {
-	DisplayName: Modern Headstone
+	DisplayName: Lápida mortuoria moderna
 	Tooltip: ""
 }
 
 SaltHeadstoneItem: {
-	DisplayName: Salt Headstone
+	DisplayName: Lápida mortuoria de sal
 	Tooltip: ""
 }
 
 SaltTombstoneItem: {
-	DisplayName: Salt Tombstone
+	DisplayName: Tumba de sal
 	Tooltip: ""
 }
 
 SaltGravestoneItem: {
-	DisplayName: Salt Gravestone
+	DisplayName: Lápida sepulcral de sal
 	Tooltip: ""
 }
 
 SaltGraveMarkerItem: {
-	DisplayName: Salt Grave Marker
+	DisplayName: Lápida de sal
 	Tooltip: ""
 }
 
 NotSunItemIcon: {
-	DisplayName: Not Sun Item Icon
+	DisplayName: Ícono de objeto de no sol
 	Tooltip: ""
 }
 
@@ -3175,7 +3175,7 @@ BlazeGlyph: {
 		Al infligir daño, canaliza las llamas infernales para recubrir tu cuerpo
 		Aumenta hasta un 40% el daño y un 20% la probabilidad de ataque crítico dependiendo de la vitalidad sacrificada
 		'''
-	Effect: Igniscente
+	Effect: Infernal
 	Death: Las llamas infernales han reclamado a {0}...
 
 	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
@@ -3330,7 +3330,7 @@ CelestialStamp: {
 RageGlyph: {
 	DisplayName: Glifo de cólera
 	Tooltip: El daño recibido y el exceso de daño infligido al matar se canalizan en tu siguiente ataque
-	Effect: Cólerico
+	Effect: Colérico
 
 	Gendered: {
 		Fem: ""
@@ -3355,7 +3355,7 @@ CharmcasterRobe: {
 }
 
 VoidGlyph: {
-	DisplayName: Glifo del vacio
+	DisplayName: Glifo del vacío
 	Tooltip:
 		'''
 		Los ataques acumulan colapso del vacío

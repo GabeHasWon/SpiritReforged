@@ -33,7 +33,7 @@ Records: {
 FablesGraves: {
 	SetNames: {
 		Savanna: Lapidas de la sabana
-		SaltFlats: Lapidas del salar
+		SaltFlats: Lapidas de sal
 	}
 }
 
@@ -42,7 +42,7 @@ OreCarts.MapEntry: Vagoneta
 PotionVats.MapEntry: Deposito de poción
 ObsidianShroom.MapEntry: Hongo de obsidiana
 Starflower.MapEntry: Flor estelar
-BonsaiTrees.MapEntry: Bonsai
+BonsaiTrees.MapEntry: Bonsái
 DustyTomb.MapEntry: Tumba polvorienta
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: Musgo de oganesón

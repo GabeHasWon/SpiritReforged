@@ -1,8 +1,8 @@
 Cascade:
 	'''
-	Infligir daño a los enemigos acumula un escudo de burbuja
-	Al alcanzar su tamaño máximo, otorga una gran resistencia al daño contra el siguiente ataque,
-	dañando y derribando a los enemigos cercanos.
+	Infligir daño a los enemigos acumula un escudo de burbuja,
+	que al alcanzar su tamaño máximo, otorga una gran resistencia al daño contra el siguiente ataque,
+	dañando y derribando a los enemigos cercanos
 	'''
 Driftwood:
 	'''

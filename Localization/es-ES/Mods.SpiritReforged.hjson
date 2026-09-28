@@ -19,11 +19,11 @@ SlotContexts.Backpack: Mochila
 
 Conditions: {
 	InSavanna: En la Sabana
-	PeevedTumbler: When sparkling
-	Discovered: Descubrimiento
+	PeevedTumbler: Al ser bonachón 
+	Discovered: Descubierto
 	Submerged: Sumergido
 	InSaltFlats: En el Salar
-	IsPrickly: When prickly
+	IsPrickly: Al ser punzante
 	InZiggurat: En el Zigurat
 	InSpace: En el Espacio
 	NotSnow: No en la Tundra
@@ -66,13 +66,13 @@ GameTips: {
 	ReforgedTip2: ¡Las tachuelas son útiles! Revisa tu inventario de tachuelas en la parte inferior izquierda de tu mapa.
 	ReforgedTip3: Los animales de la sabana no pueden atraparse con redes para insectos.
 	ReforgedTip4: Mochilas. Ahora tienes más espacio.
-	ReforgedTip5: Las profundidades del océano guardan muchas cosas de interesantes.
-	ReforgedTip6: La hierba estelar ofrece un buen alivio en la oscuridad de la noche.
+	ReforgedTip5: Las profundidades del océano guardan muchas cosas interesantes.
+	ReforgedTip6: El césped estelar ofrece un buen alivio en la oscuridad de la noche.
 	ReforgedTip7: El tallo de nube siempre crece bajo las nubes. ¡No olvides mirar hacia arriba!
 	ReforgedTip8: Puedes pararte sobre los árboles de acacia si necesitas algo de altura.
 	ReforgedTip9: A veces llegan cosas a la orilla del océano; ¡échale un vistazo de vez en cuando!
 	# Caves & Clubs
-	ReforgedTip10: Muchas vasijas salpican las cuevas bajo tus pies! Mantén los ojos abiertos.
+	ReforgedTip10: ¡Una variedad de vasijas salpican las cuevas bajo tus pies! Mantén los ojos abiertos.
 	ReforgedTip11: Los garrotes ofrecen un daño fuerte y concentrado a un solo objetivo.
 	# Sunscorched
 	ReforgedTip12: Las leyendas hablan de una ofrenda de gemas sobre un altar antiguo...

@@ -19,7 +19,7 @@ VanillaDialogue: {
 		Discoveries: A veces me tropiezo con cosas curiosas y raras en mis viajes. Tal vez tú también puedas encontrarlas si tienes buen ojo.
 	}
 
-	Demolitionist.HasBoomshroom: ¿Que tienes qué? ¿Un hongo que hace las explosiones más grandes? ¡Me encanta la madre naturaleza!
+	Demolitionist.HasBoomshroom: ¿Qué tienes qué? ¿Un hongo que hace las explosiones más grandes? ¡Me encanta la madre naturaleza!
 
 	Nurse: {
 		Duststorm: ¡No te ensucies con todo ese polvo de allá afuera! Eso está por debajo de lo que me pagas.
@@ -47,7 +47,7 @@ VanillaDialogue: {
 	}
 
 	Wizard.SaltFlats: ¡Las rocas de esta zona serían perfectas para una bola de cristal!
-	Painter.SaltFlats: ¡Nunca habia visto un paisaje tan hermoso! Podría pintar aquí por el resto de mi vida.
+	Painter.SaltFlats: ¡Nunca había visto un paisaje tan hermoso! Podría pintar aquí por el resto de mi vida.
 	Cyborg.SaltFlats: Eso... eso quema.
 	Mechanic.SaltFlats: ¡Ugh! ¡Toda esta sal está corroyendo mi equipo! ¡Sácame de aquí!
 	Truffle.SaltFlats: Este lugar es profundamente incómodo para los de mi especie. Me siento tan seco...
@@ -80,11 +80,11 @@ SandPiper: {
 
 Gar: {
 	DisplayName: Esturión
-	Entry: Los pejelagartos son cazadores astutos que normalmente habitan cuerpos de agua dulce. Siempre hay que estar alerta al nadar cerca de uno ya que pueden atacar desde el costado, el frente o incluso por detrás.
+	Entry: Los esturiones son cazadores astutos que normalmente habitan cuerpos de agua dulce. Siempre hay que estar alerta al nadar cerca de uno ya que pueden atacar desde el costado, el frente o incluso por detrás.
 }
 
 GoldGar: {
-	DisplayName: Esturíón dorado
+	DisplayName: Esturión dorado
 	Entry: Sólo un monstruo abriría un raro esturión dorado para obtener su suculento caviar. Sólo un monstruo...
 }
 
@@ -105,7 +105,7 @@ KelpZombie: {
 
 SailorZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: A pesar de su estado actual, solían dirigir un lujoso crucero realmente agradable que deberías visitar algúna vez.
+	Entry: A pesar de su estado actual, solían dirigir un lujoso crucero realmente agradable que deberías visitar alguna vez.
 }
 
 TridentZombie: {
@@ -170,7 +170,7 @@ ButterflyCritter: {
 
 SavannaJungleSlime: {
 	DisplayName: Slime de la jungla
-	Entry: Se ha tragado un par de flores. ¡Casi demasiado adorable para matarlo...!
+	Entry: Se ha tragado un par de flores. ¡Casi demasiado adorable para matarlo!...
 }
 
 Cartographer: {
@@ -187,7 +187,7 @@ Cartographer: {
 	}
 
 	Dialogue: {
-		0: El trabajo de cartografía es duro. A veces pierdes tu en un lugar y... espera.
+		0: El trabajo de cartografía es duro. A veces pierdes tu lugar y... espera.
 		1: ¿Tendrás de casualidad algún buen papel resistente? Yo ya me quede sin nada.
 		2: Diablos... dejar caer una tachuela al suelo nunca es buena idea. Especialmente los cafés.
 		3: Oye, ¿tienes un mapa? ¿Te importa si le echo un vistazo? ¡Más vale que esté bien cuidado!
@@ -195,21 +195,21 @@ Cartographer: {
 
 		Map: {
 			FloatingIsland: {
-				0: Veamos... ¡estaba justo aquí! Una pequeña y adorable isla flotante que encontré. ¿Que cómo llegué allá arriba? Bueno, digamos que las arpías pueden llevarte MUCHO más lejos de lo que esperarías.
-				1: Échale un vistazo aquí. ¡muuuy arriba! Hace un tiempo me metí en algunos problemas ¡y terminé en el cielo!. Creo haber visto un tesoro, pero estaba demasiado preocupada pensando en como bajar.
+				0: Veamos... ¡Estaba justo aquí! Una pequeña y adorable isla flotante que encontré. ¿Qué cómo llegué allá arriba? Bueno, digamos que las arpías pueden llevarte MUCHO más lejos de lo que esperarías.
+				1: Échale un vistazo aquí. ¡Muuuy arriba! Hace un tiempo me metí en algunos problemas y ¡terminé en el cielo! Creo haber visto un tesoro, pero estaba demasiado preocupada pensando en cómo bajar.
 				2: ¡Mira este lugar! Hace unas semanas encontré una isla en el cielo; era genial, pero los vecinos eran molestos. ¡Espero que encuentres algo que yo no pude!
 			}
 
 			EnchantedSword: {
-				0: ¡Habia encontrado algo... aquí! Estaba en un túnel estrecho; ¿lo creerías? Una espada en una piedra, justo como dicen las leyendas. Pero me acobardé y me alejé del lugar... no soy digna.
+				0: ¡Había encontrado algo!... ¡Aquí! Estaba en un túnel estrecho; ¿lo creerías? Una espada en una piedra, justo como dicen las leyendas. Pero me acobardé y me alejé del lugar... no soy digna.
 				1: ¡Ajá! Este era el lugar. Parece poco llamativo, pero hay una espada imponente escondida bajo tierra. La habría tomado, pero mis bolsillos completamente llenos de hongos raros y papel cartográfico.
-				2: ¡Aquí estamos! No sé cómo llegó allí, pero encontré una espada incrustada en una piedra. Como en esa leyenda... ¿era el rey arturo? Mira yo no me meto con armas extrañas; quizá eso sea más lo tuyo.
+				2: ¡Aquí estamos! No sé cómo llegó allí, pero encontré una espada incrustada en una piedra. Como en esa leyenda... ¿era el rey Arturo? Mira yo no me meto con armas extrañas; quizá eso sea más lo tuyo.
 			}
 
 			Shimmer: {
 				0:
 					'''
-					¿Dónde estaba... ¡ahí está! Estaba caminando por una cueva oscura y peligrosa. ¿Y qué veo en el horizonte? Un brillante resplandor rosado y reluciente. Realmente hermoso.
+					¿Dónde estaba?... ¡Ahí está! Estaba caminando por una cueva oscura y peligrosa. ¿Y qué es lo que veo en el horizonte? Un brillante resplandor rosado y reluciente. Realmente hermoso.
 					¿Sabes lo que eso significa en la naturaleza? Mantente alejado. Así que lo hice.
 					'''
 				1:
@@ -233,17 +233,17 @@ Cartographer: {
 				1:
 					'''
 					Mira por aquí. ¿Alguna vez has caminado recto mirando fijamente el suelo? No deberías. Pero hace un rato, cuando lo hice, vi cómo la hierba pasaba lentamente de un verde vibrante y bonito a un verde enfermizo.
-					Miro hacia arriba; la hierba más larga que he visto. También increíblemente gruesa. ¿Qué hice entonces? Bueno... me alejé. Es demasiado trabajo intentar caminar por allí.
+					Miro hacia arriba; la hierba más larga que he visto. También increíblemente gruesa. ¿Qué hice entonces? Bueno... Me alejé. Es demasiado trabajo intentar caminar por allí.
 					'''
 				2:
 					'''
-					Resulta que hace un tiempo estaba viendo qué tan rápido podía correr para escapar de los murciélagos de la jungla, ¿necesario verdad? Y entonces ¡boom!, justo aquí en el mapa, el aire se volvió muy polvoriento. Una sabana se extendía frente a mí. ¡caray que vista!
+					Resulta que hace un tiempo estaba viendo qué tan rápido podía correr para escapar de los murciélagos de la jungla ¿cierto? Y entonces ¡boom!, justo aquí en el mapa, el aire se volvió muy polvoriento. Una sabana se extendía frente a mí. ¡Caray que vista!
 					Y para que conste, descubrí que puedo correr MUY rápido cuando lo necesito.
 					'''
 			}
 
 			Hive: {
-				0: La tachuela va... aquí. Entre nos, no recomiendo nada ese lugar de la jungla. Es DURO. Pero cuando ves uno de esos grandes panales, hay miel cerca. Y esa es una delicia que vale muchas picaduras.
+				0: La tachuela va... aquí. Entre nos, no recomiendo ni un poco ese lugar de la jungla. Es DURO. Pero cuando ves uno de esos grandes panales, hay miel cerca. Y esa es una delicia que vale muchas picaduras.
 				1: ¡Ahí lo tienes! Eh... seré sincera. A veces encuentras oro líquido y AÚN ASÍ no vale la pena invertir en ello. Con esas desagradables avispas... mantenlo como excursión, no como negocio.
 				2: Si miras justo... aquí, encontrarás algo que puede interesarte. Lo mantendré simple, las picaduras duelen; prepárate.
 			}
@@ -251,17 +251,17 @@ Cartographer: {
 			Curiosity: {
 				0:
 					'''
-					Ahí estas. Sabes, deambulo mucho. Contemplando el paisaje, pensando en voz alta... bueno, nada de eso importa cuando la tierra besa mi cara al tropezarme.
+					Ahí estas. Sabes, deambulo mucho. Contemplando el paisaje, pensando en voz alta... Bueno, nada de eso importa cuando la tierra besa mi cara al tropezarme.
 					Me tropecé con algo por aquí, pero no podría decirte qué era. Estaba demasiado enojada para mirar.
 					'''
 				1:
 					'''
-					Creo que fue... ¿aquí? Esta por esta zona. Te topas con muchas cosas interesantes cuando exploras tanto como yo. A veces, ves algo que vale la pena revisar.
-					Si fuera tú, me daría prisa en llegar. ¡Quién sabe, alguien más rondando por ahí podría encontrarlo antes que tú!.
+					Creo que fue... ¿aquí? Está por esta zona. Te topas con muchas cosas interesantes cuando exploras tanto como yo. A veces, ves algo que vale la pena revisar.
+					Si fuera tú, me daría prisa en llegar. ¡Quién sabe, alguien más rondando por ahí podría encontrarlo antes que tú!
 					'''
 				2:
 					'''
-					Dale un vistazo a esta zona. Soy cartógrafa ¿no?, Yo mapeo. Y a veces le pierdo la pista a mis tachuelas... bueno, clavé esta en el mapa y olvidé por completo por qué lo hice.
+					Dale un vistazo a esta zona. Soy cartógrafa ¿no? Yo mapeo. Y a veces le pierdo la pista a mis tachuelas... bueno, clavé esta en el mapa y olvidé por completo por que lo hice.
 					Veras, después de atravesar todo el camino hasta allá y regresar de nuevo todo ese camino de vuelta, lo olvidé otra vez. Puedes quedártelo tú en su lugar, quizá solo soy olvidadiza pero no quiero ningún cachivache maldito.
 					'''
 			}
@@ -269,7 +269,7 @@ Cartographer: {
 			ButterflyShrine: {
 				0:
 					'''
-					Mira este lugar; justo aquí. Era una noche fría y escalofriante, una fuerte brisa lanzó mis mapas de mi mochila.
+					Mira este lugar; justo aquí. Era una noche fría y escalofriante, una fuerte brisa lanzó mis mapas fuera de mi mochila.
 					Me agaché para recuperar mi preciado trabajo, cuando lo vi. Un pequeño agujero del tamaño de un alfiler en el suelo, ¡y brillaba de color púrpura! No creo que vaya a meterme con eso, pero tú pareces expresar valentía y gusto por las aventuras.
 					'''
 				1:
@@ -281,14 +281,14 @@ Cartographer: {
 			}
 
 			WulfrumBunker: {
-				0: Esperemos que aquí este correcto. Mientras caminaba como suelo hacerlo, detrás de un grupo de árboles vi aquel extraño y verde sitio mecánico. La parte superior estaba llena de cosas y se escuchaba que provenia desde abajo un zumbido mecánico... no gracias.
-				1: Aquí fue donde estaba mi campamento, justo aquí. Estaba descansando tras un largo día de caminata, cuando apareció ese pequeño tipo mecánico con una gran mano y ¡ME ROBO mi bolsa! Menos mal habia descansado un poco, porque ese pequeñín me tuvo corriendo un buen rato.
+				0: Esperemos que aquí este correcto. Mientras caminaba como suelo hacerlo, detrás de un grupo de árboles vi aquel extraño y verde sitio mecánico. La parte superior estaba llena de cosas y se escuchaba que desde abajo provenía un zumbido mecánico... no gracias.
+				1: Aquí fue donde estaba mi campamento, justo aquí. Estaba descansando tras un largo día de exploración, cuando apareció ese pequeño aparato mecánico con una gran mano y ¡ME ROBO mi bolsa! Menos mal había descansado un poco, porque ese pequeñín me tuvo corriendo un buen rato.
 				2: Ahí está, imposible olvidarlo después de todo. No se suele encontrar industria por aquí, lo cual me viene bien. No me agrada todo ese ruido, especialmente cuando una vez apareció un campo de energía y la chatarra empezó a volar hacia mí.
 			}
 
 			BloodAltar: {
 				0: Y... ¡ahí está! Trazar la superficie es solo eso, la superficie. Encuentro muchas cosas extrañas bajo tierra, y de muchas me mantengo bien alejada... ¿Qué esperabas? Soy cartógrafa, no aventurera.
-				1: ¡Debería de ser aquí! Pareces ser capaz. Encontré a un sujeto no-muerto que, sorprendentemente, escuchaba a la razón, lo cual ya era bastante extraño, pero me vendió esta... mano. Seguí la dirección a la que apuntaba y terminé en una cripta inquietante... Tal vez tú puedas sacar algo de todo esto, porque yo no pienso volver allí.
+				1: ¡Debería de ser aquí! Pareces ser capaz. Encontré a un sujeto no-muerto que, sorprendentemente, escuchaba a la razón, lo cual ya era bastante extraño, pero me vendió esta... mano. Seguí la dirección en la que apuntaba y terminé en una cripta inquietante... Tal vez tú puedas sacar algo de todo esto, porque yo no pienso volver allí.
 				2: ¿Listo para un desafío? Yo no, eso es algo seguro. Hay una mazmorra con una sala que apesta a sangre... Y con ese extraño altar en el centro, así es, no me quedé mucho tiempo.
 			}
 
@@ -300,7 +300,7 @@ Cartographer: {
 
 			Ziggurat: {
 				0: Hmm... aquí. Ya lo he dicho antes: soy cartógrafa. Yo dibujo mapas. Así que cuando veo una gran e imponente pared de ladrillo rojo agrietado y desmoronado, soy increíblemente hábil para determinar si es algo con lo que debería meterme. Escuché un zumbido ahí dentro. No hace falta decirlo, es todo tuyo.
-				1: ¡Lo tengo! El desierto lo hace fácil de recordar. No hay mucho que rememorar ahí, así que ¿ver humo salir del suelo sin explicación? interesante. Miras hacia abajo y ves la fachada de una estructura enorme... inolvidable. Adelante, es toda tuya. Yo no iba a arriesgarme con lava ni nada parecido.
+				1: ¡Lo tengo! El desierto lo hace fácil de recordar. No hay mucho que rememorar ahí, así que ¿ver humo salir del suelo sin explicación? Interesante. Miras hacia abajo y ves la fachada de una estructura enorme... inolvidable. Adelante, es toda tuya. Yo no iba a arriesgarme con lava ni nada parecido.
 				2: Aquí estás. Es parte de mi trabajo encontrar alguna que otra ruina. No pasa nada, tenemos un protocolo por una razón. Pero vaya, entrar y casi ser atravesada por el suelo... un recordatorio amable de que, a veces, soy una excelente corredora.
 			}
 
@@ -323,8 +323,8 @@ Hiker: {
 	Dialogue: {
 		Hungry: {
 			Asking: {
-				0: Que tal extraño. ¿Te importaría compartir algún almuerzo? Si puedes regalarme un {0}, entonces quizá tenga algo agradable para ti también.
-				1: ¿Alguna vez sales de casa y ENTONCES justo después, te das cuenta de que tienes hambre? Ojalá no me pasara... ¿podrías darme un {0}?
+				0: Que tal extraño. ¿Te importaría compartir algún bocadillo? Si puedes regalarme un {0}, entonces quizá tenga algo agradable para ti también.
+				1: ¿Alguna vez sales de casa y ENTONCES justo después, te das cuenta de que tienes hambre? Ojalá no me pasara... ¿Podrías darme un {0}?
 				2: Una larga caminata cuesta arriba realmente pide mucho. Estoy tan acabado que podría ir a buscar algo de {0}... ¿Ayudarías a un compañero?
 				3: Me acabé mi última barra de proteína hace ya cuarenta y cinco minutos, estoy en mi fin del sendero. ¿Podrías darme uno de tus {0}?
 			}
@@ -340,14 +340,14 @@ Hiker: {
 		Idle: {
 			0: Nada como el senderismo dentro de las cuevas... hasta que terminas cubierto de telarañas desagradables. Eso sí que arruina el ánimo.
 			1: Una vieja amiga solía recoger raíz intermitente para explorar en lugar de usar antorchas. “Más seguro”, decía. Una tipa medio rara. Me pregunto qué habrá sido de ella.
-			2: ¿Has usado tachuelas? Son realmente útiles. Una vieja amiga las llevaba consigo a todas partes... la última vez que la vi estaba “buscando la manera de subir a esas islas flotantes”. Trabajo difícil, ¿eh?
+			2: ¿Has usado tachuelas? Son realmente útiles. Una vieja amiga las llevaba consigo a todas partes... La última vez que la vi estaba “buscando la manera de subir a esas islas flotantes”. Trabajo difícil, ¿eh?
 			3: A veces me cruzo con un hada y me guía hacia oro o platino. Siempre actúo emocionado, pero no tengo un pico. Espero que aprecien mi intención.
 			4: Siempre sueles llevar suministros extra si eres inteligente... pero demonios, mi espalda está hecha polvo, traje más de lo que podría cargar durante horas. Comerciaré contigo, solo si tienes unas monedas estorbando en tu bolsillo ¡bajaja!
 		}
 
 		Purchase: {
 			0: Hey, ¡eso es una carga menos para mi espalda! Siempre preferiré tener los bolsillos llenos pagando el precio de una espalda dañada sin importar el día.
-			1: Bajaja, ¡Muy agradecido amigo! La gente siempre me pregunta: “¿Dónde demonios guardas todas esas cosas?” ¡yo no te pregunto por tus asuntos!
+			1: Bajaja, ¡muy agradecido amigo! La gente siempre me pregunta: “¿Dónde demonios guardas todas esas cosas?” ¡yo no te pregunto por tus asuntos!
 			2: ¡Buena presentación, extraño! Nada crea una conexión tan fuerte como un buen trueque.
 			3: ¡Disfruta el espacio extra! He oído que si metes un montón de estatuas de ángel —sí, estatuas enteras— en tu mochila, ocurre algo extraordinario.
 			4: ¡Gracias por el trueque! Me detendría a oler las flores, pero hay plantas bastante locas allá afuera. ¡Ten cuidado!
@@ -449,7 +449,7 @@ WorldFrog: {
 	Dialogue: {
 		0: Si deseas cosas nuevas para explorar, tengo una oferta para ti, ¡he de implorar!
 		1: ¿Buscas cosa nueva? ¡Entre mis manos, una oferta tú comprueba!
-		2: Mis magia trucada preciente que falta algo en el ambiente; ¡y no debes ser indiferente!
+		2: Mi magia trucada presiente que falta algo en el ambiente; ¡y no debes ser indiferente!
 	}
 
 	Reports: {
@@ -542,7 +542,7 @@ DecrepitMummy: {
 
 Graverobber: {
 	DisplayName: Saqueador de sepulcros
-	Entry: Su desgracia es ser golpeados como una piñata y para que el oro llueva. Es casi tan seductor como los propios objetos de valor...
+	Entry: Su desgracia es ser golpeados como una piñata para que el oro llueva. Es casi tan seductor como los propios objetos de valor...
 	HoldingLantern: Al sostener una linterna
 }
 
@@ -552,7 +552,7 @@ Scarabeus: {
 	DisplayName: Escarabeus
 	Title: Ídolo crestado
 	Entry: Con su porte regio y su tono iridiscente, este escarabajo gigante fue alguna vez venerado por los antiguos habitantes del Zigurat. Permanece hasta el día de hoy esperando un nuevo tributo.
-	SpawnInfo: Usa cualquier gema en el [i:SpiritReforged/ScarabAltarItem] altar ancestral en el Zigurat durante el dia.
+	SpawnInfo: Usa cualquier gema en el [i:SpiritReforged/ScarabAltarItem] altar ancestral en el Zigurat durante el día.
 }
 
 TinyGrub: {
@@ -731,7 +731,7 @@ Enchanter: {
 		LoveNPC: ¡El chocolate caliente de {NPCName} es brujería pura! Ah, y sus trucos de salón, ¡son encantadores!
 		LikeNPC: No tengo idea de que clase de magia usa {NPCName} para iluminar el cielo de esa manera, pero se ve espectacular. Lástima que por el ruido, tuve dolor de cabeza durante tres días...
 		DislikeNPC: ¡La idea de 'mejorar' tu equipo de {NPCName} es una barbarie! ¡¿Cómo se supone que golpearlo con un martillo va a ayudar en algo?!
-		HateNPC: Juro que si {NPCName} cuenta una historia más sobre masacrar kobolds durante el té de la tarde, ¡lo convertiré en una oveja!
+		HateNPC: Juro que si {NPCName} cuenta una historia más durante el té de la tarde sobre masacrar kobolds, ¡lo convertiré en una oveja!
 		LikeBiome: Aquí, sobre de las nubes, me siento mucho más en sintonía con los flujos de la magia. ¡Sin mencionar la vista claro!
 		DislikeBiome: La cera que producen las abejas es de tan alta calidad... pero, ¡auch!, ¿por qué tienen que picarme? Estoy cubierto de ronchas de pies a cabeza.
 		LikeNPC_Princess: "{NPCName} es una niña muy dulce, pero apenas puedo seguirle el ritmo. ¿Cómo puede un cuerpo tan pequeño contener tanta energía?"
@@ -748,7 +748,7 @@ Enchanter: {
 		}
 
 		IdleNight: {
-			0: ¡La luna está en uno de sus puntos altos, y mis velas arden más brillantes que nunca!
+			0: ¡La luna está en uno de sus puntos más altos, y mis velas arden más brillantes que nunca!
 			1: Las luciérnagas salpican el cielo como pequeñas llamas danzantes. La magia existe en todas partes, solo hace falta mirar correctamente.
 			2: Ya es muy tarde en la noche, es mi segunda hora de dormir. Te ruego que lo hagas rápido.
 		}
@@ -774,7 +774,7 @@ Enchanter: {
 		Goblin: Puedes pegar sellos en muchas cosas, pero {0} sigue pidiéndome que encante sus diversos inventos. Eso normalmente no termina muy bien...
 		Golfer: "{0} siempre me invita a jugar golf con los demás, pero termino quedándome dormido... No tengo el corazón para rechazar sus invitaciones."
 		Stylist: Dejé que {0} me convenciera de que me encerara las escamas, y no estoy seguro de cuál es el atractivo. ¡Brillo como un pez recién pescado!
-		WitchDoctor: "{0} desprende un aura tan misteriosa... me gustaría conocerlo un poco más. ¿Podrías, quizás, presentarnos?"
+		WitchDoctor: "{0} desprende un aura tan misteriosa... Me gustaría conocerlo un poco más. ¿Podrías, quizás, presentarnos?"
 	}
 
 	Census.SpawnCondition: Sostén cera cromática o cualquier objeto encantado [i:SpiritReforged/ChromaticWax] ó derrota a cualquier jefe

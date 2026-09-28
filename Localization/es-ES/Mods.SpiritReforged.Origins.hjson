@@ -1,7 +1,7 @@
 Diver: {
 	DisplayName: Buceador
 	Flavor: Después de una inmersión, el buzo está listo para comenzar en una nueva tierra, ansioso por descubrir nuevas aguas.
-	Description: Comienza con el atuendo de buzo, aletas y un Colgante del Océano
+	Description: Comienza con el atuendo de buzo, aletas y un colgante del océano.
 }
 
 Botanist: {
@@ -13,7 +13,7 @@ Botanist: {
 Recluse: {
 	DisplayName: Ermitaño
 	Flavor: Para ellos, es más fácil refugiarse en lo profundo del subsuelo donde nadie los moleste. ¡La pesca es mejor aquí abajo!
-	Description: Comienza en una cabaña de pesca subterránea con un sombrero de pesca, una caña de pescar de fibra de vidrio, unos cuantos cebos y cajas.
+	Description: Comienza en una cabaña de pesca subterránea con un sombrero de pescador, una caña de fibra de cristal, unos cuantos cebos y cajas.
 }
 
 Hunter: {
@@ -23,7 +23,7 @@ Hunter: {
 }
 
 Hiker: {
-	DisplayName: Excursionista
+	DisplayName: Senderista
 	Flavor: La exploración alegra el alma, y cuentan con los suministros necesarios para lograrlo.
 	Description: Comienza en lo alto de la colina más alta con 60 antorchas, 30 barras luminosas y 150 cuerdas.
 }
@@ -49,11 +49,11 @@ Worshipper: {
 Purifier: {
 	DisplayName: Purificador
 	Flavor: Abominable mal, desaparece; arde con la presencia de mi pureza.
-	Description: Comienza en el salar (si es posible) con el bastón bo y una máscara de mahakala.
+	Description: Comienza en el salar (si es posible) con el bastón bo y una máscara de Mahakala.
 }
 
 Enchanter: {
 	DisplayName: Encantador
 	Flavor: ¡Huzzah! ¿Necesitas un poco más de estilo? ¡Comencemos con una chispa!
-	Description: Comienza con 60 polvo de vengala, 3 cera cromática y el atuendo de tejedor de encantos, junto al Npc encantador.
+	Description: Comienza con 60 polvo de véngala, 3 cera cromática y el atuendo de tejedor de encantos, junto al Npc encantador.
 }

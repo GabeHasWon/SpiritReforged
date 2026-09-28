@@ -10,7 +10,7 @@ MantarayBuff: {
 
 JellyfishMinion_Buff: {
 	DisplayName: Medusa
-	Description: ¡Una medusa tierna y saltarina lucha por ti!
+	Description: ¡Una medusa tierna y saltarina luchará por ti!
 }
 
 JellyfishPet_Buff: {

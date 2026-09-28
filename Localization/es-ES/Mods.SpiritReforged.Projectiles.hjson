@@ -11,7 +11,7 @@ FairyProj.DisplayName: Rayo mágico
 StarPowderProj.DisplayName: Polvo de estrellas
 ButterflyMinion.DisplayName: Súbdito mariposa
 ToucanFeather.DisplayName: Pluma de tucán
-ToucanMinion.DisplayName: Súdito de tucán
+ToucanMinion.DisplayName: Súbdito de tucán
 TumblerPet.DisplayName: Rodapaja mascota
 SunOrb.DisplayName: Orbe solar
 SunStaffHeld.DisplayName: Báculo del resplandor
@@ -32,9 +32,9 @@ BuffAura.DisplayName: Aura de mejora
 WheezerCloud.DisplayName: Gas venenoso
 Shockwave.DisplayName: Onda expansiva
 EnergizedShockwave.DisplayName: Onda expansiva energizada
-RollingBowlder.DisplayName: Roliche rodante
+RollingBowlder.DisplayName: Rocaliche rodante
 Firespike.DisplayName: Espina de fuego
-CannonBomb.DisplayName: Disparo de cañon bombardero
+CannonBomb.DisplayName: Disparo de cañón bombardero
 BigCannonBomb.DisplayName: "{$Projectiles.CannonBomb.DisplayName}"
 DrypowderSpray.DisplayName: "{$Items.Drypowder.DisplayName}"
 JinxArrow.DisplayName: Flecha de jinx
@@ -56,7 +56,7 @@ CactusSpine.DisplayName: Espina de cactus
 TinyDragonPet.DisplayName: "{$Items.TinyDragon.DisplayName}"
 DragonFireball.DisplayName: Bola de fuego de dragón
 PileOfConsequencesPet.DisplayName: Consecuencias
-EnergyLaser.DisplayName: Laser de energia
+EnergyLaser.DisplayName: Laser de energía
 BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
 WindBlast.DisplayName: Explosión de viento
 DivebombScarab.DisplayName: Escarabajo en picada
