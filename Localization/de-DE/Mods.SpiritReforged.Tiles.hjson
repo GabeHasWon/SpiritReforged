@@ -1,4 +1,5 @@
 Records: {
+	# Reforged pots
 	CoinPortal:
 		'''
 		Enthält immer ein Münzportal.
@@ -28,6 +29,52 @@ Records: {
 	Biome: Enthält eine größere Vielfalt an Beute als gewöhnliche Töpfe.
 	Boulder: Rollt am Boden entlang, wenn er gestört wird.
 	Wax: Mit starken magischen Energien durchdrungen.
+
+	# Spooky cross mod pots
+	SpookyForest: {
+		// Name: Stuffed Pail
+		// Entry: The leading edge of flimsy candy carriers.
+	}
+
+	SpiderGrotto: {
+		// Name: Webbed Cooking Pot
+		// Entry: ...who cooked all of these?
+	}
+
+	NoseTemple: {
+		// Name: Porcelain Nose
+		// Entry: The fanciest porcelain for the haughtiest noses.
+	}
+
+	FetidFarms: {
+		// Name: Groceries
+		// Entry: Fresh grown produce!
+	}
+
+	RottenDepths: {
+		// Name: Loaded Skeletons
+		// Entry: Seems like these fish swallowed some goods.
+	}
+
+	TarPits: {
+		// Name: Taramic Pot
+		// Entry: Ornate, slightly sticky, kinda cracked.
+	}
+
+	Krampus: {
+		// Name: Awesome Present
+		// Entry: The coolest gift boxes you've ever seen.
+	}
+
+	UpperCatacombs: {
+		// Name: Ancient Carved Pot
+		// Entry: The carvings on these are lovely, but hard to see.
+	}
+
+	LowerCatacombs: {
+		// Name: Jeering Pot
+		// Entry: They sneer at you.
+	}
 }
 
 FablesGraves: {
@@ -47,3 +94,5 @@ DustyTomb.MapEntry: Staubiges Grabmal
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: Oganesson-Moos
 RadonMoss.MapEntry: Radon-Moos
+// StarscareSapling.MapEntry: Starscare Sapling
+// StarscareSaplingGreen.MapEntry: Starscare Sapling Green
