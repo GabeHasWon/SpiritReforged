@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Content.Crossmod.Spooky.Tiles.Pots;
+using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
@@ -12,10 +13,9 @@ internal class SpiderGrottoGeneration : SpookyMicropass
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		if (!CrossMod.Spooky.TryCall(out Vector2 BiomePosition, "BiomePositions", "SpiderGrottoCenter"))
+		if (!CrossMod.Spooky.TryCall(out Point16 pos, "BiomePositions", "SpiderGrottoCenter"))
 			return;
 
-		Point pos = BiomePosition.ToTileCoordinates();
 		Vector2 center = pos.ToVector2() * 16f + new Vector2(8f);
 		float angle = MathHelper.Pi * 0.15f;
 		float otherAngle = MathHelper.PiOver2 - angle;

@@ -1,34 +1,50 @@
-﻿//using SpiritReforged.Content.Crossmod.Spooky.Tiles.Pots;
-//using Terraria.IO;
-//using Terraria.WorldBuilding;
+﻿using SpiritReforged.Content.Crossmod.Spooky.Tiles.Pots;
+using Terraria.DataStructures;
+using Terraria.IO;
+using Terraria.WorldBuilding;
 
-//namespace SpiritReforged.Common.ModCompat.Spooky.Generation;
+namespace SpiritReforged.Common.ModCompat.Spooky.Generation;
 
-//internal class NoseTempleGeneration : SpookyMicropass
-//{
-//	public override string WorldGenName => "Uncommon Spooky Forest";
-//	public override string ModifyType => "SpookyForest";
-//	public override string MatchPass => "Spooky Forest";
+internal class NoseTempleGeneration : SpookyMicropass
+{
+	public override string WorldGenName => "Uncommon Nose Temple";
+	public override string ModifyType => "SpookyHell";
+	public override string MatchPass => "Nose Cultist Dungeon";
 
-//	public override void Run(GenerationProgress progress, GameConfiguration config)
-//	{
-//		//Point pos = BiomePosition.ToPoint();
+	public override void Run(GenerationProgress progress, GameConfiguration config)
+	{
+		if (!CrossMod.Spooky.TryCall(out Point16 topLeft, "BiomePositions", "NoseTempleLeftmostPosition"))
+			return;
 
-//		for (int X = pos.X - Main.maxTilesX / 12; X <= pos.X + Main.maxTilesX / 12; X++)
-//		{
-//			for (int Y = (int)Main.worldSurface; Y < Main.maxTilesY - 200; Y++)
-//			{
-//				Tile tile = Main.tile[X, Y];
+		if (!CrossMod.Spooky.TryCall(out Point16 bottomRight, "BiomePositions", "NoseTempleRightmostPosition"))
+			return;
 
-//				if (tile.TileType == SpookyTile("SpookyStone") || tile.TileType == SpookyTile("SpookyGrass") || tile.TileType == SpookyTile("SpookyGrassGreen")
-//					|| tile.TileType == SpookyTile("MushroomMoss"))
-//				{
-//					if (WorldGen.genRand.NextBool(35))
-//						WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<UncommonSpookyPots>(), true, 24 + WorldGen.genRand.Next(0, 3));
-//				}
-//			}
-//		}
+		int originalY = topLeft.Y;
+		topLeft = new Point16(topLeft.X, Main.maxTilesY - 150);
+		bottomRight = new Point16(bottomRight.X, Main.maxTilesY - 40);
+		HashSet<int> walls = [Wall("NoseTempleWallPurple"), Wall("NoseTempleFancyWallPurple"), Wall("NoseTempleWallBGPurple"), Wall("NoseTempleWallGray"), 
+			Wall("NoseTempleFancyWallGray"), Wall("NoseTempleWallBGGray"), Wall("NoseTempleWallRed"), Wall("NoseTempleFancyWallRed"), Wall("NoseTempleWallBGRed"), 
+			Wall("NoseTempleWallGreen"), Wall("NoseTempleFancyWallGreen"), Wall("NoseTempleWallBGGreen")];
 
-//		static int SpookyTile(string name) => CrossMod.Spooky.Instance.Find<ModTile>(name).Type;
-//	}
-//}
+		for (int X = topLeft.X; X <= bottomRight.X; X++)
+		{
+			for (int Y = topLeft.Y; Y < bottomRight.Y; Y++)
+			{
+				if (WorldGen.InWorld(X, Y))
+				{
+					Tile tile = Main.tile[X, Y];
+
+					if (walls.Contains(tile.WallType))
+					{
+						int PotChance = Y >= originalY + 45 ? 150 : 50;
+
+						if (WorldGen.genRand.NextBool(PotChance))
+							WorldGen.PlaceObject(X, Y - 1, ModContent.TileType<UncommonSpookyPots>(), true, 18 + Main.rand.Next(0, 3));
+					}
+				}
+			}
+		}
+
+		static int Wall(string name) => CrossMod.Spooky.Find<ModWall>(name).Type;
+	}
+}

@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Content.Crossmod.Spooky.Tiles.Pots;
+using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
@@ -12,7 +13,7 @@ internal class SpookyForestGeneration : SpookyMicropass
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		if (!CrossMod.Spooky.TryCall(out Vector2 BiomePosition, "BiomePositions", "SpookyBiomeCenter"))
+		if (!CrossMod.Spooky.TryCall(out Point16 BiomePosition, "BiomePositions", "SpookyBiomeCenter"))
 			return;
 
 		Point pos = BiomePosition.ToPoint();

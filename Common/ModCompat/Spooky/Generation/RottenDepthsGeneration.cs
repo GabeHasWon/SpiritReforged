@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Content.Crossmod.Spooky.Tiles.Pots;
+using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
@@ -12,10 +13,10 @@ internal class RottenDepthsGeneration : SpookyMicropass
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		if (!CrossMod.Spooky.TryCall(out Vector2 topLeft, "BiomePositions", "ZombieOceanTopLeft"))
+		if (!CrossMod.Spooky.TryCall(out Point16 topLeft, "BiomePositions", "ZombieOceanTopLeft"))
 			return;
 
-		if (!CrossMod.Spooky.TryCall(out Vector2 bottomRight, "BiomePositions", "ZombieOceanBottomRight"))
+		if (!CrossMod.Spooky.TryCall(out Point16 bottomRight, "BiomePositions", "ZombieOceanBottomRight"))
 			return;
 
 		Point top = topLeft.ToPoint();
