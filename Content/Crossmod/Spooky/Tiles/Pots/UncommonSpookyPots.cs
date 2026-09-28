@@ -8,7 +8,6 @@ using SpiritReforged.Content.Forest.Cloud.Items;
 using SpiritReforged.Content.Underground.Items;
 using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Pottery;
-using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -253,24 +252,20 @@ public class UncommonSpookyPots : PotTile, ILootable
 			case Style.LowerCatacombs:
 
 				for (int g = 0; g < 3; g++)
-				{
-					int goreType = Mod.Find<ModGore>("PotCavern" + (g + variant * 3 + 1)).Type;
-					Gore.NewGore(source, center, Vector2.Zero, goreType);
-				}
+					Gore.NewGore(source, center, Vector2.Zero, Mod.Find<ModGore>("LowCat" + Main.rand.Next(4)).Type);
 
-				dustType = DustID.Pot;
+				dustType = DustID.GoldCoin;
 
 				break;
 
 			case Style.UpperCatacombs:
 
-				for (int g = 1; g < 4; g++)
-				{
-					int goreType = Mod.Find<ModGore>("PotIce" + g).Type;
-					Gore.NewGore(source, center, Vector2.Zero, goreType);
-				}
+				for (int g = 0; g < 2; g++)
+					Gore.NewGore(source, center, Vector2.Zero, Mod.Find<ModGore>("UpperCata" + Main.rand.Next(3)).Type);
 
-				dustType = DustID.Ice;
+				Gore.NewGore(source, center, Vector2.Zero, Mod.Find<ModGore>("UpperCataPlant" + Main.rand.Next(3)).Type);
+				Gore.NewGore(source, center, Vector2.Zero, Mod.Find<ModGore>("UpperCataClay" + Main.rand.Next(3)).Type);
+				dustType = DustID.Clay;
 
 				break;
 
@@ -302,24 +297,52 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 			case Style.TarPits:
 
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, 199);
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, 200);
-				dustType = DustID.WoodFurniture;
+				Gore.NewGore(source, GetRandom(), Main.rand.NextVector2Circular(2, 2), Mod.Find<ModGore>("TarTop" + Main.rand.Next(2)).Type);
+
+				for (int k = 0; k < 2; ++k)
+					Gore.NewGore(source, GetRandom(), Main.rand.NextVector2Circular(2, 2), Mod.Find<ModGore>("Tar" + Main.rand.Next(3)).Type);
 
 				break;
 
 			case Style.RottenDepths:
 
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, 201);
-				Gore.NewGore(source, GetRandom(), Vector2.Zero, 202);
-				dustType = DustID.Bone;
+				for (int k = 0; k < 3; ++k)
+				{
+					Gore.NewGore(source, GetRandom(), Main.rand.NextVector2Circular(2, 2), Mod.Find<ModGore>("Rotten" + Main.rand.Next(3)).Type);
+					Gore.NewGore(source, GetRandom(), Main.rand.NextVector2Circular(2, 2), Mod.Find<ModGore>("RottenBone" + Main.rand.Next(4)).Type);
+				}
 
 				break;
 
 			case Style.FetidFarms:
 
-				dustType = DustID.CorruptGibs;
-				Gore.NewGore(source, center, Vector2.Zero, Mod.Find<ModGore>("PotCorrupt1").Type);
+				if (variant == 0)
+				{
+					Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("Bag").Type);
+
+					for (int k = 0; k < 5; ++k)
+						Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("Tomato" + Main.rand.Next(3)).Type);
+				}
+				else if (variant == 1)
+				{
+					int adj = Main.rand.Next(2);
+
+					for (int k = adj; k < 2 + adj; ++k)
+						Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("ClayPot" + k).Type);
+
+					for (int k = 0; k < 2; ++k)
+						Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("ClayPotPlants" + k).Type);
+				}
+				else
+				{
+					Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("Bag").Type);
+
+					for (int k = 0; k < 2; ++k)
+						Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("Tomato" + Main.rand.Next(3)).Type);
+
+					for (int k = 0; k < 3; ++k)
+						Gore.NewGore(source, GetCenteredPosition(center), Vector2.Zero, Mod.Find<ModGore>("Veggie" + Main.rand.Next(7)).Type);
+				}
 
 				break;
 
