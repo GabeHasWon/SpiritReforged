@@ -1,0 +1,59 @@
+Diver: {
+	DisplayName: Taucher
+	Flavor: Nach einem üblen Sturz ist der Taucher bereit, in einem neuen Land neu zu beginnen, gespannt auf neue Gewässer.
+	Description: Startet mit vollständigem Taucher-Kosmetik-Set, Schwimmflossen und einem Anhänger des Ozeans.
+}
+
+Botanist: {
+	DisplayName: Botaniker
+	Flavor: Ein Kräuterkundiger, sozusagen. Sehr geschickt im Sammeln und Verwenden von Kräutern.
+	Description: Startet mit einem vollständigen Botaniker-Set, einer Sichel und ein paar Kräuterbeuteln bei einer Vogelscheuche.
+}
+
+Recluse: {
+	DisplayName: Einsiedler
+	Flavor: Für sie ist es einfacher, sich tief unter der Erde zu verkriechen, wo niemand sie stört. Angeln geht hier unten besser!
+	Description: Startet mit einem Angelhut, einer Fiberglas-Angelrute, etwas Köder und ein paar Kisten in einer unterirdischen Angelhütte.
+}
+
+Hunter: {
+	DisplayName: Jäger
+	Flavor: Wildtiere sind ihr Spiel. Ganz wie die Tiere der Savanne dreht sich für sie alles um die Jagd.
+	Description: Startet mit einem Jägergewehr, etwas Munition und Safari-Kosmetik in einer Savanne.
+}
+
+Hiker: {
+	DisplayName: Wanderer
+	Flavor: Erkundung befeuert die Freude, und sie haben die passende Ausrüstung dafür.
+	Description: Startet mit 60 Fackeln, 30 Leuchtstäben und 150 Seilen auf dem höchsten Hügel.
+}
+
+Caveman: {
+	DisplayName: Höhlenmensch
+	Flavor: Das einfache Leben erweist sich als produktiv. Ein Wort fasst es zusammen: Ugh.
+	Description: Startet mit einer Felltunika, einer Holzkeule ... irgendwo hoch oben unter der Erde.
+}
+
+Disentombed: {
+	DisplayName: Entgraben
+	Flavor: Dreitausend Jahre sind vergangen ... meine Herrschaft wird zurückkehren. Ich werde zurückkehren.
+	Description: Startet mit dem Mumien-Kosmetik-Set in der Ziggurat.
+}
+
+Worshipper: {
+	DisplayName: Anbeter
+	Flavor: Verflucht, zur Sonne zu beten und sie doch nie zu sehen. Hegt dennoch Hoffnung.
+	Description: Startet mit dem Sonnentänzer-Rüstungsset und einem Windscher-Zepter in einer unterirdischen Oase.
+}
+
+Purifier: {
+	DisplayName: Reiniger
+	Flavor: Abscheuliches Böses, verschwinde; brenne im Stich meiner Reinheit.
+	Description: Startet mit dem Bo-Stab und einer Mahakala-Maske in der Salzebene (falls möglich).
+}
+
+Enchanter: {
+	DisplayName: Verzauberer
+	Flavor: Hurra! Brauchst du noch etwas mehr Schwung? Fangen wir mit einem Funken an!
+	Description: Startet mit 60 Blitzpulver, 3 Chromatischem Wachs und dem Charmezauberer-Kosmetik-Set, zusammen mit dem Verzauberer-NPC.
+}

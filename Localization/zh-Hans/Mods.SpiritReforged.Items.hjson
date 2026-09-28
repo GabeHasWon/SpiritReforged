@@ -1017,7 +1017,7 @@ SparrowItem: {
 
 Blunderbuss: {
 	DisplayName: 喇叭型前膛枪
-	Tooltip: 发射大量子弹
+	Tooltip: 发射一大片子弹
 }
 
 SafekeeperRing: {
@@ -3416,7 +3416,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: 附魔工作台
+	DisplayName: 压蜡台
 	Tooltip: ""
 }
 

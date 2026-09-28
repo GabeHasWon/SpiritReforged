@@ -123,6 +123,8 @@ EcotoneEdges: {
 }
 
 DamageClasses.HybridDamageClass.DisplayName: 混合伤害
+// BackpackPickupEnabled: Direct pickup: Enabled
+// BackpackPickupDisabled: Direct pickup: Disabled
 
 CrossMod: {
 	Spooky: {

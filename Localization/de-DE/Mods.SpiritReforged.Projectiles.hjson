@@ -1,0 +1,103 @@
+HydrothermalVentPlume.DisplayName: Rauchschwaden
+Cannonbubble.DisplayName: Kanonenblase
+UrchinBall.DisplayName: Seeigelkugel
+UrchinSpike.DisplayName: Seeigelstachel
+JellyfishBolt.DisplayName: Elektrischer Bolzen
+JellyfishMinion.DisplayName: Kleine Qualle
+ReefWrathProj.DisplayName: Korallenriff
+JellyfishPet.DisplayName: Quallen-Haustier
+FairyMinion.DisplayName: Feen-Diener
+FairyProj.DisplayName: Magischer Bolzen
+StarPowderProj.DisplayName: Sternenstaub
+ButterflyMinion.DisplayName: Schmetterlings-Diener
+ToucanFeather.DisplayName: Tukanfeder
+ToucanMinion.DisplayName: Tukan-Diener
+TumblerPet.DisplayName: Purzelbusch-Haustier
+SunOrb.DisplayName: Sonnenkugel
+SunStaffHeld.DisplayName: Sonnenstab
+WheatgrassSeed.DisplayName: Weizengras-Samen
+RoyalKhopeshHeld.DisplayName: Königlicher Khopesh
+Zipline.DisplayName: Seilbahn
+RogueKnifeMinion.DisplayName: Verrostetes Messer
+CactusWallProj.DisplayName: Kaktuswand
+SkullSentryEye.DisplayName: Schädelwächter-Auge
+SkullSentryMucus.DisplayName: Schädelwächter-Schleim
+SkullSentrySentry.DisplayName: Schädelwächter
+ZiplineProj.DisplayName: Seilbahn-Projektil
+FallingBaobabFruit.DisplayName: Fallende Baobab-Frucht
+RollingCart.DisplayName: Rollender Karren
+RadonMossBobber.DisplayName: Radon-Moos-Pose
+OganessonMossBobber.DisplayName: Oganesson-Moos-Pose
+BuffAura.DisplayName: Buff-Aura
+WheezerCloud.DisplayName: Giftige Gaswolke
+Shockwave.DisplayName: Schockwelle
+EnergizedShockwave.DisplayName: Energetisierte Schockwelle
+RollingBowlder.DisplayName: Rollender Felsbrocken
+Firespike.DisplayName: Feuerdorn
+CannonBomb.DisplayName: Kanonenbomben-Schuss
+BigCannonBomb.DisplayName: "{$Projectiles.CannonBomb.DisplayName}"
+DrypowderSpray.DisplayName: "{$Items.Drypowder.DisplayName}"
+JinxArrow.DisplayName: Fluchpfeil
+JinxBowMinion.DisplayName: Fluchbogen-Diener
+RumExplosion.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+RumFire.DisplayName: "{$Items.ExplosiveRum.DisplayName}"
+FlarepowderDust.DisplayName: "{$Items.Flarepowder.DisplayName}"
+VexpowderBlueDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+VexpowderRedDust.DisplayName: "{$Items.VexpowderBlue.DisplayName}"
+EnergyImpact.DisplayName: Energiestampfer
+EnergyPlunge.DisplayName: "{$Projectiles.EnergyImpact.DisplayName}"
+FingerShot.DisplayName: Fingerschuss
+NeedleTrapProj.DisplayName: "{$Items.NeedleTrapItem.DisplayName}"
+ThornballThrown.DisplayName: "{$Items.Thornball.DisplayName}"
+ToucaneMinion.DisplayName: "{$Projectiles.ToucanMinion.DisplayName}"
+PhysicsChain.DisplayName: Kette
+GoldPhysicsChain.DisplayName: Goldkette
+CactusSpine.DisplayName: Kaktusstachel
+TinyDragonPet.DisplayName: "{$Items.TinyDragon.DisplayName}"
+DragonFireball.DisplayName: Drachenfeuerball
+PileOfConsequencesPet.DisplayName: Konsequenzen
+EnergyLaser.DisplayName: Energielaser
+BangleImpact.DisplayName: "{$Projectiles.Shockwave.DisplayName}"
+WindBlast.DisplayName: Windstoß
+DivebombScarab.DisplayName: Sturzflug-Skarabäus
+SwarmScarab.DisplayName: Schwarm-Skarabäus
+SerratedClawsHeld.DisplayName: "{$Items.SerratedClaws.DisplayName}"
+AdornedBowHeld.DisplayName: Geschmückter Bogen (gehalten)
+AdornedFlash.DisplayName: Geschmückter Blitz
+AdornedArrowDeathTrail.DisplayName: Geschmückter Pfeil-Todesschweif
+LocustCrookProjectile.DisplayName: Heuschrecken-Hirtenstab
+CrookLocust.DisplayName: Heuschrecke
+LocustDamageProjectile.DisplayName: Heuschrecken-Schadensprojektil
+LocustExplosion.DisplayName: Heuschrecken-Explosion
+CrookLocustGore.DisplayName: Hirtenstab-Heuschrecke (Überrest)
+RoyalKhopeshThrown.DisplayName: Königlicher Khopesh (geworfen)
+FloatingGem.DisplayName: Schwebender Edelstein
+BeamOLight.DisplayName: Lichtstrahl
+SandShockwavePillar.DisplayName: Sand-Schockwellensäule
+SandballProjectile.DisplayName: Sandball
+BabyAntlionProjectile.DisplayName: Baby-Ameisenlöwe
+ScarabLightPet.DisplayName: Skarabäulein
+SoilBallProjectile.DisplayName: Erdball
+TerracottaTombstoneProjectile.DisplayName: "{$Items.TerracottaTombstoneItem.DisplayName}"
+TerracottaGraveMarkerProjectile.DisplayName: "{$Items.TerracottaGraveMarkerItem.DisplayName}"
+TerracottaGravestoneProjectile.DisplayName: "{$Items.TerracottaGravestoneItem.DisplayName}"
+TerracottaObeliskProjectile.DisplayName: "{$Items.TerracottaObeliskItem.DisplayName}"
+DrywoodTombstoneProjectile.DisplayName: "{$Items.DrywoodTombstoneItem.DisplayName}"
+SavannaGravestoneProjectile.DisplayName: "{$Items.SavannaGravestoneItem.DisplayName}"
+DrywoodGraveMarkerProjectile.DisplayName: "{$Items.DrywoodGraveMarkerItem.DisplayName}"
+DrywoodCrossGraveMarkerProjectile.DisplayName: "{$Items.DrywoodCrossGraveMarkerItem.DisplayName}"
+ModernObeliskProjectile.DisplayName: "{$Items.ModernObeliskItem.DisplayName}"
+ModernTombscreenProjectile.DisplayName: "{$Items.ModernTombscreenItem.DisplayName}"
+ModernGravestoneProjectile.DisplayName: "{$Items.ModernGravestoneItem.DisplayName}"
+ModernHeadstoneProjectile.DisplayName: "{$Items.ModernHeadstoneItem.DisplayName}"
+SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
+SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
+SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
+SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
+Firefall.DisplayName: Feuerfall
+WindBurstProjectile.DisplayName: Windstoß-Explosion
+SingularCollapse.DisplayName: Singularität
+ShockGlyphLightningBolt.DisplayName: Blitzschlag
+MariglowSeed.DisplayName: Mariglow-Samen
+RageHit.DisplayName: Zorntreffer
+MirrorReturnPortal.DisplayName: Spiegel-der-Rückkehr-Portal

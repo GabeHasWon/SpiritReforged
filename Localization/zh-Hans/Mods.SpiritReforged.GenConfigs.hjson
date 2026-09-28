@@ -477,8 +477,8 @@ Pages: {
 			}
 
 			EnchantedWorkbenchChance: {
-				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] （房屋）工作台几率"
-				Tooltip: 地下小屋中附魔工作台生成的几率的分母（1/x）。
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] （房屋）压蜡台几率"
+				Tooltip: 地下小屋中压蜡台生成的几率的分母（1/x）。
 			}
 
 			DisplayCaseChance: {
