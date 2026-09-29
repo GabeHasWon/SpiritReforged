@@ -99,12 +99,12 @@ Emotes: {
 InfoDisplays: {
 	LedgerInfoDisplay: {
 		DisplayName: Стоимость предметов
-		Description: Видимость стоимости: ВКЛ
+		Description: Стоимость видима
 	}
 
 	ScryingLensInfoDisplay: {
 		DisplayName: Трансмутации в мерцании
-		Description: Видимость трансмутаций: ВКЛ
+		Description: Трансмутации видимы
 	}
 }
 
@@ -127,5 +127,5 @@ EcotoneEdges: {
 }
 
 DamageClasses.HybridDamageClass.DisplayName: ед. гибридного урона
-// BackpackPickupEnabled: Direct pickup: Enabled
-// BackpackPickupDisabled: Direct pickup: Disabled
+BackpackPickupEnabled: Автоматический подбор предметов: ВКЛ
+BackpackPickupDisabled: Автоматический подбор предметов: ВЫКЛ
