@@ -274,6 +274,7 @@ class ShovelClubBoneProjectile : ModProjectile
 		Projectile.Size = new(16);
 		Projectile.penetrate = 1;
 
+		Projectile.rotation = Main.rand.NextFloat(6.28f);
 		Projectile.frame = Main.rand.Next(2);
 	}
 
