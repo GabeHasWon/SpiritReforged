@@ -6,13 +6,36 @@ using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.PumpkinClub;
 
+[AutoloadGlowmask("255,255,255", false)]
 class PumpkinClubProj : BaseClubProj
 {
+	public static readonly SoundStyle LiquidExplosion = new("SpiritReforged/Assets/SFX/Projectile/Explosion_Liquid")
+	{
+		PitchVariance = 0.2f,
+		Volume = 0.8f,
+		MaxInstances = 2
+	};
+
+	public static readonly SoundStyle GenericExplosion = new("SpiritReforged/Assets/SFX/Projectile/Explosion_Generic")
+	{
+		PitchVariance = 0.2f,
+		Volume = 0.5f,
+		MaxInstances = 2
+	};
+
+	public static readonly SoundStyle BalloonExplosion = new("SpiritReforged/Assets/SFX/Projectile/Explosion_Balloon")
+	{
+		PitchVariance = 0.2f,
+		Volume = 0.2f,
+		MaxInstances = 2
+	};
+
 	public PumpkinClubProj() : base(new Vector2(94, 88)) { }
 
 	public override float WindupTimeRatio => 0.8f;
@@ -85,17 +108,17 @@ class PumpkinClubProj : BaseClubProj
 
 		float strength = FullCharge ? 1f : 0.75f;
 
-		for (int i = 0; i < (FullCharge ? 15 : 10); i++)
+		for (int i = 0; i < (FullCharge ? 25 : 10); i++)
 		{
 			Vector2 velocity = Vector2.UnitX.RotatedByRandom(0.3f) * Main.rand.NextFloat(2f) * Projectile.direction - Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(1.2f);
 
 			velocity *= strength;
 
 			Dust.NewDustPerfect(position + Main.rand.NextVector2Circular(10, 10), DustID.Torch,
-				velocity * Main.rand.NextFloat(15f), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
+				velocity * Main.rand.NextFloat(15f), 0, default, Main.rand.NextFloat(4f)).noGravity = true;
 
 			Dust.NewDustPerfect(position + Main.rand.NextVector2Circular(10, 10), DustID.Torch,
-				velocity * Main.rand.NextFloat(5f), 0, default, Main.rand.NextFloat(1.5f));
+				velocity * Main.rand.NextFloat(5f), 0, default, Main.rand.NextFloat(2.5f));
 
 			Dust.NewDustPerfect(position + Main.rand.NextVector2Circular(10, 10), DustID.Pumpkin,
 				Main.rand.NextVector2Circular(12, 12) * strength, 70, default, Main.rand.NextFloat(3f)).noGravity = true;
@@ -103,10 +126,14 @@ class PumpkinClubProj : BaseClubProj
 
 		if (FullCharge)
 		{
+			SoundEngine.PlaySound(LiquidExplosion, Projectile.Center);
+			SoundEngine.PlaySound(GenericExplosion, Projectile.Center);
+			SoundEngine.PlaySound(BalloonExplosion, Projectile.Center);
+
 			for (int i = 0; i < 5; i++)
 			{
 				Vector2 pos = position + Main.rand.NextVector2Circular(25, 25) - Vector2.UnitY * 30;
-				Vector2 velocity = Vector2.UnitX.RotatedByRandom(0.3f) * Main.rand.NextFloat(5, 7) * Projectile.direction - Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(2f);
+				Vector2 velocity = Vector2.UnitX.RotatedByRandom(0.3f) * Main.rand.NextFloat(3, 6) * Projectile.direction - Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(2f);
 
 				Projectile.NewProjectile(Projectile.GetSource_FromThis("SpiritReforged: Pumpkin Club Smash"), pos,
 					velocity, ModContent.ProjectileType<PumpkinEmberProjectile>(), Projectile.damage / 3, Projectile.knockBack / 5, Projectile.owner);
@@ -192,6 +219,27 @@ class PumpkinClubProj : BaseClubProj
 
 		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
 		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
+	}
+
+	public override void SafeDraw(SpriteBatch spriteBatch, Texture2D texture, Color lightColor, Vector2 handPosition, Vector2 drawPosition)
+	{
+		var glow = GlowmaskProjectile.ProjIdToGlowmask[Type].Glowmask.Value;
+		float ease = EaseBuilder.EaseCubicIn.Ease(GetWindupProgress);
+		if ((AIStates)AiState is AIStates.POST_SMASH)
+			ease = EaseBuilder.EaseCubicInOut.Ease(_lingerTimer / (float)LingerTime);
+
+		var frame = glow.Frame(1, 2, 0, Projectile.frame);
+
+		Main.EntitySpriteDraw(glow, drawPosition, frame, Projectile.GetAlpha(Color.Orange * ease), Projectile.rotation, HoldPoint, TotalScale, Effects, 0);
+
+		for (int i = 0; i < 6; i++)
+		{
+			Vector2 offset = Vector2.UnitX.RotatedBy(MathHelper.TwoPi * i / 6f) * 2;
+
+			Main.EntitySpriteDraw(glow, drawPosition + offset, frame, Projectile.GetAlpha(Color.DarkOrange.Additive() * ease) * 0.25f, Projectile.rotation, HoldPoint, TotalScale, Effects, 0);
+		}
+
+		Main.EntitySpriteDraw(glow, drawPosition, frame, Projectile.GetAlpha(Color.OrangeRed.Additive() * ease), Projectile.rotation, HoldPoint, TotalScale, Effects, 0);
 	}
 }
 

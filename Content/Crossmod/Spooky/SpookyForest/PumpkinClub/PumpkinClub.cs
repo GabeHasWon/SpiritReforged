@@ -1,8 +1,10 @@
 ﻿using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.Visuals.Glowmasks;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.PumpkinClub;
 
 // TODO: obtainment, balance
+[AutoloadGlowmask("255,255,255")]
 public class PumpkinClub : ClubItem
 {
 	internal override float DamageScaling => 1.95f;
