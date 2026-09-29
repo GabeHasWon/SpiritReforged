@@ -3648,3 +3648,8 @@ PumpkinClub: {
 	// DisplayName: Pumpkin Club
 	// Tooltip: ""
 }
+
+ShovelClub: {
+	// DisplayName: Shovel Club
+	// Tooltip: ""
+}
