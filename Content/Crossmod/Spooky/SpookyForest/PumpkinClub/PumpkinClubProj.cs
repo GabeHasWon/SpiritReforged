@@ -133,7 +133,7 @@ class PumpkinClubProj : BaseClubProj
 			for (int i = 0; i < 5; i++)
 			{
 				Vector2 pos = position + Main.rand.NextVector2Circular(25, 25) - Vector2.UnitY * 30;
-				Vector2 velocity = Vector2.UnitX.RotatedByRandom(0.3f) * Main.rand.NextFloat(3, 6) * Projectile.direction - Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(2f);
+				Vector2 velocity = -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(4f);
 
 				Projectile.NewProjectile(Projectile.GetSource_FromThis("SpiritReforged: Pumpkin Club Smash"), pos,
 					velocity, ModContent.ProjectileType<PumpkinEmberProjectile>(), Projectile.damage / 3, Projectile.knockBack / 5, Projectile.owner);
@@ -144,7 +144,7 @@ class PumpkinClubProj : BaseClubProj
 			for (int i = 1; i <= 10; i++)
 			{
 				Vector2 pos = position + Main.rand.NextVector2Circular(25, 25) - Vector2.UnitY * 30;
-				Vector2 velocity = Vector2.UnitX.RotatedByRandom(0.3f) * Main.rand.NextFloat(9) * Projectile.direction - Vector2.UnitY.RotatedByRandom(0.7f) * Main.rand.NextFloat(8f);
+				Vector2 velocity = Main.rand.NextVector2Circular(7f, 7f) - Vector2.UnitY * 4f;
 
 				var g = Gore.NewGorePerfect(Projectile.GetSource_FromThis("SpiritReforged: Pumpkin Club Smash"), pos,
 					velocity, Mod.Find<ModGore>("PumpkinClubGore_0" + i).Type, Main.rand.NextFloat(0.9f, 1.2f));
@@ -155,9 +155,7 @@ class PumpkinClubProj : BaseClubProj
 				g.sticky = !Main.rand.NextBool(5);
 			}
 
-			float angle = MathHelper.PiOver4 * 1.5f;
-			if (Projectile.direction > 0)
-				angle = -angle + MathHelper.Pi;
+			float angle = MathHelper.PiOver2;
 
 			PumpkinShockwaveCircle(Vector2.Lerp(Projectile.Center, Owner.Center, 0.1f) - Vector2.UnitY * 16, 240, angle, 1f, Color.Orange.Additive(), Color.DarkOrange);
 
@@ -246,7 +244,7 @@ class PumpkinClubProj : BaseClubProj
 class PumpkinEmberProjectile : ModProjectile, IDrawPixelated
 {
 	private VertexTrail[] _trails;
-	private static int MAX_TIMELEFT = 600;
+	private const int MAX_TIMELEFT = 900;
 
 	public bool HitTile
 	{

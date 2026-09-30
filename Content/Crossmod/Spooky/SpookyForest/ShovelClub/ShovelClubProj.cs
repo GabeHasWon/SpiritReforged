@@ -11,6 +11,7 @@ using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.TileCommon;
+using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.ShovelClub;
 class ShovelClubProj : BaseClubProj
@@ -26,6 +27,9 @@ class ShovelClubProj : BaseClubProj
 	bool DugTile = false;
 
 	int pauseTimer;
+
+	// Use the light color of the players center instead of club position
+	public override Color? GetAlpha(Color lightColor) => Lighting.GetColor(Utils.ToTileCoordinates(Owner.Center));
 
 	public override void OnSwingStart()
 	{
@@ -72,7 +76,7 @@ class ShovelClubProj : BaseClubProj
 		if (validTile && CanCollide(swingProgress) && !DugTile)
 		{
 			SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
-			pauseTimer = 9;
+			pauseTimer = FullCharge ? 9 : 2;
 			DugTile = true;
 		}
 
@@ -92,18 +96,18 @@ class ShovelClubProj : BaseClubProj
 	{
 		float strength = FullCharge ? 1f : 0.66f;
 
-		if (Main.myPlayer == owner.whoAmI)
-		{
-			var direction = Vector2.Normalize(Projectile.oldPosition - Projectile.position);
-			ScreenshakeHelper.Shake(owner.Center, direction, 1 + Charge * 2, 6, (int)(10 * (0.5f + Charge / 2)));
-		}
-
 		DustClouds(4);
 
 		Collision.HitTiles(Projectile.Center + Main.rand.NextVector2Circular(25, 25), Vector2.Zero, 16, 16);
 
 		if (FullCharge)
 		{
+			if (Main.myPlayer == owner.whoAmI)
+			{
+				var direction = Vector2.Normalize(Projectile.oldPosition - Projectile.position);
+				ScreenshakeHelper.Shake(owner.Center, direction, 1 + Charge * 2, 6, (int)(10 * (0.5f + Charge / 2)));
+			}
+
 			for (int i = 0; i < 5; i++)
 			{
 				Vector2 particleVel = Vector2.UnitX.RotatedByRandom(0.5f) * Projectile.direction * Main.rand.NextFloat(4f, 9f) * strength - Vector2.UnitY * 5f * strength;
@@ -209,8 +213,11 @@ class ShovelClubProj : BaseClubProj
 		if (!Main.dedServ)
 		{
 			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, owner.Center);
-			SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, owner.Center);
-			SoundEngine.PlaySound(DefaultSmash with { Volume = 0.5f, PitchVariance = 0.2f }, owner.Center);
+			if (FullCharge)
+			{
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact, owner.Center);
+				SoundEngine.PlaySound(DefaultSmash with { Volume = 0.5f, PitchVariance = 0.2f }, owner.Center);
+			}
 		}
 	}
 
@@ -262,7 +269,7 @@ class ShovelClubBoneProjectile : ModProjectile
 		ProjectileID.Sets.TrailCacheLength[Type] = 5;
 		ProjectileID.Sets.TrailingMode[Type] = 0;
 
-		Main.projFrames[Type] = 2;
+		Main.projFrames[Type] = 4;
 	}
 
 	public override void SetDefaults()
@@ -275,7 +282,8 @@ class ShovelClubBoneProjectile : ModProjectile
 		Projectile.penetrate = 1;
 
 		Projectile.rotation = Main.rand.NextFloat(6.28f);
-		Projectile.frame = Main.rand.Next(2);
+		// First frame (skull) 10% of the time, otherwise on of the other three with equal chance
+		Projectile.frame = Main.rand.NextBool(10) ? 0 : Main.rand.Next(1, 4);
 	}
 
 	public override void AI()
@@ -304,35 +312,34 @@ class ShovelClubBoneProjectile : ModProjectile
 	{
 		SoundEngine.PlaySound(SoundID.NPCHit2, Projectile.Center);
 
-		for (int i = 0; i < 5; i++)
+		for (int i = 0; i < 4; i++)
 		{
 			Vector2 particleVel = Main.rand.NextVector2CircularEdge(5, 5);
-			var p = new ImpactLine(Projectile.Center, particleVel, Color.White * 0.65f, new Vector2(0.15f, 0.6f) * 0.66f, Main.rand.Next(20, 30), 0.85f);
+			var p = new ImpactLine(Projectile.Center, particleVel, Color.DarkOliveGreen, new Vector2(0.1f, 0.5f), Main.rand.Next(10, 20), 0.95f);
 			p.UseLightColor = true;
 			ParticleHandler.SpawnParticle(p);
 
 			Dust.NewDustPerfect(Projectile.Center, DustID.Bone, Main.rand.NextVector2Circular(5, 5), 50, default, Main.rand.NextFloat(1f, 2f)).noGravity = true;
 		}
 
-		float strength = Main.rand.NextFloat(0.9f, 1.1f);
+		/*float strength = Main.rand.NextFloat(0.9f, 1.1f);
 
 		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, new(91, 91, 61, 50), new(36, 36, 24), 1f, 50 * strength, (int)(30 * strength), "Smoke", Vector2.One, EaseFunction.EaseQuinticOut)
-		{ Angle = Main.rand.NextFloat(MathHelper.TwoPi) });
-
+		{ Angle = Main.rand.NextFloat(MathHelper.TwoPi) });*/
 	}
 
 	public override bool PreDraw(ref Color lightColor)
 	{
 		var tex = TextureAssets.Projectile[Type].Value;
 
-		var frame = tex.Frame(1, 2, 0, Projectile.frame);
+		var frame = tex.Frame(1, 4, 0, Projectile.frame);
 
 		for (int i = 0; i < Projectile.oldPos.Length; i++)
 		{
 			float lerp = 1f - i / (float)Projectile.oldPos.Length;
 			Vector2 pos = Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition;
 
-			Main.spriteBatch.Draw(tex, pos, frame, lightColor * lerp, Projectile.rotation, frame.Size() / 2f, Projectile.scale, 0f, 0f);
+			Main.spriteBatch.Draw(tex, pos, frame, lightColor * lerp * 0.5f, Projectile.rotation, frame.Size() / 2f, Projectile.scale, 0f, 0f);
 		}
 
 		Main.spriteBatch.Draw(tex, Projectile.Center - Main.screenPosition, frame, lightColor, Projectile.rotation, frame.Size() / 2f, Projectile.scale, 0f, 0f);
