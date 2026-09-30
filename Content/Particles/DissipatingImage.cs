@@ -24,7 +24,7 @@ public class DissipatingImage : Particle
 
 	public virtual EaseFunction DistortEasing { get; set; } = EaseFunction.EaseQuadIn;
 
-	new private readonly Texture2D _texture;
+	private readonly Texture2D _texture;
 	private readonly float _maxDistortion;
 	private readonly Color _tint;
 	private readonly Vector2 _noiseStretch = new (1);
@@ -36,13 +36,13 @@ public class DissipatingImage : Particle
 
 	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, string texture, int maxTime)
 	{
-		LocalPosition = position;
+		Position = position;
 		Rotation = rotation;
-		Scale = new Vector2(scale);
+		Scale = scale;
 		_texture = AssetLoader.LoadedTextures[texture].Value;
 		_maxDistortion = maxDistortion;
 		_tint = color;
-		TimeMax = maxTime;
+		MaxTime = maxTime;
 	}
 
 	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, string texture, Vector2 noiseScale, Vector2 textureExponentRange, int maxTime) : this(position, color, rotation, scale, maxDistortion, texture, maxTime)
@@ -53,13 +53,13 @@ public class DissipatingImage : Particle
 
 	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, Texture2D texture, int maxTime)
 	{
-		LocalPosition = position;
+		Position = position;
 		Rotation = rotation;
-		Scale = new Vector2(scale);
+		Scale = scale;
 		_texture = texture;
 		_maxDistortion = maxDistortion;
 		_tint = color;
-		TimeMax = maxTime;
+		MaxTime = maxTime;
 	}
 
 	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, Texture2D texture, Vector2 noiseScale, Vector2 textureExponentRange, int maxTime) : this(position, color, rotation, scale, maxDistortion, texture, maxTime)
@@ -70,12 +70,14 @@ public class DissipatingImage : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		_opacity = EaseFunction.EaseQuadOut.Ease(Progress);
 		_opacity = (float)Math.Sin(_opacity * MathHelper.Pi);
 		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
 	}
 
-	public virtual Color GetLightColor() => UseLightColor ? Lighting.GetColor(LocalPosition.ToTileCoordinates()) : Color.White;
+	public virtual Color GetLightColor() => UseLightColor ? Lighting.GetColor(Position.ToTileCoordinates()) : Color.White;
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
@@ -110,7 +112,7 @@ public class DissipatingImage : Particle
 			Color = GetLightColor(),
 			Height = size.Y,
 			Length = size.X,
-			Position = LocalPosition + settings.AnchorPosition,
+			Position = Position + settings.AnchorPosition,
 			Rotation = Rotation,
 		};
 		PrimitiveRenderer.DrawPrimitiveShape(square, effect);

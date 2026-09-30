@@ -2,7 +2,6 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.SaltFlats.Tiles;
-using SpiritReforged.Content.Savanna.Items.WrithingSticks;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Items;

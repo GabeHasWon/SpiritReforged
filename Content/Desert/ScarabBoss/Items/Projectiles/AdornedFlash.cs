@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -135,7 +134,7 @@ public sealed class AdornedFlash : ModProjectile
 
 		for (int i = 0; i < 2; i++)
 		{
-			ParticleHandler.SpawnParticle(new SharpStarParticle(
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(
 			target.Center,
 			Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(5f, 7f),
 			Color.White.Additive(),
@@ -158,7 +157,7 @@ public sealed class AdornedFlash : ModProjectile
 				if (_idx2 > 2)
 					_idx2 = 0;
 
-				ParticleHandler.SpawnParticle(new PixelBloom(target.Center, velocity, _primaryPalette.Colors[_idx1].Additive(), _primaryPalette.Colors[_idx2].Additive(), scale, maxTime, DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new PixelBloom(target.Center, velocity, _primaryPalette.Colors[_idx1].Additive(), _primaryPalette.Colors[_idx2].Additive(), scale, maxTime, DecelerateAction));
 			}
 		}
 

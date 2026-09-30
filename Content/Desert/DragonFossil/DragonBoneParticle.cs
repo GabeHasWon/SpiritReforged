@@ -18,6 +18,10 @@ public class DragonBoneParticle(int style) : Particle
 		if (_timeActive > timeLeft - 10)
 			Scale *= 0.9f;
 
+		Velocity += Vector2.UnitY * 0.08f;
+		Scale -= 0.005f;
+		Rotation += 0.04f;
+
 		base.Update(ref settings);
 	}
 
@@ -26,6 +30,6 @@ public class DragonBoneParticle(int style) : Particle
 		Texture2D texture = Texture;
 		Rectangle source = texture.Frame(1, 4, 0, _style, 0, -2);
 
-		spritebatch.Draw(texture, LocalPosition + settings.AnchorPosition, source, Color.White, Rotation, source.Size() / 2, Scale, default, 0);
+		spritebatch.Draw(texture, Position + settings.AnchorPosition, source, Color.White, Rotation, source.Size() / 2, Scale, default, 0);
 	}
 }

@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Glyphs.Sanguine;
@@ -121,7 +121,7 @@ public partial class SanguineGlyph
 			Vector2 dir = target.DirectionTo(Player.Center);
 			Vector2 position = target.Center + dir * target.width / 2;
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(position, Main.rand.NextVector2Circular(1.5f, 1.5f), Color.DarkRed * 0.3f, 0.06f, EaseFunction.EaseQuadOut, 30, false)
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, Main.rand.NextVector2Circular(1.5f, 1.5f), Color.DarkRed * 0.3f, 0.06f, EaseFunction.EaseQuadOut, 30, false)
 			{
 				Pixellate = true,
 				PixelDivisor = 4
@@ -131,21 +131,21 @@ public partial class SanguineGlyph
 			dust.noGravity = Main.rand.NextBool();
 			dust.fadeIn = 2;
 
-			ParticleHandler.SpawnParticle(new StickyBloodParticle(position, Main.rand.NextVector2Circular(1.5f, 1.5f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), 0.2f));
+			ParticleRenderers.UnderProjectiles.Add(new StickyBloodParticle(position, Main.rand.NextVector2Circular(1.5f, 1.5f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), 0.2f));
 
 			if (storedHealth > 0)
 			{
 				for (int i = 0; i < 2; i++)
 				{
-					ParticleHandler.SpawnParticle(new BloodHit(target, dir * target.width / 2, Main.rand.Next(30, 40), dir.ToRotation(), Main.rand.NextFloat(0.9f, 1.1f)));
+					ParticleRenderers.UnderProjectiles.Add(new BloodHit(target, dir * target.width / 2, Main.rand.Next(30, 40), dir.ToRotation(), Main.rand.NextFloat(0.9f, 1.1f)));
 
 					dust = Dust.NewDustPerfect(position, DustID.Blood, -Vector2.UnitY * 2f + position.DirectionFrom(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 6f), 70, default, Main.rand.NextFloat(0.6f, 1.2f));
 					dust.noGravity = Main.rand.NextBool();
 					dust.fadeIn = 2;
 
-					ParticleHandler.SpawnParticle(new StickyBloodParticle(position, -Vector2.UnitY * 2f + position.DirectionFrom(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 4f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), 0.1f));
+					ParticleRenderers.UnderProjectiles.Add(new StickyBloodParticle(position, -Vector2.UnitY * 2f + position.DirectionFrom(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 4f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), 0.1f));
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, position.DirectionFrom(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 3f), Color.DarkRed * 0.5f, 0.09f, EaseFunction.EaseQuadOut, 60, false)
+					ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, position.DirectionFrom(Player.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 3f), Color.DarkRed * 0.5f, 0.09f, EaseFunction.EaseQuadOut, 60, false)
 					{
 						Pixellate = true,
 						PixelDivisor = 3
@@ -164,7 +164,7 @@ public partial class SanguineGlyph
 				Vector2 velocity = Vector2.Normalize(posOffset).RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(5, 8);
 				float scale = Main.rand.NextFloat(0.75f, 1.33f);
 
-				ParticleHandler.SpawnQueuedParticle(new SanguineBlood(Player, posOffset, velocity, scale, 60), Main.rand.Next(10));
+				ParticleRenderers.QueueParticle(ParticleRenderers.OverPlayers, new SanguineBlood(Player, posOffset, velocity, scale, 60), Main.rand.Next(10));
 			}
 		}
 	}

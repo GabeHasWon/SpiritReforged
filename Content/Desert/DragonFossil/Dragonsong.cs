@@ -274,12 +274,9 @@ public class Dragonsong : ModItem
 			for (int i = 0; i < 4; i++)
 				ParticleRenderers.OverInventory.Add(new DragonBoneParticle(i)
 				{
-					LocalPosition = Main.MouseScreen,
-					Scale = Vector2.One,
-					Velocity = (Vector2.UnitY * -Main.rand.NextFloat(2)).RotatedByRandom(1),
-					AccelerationPerFrame = Vector2.UnitY * 0.08f,
-					ScaleVelocity = -new Vector2(0.005f),
-					RotationVelocity = 0.04f
+					Position = Main.MouseScreen,
+					Scale = 1f,
+					Velocity = (Vector2.UnitY * -Main.rand.NextFloat(2)).RotatedByRandom(1)
 				});
 		}
 	}

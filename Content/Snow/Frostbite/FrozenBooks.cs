@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -69,7 +69,7 @@ public class FrozenBooks : ModTile
 
 		for (int i = 0; i < 2; i++)
 		{
-			ParticleHandler.SpawnParticle(new DissipatingImage(GetContinuous(world), color * 0.1f * progress, Main.rand.NextFloat(MathHelper.Pi), 2.5f, Main.rand.NextFloat(0.5f), "SmokeSimple", new(0.6f, 0.6f), new(3, 1.5f), 40)
+			ParticleRenderers.UnderProjectiles.Add(new DissipatingImage(GetContinuous(world), color * 0.1f * progress, Main.rand.NextFloat(MathHelper.Pi), 2.5f, Main.rand.NextFloat(0.5f), "SmokeSimple", new(0.6f, 0.6f), new(3, 1.5f), 40)
 			{
 				UseLightColor = true,
 				Pixellate = true,
@@ -79,7 +79,7 @@ public class FrozenBooks : ModTile
 			var pos = GetContinuous(world) + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f);
 			var vel = world.DirectionTo(pos).RotatedBy(MathHelper.PiOver2).RotatedByRandom(.1f) * Main.rand.NextFloat(1f, 5f);
 
-			ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, Color.White * progress, Color.CornflowerBlue, Main.rand.NextFloat(0.15f, 0.45f), Main.rand.Next(30, 50), 1, delegate (Particle p)
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, vel, Color.White * progress, Color.CornflowerBlue, Main.rand.NextFloat(0.15f, 0.45f), Main.rand.Next(30, 50), 1, delegate (Particle p)
 			{
 				p.Velocity *= .95f;
 				p.Velocity = p.Velocity.RotatedBy(p.Position.AngleTo(world) * .025f);
@@ -88,7 +88,7 @@ public class FrozenBooks : ModTile
 
 		if (Main.rand.NextBool(5))
 		{
-			ParticleHandler.SpawnParticle(new SnowflakeParticle(GetContinuous(world), Vector2.UnitY * Main.rand.NextFloat(), Color.White * .3f * progress, Color.RoyalBlue * .6f * progress, Main.rand.NextFloat(.5f), 60, 0, Main.rand.Next(3), delegate (Particle p)
+			ParticleRenderers.UnderProjectiles.Add(new SnowflakeParticle(GetContinuous(world), Vector2.UnitY * Main.rand.NextFloat(), Color.White * .3f * progress, Color.RoyalBlue * .6f * progress, Main.rand.NextFloat(.5f), 60, 0, Main.rand.Next(3), delegate (Particle p)
 			{
 				p.Velocity *= .98f;
 				p.Velocity = p.Velocity.RotatedByRandom(.05f);

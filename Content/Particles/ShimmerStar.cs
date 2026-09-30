@@ -10,15 +10,17 @@ public class ShimmerStar : Particle
 
 	public ShimmerStar(Vector2 position, Color color, float scale, int maxTime, Vector2 velocity = default)
 	{
-		LocalPosition = position;
+		Position = position;
 		_color = color.Additive();
-		Scale = new Vector2(scale);
-		TimeMax = maxTime;
+		Scale = scale;
+		MaxTime = maxTime;
 		Velocity = velocity;
 	}
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		Rotation += 0.01f;
 		Velocity *= 0.98f;
 	}
@@ -27,8 +29,8 @@ public class ShimmerStar : Particle
 	{
 		Texture2D texture = Texture;
 		Color color = _color * Progress;
-		Vector2 scale = Scale * (1f - Progress);
+		float scale = Scale * (1f - Progress);
 
-		spritebatch.Draw(texture, LocalPosition + settings.AnchorPosition, null, color, Rotation, texture.Size() / 2, scale, 0, 0);
+		spritebatch.Draw(texture, Position + settings.AnchorPosition, null, color, Rotation, texture.Size() / 2, scale, 0, 0);
 	}
 }

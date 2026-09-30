@@ -2,7 +2,6 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
@@ -199,7 +198,7 @@ public class RoyalKhopeshThrown : ModProjectile
 			Color smokeColor = new Color(223, 219, 147) * 0.35f * progress;
 			float scale = Main.rand.NextFloat(0.05f, 0.1f) * progress;
 			var velSmoke = Projectile.velocity.RotatedByRandom(0.5f);
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40))
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -229,7 +228,7 @@ public class RoyalKhopeshThrown : ModProjectile
 			Color smokeColor = new Color(223, 219, 147) * 0.35f;
 			float scale = Main.rand.NextFloat(0.1f, 0.15f);
 			var velSmoke = Projectile.velocity.RotatedByRandom(0.1f) * 0.5f;
-			ParticleHandler.SpawnParticle(new SmokeCloud(adjustedPos, velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40))
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(adjustedPos, velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -273,8 +272,8 @@ public class RoyalKhopeshThrown : ModProjectile
 			{
 				var velocity = -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.2f, 0.5f);
 
-				ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, velocity, new Color(255, 255, 0, 0), new Vector2(0.2f, 0.4f), 15));
-				ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, velocity, new Color(255, 255, 255, 0).Additive(), new Vector2(0.2f, 0.4f), 10));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, velocity, new Color(255, 255, 0, 0), new Vector2(0.2f, 0.4f), 15));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, velocity, new Color(255, 255, 255, 0).Additive(), new Vector2(0.2f, 0.4f), 10));
 			}
 		}
 	}
@@ -310,7 +309,7 @@ public class RoyalKhopeshThrown : ModProjectile
 				float scale = Main.rand.NextFloat(0.05f, 0.1f);
 				var velSmoke = -Projectile.velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat();
 				Vector2 spawnPos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
-				ParticleHandler.SpawnParticle(new SmokeCloud(spawnPos, velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+				ParticleRenderers.OverPlayers.Add(new SmokeCloud(spawnPos, velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 				Dust.NewDustPerfect(Projectile.Center, DustID.Sand, velSmoke * Main.rand.NextFloat(2), 150, default, 1f).noGravity = true;
 			}

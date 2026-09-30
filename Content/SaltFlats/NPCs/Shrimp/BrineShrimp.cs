@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
-using System.IO;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.SaltFlats.NPCs.Shrimp;

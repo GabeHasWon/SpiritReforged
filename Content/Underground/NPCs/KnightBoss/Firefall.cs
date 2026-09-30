@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Underground.NPCs.KnightBoss;
@@ -38,7 +38,7 @@ public class Firefall : ModProjectile
 		if (!Main.dedServ)
 		{
 			Color[] colors = [new Color(255, 200, 0, 100), new Color(255, 115, 0, 100), new Color(200, 3, 33, 100)];
-			ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, Vector2.Zero, colors, 1, 0.2f, Common.Easing.EaseFunction.EaseQuarticOut, 20));
+			ParticleRenderers.UnderProjectiles.Add(new FireParticle(Projectile.Center, Vector2.Zero, colors, 1, 0.2f, Common.Easing.EaseFunction.EaseQuarticOut, 20));
 		}
 	}
 

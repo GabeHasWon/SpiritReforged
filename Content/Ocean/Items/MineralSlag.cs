@@ -1,7 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Utilities;
 
@@ -114,7 +114,7 @@ public class MineralSlagPickup : MineralSlag
 						var color = Color.Lerp(Color.Yellow, Color.Orange, Main.rand.NextFloat());
 						float magnitude = Main.rand.NextFloat();
 
-						ParticleHandler.SpawnParticle(new GlowParticle(Item.Bottom, Vector2.UnitY * -magnitude,
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Item.Bottom, Vector2.UnitY * -magnitude,
 							color, (1f - magnitude) * 0.5f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
 							{
 								p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f));

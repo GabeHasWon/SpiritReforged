@@ -1,14 +1,40 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Misc;
 using System.Reflection;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Common.Visuals;
 
-/// <summary> Provides additional utilities over <see cref="ABasicParticle"/>.<para/>
+/// <summary> Provides alternative utilities over <see cref="ABasicParticle"/>.<para/>
 /// See <see cref="ParticleRenderers"/> for more info. </summary>
 public abstract class Particle : IPooledParticle, IParticle
 {
-	private static readonly Dictionary<string, Asset<Texture2D>> _textureByName;
+	private static readonly Dictionary<string, Asset<Texture2D>> _textureByName = [];
+
+	public static Texture2D GetTexture<T>() where T : Particle
+	{
+		Type type = typeof(T);
+		if (_textureByName.TryGetValue(type.Name, out Asset<Texture2D> textureAsset))
+		{
+			return textureAsset.Value;
+		}
+		else //If the particle texture has not been initialized yet, create a new instance using reflection and fetch the texture a single time
+		{
+			List<object> parameters = [];
+			foreach (ConstructorInfo constructor in type.GetConstructors())
+			{
+				foreach (ParameterInfo parameter in constructor.GetParameters())
+					parameters.Add(!parameter.ParameterType.IsValueType ? null : Activator.CreateInstance(parameter.ParameterType));
+
+				break;
+			}
+
+			var instance = (T)Activator.CreateInstance(type, parameters.ToArray());
+			Texture2D texture = instance.Texture; //Force a texture initialization
+
+			return texture;
+		}
+	}
 
 	public virtual string TexturePath => DrawHelpers.RequestLocal(GetType(), GetType().Name);
 
@@ -31,24 +57,26 @@ public abstract class Particle : IPooledParticle, IParticle
 		}
 	}
 
-	public float Progress => (float)TimeActive / TimeMax;
+	public float Progress => (float)TimeActive / MaxTime;
 
 	public bool IsRestingInPool { get; protected set; }
 
-	public bool ShouldBeRemovedFromRenderer { get; protected set; }
+	public bool ShouldBeRemovedFromRenderer { get; set; }
 
-	public int TimeMax;
+	public int MaxTime;
 	public int TimeActive;
 	public float Rotation;
-	public Vector2 LocalPosition;
+	public float Scale = 1f;
+	public Vector2 Position;
 	public Vector2 Velocity;
-	public Vector2 Scale;
 
 	public virtual void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch) { }
 
 	public virtual void Update(ref ParticleRendererSettings settings)
 	{
-		if (TimeMax > 0 && ++TimeActive >= TimeMax)
+		Position += Velocity;
+
+		if (MaxTime > 0 && ++TimeActive >= MaxTime)
 			ShouldBeRemovedFromRenderer = true;
 	}
 
@@ -58,7 +86,16 @@ public abstract class Particle : IPooledParticle, IParticle
 
 public sealed class ParticleRenderers : ModSystem
 {
+	private record class ParticleQueue(ParticleRenderer Renderer, int Time)
+	{
+		public ParticleRenderer Renderer = Renderer;
+		public int Time = Time;
+	}
+
 	public static ParticleRenderer[] Renderers { get; private set; }
+	public static event Action<ParticleRenderer> OnDrawParticles;
+
+	private static Dictionary<IParticle, ParticleQueue> _particleQueue = new();
 
 	public static readonly ParticleRenderer OverInventory = new();
 	public static readonly ParticleRenderer OverHealthBars = new();
@@ -93,10 +130,34 @@ public sealed class ParticleRenderers : ModSystem
 		Renderers = renderers.ToArray();
 	}
 
+	public static void DrawParticles(SpriteBatch spriteBatch, ParticleRenderer renderer)
+	{
+		renderer.Draw(spriteBatch);
+		OnDrawParticles?.Invoke(renderer);
+	}
+
+	public static bool QueueParticle(ParticleRenderer renderer, Particle particle, int time) => _particleQueue.TryAdd(particle, new(renderer, time));
+
 	private static void UpdateParticles(On_Main.orig_UpdateParticleSystems orig, Main self)
 	{
-		OverInventory.Update();
-		OverHealthBars.Update();
+		foreach (ParticleRenderer renderer in Renderers)
+		{
+			renderer.Settings.AnchorPosition = -Main.screenPosition;
+			renderer.Update();
+		}
+
+		HashSet<IParticle> queuedForRemoval = []; //Update the particle queue
+		foreach (IParticle item in _particleQueue.Keys)
+		{
+			if (--_particleQueue[item].Time <= 0)
+			{
+				_particleQueue[item].Renderer.Add(item);
+				queuedForRemoval.Add(item);
+			}
+		}
+
+		foreach (IParticle item in queuedForRemoval)
+			_particleQueue.Remove(item);
 
 		orig(self);
 	}
@@ -110,7 +171,8 @@ public sealed class ParticleRenderers : ModSystem
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.BackgroundViewMatrix.TransformationMatrix);
 
-			UnderWalls.Draw(spriteBatch);
+			DrawParticles(spriteBatch, UnderWalls);
+
 			spriteBatch.RestartToDefault();
 		}
 
@@ -120,7 +182,9 @@ public sealed class ParticleRenderers : ModSystem
 	private static void PreDrawSolid(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 	{
 		orig(self);
+
 		UnderSolids.Draw(Main.spriteBatch);
+		OnDrawParticles?.Invoke(UnderSolids);
 	}
 
 	private static void PostDrawSolid(On_Main.orig_DoDraw_Tiles_Solid orig, Main self)
@@ -132,22 +196,23 @@ public sealed class ParticleRenderers : ModSystem
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
 
-			OverSolids.Draw(spriteBatch);
+			DrawParticles(spriteBatch, OverSolids);
+
 			spriteBatch.End();
 		}
 	}
 
 	private static void AroundNPC(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 	{
-		UnderNPCs.Draw(Main.spriteBatch);
+		DrawParticles(Main.spriteBatch, UnderNPCs);
 		orig(self, behindTiles);
-		OverNPCs.Draw(Main.spriteBatch);
+		DrawParticles(Main.spriteBatch, OverNPCs);
 	}
 
 	private static void PostDrawItems(On_Main.orig_DrawItems orig, Main self)
 	{
 		orig(self);
-		OverItems.Draw(Main.spriteBatch);
+		DrawParticles(Main.spriteBatch, OverItems);
 	}
 
 	private static void PreDrawProjectiles(On_Main.orig_DrawProjectiles orig, Main self)
@@ -155,17 +220,13 @@ public sealed class ParticleRenderers : ModSystem
 		if (UnderProjectiles.Particles.Count > 0)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
-			UnderProjectiles.Draw(spriteBatch);
-			spriteBatch.End();
 
-			orig(self);
+			DrawParticles(Main.spriteBatch, UnderProjectiles);
+			spriteBatch.End();
 		}
-		else
-		{
-			orig(self);
-		}
+
+		orig(self);
 	}
 
 	private static void PostDrawPlayers(On_Main.orig_DrawInfernoRings orig, Main self)
@@ -179,7 +240,7 @@ public sealed class ParticleRenderers : ModSystem
 			spriteBatch.End();
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
 
-			OverPlayers.Draw(spriteBatch);
+			DrawParticles(spriteBatch, OverPlayers);
 			spriteBatch.RestartToDefault();
 		}
 	}
@@ -187,12 +248,12 @@ public sealed class ParticleRenderers : ModSystem
 	private static void PostDrawInventory(On_Main.orig_DrawInventory orig, Main self)
 	{
 		orig(self);
-		OverInventory.Draw(Main.spriteBatch);
+		DrawParticles(Main.spriteBatch, OverInventory);
 	}
 
 	private static void PostDrawHealthBars(On_Main.orig_DrawInterface_14_EntityHealthBars orig, Main self)
 	{
 		orig(self);
-		OverHealthBars.Draw(Main.spriteBatch);
+		DrawParticles(Main.spriteBatch, OverHealthBars);
 	}
 }

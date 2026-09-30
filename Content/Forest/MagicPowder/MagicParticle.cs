@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Forest.MagicPowder;
 
@@ -8,8 +9,7 @@ public class MagicParticle : Particle
 {
 	private readonly int _frame;
 
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-	public override ParticleLayer DrawLayer => ParticleLayer.BelowProjectile;
+	public Color Color { get; protected set; }
 
 	public MagicParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime)
 	{
@@ -22,8 +22,10 @@ public class MagicParticle : Particle
 		_frame = Main.rand.Next(3);
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		Lighting.AddLight(Position, Color.ToVector3() * Scale * 0.5f);
 
 		Rotation += Velocity.Length() * 0.01f;
@@ -31,10 +33,10 @@ public class MagicParticle : Particle
 		Velocity *= 0.99f;
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		var texture = TextureAssets.Projectile[ModContent.ProjectileType<FlarepowderDust>()].Value;
-		var position = Position - Main.screenPosition;
+		var position = Position + settings.AnchorPosition;
 		var source = texture.Frame(1, 3, 0, _frame, sizeOffsetY: -2);
 		float scaleTimeModifier = EaseFunction.EaseCubicOut.Ease(1 - Progress);
 

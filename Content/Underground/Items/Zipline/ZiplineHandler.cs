@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
+﻿using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
@@ -116,7 +115,7 @@ internal class ZiplinePlayer : ModPlayer
 			return;
 
 		if (Main.timeForVisualEffects % 3 == 0)
-			ParticleHandler.SpawnParticle(new LightningParticle(start, end, Color.Red, 30, 8f));
+			ParticleRenderers.UnderProjectiles.Add(new LightningParticle(start, end, Color.Red, 30, 8f));
 
 		if (Main.rand.NextBool(3))
 			Dust.NewDustPerfect(start, DustID.Torch, Scale: 2).noGravity = true;
@@ -133,7 +132,7 @@ internal class ZiplinePlayer : ModPlayer
 
 			if (!_fast)
 			{
-				ParticleHandler.SpawnParticle(new TexturedPulseCircle(end, Color.White, Color.Red, .25f, 80f, 20, "supPerlin", Vector2.Zero, Common.Easing.EaseFunction.EaseCircularOut).WithSkew(.5f, end.AngleTo(start)));
+				ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(end, Color.White, Color.Red, .25f, 80f, 20, "supPerlin", Vector2.Zero, Common.Easing.EaseFunction.EaseCircularOut).WithSkew(.5f, end.AngleTo(start)));
 				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Pitch = .5f }, start);
 
 				_fast = true;

@@ -3,7 +3,6 @@ using SpiritReforged.Common.UI.Misc;
 using System.Reflection;
 using Terraria.GameContent.UI.Elements;
 using Terraria.UI;
-using Terraria.UI.Chat;
 
 namespace SpiritReforged.Common.UI.ModIconAnimation;
 

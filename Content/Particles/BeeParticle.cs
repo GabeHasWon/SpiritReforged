@@ -1,13 +1,17 @@
 ﻿using SpiritReforged.Common.Misc;
-using System.Reflection.Metadata;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class BeeParticle(Vector2 position, Vector2 velocity, float rotation, float scale, int maxTime) : FlyParticle(position, velocity, rotation, scale, maxTime)
 {
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		Velocity *= 0.96f;
 		Velocity = Velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.9f, 1.1f);
+
 		if (Main.rand.NextBool(60))
 			Velocity += Vector2.One.RotatedBy(6.28f / Main.rand.Next(1, 4));
 	}
@@ -20,9 +24,9 @@ public class LargeBeeParticle(Vector2 position, Vector2 velocity, float rotation
 	internal int _frame;
 	internal int _frameCounter;
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
-		base.Update();
+		base.Update(ref settings);
 
 		if (++_frameCounter > 3)
 		{
@@ -34,7 +38,7 @@ public class LargeBeeParticle(Vector2 position, Vector2 velocity, float rotation
 		}
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings,SpriteBatch spriteBatch)
 	{
 		Main.instance.LoadProjectile(ProjectileID.Bee);
 
@@ -62,6 +66,6 @@ public class LargeBeeParticle(Vector2 position, Vector2 velocity, float rotation
 		spriteBatch.End();
 		spriteBatch.BeginDefault();
 
-		spriteBatch.Draw(texture, Position - Main.screenPosition, frame, Color * fade, rotation, frame.Size() / 2, Scale, flip, 0);
+		spriteBatch.Draw(texture, Position - Main.screenPosition, frame, Lighting.GetColor(Position.ToPoint()) * fade, rotation, frame.Size() / 2, Scale, flip, 0);
 	}
 }

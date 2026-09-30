@@ -1,9 +1,9 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PlayerCommon.Interfaces;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -91,12 +91,11 @@ public class SerratedClaws : ModItem
 			var material = TileMaterial.FindMaterial(tile.TileType);
 			var hsl = Main.rgbToHsl(material.Color);
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(position, velocity, material.Color, scale, ease, duration)
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(position, velocity, material.Color, scale, ease, duration)
 			{
 				Pixellate = true,
 				PixelDivisor = 4,
-				TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.1f, Z = 0.5f }),
-				Layer = ParticleLayer.AbovePlayer
+				TertiaryColor = Main.hslToRgb(hsl with { X = hsl.X - 0.1f, Z = 0.5f })
 			});
 		}
 	}

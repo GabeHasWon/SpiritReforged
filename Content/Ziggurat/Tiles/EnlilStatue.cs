@@ -1,5 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 using TileHelper.Common;
@@ -68,7 +68,7 @@ public class EnlilStatue : ModTile, ILoadItem
 				Vector2 position = Main.rand.NextVector2FromRectangle(new(i * 16, (j + 3) * 16, 32, 2));
 				float magnitude = Main.rand.NextFloat();
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, Vector2.UnitY * -magnitude, Color.Goldenrod * opacity, (1f - magnitude) * opacity, Main.rand.Next(30, 120), 2));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, Vector2.UnitY * -magnitude, Color.Goldenrod * opacity, (1f - magnitude) * opacity, Main.rand.Next(30, 120), 2));
 			}
 		}
 	}

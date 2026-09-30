@@ -1,15 +1,15 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Underground.Tiles.Mirror;
 
 public class EnchantedMirrorShard : Particle
 {
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
 	private readonly int _variant;
+
+	public Color Color { get; set; }
 
 	public EnchantedMirrorShard(Vector2 position, Vector2 velocity, float rotation, float scale, int maxTime)
 	{
@@ -23,12 +23,12 @@ public class EnchantedMirrorShard : Particle
 		_variant = Main.rand.Next(4);
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
 		if (Collision.SolidCollision(Position - new Vector2(4), 8, 8))
 		{
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { Pitch = 1, PitchVariance = 0.5f }, Position);
-			Kill();
+			ShouldBeRemovedFromRenderer = true;
 		}
 		else
 		{
@@ -40,7 +40,7 @@ public class EnchantedMirrorShard : Particle
 		Rotation += Velocity.Length() * 0.05f * Math.Sign(Velocity.X);
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Rectangle source = Texture.Frame(1, 4, 0, _variant);
 

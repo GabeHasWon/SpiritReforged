@@ -1,5 +1,5 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -156,7 +156,7 @@ internal class FallingPot : ModProjectile
 				Dust.NewDustDirect(Projectile.BottomLeft, Projectile.width, 4, DustID.Pot, velocity.X, velocity.Y, Scale: Main.rand.NextFloat() + .25f);
 			}
 
-			ParticleHandler.SpawnParticle(new Particles.SmokeCloud(Projectile.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
+			ParticleRenderers.UnderProjectiles.Add(new Particles.SmokeCloud(Projectile.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
 		}
 
 		var pos = Projectile.Center.ToTileCoordinates();

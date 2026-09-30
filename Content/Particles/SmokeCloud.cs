@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class SmokeCloud : DissipatingImage
 {
 	private readonly EaseFunction _acceleration;
@@ -8,6 +10,8 @@ public class SmokeCloud : DissipatingImage
 	
 	private readonly Color startColor;
 	private readonly Color? endColor;
+
+	public Color Color;
 
 	public SmokeCloud(Vector2 position, Vector2 velocity, Color color, float scale, EaseFunction acceleration, int maxTime, bool useLightColor = true) : base(position, color, Main.rand.NextFloatDirection(), scale, 0.15f, "Smoke", new(0.33f, 0.33f), new(2, 1), maxTime)
 	{
@@ -31,12 +35,12 @@ public class SmokeCloud : DissipatingImage
 		DissolveAmount = 1;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
-		base.Update();
+		base.Update(ref settings);
 		Velocity = (1 - _acceleration.Ease(Progress)) * _initialVel;
 
 		if (endColor.HasValue)
-			Color = Color.Lerp(startColor, endColor.Value, EaseBuilder.EaseCircularOut.Ease(TimeActive / (float)MaxTime));
+			Color = Color.Lerp(startColor, endColor.Value, EaseFunction.EaseCircularOut.Ease(TimeActive / (float)MaxTime));
 	}
 }

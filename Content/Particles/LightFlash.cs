@@ -1,7 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs.Radiant;
-using static SpiritReforged.Content.Glyphs.Radiant.RadiantGlyph;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -19,10 +20,8 @@ public class LightFlash : Particle
 	public bool fromRadiant;
 
 	private readonly Action<Particle> _action;
-	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
-	public override ParticleLayer DrawLayer => Layer;
 
-	public override ParticleDrawType DrawType => ParticleDrawType.CustomBatchedAdditiveBlend;
+	public Color Color { get; protected set; }
 
 	public LightFlash(Entity parent, Vector2 offsetFromParent, Color StartColor, Color EndColor, Vector2 Scale, int maxTime, float rotation, int rotationDirection, Action<Particle> extraUpdateAction = null)
 	{
@@ -38,11 +37,13 @@ public class LightFlash : Particle
 		rotDirection = rotationDirection;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (Parent is null)
 		{
-			Kill();
+			ShouldBeRemovedFromRenderer = true;
 			return;
 		}
 
@@ -75,24 +76,20 @@ public class LightFlash : Particle
 		_action?.Invoke(this);
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		//Main.NewText(Rotation);
-
-		var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Glyphs/Radiant/RadiantGlyph_Shine").Value;
+		var tex = ModContent.Request<Texture2D>("SpiritReforged/Content/Glyphs/Radiant/RadiantGlyph_Shine").Value; //Do not request!!
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		float progress = 1f - Progress;
 
-		float xInterp = MathHelper.Lerp(0.9f, 1.1f, EaseBuilder.EaseCircularOut.Ease(1f - progress));
-		float yInterp = MathHelper.Lerp(0.9f, 1.2f, EaseBuilder.EaseCircularOut.Ease(1f - progress));
+		float xInterp = MathHelper.Lerp(0.9f, 1.1f, EaseFunction.EaseCircularOut.Ease(1f - progress));
+		float yInterp = MathHelper.Lerp(0.9f, 1.2f, EaseFunction.EaseCircularOut.Ease(1f - progress));
 
 		Vector2 realScale = new Vector2(scale.X * xInterp, scale.Y * yInterp);
 		
-		spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color * progress * 0.4f, Rotation, bloom.Size() / 2f,  realScale.X * 0.35f, SpriteEffects.None, 0);
-
-		spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * progress, Rotation, new Vector2(tex.Width / 2, tex.Height), realScale, SpriteEffects.None, 0);
-
-		spriteBatch.Draw(tex, Position - Main.screenPosition, null, Color * progress * 1.5f, Rotation, new Vector2(tex.Width / 2, tex.Height), realScale * 0.66f, SpriteEffects.None, 0);
+		spriteBatch.Draw(bloom, Position + settings.AnchorPosition, null, Color.Additive() * progress * 0.4f, Rotation, bloom.Size() / 2f,  realScale.X * 0.35f, SpriteEffects.None, 0);
+		spriteBatch.Draw(tex, Position + settings.AnchorPosition, null, Color.Additive() * progress, Rotation, new Vector2(tex.Width / 2, tex.Height), realScale, SpriteEffects.None, 0);
+		spriteBatch.Draw(tex, Position + settings.AnchorPosition, null, Color.Additive() * progress * 1.5f, Rotation, new Vector2(tex.Width / 2, tex.Height), realScale * 0.66f, SpriteEffects.None, 0);
 	}
 }

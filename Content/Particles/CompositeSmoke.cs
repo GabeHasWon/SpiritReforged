@@ -14,8 +14,10 @@ public class CompositeRenderer : ModSystem
 	{
 		public Color Color { get; set; }
 
-		public void TargetDraw(SpriteBatch spriteBatch, Color color);
+		public void TargetDraw(SpriteBatch spriteBatch, Color color, int layer);
 	}
+
+	public static int RendererCount => ParticleRenderers.Renderers.Length;
 
 	private readonly static BlendState Max = new()
 	{
@@ -29,14 +31,13 @@ public class CompositeRenderer : ModSystem
 
 	public static readonly HashSet<ICompositeRendering> CompositeItems = [];
 
-	// there are NINE particle layers! so we need a render target with 9 "frames"
+	private static readonly EasyTarget CompositeTarget = new(new Vector2(0.5f, 0.5f * RendererCount));
 
-	private static readonly EasyTarget CompositeTarget = new(new Vector2(0.5f));
-
-	public override void Load() => TargetSetup.DrawIntoRendertargets += SetupTarget;
-
-	public override void PostUpdateEverything() =>
-			CompositeItems.RemoveAll(p => p.TimeActive > p.MaxTime);
+	public override void Load()
+	{
+		TargetSetup.DrawIntoRendertargets += SetupTarget;
+		ParticleRenderers.OnDrawParticles += DrawComposite;
+	}
 
 	private static void SetupTarget()
 	{
@@ -54,127 +55,122 @@ public class CompositeRenderer : ModSystem
 		RasterizerState rasterizer = RasterizerState.CullNone;
 		rasterizer.ScissorTestEnable = true;
 
-		spriteBatch.End();
 		spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizer);
 
-		foreach (ParticleRenderer renderer in ParticleRenderers.Renderers)
+		for (int i = 0; i < RendererCount; i++)
 		{
+			ParticleRenderer renderer = ParticleRenderers.Renderers[i];
+			Rectangle crop = CompositeTarget.Value.Frame(1, RendererCount, 0, i);
+			spriteBatch.GraphicsDevice.ScissorRectangle = crop;
+
 			foreach (IParticle particle in renderer.Particles)
 			{
 				if (particle is ICompositeRendering composite)
-					composite.TargetDraw(spriteBatch, Color.Black);
+					composite.TargetDraw(spriteBatch, Color.Black, i);
 			}
 		}
-
-		spriteBatch.End();
-		spriteBatch.BeginDefault();
 
 		spriteBatch.End();
 		spriteBatch.Begin(SpriteSortMode.Immediate, Max, SamplerState.PointClamp, DepthStencilState.None, rasterizer);
 
-		foreach (ParticleRenderer renderer in ParticleRenderers.Renderers)
+		for (int i = 0; i < RendererCount; i++)
 		{
+			ParticleRenderer renderer = ParticleRenderers.Renderers[i];
+			Rectangle crop = CompositeTarget.Value.Frame(1, RendererCount, 0, i);
+			spriteBatch.GraphicsDevice.ScissorRectangle = crop;
+
 			foreach (IParticle particle in renderer.Particles)
 			{
 				if (particle is ICompositeRendering composite)
-					composite.TargetDraw(spriteBatch, composite.Color);
+					composite.TargetDraw(spriteBatch, composite.Color, i);
 			}
 		}
 
 		spriteBatch.End();
-		spriteBatch.BeginDefault();
 
 		spriteBatch.GraphicsDevice.RasterizerState = oldRasterizer;
 		spriteBatch.GraphicsDevice.ScissorRectangle = oldBounds;
 		oldRasterizer.ScissorTestEnable = oldTestEnable;
 		spriteBatch.GraphicsDevice.SetRenderTarget(null);
+
+		CompositeItems.Clear();
 	}
 
 	/// <summary> Draws the composite smoke with the Y frame dependent on the layer. <br/>
 	/// Called in ParticleDetours. </summary>
-	/// <param name="frameY">0-8, corresponds to each layer of ParticleLayer. </param>
-	/// <param name="startBatch"> Whether to begin the spritebatch as default. </param>
-	public static void DrawComposite(int frameY, bool startBatch)
+	public static void DrawComposite(ParticleRenderer renderer)
 	{
 		if (CompositeTarget?.Value != null)
 		{
-			SpriteBatch spriteBatch = Main.spriteBatch;
+			int index = Array.FindIndex(ParticleRenderers.Renderers, x => x == renderer);
+			Rectangle crop = CompositeTarget.Value.Frame(1, RendererCount, 0, index);
 
-			if (startBatch)
-				spriteBatch.BeginDefault();
-
-			var sourceRectangle = CompositeTarget.Target.Frame(1, 9, 0, frameY);
-
-			spriteBatch.Draw(CompositeTarget.Target, Vector2.Zero, sourceRectangle, Color.White * 0.4f, 0f, Vector2.Zero, 2f, 0f, 0f);
-
-			if (startBatch)
-				spriteBatch.End();
+			Main.spriteBatch.Draw(CompositeTarget.Value, Vector2.Zero, crop, Color.White * 0.4f, 0f, Vector2.Zero, 2f, 0f, 0f);
 		}
 	}
 }
 
 public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 {
-	internal bool addedToList = false;
+	public readonly Action<Particle> Action;
 
-	internal bool _addLight;
-	internal bool _addBloom;
-
-	internal int _variant;
-
-	internal float _bloomOpacity;
-
-	internal readonly Action<Particle> _action;
-
-	public virtual int VerticalFrames => 5;
-	public virtual int HorizontalFrames => 3;
-
+	public Entity Parent { get; private set; }
 	public Color Color { get; set; }
+	public int Variant { get; set; }
+
+	private readonly bool _addLight;
+	private readonly bool _addBloom;
+	private readonly float _bloomOpacity;
+
+	private Vector2 _offset; //Offset only when attached
 
 	public CompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null, float bloomOpacity = 0.08f)
 	{
-		LocalPosition = position;
+		Position = position;
 		Velocity = velocity;
 		Rotation = 0f;
-		Scale = Vector2.One;
-		TimeMax = maxTime;
-
-		Color = color;
+		MaxTime = maxTime;
 
 		_addLight = addLight;
 		_addBloom = addBloom;
-		_action = extraUpdateAction;
-
-		if (HorizontalFrames > 1)
-			_variant = Main.rand.Next(HorizontalFrames);
-		else
-			_variant = 0;
-
 		_bloomOpacity = bloomOpacity;
+
+		Color = color;
+		Variant = Main.rand.Next(3); //Choose a random large variant by default
+		Action = extraUpdateAction;
+	}
+
+	public CompositeSmoke AttachTo(Entity entity)
+	{
+		Parent = entity;
+		_offset = entity.Center - Position;
+
+		return this;
 	}
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
-		if (!addedToList)
+		base.Update(ref settings);
+
+		if (Parent != null)
 		{
-			SmokeTargetRenderer.CompositeItems.Add(this);
-			addedToList = true;
+			Position = Parent.Center + _offset;
+			_offset -= Velocity;
 		}
 
 		Velocity *= 0.98f;
 
 		if (_addLight)
-			Lighting.AddLight(LocalPosition, Color.ToVector3() * (1f - Progress));
+			Lighting.AddLight(Position, Color.ToVector3() * (1f - Progress));
 
-		_action?.Invoke(this);
+		Action?.Invoke(this);
 	}
 
-	public override void OnKill() => SmokeTargetRenderer.CompositeItems.Remove(this);
-
-	public void TargetDraw(SpriteBatch spriteBatch, Color color)
+	public void TargetDraw(SpriteBatch spriteBatch, Color color, int layer)
 	{
 		Texture2D texture = Texture;
-		Rectangle frame = Texture.Frame(HorizontalFrames, VerticalFrames, _variant, (int)MathHelper.Lerp(0, VerticalFrames, Progress));
+		Rectangle frame = Texture.Frame(6, 5, Variant, (int)MathHelper.Lerp(0, 5, Progress));
+		Vector2 position = Position - Main.screenPosition + Vector2.UnitY * Main.screenHeight / 2 * layer;
 		float progress = Progress;
 		float fadeOut = 1f;
 		
@@ -184,7 +180,8 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 		if (progress > 0.5f)
 			fadeOut = 1f - (progress - 0.5f) / 0.5f;
 
-		spriteBatch.Draw(texture, (LocalPosition - Main.screenPosition) / 2, frame, color * fadeOut, Rotation, frame.Size() / 2, Scale / 2, SpriteEffects.None, 0);
+		IDrawPixelated.PixelateDrawPosition(ref position);
+		spriteBatch.Draw(texture, position, frame, color * fadeOut, Rotation, frame.Size() / 2, Scale / 2, SpriteEffects.None, 0);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
@@ -200,44 +197,8 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 			fadeOut = 1f - (progress - 0.5f) / 0.5f;
 
 		if (_addBloom)
-			spritebatch.Draw(bloom, LocalPosition + settings.AnchorPosition, null, Color.Additive() * _bloomOpacity * fadeOut, Rotation, bloom.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
-	}
-}
+			spritebatch.Draw(bloom, Position + settings.AnchorPosition, null, Color.Additive() * _bloomOpacity * fadeOut, Rotation, bloom.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
 
-/// <summary> Can be attached to an entity </summary>
-public class AttachedCompositeSmoke : CompositeSmoke
-{
-	internal Entity Parent;
-	internal Vector2 _offset;
-
-	public AttachedCompositeSmoke(Entity parent, Vector2 offset, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null, float bloomOpacity = 0.08f) : base(Vector2.Zero, velocity, color, maxTime, addLight, addBloom, extraUpdateAction, bloomOpacity)
-	{
-		Parent = parent;
-		_offset = offset;
-
-		Position = parent.Center + offset;
-	}
-
-	public override void Update()
-	{
-		Position = Parent.Center + _offset;
-
-		_offset -= Velocity;
-		Velocity *= 0.98f;
-
-		Rotation += Velocity.Length() * 0.01f;
-
-		if (_addLight)
-			Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
-
-		_action?.Invoke(this);
-	}
-}
-
-public class SmallCompositeSmoke : CompositeSmoke
-{
-	public SmallCompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null, float bloomOpacity = 0.08f) : base(position, velocity, color, maxTime, addLight, addBloom, extraUpdateAction, bloomOpacity)
-	{
-
+		CompositeRenderer.CompositeItems.Add(this);
 	}
 }

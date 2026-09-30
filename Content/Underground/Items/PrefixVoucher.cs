@@ -1,7 +1,6 @@
 using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Savanna.Items.Vanity;
 using System.IO;
 using System.Reflection;
 using Terraria.GameContent.UI;

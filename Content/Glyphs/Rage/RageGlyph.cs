@@ -3,12 +3,12 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.GameContent.UI.Elements;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Glyphs.Rage;
@@ -156,8 +156,8 @@ public class RageGlyph : GlyphItem
 
 					for (int i = 0; i < 7; i++)
 					{
-						ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
-						ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+						ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+						ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
 					}
 				}
 			}
@@ -201,8 +201,8 @@ public class RageGlyph : GlyphItem
 
 				if (scale > 1.05f && Main.rand.NextBool(3))
 				{
-					ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
-					ParticleHandler.SpawnParticle(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+					ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+					ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Player.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
 				}
 			}
 		}
@@ -263,7 +263,7 @@ public class RageGlyph : GlyphItem
 
 				if (!Main.dedServ)
 				{
-					ParticleHandler.SpawnParticle(new LightBurst(target.Center, 0f, Color.Red.Additive(), 0.3f, 25));
+					ParticleRenderers.UnderProjectiles.Add(new LightBurst(target.Center, 0f, Color.Red.Additive(), 0.3f, 25));
 
 					SoundEngine.PlaySound(SoundID.MaxMana with { Pitch = -0.2f }, target.Center);
 					SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, target.Center);
@@ -275,14 +275,14 @@ public class RageGlyph : GlyphItem
 						Vector2 pos = target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2);
 						Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(1f, 3f);
 
-						ParticleHandler.SpawnParticle(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f), 30));
-						ParticleHandler.SpawnQueuedParticle(new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f), 30), 1);
+						ParticleRenderers.UnderProjectiles.Add(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f), 30));
+						ParticleRenderers.QueueParticle(ParticleRenderers.UnderProjectiles, new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f), 30), 1);
 					}
 
 					for (int i = 0; i < 7; i++)
 					{
-						ParticleHandler.SpawnParticle(new SmokeCloud(owner.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
-						ParticleHandler.SpawnParticle(new SmokeCloud(owner.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+						ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(owner.Top + new Vector2(0, 6), new Vector2(-Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
+						ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(owner.Top + new Vector2(0, 6), new Vector2(Main.rand.NextFloat(1f, 3f), 0f).RotatedByRandom(0.2f), Color.White * 0.2f, Main.rand.NextFloat(0.1f), EaseFunction.EaseQuarticOut, 70, false));
 					}
 				}
 
@@ -373,24 +373,22 @@ public class RageGlyph : GlyphItem
 					Vector2 pos = target.Center + offset;
 					Vector2 velocity = offset * Main.rand.NextFloat(0.1f);
 
-					ParticleHandler.SpawnParticle(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.8f, 1.1f), 30));
-					ParticleHandler.SpawnQueuedParticle(new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f) * Main.rand.NextFloat(0.8f, 1.1f), 30), 1);
+					ParticleRenderers.UnderProjectiles.Add(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.8f, 1.1f), 30));
+					ParticleRenderers.QueueParticle(ParticleRenderers.UnderProjectiles, new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f) * Main.rand.NextFloat(0.8f, 1.1f), 30), 1);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(2f), Color.Black * 0.3f, 0.1f, EaseFunction.EaseQuinticOut, 30, false));
+					ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(pos, velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(2f), Color.Black * 0.3f, 0.1f, EaseFunction.EaseQuinticOut, 30, false));
 
 					float rot = Main.rand.NextFloat(6.28f);
 					int dir = Main.rand.NextBool() ? -1 : 1;
 
-					ParticleHandler.SpawnParticle(new LightFlash(target, Vector2.Zero, Color.DarkRed, Color.OrangeRed, new Vector2(0.3f, 0.75f) * Main.rand.NextFloat(0.75f, 1.25f), 30 + Main.rand.Next(5, 40), rot, dir)
-					{ Layer = ParticleLayer.BelowSolid });
+					ParticleRenderers.UnderSolids.Add(new LightFlash(target, Vector2.Zero, Color.DarkRed, Color.OrangeRed, new Vector2(0.3f, 0.75f) * Main.rand.NextFloat(0.75f, 1.25f), 30 + Main.rand.Next(5, 40), rot, dir));
 
 					rot = Main.rand.NextFloat(6.28f);
 					dir = Main.rand.NextBool() ? -1 : 1;
 
-					ParticleHandler.SpawnParticle(new LightFlash(target, Vector2.Zero, Color.DarkOrange, Color.Red, new Vector2(0.35f, 0.75f) * Main.rand.NextFloat(1f, 1.5f), 20 + Main.rand.Next(5, 40), rot, dir)
-					{ Layer = ParticleLayer.BelowSolid });
+					ParticleRenderers.UnderSolids.Add(new LightFlash(target, Vector2.Zero, Color.DarkOrange, Color.Red, new Vector2(0.35f, 0.75f) * Main.rand.NextFloat(1f, 1.5f), 20 + Main.rand.Next(5, 40), rot, dir));
 
-					ParticleHandler.SpawnParticle(new TriangleParticle(target.Center, Main.rand.NextVector2CircularEdge(3f, 3f), Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.6f, 0.9f), 35));
+					ParticleRenderers.UnderProjectiles.Add(new TriangleParticle(target.Center, Main.rand.NextVector2CircularEdge(3f, 3f), Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.6f, 0.9f), 35));
 				}
 			}
 		}
@@ -507,11 +505,8 @@ public class RageGlyph : GlyphItem
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(0.5f);
 
-			ParticleHandler.SpawnParticle(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f), 30)
-			{ Layer = ParticleLayer.AboveItem });
-
-			ParticleHandler.SpawnQueuedParticle(new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f), 30)
-			{ Layer = ParticleLayer.AboveItem }, 3);
+			ParticleRenderers.OverItems.Add(new ImpactLine(pos, velocity, Color.Red.Additive(), new Vector2(0.7f, 1f), 30));
+			ParticleRenderers.QueueParticle(ParticleRenderers.OverItems, new ImpactLine(pos, velocity, Color.Black, new Vector2(0.5f, 1f), 30), 3);
 		}
 	}
 
@@ -527,8 +522,8 @@ public class RageGlyph : GlyphItem
 		{
 			Vector2 vel = normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(5f);
 
-			ParticleHandler.SpawnParticle(new ImpactLine(pos, vel, Color.Red.Additive(), new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 15));
-			ParticleHandler.SpawnQueuedParticle(new ImpactLine(pos, vel, Color.Black, new Vector2(0.5f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 15), 1);
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(pos, vel, Color.Red.Additive(), new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 15));
+			ParticleRenderers.QueueParticle(ParticleRenderers.UnderProjectiles, new ImpactLine(pos, vel, Color.Black, new Vector2(0.5f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 15), 1);
 		}
 	}
 
@@ -539,7 +534,7 @@ public class RageGlyph : GlyphItem
 			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
 			Vector2 vel = projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
 
-			ParticleHandler.SpawnParticle(new TriangleParticle(pos, vel, Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.4f, 0.6f), 30));
+			ParticleRenderers.UnderProjectiles.Add(new TriangleParticle(pos, vel, Color.Red, Color.OrangeRed, Main.rand.NextFloat(0.4f, 0.6f), 30));
 		}
 	}
 }

@@ -1,7 +1,7 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -63,7 +63,7 @@ public class JinxArrow : ModProjectile
 		Vector2 startArrowParticlePos = Projectile.Center - Projectile.velocity * 5f;
 
 		SoundEngine.PlaySound(SoundID.DD2_FlameburstTowerShot with { Pitch = 1.25f }, Projectile.Center);
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(startArrowParticlePos, Projectile.velocity / 2, particleColor, new(0.75f, 3), 16, 1, stuckNPC));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(startArrowParticlePos, Projectile.velocity / 2, particleColor, new(0.75f, 3), 16, 1, stuckNPC));
 
 		//From "spawn point"
 		float ringRotation = Projectile.velocity.ToRotation() + MathHelper.Pi;
@@ -71,13 +71,13 @@ public class JinxArrow : ModProjectile
 		JinxBowMinion.JinxArrowRing(startArrowParticlePos, Projectile.velocity / 30, 80, ringRotation, 0.9f);
 
 		for (int i = 0; i < 12; i++)
-			ParticleHandler.SpawnParticle(new StarParticle(startArrowParticlePos + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-1, 1), Projectile.velocity * Main.rand.NextFloat(0.2f), Color.LightGoldenrodYellow.Additive() * 0.5f, Color.Cyan.Additive(), Main.rand.NextFloat(0.15f), Main.rand.Next(10, 30)));
+			ParticleRenderers.UnderProjectiles.Add(new StarParticle(startArrowParticlePos + Projectile.velocity.RotatedBy(MathHelper.PiOver2) * Main.rand.NextFloat(-1, 1), Projectile.velocity * Main.rand.NextFloat(0.2f), Color.LightGoldenrodYellow.Additive() * 0.5f, Color.Cyan.Additive(), Main.rand.NextFloat(0.15f), Main.rand.Next(10, 30)));
 
 		//From stuck npc's center
 		JinxBowMinion.JinxArrowRing(stuckNPC.Center, Projectile.velocity / 120, 80, ringRotation, 0.8f);
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(stuckNPC.Center, Vector2.Zero, JinxBowMinion.JinxbowCyan, new(1, 4), 14, 1));
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(stuckNPC.Center, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), new(0.75f, 3), 14, 1));
-		ParticleHandler.SpawnParticle(new LightBurst(stuckNPC.Center, Main.rand.NextFloatDirection(), JinxBowMinion.JinxbowCyan, 0.66f, 25));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(stuckNPC.Center, Vector2.Zero, JinxBowMinion.JinxbowCyan, new(1, 4), 14, 1));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(stuckNPC.Center, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), new(0.75f, 3), 14, 1));
+		ParticleRenderers.UnderProjectiles.Add(new LightBurst(stuckNPC.Center, Main.rand.NextFloatDirection(), JinxBowMinion.JinxbowCyan, 0.66f, 25));
 
 		void GlowParticleSpawn(Vector2 positionOffset, Vector2 baseVelocity)
 		{
@@ -86,8 +86,8 @@ public class JinxArrow : ModProjectile
 			int lifeTime = Main.rand.Next(32, 50);
 			static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(stuckNPC.Center + positionOffset, velocity, Color.Cyan.Additive(), scale, lifeTime, 3, DelegateAction));
-			ParticleHandler.SpawnParticle(new GlowParticle(stuckNPC.Center + positionOffset, velocity, Color.LightGoldenrodYellow.Additive(), scale, lifeTime, 3, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(stuckNPC.Center + positionOffset, velocity, Color.Cyan.Additive(), scale, lifeTime, 3, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(stuckNPC.Center + positionOffset, velocity, Color.LightGoldenrodYellow.Additive(), scale, lifeTime, 3, DelegateAction));
 		}
 
 		for (int i = 0; i < 12; i++)

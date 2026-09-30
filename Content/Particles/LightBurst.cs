@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -9,6 +10,8 @@ public class LightBurst : Particle
 	/// <summary> Whether this particle should actually emit light. </summary>
 	public bool noLight;
 	private float _opacity;
+
+	public Color Color { get; protected set; }
 
 	public LightBurst(Vector2 position, float rotation, Color color, float scale, int maxTime)
 	{
@@ -20,15 +23,16 @@ public class LightBurst : Particle
 		_opacity = 0;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
 		_opacity = (float)Math.Sin(EaseFunction.EaseCubicOut.Ease(Progress) * MathHelper.Pi);
 
 		if (!noLight)
 			Lighting.AddLight(Position, Color.ToVector3() * _opacity);
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Texture2D rayTexture = AssetLoader.LoadedTextures["Ray"].Value;
 		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
@@ -54,8 +58,4 @@ public class LightBurst : Particle
 		Main.spriteBatch.Draw(bloomtexture, center, null, color * 0.5f * _opacity, 0, bloomtexture.Size() / 2, 0.5f * Scale * _opacity, SpriteEffects.None, 0);
 		Main.spriteBatch.Draw(bloomtexture, center, null, color * 0.5f * _opacity, 0, bloomtexture.Size() / 2, 0.4f * Scale * _opacity, SpriteEffects.None, 0);
 	}
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
 }

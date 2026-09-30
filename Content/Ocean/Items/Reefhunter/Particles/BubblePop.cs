@@ -1,4 +1,5 @@
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 
@@ -16,11 +17,9 @@ public class BubblePop : Particle
 		Rotation = rotation;
 	}
 
-	public override ParticleDrawType DrawType => ParticleDrawType.CustomBatchedAdditiveBlend;
-
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var texture = ParticleHandler.GetTexture(Type);
+		var texture = Texture;
 		var color = Lighting.GetColor(Position.ToTileCoordinates());
 
 		int frameNumber = (int)Math.Floor((double)(Progress * NUMFRAMES));

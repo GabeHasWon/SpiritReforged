@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using Terraria;
 
 namespace SpiritReforged.Content.SaltFlats;
 

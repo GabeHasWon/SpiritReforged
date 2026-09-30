@@ -1,6 +1,3 @@
-using Terraria;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Common.PrimitiveRendering;

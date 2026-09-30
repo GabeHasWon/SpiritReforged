@@ -10,11 +10,11 @@ public class DragonEmber : Particle
 
 	public DragonEmber(Vector2 position, Vector2 velocity, float scale, int maxTime)
 	{
-		LocalPosition = position;
+		Position = position;
 		Velocity = velocity;
-		Scale = new Vector2(scale);
+		Scale = scale;
 		Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
-		TimeMax = maxTime;
+		MaxTime = maxTime;
 
 		_baseScale = scale;
 		_style = Main.rand.Next(5);
@@ -23,10 +23,10 @@ public class DragonEmber : Particle
 	public override void Update(ref ParticleRendererSettings settings)
 	{
 		const int fadeout = 10;
-		Lighting.AddLight(LocalPosition, Color.Orange.ToVector3() * Scale.Length() * 0.5f);
+		Lighting.AddLight(Position, Color.Orange.ToVector3() * Scale* 0.5f);
 
-		if (TimeActive > TimeMax - fadeout)
-			Scale = new Vector2(_baseScale * (1f - (TimeActive - (float)(TimeMax - fadeout)) / fadeout));
+		if (TimeActive > MaxTime - fadeout)
+			Scale = _baseScale * (1f - (TimeActive - (float)(MaxTime - fadeout)) / fadeout);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
@@ -34,6 +34,6 @@ public class DragonEmber : Particle
 		Texture2D texture = Texture;
 		Rectangle source = texture.Frame(1, 5, 0, _style, 0, -2);
 
-		spriteBatch.Draw(texture,  LocalPosition + settings.AnchorPosition, source, Color.White, Rotation, source.Size() / 2, Scale, default, 0);
+		spriteBatch.Draw(texture,  Position + settings.AnchorPosition, source, Color.White, Rotation, source.Size() / 2, Scale, default, 0);
 	}
 }

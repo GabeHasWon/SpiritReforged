@@ -1,9 +1,9 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Glyphs.Sanguine;
 
@@ -18,7 +18,6 @@ public class SanguineBlood : Particle, IDrawPixelated
 		_owner = owner;
 		Position = position;
 		Scale = scale;
-		Color = Color.White;
 		Velocity = velocity;
 		MaxTime = maxTime;
 
@@ -27,7 +26,7 @@ public class SanguineBlood : Particle, IDrawPixelated
 			_oldPosition[i] = position;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
 		float velocityLength = MathHelper.Lerp(12, 0, Progress);
 		float magnetFactor = MathHelper.Lerp(0, 1, (float)Math.Pow(Progress, 1.25f));
@@ -41,14 +40,13 @@ public class SanguineBlood : Particle, IDrawPixelated
 			for (int i = 0; i < 2; i++)
 			{
 				Vector2 stickyBloodPos = _owner.MountedCenter + Main.rand.NextVector2Square(-20, 20);
-				ParticleHandler.SpawnParticle(new StickyBloodParticle(stickyBloodPos, stickyBloodPos.DirectionFrom(_owner.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(30, 40), 0.1f));
+				ParticleRenderers.OverPlayers.Add(new StickyBloodParticle(stickyBloodPos, stickyBloodPos.DirectionFrom(_owner.Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 2f), Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(30, 40), 0.1f));
 			}
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(_owner.MountedCenter, -Vector2.UnitY, Color.DarkRed * 0.5f, 0.09f, EaseFunction.EaseQuadOut, 60, false)
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(_owner.MountedCenter, -Vector2.UnitY, Color.DarkRed * 0.5f, 0.09f, EaseFunction.EaseQuadOut, 60, false)
 			{
 				Pixellate = true,
-				PixelDivisor = 2,
-				Layer = ParticleLayer.AbovePlayer
+				PixelDivisor = 2
 			});
 		}
 
@@ -57,8 +55,6 @@ public class SanguineBlood : Particle, IDrawPixelated
 
 		_oldPosition[0] = Position;
 	}
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
 	public void DrawPixelated(SpriteBatch spriteBatch)
 	{

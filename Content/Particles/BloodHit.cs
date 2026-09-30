@@ -1,12 +1,11 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class BloodHit : Particle
 {
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-	public override ParticleLayer DrawLayer => ParticleLayer.AboveNPC;
-
 	public readonly int variant;
 	private readonly Entity Parent;
 
@@ -18,36 +17,32 @@ public class BloodHit : Particle
 		Rotation = rotation;
 		MaxTime = maxTime;
 		offset = offsetFromParent;
-
-		Color = Color.White;
 		variant = 1 + Main.rand.Next(3);
 
 		if (variant == 1)
 			Scale *= 0.7f;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (Parent is null)
 		{
-			Kill();
+			ShouldBeRemovedFromRenderer = true;
 			return;
 		}
 
 		if (!Parent.active)
-		{
-			Color *= 0.9f;
 			TimeActive += 2;
-		}
 
 		Position = Parent.Center + new Vector2(offset.X * Parent.direction, offset.Y) * MathHelper.Lerp(1f, 2.5f, EaseBuilder.EaseQuadOut.Ease(Progress));
 		Velocity = Vector2.Zero;
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var texture = ModContent.Request<Texture2D>("SpiritReforged/Content/Particles/BloodHit_0" + variant).Value;
-		
+		var texture = ModContent.Request<Texture2D>("SpiritReforged/Content/Particles/BloodHit_0" + variant).Value; //DO NOT REQUEST
 		Rectangle source = texture.Frame(1, 4, 0, (int)MathHelper.Lerp(1, 4, EaseBuilder.EaseQuadOut.Ease(Progress)));
 
 		float rotation = Rotation;

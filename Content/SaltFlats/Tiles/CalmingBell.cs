@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -103,22 +103,23 @@ public class CalmingBell : ModTile, WindTileRenderer.IDrawInWind, ICutAttempt, I
 
 			if (!Main.LocalPlayer.HasBuff(BuffID.Calm))
 			{
-				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.Cyan.Additive(), 0.2f, 200, 20, Common.Easing.EaseFunction.EaseCircularOut));
-				ParticleHandler.SpawnParticle(new PulseCircle(worldPos, Color.White.Additive(), 0.1f, 200, 20, Common.Easing.EaseFunction.EaseCircularOut));
+				ParticleRenderers.OverPlayers.Add(new PulseCircle(worldPos, Color.Cyan.Additive(), 0.2f, 200, 20, Common.Easing.EaseFunction.EaseCircularOut));
+				ParticleRenderers.OverPlayers.Add(new PulseCircle(worldPos, Color.White.Additive(), 0.1f, 200, 20, Common.Easing.EaseFunction.EaseCircularOut));
 
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.DarkCyan.Additive(), new(0.5f, 1), 5, 0));
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.Cyan.Additive(), new(1, 3), 10, 0)
+				ParticleRenderers.OverPlayers.Add(new ImpactLinePrim(worldPos, Vector2.Zero, Color.DarkCyan.Additive(), new(0.5f, 1), 5, 0));
+				ParticleRenderers.OverPlayers.Add(new ImpactLinePrim(worldPos, Vector2.Zero, Color.Cyan.Additive(), new(1, 3), 10, 0)
 				{
 					Rotation = MathHelper.PiOver2
 				});
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(worldPos, Vector2.Zero, Color.White.Additive(), new(0.5f, 3), 10, 0)
+
+				ParticleRenderers.OverPlayers.Add(new ImpactLinePrim(worldPos, Vector2.Zero, Color.White.Additive(), new(0.5f, 3), 10, 0)
 				{
 					Rotation = MathHelper.PiOver2
 				});
 			}
 
 			for (int x = 0; x < 4; x++)
-				ParticleHandler.SpawnParticle(new EmberParticle(worldPos, Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f), Color.Cyan, Color.IndianRed, Main.rand.NextFloat(0.25f, 0.5f), Main.rand.Next(60, 80), 5));
+				ParticleRenderers.OverPlayers.Add(new EmberParticle(worldPos, Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f), Color.Cyan, Color.IndianRed, Main.rand.NextFloat(0.25f, 0.5f), Main.rand.Next(60, 80), 5));
 		}
 
 		Main.LocalPlayer.AddBuff(BuffID.Calm, 60 * 60 * 3);
@@ -171,7 +172,7 @@ public class CalmingBell : ModTile, WindTileRenderer.IDrawInWind, ICutAttempt, I
 			if (!Main.gamePaused && Main.rand.NextFloat() < opacity * 0.05f) //Spawn particles
 			{
 				Vector2 emberPosition = Main.rand.NextVector2FromRectangle(new(i * 16, j * 16, 16, 16));
-				ParticleHandler.SpawnParticle(new EmberParticle(emberPosition, Vector2.UnitY * -0.1f, Color.Cyan, Main.rand.NextFloat(0.1f, 0.3f), Main.rand.Next(60, 80), 5));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(emberPosition, Vector2.UnitY * -0.1f, Color.Cyan, Main.rand.NextFloat(0.1f, 0.3f), Main.rand.Next(60, 80), 5));
 			}
 		}
 

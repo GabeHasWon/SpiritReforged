@@ -1,14 +1,16 @@
-﻿using SpiritReforged.Common.Particle;
-using static SpiritReforged.Common.Easing.EaseFunction;
+﻿using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 using static Microsoft.Xna.Framework.MathHelper;
-using SpiritReforged.Common.Visuals;
+using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Particles;
 
 public class Shatter : Particle
 {
-	Color _baseColor;
-	float _baseScale;
+	private Color _baseColor;
+	private float _baseScale;
+
+	public Color Color { get; protected set; }
 
 	public Shatter(Vector2 position, Color baseColor, float scale, int maxTime)
 	{
@@ -19,15 +21,15 @@ public class Shatter : Particle
 		_baseColor = baseColor;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		Color = _baseColor * EaseQuadOut.Ease(1 - Progress);
 		Scale = Lerp(0.48f, 0.55f, EaseSine.Ease(EaseCubicOut.Ease(Progress))) * _baseScale;
 	}
 
-	public override ParticleDrawType DrawType => ParticleDrawType.CustomBatchedAdditiveBlend;
-
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings,SpriteBatch spriteBatch)
 	{
 		Color lightColor = Lighting.GetColor(Position.ToTileCoordinates());
 		lightColor = Color.Lerp(Color, Color.MultiplyRGBA(lightColor), 0.5f);

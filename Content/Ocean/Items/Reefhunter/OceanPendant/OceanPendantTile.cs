@@ -1,8 +1,8 @@
-using Terraria.DataStructures;
-using SpiritReforged.Content.Ocean.Boids;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Ocean.Boids;
+using SpiritReforged.Content.Particles;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 
@@ -57,9 +57,9 @@ public class OceanPendantTile : ModTile
 
 		var worldPos = new Vector2(i, j) * 16;
 		if (!Main.gamePaused && Main.rand.NextBool(9) && Main.LocalPlayer.Distance(worldPos) < 16 * 20)
-			ParticleHandler.SpawnParticle(new GlowParticle(worldPos + new Vector2(8), -Vector2.UnitY * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(.1f, .2f), 100, 1, delegate (Particle p)
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(worldPos + new Vector2(8), -Vector2.UnitY * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(.1f, .2f), 100, 1, delegate (Particle p)
 			{
-				p.Velocity = p.Velocity.RotatedByRandom(.1f);
+				p.Velocity = p.Velocity.RotatedByRandom(0.1f);
 				p.Velocity *= .98f;
 			}));
 

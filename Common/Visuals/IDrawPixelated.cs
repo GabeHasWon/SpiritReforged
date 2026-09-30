@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Visuals.RenderTargets;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Common.Visuals;
 
@@ -34,10 +35,13 @@ public interface IDrawPixelated
 					pixelQueue.Add(iDrawPixelated);
 			}
 
-			foreach (Particle particle in ParticleHandler.Particles)
+			foreach (ParticleRenderer renderer in ParticleRenderers.Renderers)
 			{
-				if (particle is IDrawPixelated iDrawPixelated)
-					pixelQueue.Add(iDrawPixelated);
+				foreach (IParticle particle in renderer.Particles)
+				{
+					if (particle is IDrawPixelated iDrawPixelated)
+						pixelQueue.Add(iDrawPixelated);
+				}
 			}
 
 			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue

@@ -1,6 +1,3 @@
-using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.MathHelpers;
-
 namespace SpiritReforged.Common.Misc;
 
 public class DampedSpringPhysics

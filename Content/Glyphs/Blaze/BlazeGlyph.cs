@@ -3,12 +3,12 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Glyphs.Blaze;
@@ -93,16 +93,14 @@ public class BlazeGlyph : GlyphItem
 
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.DarkOrange.Additive(), 0.3f * scale, 30, 0)
+			ParticleRenderers.UnderNPCs.Add(new SharpStarParticle(position, Vector2.Zero, Color.DarkOrange.Additive(), 0.3f * scale, 30, 0)
 			{
-				Layer = ParticleLayer.BelowNPC,
 				Rotation = angle,
 				TimeActive = 5
 			});
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.LightYellow.Additive() * 0.2f * scale, 0.25f, 25, 0)
+			ParticleRenderers.UnderNPCs.Add(new SharpStarParticle(position, Vector2.Zero, Color.LightYellow.Additive() * 0.2f * scale, 0.25f, 25, 0)
 			{
-				Layer = ParticleLayer.BelowNPC,
 				Rotation = angle,
 				TimeActive = 5
 			});
@@ -118,27 +116,21 @@ public class BlazeGlyph : GlyphItem
 				dust.noLightEmittence = true;
 
 				EmberParticle particle = new(position, Main.rand.NextVector2Circular(1f, 1f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
-				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
-				ParticleHandler.SpawnParticle(particle);
+				ParticleRenderers.UnderNPCs.Add(particle);
 
 				particle = new EmberParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
-				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
-				ParticleHandler.SpawnParticle(particle);
+				ParticleRenderers.UnderNPCs.Add(particle);
 
 				if (Main.rand.NextBool(3))
 				{
 					if (i == 0)
 						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/ElectricZap") with { Volume = 0.15f, PitchVariance = 0.15f }, position);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.15f, 0.15f * scale, EaseFunction.EaseQuadOut, 60, false)
-					{ Layer = ParticleLayer.BelowNPC });
-
-					ParticleHandler.SpawnParticle(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.2f, 0.1f * scale, EaseFunction.EaseQuadOut, 60, false)
-					{ Layer = ParticleLayer.BelowNPC });
+					ParticleRenderers.UnderNPCs.Add(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.15f, 0.15f * scale, EaseFunction.EaseQuadOut, 60, false));
+					ParticleRenderers.UnderNPCs.Add(new SmokeCloud(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(1.5f), new Color(50, 50, 50, 155) * 0.2f, 0.1f * scale, EaseFunction.EaseQuadOut, 60, false));
 				}
 
-				ParticleHandler.SpawnParticle(new FireParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f) * scale, EaseFunction.EaseQuadOut, 40)
-				{ Layer = ParticleLayer.BelowNPC });
+				ParticleRenderers.UnderNPCs.Add(new FireParticle(position, angle.ToRotationVector2().RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f) * scale, EaseFunction.EaseQuadOut, 40));
 			}
 		}
 	}
@@ -165,14 +157,11 @@ public class BlazeGlyph : GlyphItem
 			if (Main.rand.NextBool())
 			{
 				EmberParticle particle = new(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), Color.Orange, Main.rand.Next(colors), Main.rand.NextFloat(0.3f), 40, 5);
-				particle.OverrideDrawLayer(ParticleLayer.BelowNPC);
-
-				ParticleHandler.SpawnParticle(particle);
+				ParticleRenderers.UnderNPCs.Add(particle);
 			}
 
 			if (Main.rand.NextBool(6))
-				ParticleHandler.SpawnParticle(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40)
-				{ Layer = ParticleLayer.BelowNPC });
+				ParticleRenderers.UnderNPCs.Add(new FireParticle(player.Center + Main.rand.NextVector2Circular(player.width / 2, player.height / 2), -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), colors, 1, Main.rand.NextFloat(0.09f, 0.17f), EaseFunction.EaseQuadOut, 40));
 
 			if (Main.rand.NextBool(4))
 				Dust.NewDustPerfect(player.Center + Main.rand.NextVector2Circular(player.width, player.height), DustID.Torch, -Vector2.UnitY * Main.rand.NextFloat(0.5f, 2f), 50, default, 2.5f).noGravity = true;
@@ -305,34 +294,26 @@ public class BlazeGlyph : GlyphItem
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 			Vector2 velocity = Vector2.Zero;
 
-			var particle = new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), 0.2f, 40);
-			particle.OverrideDrawLayer(ParticleLayer.AboveItem);
-			ParticleHandler.SpawnParticle(particle);
+			ParticleRenderers.OverItems.Add(new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), 0.2f, 40));
 		}
 
 		if (Main.rand.NextBool(15))
 		{
 			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.25f, 0.07f, EaseFunction.EaseQuadOut, 60, false));
-			ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.5f, 0.05f, EaseFunction.EaseQuadOut, 60, false));
+			ParticleRenderers.UnderNPCs.Add(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.25f, 0.07f, EaseFunction.EaseQuadOut, 60, false));
+			ParticleRenderers.UnderNPCs.Add(new SmokeCloud(pos, -Vector2.UnitY * Main.rand.NextFloat(2f), new Color(15, 15, 15, 255) * 0.5f, 0.05f, EaseFunction.EaseQuadOut, 60, false));
 
 			Color[] colors = [new(255, 200, 0, 100), new(255, 115, 0, 100), new(200, 3, 33, 100)];
-			ParticleHandler.SpawnParticle(new FireParticle(pos, -Vector2.UnitY * Main.rand.NextFloat(0.5f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f), EaseFunction.EaseQuadOut, 40)
-			{
-				Layer = ParticleLayer.BelowSolid
-			});
+			ParticleRenderers.UnderSolids.Add(new FireParticle(pos, -Vector2.UnitY * Main.rand.NextFloat(0.5f), colors, 1, Main.rand.NextFloat(0.05f, 0.125f), EaseFunction.EaseQuadOut, 40));
 		}
 
 		if (Main.rand.NextBool(60))
 		{
 			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
-
 			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(1.25f, 1.5f);
 
-			var particle = new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), Main.rand.NextFloat(0.3f), 60, 5);
-			particle.OverrideDrawLayer(ParticleLayer.BelowProjectile);
-			ParticleHandler.SpawnParticle(particle);
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(pos, velocity, Color.Orange, Main.rand.Next(emberColors), Main.rand.NextFloat(0.3f), 60, 5));
 		}
 	}
 
@@ -348,7 +329,7 @@ public class BlazeGlyph : GlyphItem
 		for (int i = 0; i < 3; i++)
 		{
 			Dust.NewDustPerfect(position + normalized * item.width, DustID.Torch, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(5f), 70, default, 1.2f).noGravity = true;
-			ParticleHandler.SpawnParticle(new CurvingEmberParticle(position + normalized * item.width, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(1.2f), Color.DarkOrange, 0.05f, 40, -Math.Sign(velocity.X), 20));
+			ParticleRenderers.UnderProjectiles.Add(new CurvingEmberParticle(position + normalized * item.width, normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(1.2f), Color.DarkOrange, 0.05f, 40, -Math.Sign(velocity.X), 20));
 		}
 	}
 

@@ -1,8 +1,8 @@
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -123,9 +123,7 @@ class GoldClubProj : BaseClubProj
 				particleScale /= 2;
 			}
 
-			static void ParticleDelegate(Particle p) => p.Velocity *= 0.85f;
-
-			ParticleHandler.SpawnParticle(new GlowParticle(GetHeadPosition(12) + Main.rand.NextVector2Square(5, 5), particleVel, Ruby, particleScale, Main.rand.Next(15, 20), 4, ParticleDelegate));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(GetHeadPosition(12) + Main.rand.NextVector2Square(5, 5), particleVel, Ruby, particleScale, Main.rand.Next(15, 20), 4, ParticleDelegate));
 		}
 
 		if (owner.controlUseItem && GetSwingProgress < SwingShrinkThreshold)
@@ -136,6 +134,8 @@ class GoldClubProj : BaseClubProj
 			PrepareNextSwing();
 			return;
 		}
+
+		static void ParticleDelegate(Particle p) => p.Velocity *= 0.85f;
 	}
 
 	public override void OnSmash(Vector2 position)
@@ -212,12 +212,12 @@ class GoldClubProj : BaseClubProj
 			Color rubyParticleColor = Ruby.Additive(200) * chargeLerp;
 
 			var p = new TexturedPulseCircle(pos, rubyParticleColor, Color.LightPink, 0.6f, width, Main.rand.Next(30, 35), "Star2", new Vector2(2, 1), EaseCircularOut, false, 0.2f).WithSkew(.5f, rotation);
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 
 			width *= Main.rand.NextFloat(0.9f, 1.1f);
 			rotation += Main.rand.NextFloat(-0.3f, 0.3f);
 			p = new TexturedPulseCircle(pos, LightGold, DarkGold, 1, width, Main.rand.Next(15, 20), "Star2", new Vector2(2, 1), EaseQuadOut, false, 0.3f).WithSkew(.75f, rotation);
-			ParticleHandler.SpawnParticle(p.UsesLightColor());
+			ParticleRenderers.UnderProjectiles.Add(p.UsesLightColor());
 
 			if (Direction == -1)
 			{
@@ -226,7 +226,7 @@ class GoldClubProj : BaseClubProj
 
 				var line = new ImpactLinePrim(position - velocity * 7, velocity, rubyParticleColor, new Vector2(EaseCircularOut.Ease(chargeLerp), 3) * TotalScale, 14, 1, target);
 				line.UseLightColor = false;
-				ParticleHandler.SpawnParticle(line);
+				ParticleRenderers.UnderProjectiles.Add(line);
 			}
 
 			float numLines = 16 * chargeLerp;
@@ -238,7 +238,7 @@ class GoldClubProj : BaseClubProj
 
 				var line = new ImpactLine(position, velocity, DarkGold.Additive() * 0.5f, new Vector2(0.2f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.9f);
 				line.UseLightColor = true;
-				ParticleHandler.SpawnParticle(line);
+				ParticleRenderers.UnderProjectiles.Add(line);
 			}
 		}
 	}

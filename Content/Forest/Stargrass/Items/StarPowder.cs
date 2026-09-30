@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Conversion;
+﻿using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
 using TileHelper.Common;

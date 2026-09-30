@@ -3,7 +3,6 @@ using MonoMod.Cil;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Content.Ocean.Items.Reefhunter;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Projectiles;
-using Terraria;
 
 namespace SpiritReforged.Content.Desert.Silk;
 

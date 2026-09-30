@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.PrimitiveRendering;
@@ -136,15 +135,15 @@ public class JellyfishBolt : ModProjectile, IDrawPixelated
 				Vector2 vel = _startPos.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.15f) * Main.rand.NextFloat(9f);
 				Vector2 pos = _startPos + Main.rand.NextVector2Circular(5f, 5f);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, _jellyColors.ParticleOne, 0.4f, 40, extraUpdateAction: DecelerateAction));
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, _jellyColors.ParticleTwo.Additive(), 0.25f, 40, extraUpdateAction: DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, vel, _jellyColors.ParticleOne, 0.4f, 40, extraUpdateAction: DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, vel, _jellyColors.ParticleTwo.Additive(), 0.25f, 40, extraUpdateAction: DecelerateAction));
 			}
 
 			if (Main.rand.NextBool(20))
 			{
 				Vector2 pos = _trails[0]._points[Main.rand.Next(MAX_POINTS)] + Main.rand.NextVector2Circular(2f, 2f);
 
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(pos, _startPos.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.5f) * 3f,
+				ParticleRenderers.UnderProjectiles.Add(new LightningBoltParticle(pos, _startPos.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.5f) * 3f,
 					_jellyColors.LightningStart, _jellyColors.LightningEnd.Additive(), 0f, 0.6f, 40));
 			}
 		}
@@ -158,8 +157,9 @@ public class JellyfishBolt : ModProjectile, IDrawPixelated
 
 		for (int i = 0; i < 5; i++)
 		{
-			ParticleHandler.SpawnParticle(new LightningBoltParticle(target.Center, Main.rand.NextVector2Circular(5f, 5f), _jellyColors.LightningStart, _jellyColors.LightningEnd.Additive(), 0f, 0.6f, 40));
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2), -Vector2.UnitY * 0.3f, _jellyColors.SmokeColor * 0.8f, 50, bloomOpacity: 0.035f));
+			ParticleRenderers.UnderProjectiles.Add(new LightningBoltParticle(target.Center, Main.rand.NextVector2Circular(5f, 5f), _jellyColors.LightningStart, _jellyColors.LightningEnd.Additive(), 0f, 0.6f, 40));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2), -Vector2.UnitY * 0.3f, _jellyColors.SmokeColor * 0.8f, 50, bloomOpacity: 0.035f)
+			{ Variant = Main.rand.Next(3, 6) });
 		}
 
 		_hitTargets.Add(target);

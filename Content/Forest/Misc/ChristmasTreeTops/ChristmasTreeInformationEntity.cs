@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.TileCommon;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;

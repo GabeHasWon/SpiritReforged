@@ -1,9 +1,9 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
@@ -50,7 +50,7 @@ public class SilverPlatters : PotTile, ILootable
 			float scale = Main.rand.NextFloat(1f, 2f);
 			var velocity = (Vector2.UnitY * -1.5f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f) / 3);
 
-			ParticleHandler.SpawnParticle(new SteamParticle(spawn, velocity, scale, 40) { Color = Color.White * (1f - strength) * 0.3f });
+			ParticleRenderers.OverSolids.Add(new CompositeSmoke(spawn, velocity, Color.White * (1f - strength) * 0.3f, 40));
 		}
 	}
 
@@ -78,7 +78,7 @@ public class SilverPlatters : PotTile, ILootable
 			for (int x = 0; x < 15; x++)
 			{
 				var spawn = Main.rand.NextVector2FromRectangle(new Rectangle(i * 16, (j + 2) * 16, 32, 2));
-				ParticleHandler.SpawnParticle(new SteamParticle(spawn, Vector2.UnitY * -Main.rand.NextFloat(), Main.rand.NextFloat(1f, 2f), 40) { Color = Color.White * 0.5f });
+				ParticleRenderers.OverSolids.Add(new CompositeSmoke(spawn, Vector2.UnitY * -Main.rand.NextFloat(), Color.White * 0.5f, 40));
 
 				var d = Dust.NewDustDirect(new Vector2(i, j + 1) * 16, 32, 16, DustID.TreasureSparkle, Scale: Main.rand.NextFloat(.5f, 1f));
 				d.velocity = Vector2.UnitY * -Main.rand.NextFloat();

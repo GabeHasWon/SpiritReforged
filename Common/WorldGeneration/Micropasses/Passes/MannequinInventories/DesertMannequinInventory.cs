@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Vanilla.Leather.LeatherCloak;
-using System;
 using Terraria.DataStructures;
 using Terraria.GameContent.Biomes.CaveHouse;
 using Terraria.GameContent.Tile_Entities;

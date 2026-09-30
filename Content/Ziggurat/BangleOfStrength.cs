@@ -1,8 +1,8 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
@@ -72,8 +72,8 @@ public class BangleOfStrength : ModItem, IFlagged
 					Vector2 velocity = Vector2.UnitX.RotatedBy(Projectile.rotation) * 0.1f;
 					int timeLeft = Projectile.timeLeft;
 
-					ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, velocity, Color.PaleVioletRed.Additive(), Vector2.One * 1.2f, timeLeft));
-					ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, velocity, Color.White.Additive(), Vector2.One, timeLeft));
+					ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, velocity, Color.PaleVioletRed.Additive(), Vector2.One * 1.2f, timeLeft));
+					ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, velocity, Color.White.Additive(), Vector2.One, timeLeft));
 
 					SoundEngine.PlaySound(SoundID.DD2_BetsyFireballImpact, Projectile.Center);
 					SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { Pitch = -0.5f }, Projectile.Center);

@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
@@ -29,7 +29,7 @@ public class ScarabeusBossBar : ModBossBar
 	{
 		if (npc != null && npc.ModNPC is Scarabeus scarabeus && scarabeus.CurrentState == Scarabeus.AIState.PhaseTransitionAnim && scarabeus.Profile == Scarabeus.TakeoffProfile)
 		{
-			Texture2D texture = ParticleHandler.GetTexture(ParticleHandler.TypeOf<FireSploshion>());
+			Texture2D texture = Particle.GetTexture<FireSploshion>();
 			Rectangle source = texture.Frame(2, 7, 0, (int)(scarabeus.Counter / 30f * 6));
 
 			spriteBatch.Draw(texture, drawParams.BarCenter - new Vector2(drawParams.BarTexture.Width / 2 - 14, 0), source, Color.White, 0, source.Size() / 2, 1, 0, 0);

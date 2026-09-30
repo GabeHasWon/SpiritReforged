@@ -1,8 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
@@ -102,11 +101,11 @@ public class HydrothermalVent : ModTile
 				PixelDivisor = 4
 			};
 
-			ParticleHandler.SpawnParticle(smoke);
+			ParticleRenderers.UnderProjectiles.Add(smoke);
 		}
 
 		if (Main.rand.NextBool(12))
-			ParticleHandler.SpawnParticle(new BubbleParticle(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(4), -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.35f), 60));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(4), -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.35f), 60));
 
 		if (Main.rand.NextBool()) //Passive ash effects
 		{
@@ -187,10 +186,10 @@ public class HydrothermalVent : ModTile
 			SoundEngine.PlaySound(Main.rand.Next(EruptionSounds), position);
 			SoundEngine.PlaySound(SoundID.Drown with { Pitch = -0.5f, PitchVariance = 0.25f, Volume = 1.5f }, position);
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.Yellow, 0.75f, 200, 20, "supPerlin",
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(position, Color.Yellow, 0.75f, 200, 20, "supPerlin",
 				new Vector2(4, 0.75f), EaseFunction.EaseCubicOut).WithSkew(0.75f, MathHelper.Pi - MathHelper.PiOver2));
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.Red, 0.75f, 200, 20, "supPerlin",
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(position, Color.Red, 0.75f, 200, 20, "supPerlin",
 				new Vector2(4, 0.75f), EaseFunction.EaseCubicOut).WithSkew(0.75f, MathHelper.Pi - MathHelper.PiOver2));
 
 			for (int x = 0; x < 5; x++) //Large initial smoke plume
@@ -205,7 +204,7 @@ public class HydrothermalVent : ModTile
 					PixelDivisor = 4
 				};
 
-				ParticleHandler.SpawnParticle(smoke);
+				ParticleRenderers.UnderProjectiles.Add(smoke);
 			}
 
 			var player = Main.LocalPlayer;

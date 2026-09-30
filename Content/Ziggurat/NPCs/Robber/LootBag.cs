@@ -2,13 +2,13 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
-using Terraria.ModLoader;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.Robber;
 
@@ -25,8 +25,6 @@ public class LootBag : ModNPC
 	{
 		public enum CoinType { Copper, Silver, Gold, Platinum }
 
-		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
 		public readonly CoinType Coin;
 		private bool _colliding;
 
@@ -36,12 +34,10 @@ public class LootBag : ModNPC
 			Velocity = velocity;
 			MaxTime = maxTime;
 			Coin = coin;
-
-			Color = Color.White;
 			Scale = 1;
 		}
 
-		public override void Update()
+		public override void Update(ref ParticleRendererSettings settings)
 		{
 			const int hitboxSize = 8;
 
@@ -72,14 +68,14 @@ public class LootBag : ModNPC
 			}
 		}
 
-		public override void CustomDraw(SpriteBatch spriteBatch)
+		public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 		{
 			Texture2D texture = TextureAssets.Coin[(int)Coin].Value;
 			int frame = _colliding ? 2 : (int)(TimeActive / 4f) % 8;
 			Rectangle source = texture.Frame(1, 8, 0, frame, 0, -2);
 			float opacity = Math.Clamp(1f - (TimeActive - (MaxTime - 30)) / 30f, 0, 1);
 
-			spriteBatch.Draw(texture, Position - Main.screenPosition, source, Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGB(Color) * opacity, Rotation, source.Size() / 2, Scale, default, 0);
+			spriteBatch.Draw(texture, Position - Main.screenPosition, source, Lighting.GetColor(Position.ToTileCoordinates()) * opacity, Rotation, source.Size() / 2, Scale, default, 0);
 		}
 	}
 
@@ -127,7 +123,7 @@ public class LootBag : ModNPC
 						TertiaryColor = Color.SandyBrown
 					};
 
-					ParticleHandler.SpawnParticle(smoke);
+					ParticleRenderers.UnderProjectiles.Add(smoke);
 				}
 
 				SoundEngine.PlaySound(SoundID.NPCHit1 with { PitchVariance = 0.2f }, NPC.Center);
@@ -144,7 +140,7 @@ public class LootBag : ModNPC
 			if (!Main.dedServ)
 			{
 				if (Main.rand.NextBool(20))
-					ParticleHandler.SpawnParticle(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), NPC.velocity * Main.rand.NextFloat(0.5f), 200, (CoinParticle.CoinType)Main.rand.Next(3)));
+					ParticleRenderers.UnderProjectiles.Add(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), NPC.velocity * Main.rand.NextFloat(0.5f), 200, (CoinParticle.CoinType)Main.rand.Next(3)));
 
 				if (Main.rand.NextBool(8))
 					Dust.NewDustDirect(NPC.position, NPC.width, NPC.height, DustID.CopperCoin).velocity = NPC.velocity * Main.rand.NextFloat(0.5f);
@@ -165,7 +161,7 @@ public class LootBag : ModNPC
 			{
 				float intensity = hit.Knockback + 5;
 				Vector2 velocity = (new Vector2(hit.HitDirection * intensity, -intensity) * Main.rand.NextFloat(0.5f, 1)).RotateRandom(1f);
-				ParticleHandler.SpawnParticle(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), velocity, 200, (CoinParticle.CoinType)Main.rand.Next(3)));
+				ParticleRenderers.UnderProjectiles.Add(new CoinParticle(Main.rand.NextVector2FromRectangle(NPC.Hitbox), velocity, 200, (CoinParticle.CoinType)Main.rand.Next(3)));
 			}
 
 			if (dead)

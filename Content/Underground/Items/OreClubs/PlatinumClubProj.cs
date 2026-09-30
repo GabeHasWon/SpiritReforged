@@ -1,12 +1,12 @@
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.ProjectileCommon.Abstract;
-using static SpiritReforged.Common.Easing.EaseFunction;
-using static Microsoft.Xna.Framework.MathHelper;
-using System.IO;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Particles;
-using Terraria.Audio;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
+using System.IO;
+using Terraria.Audio;
+using static Microsoft.Xna.Framework.MathHelper;
+using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Underground.Items.OreClubs;
 
@@ -105,7 +105,7 @@ class PlatinumClubProj : BaseClubProj
 					var p = new TexturedPulseCircle(pos, Color.White, Color.Silver * 0.7f, 0.8f, width, Main.rand.Next(15, 20), "FlameTrail", new Vector2(2, 0.5f), EaseCircularOut, false, 0.4f).WithSkew(.7f, rotation + Pi);
 					p.Velocity = -Vector2.UnitY / 3;
 					p.UseLightColor = true;
-					ParticleHandler.SpawnParticle(p);
+					ParticleRenderers.UnderProjectiles.Add(p);
 				}
 
 				for (int i = 0; i < 8; i++)
@@ -117,7 +117,7 @@ class PlatinumClubProj : BaseClubProj
 
 					var p = new ImpactLine(position + Vector2.UnitX * xOffset, -Vector2.UnitY * yVel, Color.White * 0.5f, new Vector2(0.15f, 0.3f), Main.rand.Next(15, 20), 0.92f);
 					p.UseLightColor = true;
-					ParticleHandler.SpawnParticle(p);
+					ParticleRenderers.UnderProjectiles.Add(p);
 				}
 			}
 
@@ -128,11 +128,11 @@ class PlatinumClubProj : BaseClubProj
 				float rotation = direction.ToRotation();
 
 				var p = new TexturedPulseCircle(pos, Color.White, Color.Silver, 0.6f, width, Main.rand.Next(20, 25), "Star2", new Vector2(4, 1), EaseCircularOut, false, 0.2f).WithSkew(.5f, rotation);
-				ParticleHandler.SpawnParticle(p);
+				ParticleRenderers.UnderProjectiles.Add(p);
 
 				float shineRotation = Main.rand.NextFloatDirection();
 				for(int i = 0; i < 3; i++)
-					ParticleHandler.SpawnParticle(new DissipatingImage(pos, Color.White, shineRotation, 0.12f * TotalScale, 0, "GodrayCircle", new Vector2(0), new Vector2(4f, 1.5f), 18));
+					ParticleRenderers.UnderProjectiles.Add(new DissipatingImage(pos, Color.White, shineRotation, 0.12f * TotalScale, 0, "GodrayCircle", new Vector2(0), new Vector2(4f, 1.5f), 18));
 
 				float numLines = 16;
 				for(int i = 0; i < numLines; i++)
@@ -143,7 +143,7 @@ class PlatinumClubProj : BaseClubProj
 
 					var line = new ImpactLine(position, velocity, Color.White * 0.5f, new Vector2(0.15f, 0.4f) * TotalScale, Main.rand.Next(15, 20), 0.9f);
 					line.UseLightColor = true;
-					ParticleHandler.SpawnParticle(line);
+					ParticleRenderers.UnderProjectiles.Add(line);
 				}
 			}
 		}

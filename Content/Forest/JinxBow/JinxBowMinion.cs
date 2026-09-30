@@ -1,6 +1,5 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -136,17 +135,9 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			float scale = Main.rand.NextFloat(0.3f, 0.7f);
 			int lifeTime = Main.rand.Next(20, 30);
 			Vector2 offset = Main.rand.NextVector2Unit() * Main.rand.NextFloat(50, 60);
-			static void DelegateAction(Particle p, Projectile owner, Vector2 offset)
-			{
-				if (!owner.active)
-					p.Kill();
 
-				float easedProgress = EaseFunction.EaseQuadIn.Ease(1 - p.Progress);
-				p.Position = owner.Center + offset.RotatedBy(MathHelper.Pi * easedProgress * 0.66f) * easedProgress;
-			}
-
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.Cyan.Additive(), scale, lifeTime, 4, p => DelegateAction(p, Projectile, offset)));
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), scale, lifeTime, 4, p => DelegateAction(p, Projectile, offset)));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.Cyan.Additive(), scale, lifeTime, 4, p => DelegateAction(p, Projectile, offset)));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + offset, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), scale, lifeTime, 4, p => DelegateAction(p, Projectile, offset)));
 		}
 
 		//Only end attack if the bounce timer is 0 after already firing, making it function as a cooldown before returning to normal behavior
@@ -162,6 +153,15 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			Projectile.netUpdate = true;
 
 			SetArrowData(player);
+		}
+
+		static void DelegateAction(Particle p, Projectile owner, Vector2 offset)
+		{
+			if (!owner.active)
+				p.ShouldBeRemovedFromRenderer = true;
+
+			float easedProgress = EaseFunction.EaseQuadIn.Ease(1 - p.Progress);
+			p.Position = owner.Center + offset.RotatedBy(MathHelper.Pi * easedProgress * 0.66f) * easedProgress;
 		}
 	}
 
@@ -220,7 +220,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 			if (!Main.dedServ)
 			{
 				SoundEngine.PlaySound(SoundID.DD2_BallistaTowerShot with { Pitch = 1.25f }, Projectile.Center);
-				ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center + arrowVelocity * 2f, arrowVelocity * 0.3f, _selectedArrow.BrightColor.Additive() * 0.66f, new(0.66f, 3f), 10, 1));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(Projectile.Center + arrowVelocity * 2f, arrowVelocity * 0.3f, _selectedArrow.BrightColor.Additive() * 0.66f, new(0.66f, 3f), 10, 1));
 			}
 		}
 	}
@@ -233,8 +233,8 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 
 		if (!Main.dedServ)
 		{
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.Zero, JinxbowCyan, new(0.75f, 3), 12, 1));
-			ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), JinxbowCyan, 0.66f, 20));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(target.Center, Vector2.Zero, JinxbowCyan, new(0.75f, 3), 12, 1));
+			ParticleRenderers.UnderProjectiles.Add(new LightBurst(target.Center, Main.rand.NextFloatDirection(), JinxbowCyan, 0.66f, 20));
 
 			for (int i = 0; i < 10; i++)
 			{
@@ -243,11 +243,11 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 				int lifeTime = Main.rand.Next(12, 40);
 				static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
 
-				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Cyan.Additive(), scale, lifeTime, 1, DelegateAction));
-				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(target.Center, velocity, Color.Cyan.Additive(), scale, lifeTime, 1, DelegateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
 			}
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(target.Center, JinxbowCyan, 0.8f, 150, 20, "Star2", new(2, 1), EaseFunction.EaseCircularOut));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(target.Center, JinxbowCyan, 0.8f, 150, 20, "Star2", new(2, 1), EaseFunction.EaseCircularOut));
 		}
 	}
 
@@ -290,7 +290,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		Vector2 particleSpawn = Projectile.Center + visualArrowVelocity;
 		float ringRotation = visualArrowVelocity.ToRotation() + MathHelper.Pi;
 
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(particleSpawn, visualArrowVelocity / 2, particleColor, new(0.75f, 4), 16, 0.9f));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(particleSpawn, visualArrowVelocity / 2, particleColor, new(0.75f, 4), 16, 0.9f));
 
 		JinxArrowRing(particleSpawn, -visualArrowVelocity / 60, 120, ringRotation);
 		JinxArrowRing(Projectile.Center + visualArrowVelocity / 2, visualArrowVelocity / 60, 100, ringRotation);
@@ -301,7 +301,7 @@ public class JinxBowMinion() : BaseMinion(600, 800, new Vector2(12, 12))
 		Color particleColor = JinxbowCyan;
 		Particle p = new TexturedPulseCircle(spawnPos, particleColor, 0.8f, size, 16, "swirlNoise2", new(2, 0.5f), EaseFunction.EaseCircularOut, false, 0.3f).WithSkew(skew, rotation);
 		p.Velocity = velocity;
-		ParticleHandler.SpawnParticle(p);
+		ParticleRenderers.UnderProjectiles.Add(p);
 	}
 
 	public override bool PreDraw(ref Color lightColor)

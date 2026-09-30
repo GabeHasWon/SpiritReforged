@@ -2,7 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -242,7 +242,7 @@ public class SealedKnight : ModNPC
 						Vector2 position = new(npc.Bottom.X + xOffset, npc.Bottom.Y);
 						float ease = 1f - EaseFunction.EaseSine.Ease((float)x / (tile_width - 1f));
 
-						ParticleHandler.SpawnParticle(new MovingBlockParticle(position, (int)(20 * ease), 6));
+						ParticleRenderers.OverSolids.Add(new MovingBlockParticle(position, (int)(20 * ease), 6));
 					}
 				}
 

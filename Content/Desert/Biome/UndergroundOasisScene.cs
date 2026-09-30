@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using Terraria.Graphics.Effects;
 

@@ -1,10 +1,11 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using Terraria.Graphics.Renderers;
 using static SpiritReforged.Content.Glyphs.Shock.ShockGlyphLightningSystem;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
@@ -79,8 +80,6 @@ public class ShockGlyphLightningSystem : ModSystem
 
 public class ShockBoltParticle : Particle, IDrawLightning
 {
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
 	private VertexTrail[] _trails;
 	private Color _startColor;
 	private Color _endColor;
@@ -98,8 +97,10 @@ public class ShockBoltParticle : Particle, IDrawLightning
 		DrawQueue.Add(this);
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (!Main.dedServ)
 		{
 			if (_trails == null)
@@ -112,6 +113,9 @@ public class ShockBoltParticle : Particle, IDrawLightning
 		if (Main.rand.NextBool())
 			Velocity = Velocity.RotatedByRandom(3.14f);
 
+		if (ShouldBeRemovedFromRenderer)
+			DrawQueue.Remove(this);
+
 		Position += Main.rand.NextVector2CircularEdge(0.4f, 0.4f);
 		Velocity *= 0.965f;
 		
@@ -120,8 +124,6 @@ public class ShockBoltParticle : Particle, IDrawLightning
 		Lighting.AddLight(Position, color.R / 255f * progress, color.G / 255f * progress, color.B / 255f * progress);
 	}
 
-	public override void OnKill() => DrawQueue.Remove(this);
-		
 	private void CreateTrail()
 	{
 		ITrailCap tCap = new RoundCap();
@@ -145,9 +147,9 @@ public class ShockBoltParticle : Particle, IDrawLightning
 			}
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		Texture2D texture = ParticleHandler.GetTexture(Type);
+		Texture2D texture = Texture;
 		float progress = EaseFunction.EaseCircularInOut.Ease(1f - Progress);
 
 		spriteBatch.Draw(texture, Position - Main.screenPosition, null, _startColor.Additive() * 0.05f * progress, 0, texture.Size() / 2, Scale * 0.3f, SpriteEffects.None, 0);

@@ -1,7 +1,9 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class PixelBloom : Particle
 {
 	private Color startColor;
@@ -9,10 +11,8 @@ public class PixelBloom : Particle
 	private float progress;
 
 	private readonly Action<Particle> _action;
-	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
-	public override ParticleLayer DrawLayer => Layer;
 
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
+	public Color Color => Color.Lerp(startColor, endColor, 1f - progress);
 
 	public PixelBloom(Vector2 position, Vector2 velocity, Color StartColor, Color EndColor, float scale, int maxTime, Action<Particle> extraUpdateAction = null)
 	{
@@ -28,8 +28,10 @@ public class PixelBloom : Particle
 
 	public PixelBloom(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, Action<Particle> extraUpdateAction = null) : this(position, velocity, color, color, scale, maxTime, extraUpdateAction) { }
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		progress = (float)Math.Sin(Progress * MathHelper.Pi);
 		Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
 		Velocity *= 0.98f;
@@ -37,17 +39,13 @@ public class PixelBloom : Particle
 		_action?.Invoke(this);
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		Texture2D basetexture = ParticleHandler.GetTexture(Type);
+		Texture2D basetexture = Texture;
 		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
 
-		Color color = Color.Lerp(startColor, endColor, 1f - progress);
-
-		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, color * 0.25f, 0, bloomtexture.Size() / 2, Scale * 0.2f * progress, SpriteEffects.None, 0);
-		
+		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, Color * 0.25f, 0, bloomtexture.Size() / 2, Scale * 0.2f * progress, SpriteEffects.None, 0);
 		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, Color.White.Additive() * 0.1f, 0, bloomtexture.Size() / 2, Scale * 0.1f * progress, SpriteEffects.None, 0);
-
 		spriteBatch.Draw(basetexture, Position - Main.screenPosition, null, Color.White * 0.5f, 0, basetexture.Size() / 2, Scale * progress, SpriteEffects.None, 0);
 	}
 }

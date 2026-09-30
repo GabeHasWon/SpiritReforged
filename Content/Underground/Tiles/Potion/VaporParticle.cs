@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Underground.Tiles.Potion;
 
@@ -8,8 +9,7 @@ public class VaporParticle : Particle
 	private const int NumFrames = 8;
 	private float _frameCounter;
 
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
+	public Color Color { get; protected set; }
 
 	public VaporParticle(Vector2 position, Vector2 velocity, Color color, float scale = 1f, int timeLeft = 60)
 	{
@@ -22,13 +22,13 @@ public class VaporParticle : Particle
 		_frameCounter = Main.rand.NextFloat(NumFrames);
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
 		_frameCounter = (_frameCounter + 0.2f) % NumFrames;
 		Velocity *= 0.95f;
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		float easeModifier = EaseFunction.EaseCubicOut.Ease(1 - Progress);
 		float scale = Scale * (0.5f + Progress * 0.5f);

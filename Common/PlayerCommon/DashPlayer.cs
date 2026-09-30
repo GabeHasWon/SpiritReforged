@@ -1,7 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using System.IO;
 
 namespace SpiritReforged.Common.PlayerCommon;

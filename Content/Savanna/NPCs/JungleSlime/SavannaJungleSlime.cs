@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Content.Savanna.Biome;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs.JungleSlime;

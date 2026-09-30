@@ -1,6 +1,6 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Content.Particles;
@@ -111,7 +111,7 @@ public class DisplayCase : SingleSlotTile<DisplayCase.DisplayCaseSlot>, ILoadIte
 		if (visible && TileObjectData.IsTopLeft(i, j) && Main.rand.NextBool(8) && Entity(i, j, false) is DisplayCaseSlot entity && !entity.item.IsAir && Lighting.Brightness(i, j) > 0.5f)
 		{
 			Rectangle area = new(i * 16, j * 16, 32, 32);
-			ParticleHandler.SpawnParticle(new SharpStarParticle(Main.rand.NextVector2FromRectangle(area), Vector2.Zero, Color.White, 0.2f, 50, 0, AddLight: false));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(Main.rand.NextVector2FromRectangle(area), Vector2.Zero, Color.White, 0.2f, 50, 0, AddLight: false));
 		}
 	}
 

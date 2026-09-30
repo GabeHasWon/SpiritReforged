@@ -4,7 +4,6 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.NPCCommon.Interfaces;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
@@ -507,15 +506,15 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), -NPC.velocity * 2.5f, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
 
 			for (int i = 0; i < 12; i++)
-				ParticleHandler.SpawnParticle(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f)));
+				ParticleRenderers.UnderSolids.Add(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f)));
 
 			Vector2 velocity = -NPC.velocity * 0.7f;
 
 			for (int i = 0; i < 30; i++)
 			{
-				Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);		
-				
-				ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.3f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
+				Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
+
+				ParticleRenderers.UnderSolids.Add(new SmokeCloud(pos, velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.3f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
 				{
 					Pixellate = true,
 					DissolveAmount = 1,
@@ -523,7 +522,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 					PixelDivisor = 3,
 				});
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(2.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.4f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
+				ParticleRenderers.UnderSolids.Add(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(2.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.4f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
 				{
 					Pixellate = true,
 					DissolveAmount = 1,

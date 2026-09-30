@@ -1,17 +1,11 @@
-using Microsoft.CodeAnalysis;
-using Microsoft.Xna.Framework.Graphics;
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using Terraria.GameContent.Drawing;
-using Terraria.Graphics.CameraModifiers;
 using Terraria.Graphics.Renderers;
-using static Terraria.GameContent.PlayerEyeHelper;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -114,7 +108,7 @@ public class SoilBallProjectile : ModProjectile
 			dust.alpha = 50 + Main.rand.Next(50);
 			dust.noGravity = true;
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, -Projectile.oldVelocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.5f), colors[0], Main.rand.NextFloat(0.08f, 0.15f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 80))
+			ParticleRenderers.UnderSolids.Add(new SmokeCloud(Projectile.Center, -Projectile.oldVelocity.RotatedByRandom(0.65f) * Main.rand.NextFloat(0.5f), colors[0], Main.rand.NextFloat(0.08f, 0.15f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 80))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -123,8 +117,7 @@ public class SoilBallProjectile : ModProjectile
 				TertiaryColor = colors[2],
 				PixelDivisor = 3,
 				Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-				ColorLerpExponent = 0.5f,
-				Layer = ParticleLayer.BelowSolid
+				ColorLerpExponent = 0.5f
 			});
 		}
 		
@@ -133,7 +126,7 @@ public class SoilBallProjectile : ModProjectile
 			while (!Main.tile[tilePosition].HasTile)
 				tilePosition.Y += 1;
 
-			ParticleHandler.SpawnParticle(
+			ParticleRenderers.OverSolids.Add(
 				new TileChunkParticle(
 					tilePosition, 
 					Projectile.Center + Main.rand.NextVector2Circular(25f, 25f), 
