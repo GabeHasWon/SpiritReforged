@@ -495,7 +495,7 @@ Pages: {
 		Presets: {
 			Inhabited: {
 				Name: "[i:498] Habitado"
-				Tooltip: Hay señales de amigables exploradores por todo el Subterráneo... ¿qué les pasó?
+				Tooltip: Hay señales de amigables exploradores por todo el Subterráneo... ¿Qué les pasó?
 			}
 
 			Empty: {

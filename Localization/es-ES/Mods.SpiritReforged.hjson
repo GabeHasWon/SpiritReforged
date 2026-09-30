@@ -19,7 +19,7 @@ SlotContexts.Backpack: Mochila
 
 Conditions: {
 	InSavanna: En la Sabana
-	PeevedTumbler: Al ser bonachón 
+	PeevedTumbler: Al ser bonachón
 	Discovered: Descubierto
 	Submerged: Sumergido
 	InSaltFlats: En el Salar

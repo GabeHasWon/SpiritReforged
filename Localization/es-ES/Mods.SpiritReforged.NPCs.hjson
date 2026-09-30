@@ -462,7 +462,7 @@ WorldFrog: {
 
 MossSlime: {
 	DisplayName: Slime de musgo
-	Entry: Un curioso grupo de slime cubiertos de musgo, por alguna razón. Vienen en muchas variedades, aunque sólo de musgos brillantes... ¿la razón? Quién sabe. ¿Quizá sean una fuente de luz gratuita?.
+	Entry: Un curioso grupo de slime cubiertos de musgo, por alguna razón. Vienen en muchas variedades, aunque sólo de musgos brillantes... ¿la razón? Quién sabe. ¿Quizá sean una fuente de luz gratuita?
 }
 
 KryptonMossSlime.DisplayName: Slime de musgo de criptón
@@ -572,7 +572,7 @@ SunburntZombie: {
 
 VeiledZombie: {
 	DisplayName: "{$NPCName.Zombie}"
-	Entry: Vestirse para soportar el calor es solo una parte de sobrevivir al desierto. Llevar comida y agua es un paso que no debe pasarse por alto
+	Entry: Vestirse para soportar el calor es solo una parte de sobrevivir al desierto. Llevar comida y agua es un paso que no debe pasarse por alto.
 }
 
 Cricket: {
@@ -696,7 +696,7 @@ BeetleTownPet: {
 
 Enchanter: {
 	DisplayName: Encantador
-	Entry: Perpetuamente cansado pero bondadoso de corazón, el encantador se ocupa de diversos conjuros y magias. Si creés que algunas armas o herramientas necesitan un poco más de chispa, ¡solo pídeselo!
+	Entry: Perpetuamente cansado pero bondadoso de corazón, el encantador se ocupa de diversos conjuros y magias. Si crees que algunas armas o herramientas necesitan un poco más de chispa, ¡solo pídeselo!
 
 	Names: {
 		0: Albion

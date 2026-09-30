@@ -1179,7 +1179,7 @@ FashionableBackpack: {
 }
 
 HikingBackpack: {
-	DisplayName: Mochila de excursionismo
+	DisplayName: Mochila de senderismo
 	Tooltip:
 		'''
 		{$CommonTooltips.Backpack}
@@ -1319,7 +1319,7 @@ OstrichPants: {
 }
 
 CampfireSpit: {
-	DisplayName: Soporte de fogata
+	DisplayName: Soporte para hoguera
 	Tooltip: Puede colocarse en hogueras
 }
 
@@ -2057,7 +2057,7 @@ HardlightVisor: {
 	DisplayName: Visor áurico
 	Tooltip: ""
 	AltDisplayName: Visor con aura
-	AltTooltip: "'No confundir con los visores áuricos'"
+	AltTooltip: "'No confundir con el visor áurico'"
 }
 
 PolishedAmberItem: {
@@ -2522,12 +2522,12 @@ TrellisTwoShadewoodItem: {
 }
 
 ChainLoopItem: {
-	DisplayName: Anillo de cadena
+	DisplayName: Eslabón de cadena
 	Tooltip: Presiona Arriba/Abajo mientras se colocan para ajustar el largo de la cadena
 }
 
 GoldChainLoopItem: {
-	DisplayName: Anillo de cadena dorado
+	DisplayName: Eslabón de cadena dorado
 	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
 }
 

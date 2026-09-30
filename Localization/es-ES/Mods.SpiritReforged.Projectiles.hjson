@@ -75,7 +75,7 @@ FloatingGem.DisplayName: Gema flotante
 BeamOLight.DisplayName: Rayo de luz
 SandShockwavePillar.DisplayName: Pilar de onda de choque de arena
 SandballProjectile.DisplayName: Bola de arena
-BabyAntlionProjectile.DisplayName: Crisálida de hormiga leon bebé
+BabyAntlionProjectile.DisplayName: Crisálida de hormiga león bebé
 ScarabLightPet.DisplayName: Escarabajo bebé
 SoilBallProjectile.DisplayName: Bola de suelo
 TerracottaTombstoneProjectile.DisplayName: "{$Items.TerracottaTombstoneItem.DisplayName}"
