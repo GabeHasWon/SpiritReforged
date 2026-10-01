@@ -13,8 +13,6 @@ public class StarParticle : Particle
 	private readonly float rotSpeed;
 	private readonly Action<Particle> _action;
 
-	public Color Color { get; protected set; }
-
 	public StarParticle(Vector2 position, Vector2 velocity, Color StarColor, Color BloomColor, float scale, int maxTime, float rotationSpeed = 1f, Action<Particle> extraUpdateAction = null)
 	{
 		Position = position;

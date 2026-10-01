@@ -3,26 +3,26 @@ using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Desert.DragonFossil;
 
-public class DragonBoneParticle(int style) : Particle
+public class DragonBoneParticle : Particle
 {
-	protected readonly int _style = style;
-	protected int _timeActive;
+	protected readonly int _style;
+
+	public DragonBoneParticle(int style)
+	{
+		MaxTime = 300;
+		_style = style;
+	}
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
-		const int timeLeft = 300;
+		base.Update(ref settings);
 
-		if (++_timeActive >= timeLeft)
-			ShouldBeRemovedFromRenderer = true;
-
-		if (_timeActive > timeLeft - 10)
+		if (TimeActive > MaxTime - 10)
 			Scale *= 0.9f;
 
 		Velocity += Vector2.UnitY * 0.08f;
 		Scale -= 0.005f;
 		Rotation += 0.04f;
-
-		base.Update(ref settings);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)

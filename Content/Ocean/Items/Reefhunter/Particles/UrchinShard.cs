@@ -22,6 +22,7 @@ public class UrchinShard : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
 		//Color = Lighting.GetColor(Position.ToTileCoordinates()) * EaseFunction.EaseQuadOut.Ease(1 - Progress);
 
 		Scale = MathHelper.Lerp(_maxScale, 0, EaseFunction.EaseCubicIn.Ease(Progress));

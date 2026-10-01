@@ -189,7 +189,9 @@ public partial class ShockGlyph : GlyphItem
 
 	public class ShockGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
 	{
-		private Effect GetEffect => shader.Value;
+		private Effect GetEffect => _shader.Value;
+
+		private readonly Asset<Effect> _shader = shader;
 
 		public override void Apply(Entity entity, DrawData? drawData = null)
 		{

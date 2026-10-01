@@ -28,6 +28,8 @@ public class SanguineBlood : Particle, IDrawPixelated
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		float velocityLength = MathHelper.Lerp(12, 0, Progress);
 		float magnetFactor = MathHelper.Lerp(0, 1, (float)Math.Pow(Progress, 1.25f));
 

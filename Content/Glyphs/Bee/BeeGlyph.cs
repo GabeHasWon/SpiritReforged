@@ -57,6 +57,7 @@ public class BeeGlyph : GlyphItem
 
 		public override void Update(ref ParticleRendererSettings settings)
 		{
+			base.Update(ref settings);
 			_rotationOffset += Main.rand.NextFloat(0.05f);
 
 			Position = Parent.Center + new Vector2(Parent.width * Cosine.X, 0f).RotatedBy(_rotationOffset);
@@ -108,6 +109,8 @@ public class BeeGlyph : GlyphItem
 
 		public override void Update(ref ParticleRendererSettings settings)
 		{
+			base.Update(ref settings);
+
 			if (!Parent.active)
 				ShouldBeRemovedFromRenderer = true;
 
@@ -146,12 +149,12 @@ public class BeeGlyph : GlyphItem
 			spriteBatch.End(); //BATCH ME!!!
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(bloom, Position + offset - Main.screenPosition, null, Color.Black * 0.35f * fade, 0f, bloom.Size() / 2, scale * 0.5f, 0, 0);
+			spriteBatch.Draw(bloom, Position + offset + settings.AnchorPosition, null, Color.Black * 0.35f * fade, 0f, bloom.Size() / 2, scale * 0.5f, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.BeginDefault();
 
-			spriteBatch.Draw(texture, Position + offset - Main.screenPosition, source, color * fade, Rotation, source.Size() / 2, scale, effects, 0);
+			spriteBatch.Draw(texture, Position + offset + settings.AnchorPosition, source, color * fade, Rotation, source.Size() / 2, scale, effects, 0);
 		}
 	}
 
@@ -314,7 +317,9 @@ public class BeeGlyph : GlyphItem
 
 public class BeeGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
 {
-	private Effect GetEffect => shader.Value;
+	private Effect GetEffect => _shader.Value;
+
+	private readonly Asset<Effect> _shader = shader;
 
 	public override void Apply(Entity entity, DrawData? drawData = null)
 	{

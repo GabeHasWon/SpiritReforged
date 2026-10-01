@@ -12,9 +12,7 @@ public class CompositeRenderer : ModSystem
 {
 	public interface ICompositeRendering
 	{
-		public Color Color { get; set; }
-
-		public void TargetDraw(SpriteBatch spriteBatch, Color color, int layer);
+		public void TargetDraw(SpriteBatch spriteBatch, int layer);
 	}
 
 	public static int RendererCount => ParticleRenderers.Renderers.Length;
@@ -66,7 +64,7 @@ public class CompositeRenderer : ModSystem
 			foreach (IParticle particle in renderer.Particles)
 			{
 				if (particle is ICompositeRendering composite)
-					composite.TargetDraw(spriteBatch, composite.Color, i);
+					composite.TargetDraw(spriteBatch, i);
 			}
 		}
 
@@ -107,7 +105,6 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 	public readonly Action<Particle> Action;
 
 	public Entity Parent { get; private set; }
-	public Color Color { get; set; }
 	public int Variant { get; set; }
 
 	private readonly bool _addLight;
@@ -158,7 +155,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 		Action?.Invoke(this);
 	}
 
-	public void TargetDraw(SpriteBatch spriteBatch, Color color, int layer)
+	public void TargetDraw(SpriteBatch spriteBatch, int layer)
 	{
 		Texture2D texture = Texture;
 		Rectangle frame = Texture.Frame(6, 5, Variant, (int)MathHelper.Lerp(0, 5, Progress));
@@ -173,7 +170,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 			fadeOut = 1f - (progress - 0.5f) / 0.5f;
 
 		IDrawPixelated.PixelateDrawPosition(ref position);
-		spriteBatch.Draw(texture, position, frame, color * fadeOut, Rotation, frame.Size() / 2, Scale / 2, SpriteEffects.None, 0);
+		spriteBatch.Draw(texture, position, frame, Color * fadeOut, Rotation, frame.Size() / 2, Scale / 2, SpriteEffects.None, 0);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)

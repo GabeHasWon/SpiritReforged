@@ -39,7 +39,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 	public static readonly SoundStyle ChitterSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Chitter", 4) {  MaxInstances = 5};
 	public static readonly SoundStyle SmallChitterSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/SmallChitter", 4) { MaxInstances = 5 };
 	public static readonly SoundStyle WindLoopSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/WindLoop") { IsLooped = true, MaxInstances = 0 };
-	private SlotId windLoopSFXInstance;
+	//private SlotId windLoopSFXInstance;
 	#endregion
 
 	#region Balance values
@@ -90,7 +90,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 	}
 	#endregion
 
-	private static int SpawningMusic = MusicID.QueenSlime;
+	//private static int SpawningMusic = MusicID.QueenSlime;
 	private static int Phase1Music;
 	private static int Phase2Music;
 	private static int PhaseTwoHeadSlot;

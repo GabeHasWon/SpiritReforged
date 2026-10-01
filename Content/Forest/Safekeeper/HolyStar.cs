@@ -6,8 +6,6 @@ namespace SpiritReforged.Content.Forest.Safekeeper;
 
 public class HolyStar : Particle
 {
-	public Color Color;
-
 	public HolyStar(Vector2 position, Color color, float scale, int maxTime)
 	{
 		Position = position;

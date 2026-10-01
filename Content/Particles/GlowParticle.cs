@@ -14,7 +14,6 @@ public class GlowParticle : Particle
 	private readonly Action<Particle> _action;
 
 	protected readonly Vector2[] oldPositions = [];
-	public Color Color;
 
 	public GlowParticle(Vector2 position, Vector2 velocity, Color startColor, Color endColor, float scale, int maxTime, int maxTrailLength = 1, Action<Particle> extraUpdateAction = null)
 	{

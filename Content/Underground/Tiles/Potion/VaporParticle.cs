@@ -9,8 +9,6 @@ public class VaporParticle : Particle
 	private const int NumFrames = 8;
 	private float _frameCounter;
 
-	public Color Color { get; protected set; }
-
 	public VaporParticle(Vector2 position, Vector2 velocity, Color color, float scale = 1f, int timeLeft = 60)
 	{
 		Position = position;

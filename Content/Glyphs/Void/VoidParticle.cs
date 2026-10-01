@@ -10,8 +10,6 @@ public class VoidParticle : Particle
 	private Vector2 _offset;
 	private SingularityRenderSystem.ShaderItem _shaderItem;
 
-	public Color Color { get; protected set; }
-
 	public VoidParticle(Vector2 position, Vector2 velocity, Color color, float rotation, float scale, int maxTime, Entity attached = null)
 	{
 		Position = position;

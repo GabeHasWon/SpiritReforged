@@ -9,8 +9,6 @@ public class MagicParticle : Particle
 {
 	private readonly int _frame;
 
-	public Color Color { get; protected set; }
-
 	public MagicParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime)
 	{
 		Position = position;

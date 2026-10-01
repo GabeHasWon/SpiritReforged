@@ -18,8 +18,6 @@ public class ImpactLine : Particle
 	internal Vector2 _offset;
 	internal readonly float _acceleration;
 
-	public Color Color { get; protected set; }
-
 	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, float acceleration, Entity attatchedEntity = null, Action<Particle> extraUpdateAction = null)
 	{
 		Position = position;

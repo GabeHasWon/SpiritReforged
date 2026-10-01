@@ -14,8 +14,6 @@ public class SmokeCircleParticle : Particle
 	private readonly Vector2 _scrollOffset;
 	private readonly Vector2 _noiseScale;
 
-	public Color Color { get; set; }
-
 	public SmokeCircleParticle(Vector2 position, Vector2 velocity, Color color, float scale, float rotation, int maxTime)
 	{
 		Position = position;

@@ -9,8 +9,6 @@ public class EnchantedMirrorShard : Particle
 {
 	private readonly int _variant;
 
-	public Color Color { get; set; }
-
 	public EnchantedMirrorShard(Vector2 position, Vector2 velocity, float rotation, float scale, int maxTime)
 	{
 		Position = position;

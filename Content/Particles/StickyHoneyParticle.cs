@@ -1,33 +1,27 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class StickyHoneyParticle(Vector2 position, Vector2 velocity, float scale, int maxTime, float fallSpeed = 0.15f) : StickyBloodParticle(position, velocity, scale, maxTime, fallSpeed)
 {
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var texture = Texture;
-		var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
-
+		Texture2D texture = Texture;
 		float rotation = Rotation;
-
 		float fade;
 
+		Vector2 anchorPosition = settings.AnchorPosition;
 		Rectangle frame = texture.Frame(1, 3, 0, variant);
 
 		if (Progress < 0.25f)
 			fade = Progress / 0.25f;
 		else
-			fade = (1f - (Progress - 0.25f) / 0.75f);
+			fade = 1f - (Progress - 0.25f) / 0.75f;
 
-		spriteBatch.End(); //BATCH ME!!!
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+		DrawHelpers.DrawOutline(offset =>
+			spriteBatch.Draw(texture, Position + anchorPosition + offset, frame, Color.Orange * 0.5f * fade, rotation, frame.Size() / 2, Scale, 0, 0));
 
-		spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.Orange * 0.5f * fade, 0f, bloom.Size() / 2, Scale * 0.35f, 0, 0);
-
-		spriteBatch.End();
-		spriteBatch.BeginDefault();
-
-		spriteBatch.Draw(texture, Position - Main.screenPosition, frame, Color.White * fade, rotation, frame.Size() / 2, Scale, 0, 0);
+		spriteBatch.Draw(texture, Position + anchorPosition, frame, Color.White * fade, rotation, frame.Size() / 2, Scale, 0, 0);
 	}
 }

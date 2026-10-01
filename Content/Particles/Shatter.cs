@@ -8,9 +8,7 @@ namespace SpiritReforged.Content.Particles;
 public class Shatter : Particle
 {
 	private Color _baseColor;
-	private float _baseScale;
-
-	public Color Color { get; protected set; }
+	private readonly float _baseScale;
 
 	public Shatter(Vector2 position, Color baseColor, float scale, int maxTime)
 	{

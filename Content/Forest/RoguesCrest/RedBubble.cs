@@ -5,8 +5,6 @@ namespace SpiritReforged.Content.Forest.RoguesCrest;
 
 public class RedBubble : Particle
 {
-	public Color Color { get; protected set; }
-
 	public RedBubble(Vector2 position, Color color, float scale, int maxTime)
 	{
 		Position = position;

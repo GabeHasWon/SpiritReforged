@@ -18,6 +18,8 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 
 		public override void Update(ref ParticleRendererSettings settings)
 		{
+			base.Update(ref settings);
+
 			if (TimeActive == 1)
 				SoundEngine.PlaySound(Main.rand.Next([DebrisQuiet with { Volume = 0.8f, PitchRange = (0.5f, 1f) }, DebrisLoud with { Volume = 0.1f, Pitch = 1f, PitchVariance = 0.4f }]), Position);
 

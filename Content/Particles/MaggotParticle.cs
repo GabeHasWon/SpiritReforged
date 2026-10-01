@@ -21,12 +21,12 @@ public class MaggotParticle : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		Velocity *= 0.99f;
 		Velocity.Y += 0.05f;
 
 		Rotation += Velocity.Length() * 0.05f * Math.Sign(Velocity.X);
-
-		base.Update(ref settings);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)

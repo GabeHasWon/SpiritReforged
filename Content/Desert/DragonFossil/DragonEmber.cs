@@ -23,6 +23,8 @@ public class DragonEmber : Particle
 	public override void Update(ref ParticleRendererSettings settings)
 	{
 		const int fadeout = 10;
+		base.Update(ref settings);
+
 		Lighting.AddLight(Position, Color.Orange.ToVector3() * Scale* 0.5f);
 
 		if (TimeActive > MaxTime - fadeout)

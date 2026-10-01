@@ -21,8 +21,6 @@ public class LightFlash : Particle
 
 	private readonly Action<Particle> _action;
 
-	public Color Color { get; protected set; }
-
 	public LightFlash(Entity parent, Vector2 offsetFromParent, Color StartColor, Color EndColor, Vector2 Scale, int maxTime, float rotation, int rotationDirection, Action<Particle> extraUpdateAction = null)
 	{
 		Parent = parent;

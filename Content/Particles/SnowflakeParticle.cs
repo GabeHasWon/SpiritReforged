@@ -16,8 +16,6 @@ public class SnowflakeParticle : Particle
 	private Color _startColor;
 	private Color _endColor;
 
-	public Color Color { get; protected set; }
-
 	public SnowflakeParticle(Vector2 position, Vector2 velocity, Color startColor, Color endColor, float scale, int maxTime, float rotationSpeed = 1f, int typeValue = 1, UpdateAction action = null)
 	{
 		Position = position;

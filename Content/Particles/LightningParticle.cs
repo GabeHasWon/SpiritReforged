@@ -12,8 +12,6 @@ public class LightningParticle : Particle
 	private Vector2 _endPosition;
 	private Vector2 _distortion;
 
-	public Color Color { get; protected set; }
-
 	public LightningParticle(Vector2 positionStart, Vector2 positionEnd, Color color, int maxTime, float scale)
 	{
 		Position = positionStart;

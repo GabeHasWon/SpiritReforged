@@ -11,8 +11,6 @@ public class SmokeCloud : DissipatingImage
 	private readonly Color startColor;
 	private readonly Color? endColor;
 
-	public Color Color;
-
 	public SmokeCloud(Vector2 position, Vector2 velocity, Color color, float scale, EaseFunction acceleration, int maxTime, bool useLightColor = true) : base(position, color, Main.rand.NextFloatDirection(), scale, 0.15f, "Smoke", new(0.33f, 0.33f), new(2, 1), maxTime)
 	{
 		UseLightColor = useLightColor;

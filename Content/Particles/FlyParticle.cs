@@ -16,10 +16,10 @@ public class FlyParticle : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		Velocity *= 0.99f;
 		Velocity = Velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.9f, 1.1f);
-
-		base.Update(ref settings);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)

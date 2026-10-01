@@ -31,8 +31,6 @@ public class PulseCircle : Particle
 	private readonly float _ringWidth;
 	private readonly float _endRingWidth;
 
-	public Color Color { get; set; }
-
 	public PulseCircle(Vector2 position, Color ringColor, Color bloomColor, float ringWidth, float maxRadius, int maxTime, EaseFunction MovementStyle = null, bool inverted = false, float endRingWidth = 0)
 	{
 		Position = position;

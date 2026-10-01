@@ -1,5 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using System.Reflection;
 using Terraria.Graphics.Renderers;
 
@@ -69,9 +68,16 @@ public abstract class Particle : IPooledParticle, IParticle
 	public float Scale = 1f;
 	public Vector2 Position;
 	public Vector2 Velocity;
+	public Color Color = Color.White;
 
-	public virtual void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch) { }
+	public virtual void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
+	{
+		Texture2D texture = Texture;
+		spritebatch.Draw(texture, Position + settings.AnchorPosition, null, Color, Rotation, texture.Size() / 2, Scale, 0, 0);
+	}
 
+	/// <summary> This particle's basic behaviour. By default, updates position by velocity and expires over time. </summary>
+	/// <param name="settings"></param>
 	public virtual void Update(ref ParticleRendererSettings settings)
 	{
 		Position += Velocity;
@@ -130,9 +136,14 @@ public sealed class ParticleRenderers : ModSystem
 		Renderers = renderers.ToArray();
 	}
 
+	/// <summary> Draws all particles within the given <paramref name="renderer"/> then calls <see cref="OnDrawParticles"/>. </summary>
+	/// <param name="spriteBatch"></param>
+	/// <param name="renderer"></param>
 	public static void DrawParticles(SpriteBatch spriteBatch, ParticleRenderer renderer)
 	{
+		renderer.Settings.AnchorPosition = -Main.screenPosition; //Ensure screen position is always accurate
 		renderer.Draw(spriteBatch);
+
 		OnDrawParticles?.Invoke(renderer);
 	}
 
@@ -141,10 +152,7 @@ public sealed class ParticleRenderers : ModSystem
 	private static void UpdateParticles(On_Main.orig_UpdateParticleSystems orig, Main self)
 	{
 		foreach (ParticleRenderer renderer in Renderers)
-		{
-			renderer.Settings.AnchorPosition = -Main.screenPosition;
 			renderer.Update();
-		}
 
 		HashSet<IParticle> queuedForRemoval = []; //Update the particle queue
 		foreach (IParticle item in _particleQueue.Keys)

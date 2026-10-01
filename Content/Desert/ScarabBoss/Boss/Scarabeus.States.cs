@@ -500,7 +500,7 @@ public partial class Scarabeus : ModNPC
 	#endregion
 
 	#region Death Animation
-	private Vector2 _deathDirection;
+	//private Vector2 _deathDirection;
 
 	public float DeathAnimation(ref bool retarget)
 	{

@@ -12,7 +12,7 @@ public class PixelBloom : Particle
 
 	private readonly Action<Particle> _action;
 
-	public Color Color => Color.Lerp(startColor, endColor, 1f - progress);
+	public Color FinalColor => Color.Lerp(startColor, endColor, 1f - progress);
 
 	public PixelBloom(Vector2 position, Vector2 velocity, Color StartColor, Color EndColor, float scale, int maxTime, Action<Particle> extraUpdateAction = null)
 	{
@@ -33,7 +33,7 @@ public class PixelBloom : Particle
 		base.Update(ref settings);
 
 		progress = (float)Math.Sin(Progress * MathHelper.Pi);
-		Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
+		Lighting.AddLight(Position, FinalColor.R / 255f, FinalColor.G / 255f, FinalColor.B / 255f);
 		Velocity *= 0.98f;
 
 		_action?.Invoke(this);
@@ -44,7 +44,7 @@ public class PixelBloom : Particle
 		Texture2D basetexture = Texture;
 		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
 
-		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, Color * 0.25f, 0, bloomtexture.Size() / 2, Scale * 0.2f * progress, SpriteEffects.None, 0);
+		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, FinalColor * 0.25f, 0, bloomtexture.Size() / 2, Scale * 0.2f * progress, SpriteEffects.None, 0);
 		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, Color.White.Additive() * 0.1f, 0, bloomtexture.Size() / 2, Scale * 0.1f * progress, SpriteEffects.None, 0);
 		spriteBatch.Draw(basetexture, Position - Main.screenPosition, null, Color.White * 0.5f, 0, basetexture.Size() / 2, Scale * progress, SpriteEffects.None, 0);
 	}

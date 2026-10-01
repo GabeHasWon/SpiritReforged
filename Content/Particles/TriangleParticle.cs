@@ -14,8 +14,6 @@ public class TriangleParticle : Particle
 
 	private readonly Action<Particle> _action;
 
-	public Color Color { get; protected set; }
-
 	public TriangleParticle(Vector2 position, Vector2 velocity, Color color, Color BloomColor, float scale, int maxTime, Action<Particle> extraUpdateAction = null, bool AddLight = true)
 	{
 		Position = position;
@@ -34,6 +32,8 @@ public class TriangleParticle : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (addLight)
 			Lighting.AddLight(Position, Color.R / 255f * (1f - Progress), Color.G / 255f * (1f - Progress), Color.B / 255f * (1f - Progress));
 
@@ -41,8 +41,6 @@ public class TriangleParticle : Particle
 		Rotation += Velocity.Length() * 0.03f;
 
 		_action?.Invoke(this);
-
-		base.Update(ref settings);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)

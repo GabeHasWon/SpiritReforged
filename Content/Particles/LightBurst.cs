@@ -11,8 +11,6 @@ public class LightBurst : Particle
 	public bool noLight;
 	private float _opacity;
 
-	public Color Color { get; protected set; }
-
 	public LightBurst(Vector2 position, float rotation, Color color, float scale, int maxTime)
 	{
 		Position = position;

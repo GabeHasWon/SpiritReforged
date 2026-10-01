@@ -8,8 +8,6 @@ public class FireParticle : DissipatingImage
 	private readonly EaseFunction _acceleration;
 	private readonly Vector2 _initialVel;
 
-	public Color Color { get; set; }
-
 	public override float FinalScaleMod { get; set; } = 0.5f;
 	public override string DistortNoiseString => "swirlNoise";
 	public override bool Pixellate { get; set; } = true;

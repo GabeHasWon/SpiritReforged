@@ -16,8 +16,6 @@ public class EmberParticle : Particle
 	private Action<Particle> _extraAction;
 	private readonly Vector2[] oldPositions = [];
 
-	public Color Color;
-
 	public EmberParticle AddAction(Action<Particle> action)
 	{
 		_extraAction = action;
@@ -103,8 +101,6 @@ public class CurvingEmberParticle : Particle
 	private readonly Color _startColor;
 	private readonly Color _endColor;
 	private readonly Vector2[] oldPositions = [];
-
-	public Color Color;
 
 	public CurvingEmberParticle(Vector2 position, Vector2 velocity, Color startColor, Color endColor, float scale, int maxTime, int direction, int timeToCurve, int maxTrailLength = 1)
 	{

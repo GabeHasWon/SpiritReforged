@@ -40,6 +40,7 @@ public class LootBag : ModNPC
 		public override void Update(ref ParticleRendererSettings settings)
 		{
 			const int hitboxSize = 8;
+			base.Update(ref settings);
 
 			Rectangle hitbox = new((int)Position.X - hitboxSize / 2, (int)Position.Y - hitboxSize / 2, hitboxSize, hitboxSize);
 			Point roundedPosition = Position.ToTileCoordinates();
