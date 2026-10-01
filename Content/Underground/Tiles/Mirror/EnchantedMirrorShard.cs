@@ -25,6 +25,8 @@ public class EnchantedMirrorShard : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (Collision.SolidCollision(Position - new Vector2(4), 8, 8))
 		{
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastCrystalImpact with { Pitch = 1, PitchVariance = 0.5f }, Position);

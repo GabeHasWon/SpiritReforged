@@ -86,7 +86,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.BlueFlare, 0, -5).noGravity = true;
 				
 				if (Main.rand.NextBool())
-					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50), 80, true, false));
+					ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50) * 0.4f, 80, true, false));
 			}
 		}
 
@@ -278,7 +278,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		Main.mouseRightRelease = false;
 
 		for (int x = 0; x < 10; x++)
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Main.rand.NextVector2FromRectangle(player.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50), 80, true, false));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Main.rand.NextVector2FromRectangle(player.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), Color.Cyan * 0.5f, Main.rand.Next(40, 80), true, false));
 
 		ParticleRenderers.OverPlayers.Add(new SharpStarParticle(player.Center, Vector2.Zero, Color.Cyan.Additive(), 1, 20)
 		{ Rotation = 0 });
@@ -384,14 +384,14 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			Vector2 backPosition = new(i * 16 + backtile_spread * range - (backtile_spread - tile_spread) / 2, (j + 4) * 16);
 			Vector2 position = new(i * 16 + tile_spread * range, (j + 4) * 16);
 
-			ParticleRenderers.UnderWalls.Add(new CompositeSmoke(backPosition, Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50), 160, false, false));
+			ParticleRenderers.UnderWalls.Add(new CompositeSmoke(backPosition, Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50) * 0.4f, 160, false, false));
 
 			float taperOff = 1f - EaseFunction.EaseSine.Ease(range);
-			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(position, Vector2.UnitY * -Main.rand.NextFloat(taperOff), new Color(44, 90, 120) * taperOff, 120, false, false)
+			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(position, Vector2.UnitY * -Main.rand.NextFloat(taperOff), new Color(44, 90, 120) * taperOff * 0.5f, 120, false, false)
 			{ Variant = Main.rand.Next(3, 6) });
 
 			if (Main.rand.NextBool())
-				ParticleRenderers.OverPlayers.Add(new CompositeSmoke(position, Vector2.UnitY * (taperOff * -0.5f), Color.DarkCyan, 80, false, true)
+				ParticleRenderers.OverPlayers.Add(new CompositeSmoke(position, Vector2.UnitY * (taperOff * -0.5f), Color.DarkCyan * 0.5f, 80, false, true)
 				{ Variant = Main.rand.Next(3, 6) });
 		}
 	}

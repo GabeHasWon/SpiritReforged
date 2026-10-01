@@ -41,7 +41,7 @@ public class CompositeRenderer : ModSystem
 
 	private static void SetupTarget()
 	{
-		if (CompositeItems.Count == 0) // Don't restart the spritebatch if there are no particles present
+		if (CompositeItems.Count == 0) // Don't restart the spritebatch if there are no composite items present
 			return;
 
 		SpriteBatch spriteBatch = Main.spriteBatch;
@@ -55,22 +55,6 @@ public class CompositeRenderer : ModSystem
 		RasterizerState rasterizer = RasterizerState.CullNone;
 		rasterizer.ScissorTestEnable = true;
 
-		spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, rasterizer);
-
-		for (int i = 0; i < RendererCount; i++)
-		{
-			ParticleRenderer renderer = ParticleRenderers.Renderers[i];
-			Rectangle crop = CompositeTarget.Value.Frame(1, RendererCount, 0, i);
-			spriteBatch.GraphicsDevice.ScissorRectangle = crop;
-
-			foreach (IParticle particle in renderer.Particles)
-			{
-				if (particle is ICompositeRendering composite)
-					composite.TargetDraw(spriteBatch, Color.Black, i);
-			}
-		}
-
-		spriteBatch.End();
 		spriteBatch.Begin(SpriteSortMode.Immediate, Max, SamplerState.PointClamp, DepthStencilState.None, rasterizer);
 
 		for (int i = 0; i < RendererCount; i++)
@@ -102,10 +86,18 @@ public class CompositeRenderer : ModSystem
 	{
 		if (CompositeTarget?.Value != null)
 		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
+
+			//spriteBatch.End();
+			//spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.Transform);
+
 			int index = Array.FindIndex(ParticleRenderers.Renderers, x => x == renderer);
 			Rectangle crop = CompositeTarget.Value.Frame(1, RendererCount, 0, index);
 
-			Main.spriteBatch.Draw(CompositeTarget.Value, Vector2.Zero, crop, Color.White * 0.4f, 0f, Vector2.Zero, 2f, 0f, 0f);
+			spriteBatch.Draw(CompositeTarget.Value, Vector2.Zero, crop, Color.White, 0f, Vector2.Zero, 2f, 0f, 0f);
+
+			//spriteBatch.End();
+			//spriteBatch.BeginDefault();
 		}
 	}
 }
@@ -170,7 +162,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 	{
 		Texture2D texture = Texture;
 		Rectangle frame = Texture.Frame(6, 5, Variant, (int)MathHelper.Lerp(0, 5, Progress));
-		Vector2 position = Position - Main.screenPosition + Vector2.UnitY * Main.screenHeight / 2 * layer;
+		Vector2 position = Position - Main.screenPosition + Vector2.UnitY * Main.screenHeight * layer;
 		float progress = Progress;
 		float fadeOut = 1f;
 		

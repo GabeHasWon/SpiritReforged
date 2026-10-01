@@ -95,7 +95,7 @@ public sealed class ParticleRenderers : ModSystem
 	public static ParticleRenderer[] Renderers { get; private set; }
 	public static event Action<ParticleRenderer> OnDrawParticles;
 
-	private static Dictionary<IParticle, ParticleQueue> _particleQueue = new();
+	private static readonly Dictionary<IParticle, ParticleQueue> _particleQueue = new();
 
 	public static readonly ParticleRenderer OverInventory = new();
 	public static readonly ParticleRenderer OverHealthBars = new();
@@ -169,7 +169,7 @@ public sealed class ParticleRenderers : ModSystem
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.BackgroundViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.Transform);
 
 			DrawParticles(spriteBatch, UnderWalls);
 

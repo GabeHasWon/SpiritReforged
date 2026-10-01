@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Visuals;
+﻿using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
@@ -29,7 +28,7 @@ public class FlyParticle : Particle
 		var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
 
 		float rotation = Rotation;
-
+		Vector2 anchorPosition = settings.AnchorPosition;
 		float fade;
 		
 		if (Progress < 0.5f)
@@ -37,14 +36,9 @@ public class FlyParticle : Particle
 		else
 			fade = 1f - (Progress - 0.5f) / 0.5f;
 
-		spriteBatch.End(); //BATCH ME!!!
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-		
-		spriteBatch.Draw(bloom, Position + settings.AnchorPosition, null, Color.Black * 0.5f * fade, 0f, bloom.Size() / 2, Scale * 0.2f, 0, 0);
-		
-		spriteBatch.End();
-		spriteBatch.BeginDefault();
+		DrawHelpers.DrawOutline(offset =>
+			spriteBatch.Draw(texture, Position + anchorPosition + offset, null, Color.Black * fade * 0.3f, rotation, texture.Size() / 2, Scale, 0, 0));
 
-		spriteBatch.Draw(texture, Position + settings.AnchorPosition, null, Lighting.GetColor(Position.ToTileCoordinates()) * fade, rotation, texture.Size() / 2, Scale, 0, 0);
+		spriteBatch.Draw(texture, Position + anchorPosition, null, Lighting.GetColor(Position.ToTileCoordinates()) * fade, rotation, texture.Size() / 2, Scale, 0, 0);
 	}
 }

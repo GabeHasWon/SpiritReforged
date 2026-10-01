@@ -158,7 +158,7 @@ public class JellyfishBolt : ModProjectile, IDrawPixelated
 		for (int i = 0; i < 5; i++)
 		{
 			ParticleRenderers.UnderProjectiles.Add(new LightningBoltParticle(target.Center, Main.rand.NextVector2Circular(5f, 5f), _jellyColors.LightningStart, _jellyColors.LightningEnd.Additive(), 0f, 0.6f, 40));
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2), -Vector2.UnitY * 0.3f, _jellyColors.SmokeColor * 0.8f, 50, bloomOpacity: 0.035f)
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2), -Vector2.UnitY * 0.3f, _jellyColors.SmokeColor * 0.4f, 50, bloomOpacity: 0.035f)
 			{ Variant = Main.rand.Next(3, 6) });
 		}
 

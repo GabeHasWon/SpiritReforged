@@ -130,12 +130,12 @@ public class RotGlyph : GlyphItem
 		{
 			Vector2 pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
-			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(pos, -Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(87, 94, 1), 40, false, false, SmokeUpdate)
+			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(pos, -Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(87, 94, 1) * 0.4f, 40, false, false, SmokeUpdate)
 			{ Variant = Main.rand.Next(3, 6) });
 
 			pos = item.Center + new Vector2(Main.rand.Next(-item.width / 4, item.width / 4), -Main.rand.Next(item.height / 4));
 
-			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(pos, -Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(131, 124, 1), 40, false, false, SmokeUpdate)
+			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(pos, -Vector2.UnitY * Main.rand.NextFloat(1.5f), new Color(131, 124, 1) * 0.4f, 40, false, false, SmokeUpdate)
 			{ Variant = Main.rand.Next(3, 6) });
 		}
 
@@ -160,7 +160,7 @@ public class RotGlyph : GlyphItem
 
 			Dust.NewDustPerfect(pos, DustID.Poisoned, vel, 100, default, 1.5f).noGravity = true;
 
-			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(pos, vel, new Color(131, 124, 1), 35, false, false, SmokeUpdate)
+			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(pos, vel, new Color(131, 124, 1) * 0.4f, 35, false, false, SmokeUpdate)
 			{ Variant = Main.rand.Next(3, 6) });
 		}
 
@@ -183,7 +183,7 @@ public class RotGlyph : GlyphItem
 			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
 			Vector2 vel = projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(0.5f, 0.5f);
 
-			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(pos, vel, new Color(169, 158, 38), 20, false, false, SmokeUpdate)
+			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(pos, vel, new Color(169, 158, 38) * 0.4f, 20, false, false, SmokeUpdate)
 			{ Variant = Main.rand.Next(3, 6) });
 		}
 

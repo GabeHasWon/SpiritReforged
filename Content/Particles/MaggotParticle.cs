@@ -7,12 +7,10 @@ namespace SpiritReforged.Content.Particles;
 public class MaggotParticle : Particle
 {
 	private readonly int _variant;
-	private readonly Color _tint;
 
 	public MaggotParticle(Vector2 position, Vector2 velocity, float rotation, float scale, int maxTime)
 	{
 		Position = position;
-		_tint = Color.White;
 		Rotation = rotation;
 		Scale = scale;
 		MaxTime = maxTime;
@@ -40,15 +38,11 @@ public class MaggotParticle : Particle
 		
 		Rectangle source = texture.Frame(1, 3, 0, _variant);
 		float fade = 1f - Progress;
+		Vector2 anchorPosition = settings.AnchorPosition;
 
-		spriteBatch.End(); //BATCH ME!!!
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+		DrawHelpers.DrawOutline(offset =>
+			spriteBatch.Draw(texture, Position + anchorPosition + offset, source, Color.Black * fade * 0.3f, rotation, source.Size() / 2, Scale, 0, 0));
 
-		spriteBatch.Draw(bloom, Position + settings.AnchorPosition, null, Color.Black * 0.5f * fade, 0f, bloom.Size() / 2, Scale * 0.5f, 0, 0);
-
-		spriteBatch.End();
-		spriteBatch.BeginDefault();
-
-		spriteBatch.Draw(texture, Position + settings.AnchorPosition, source, _tint * fade, rotation, source.Size() / 2, Scale, 0, 0);
+		spriteBatch.Draw(texture, Position + anchorPosition, source, Lighting.GetColor(Position.ToTileCoordinates()) * fade, rotation, source.Size() / 2, Scale, 0, 0);
 	}
 }
