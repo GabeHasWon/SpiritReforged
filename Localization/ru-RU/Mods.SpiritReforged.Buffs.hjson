@@ -172,3 +172,8 @@ RageGlyphBuff: {
 	DisplayName: Мстительный урон [{0}]
 	Description: Накоплено {0} ед. урона
 }
+
+ColumbatBuff: {
+	// DisplayName: Columbat
+	// Description: The being of bat
+}

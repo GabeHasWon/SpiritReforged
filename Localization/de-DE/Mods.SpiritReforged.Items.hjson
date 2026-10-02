@@ -3696,3 +3696,8 @@ UncommonSpookyPotsSpookyForestItem: {
 	// DisplayName: "{$Tiles.Records.SpookyForest.Name}"
 	// Tooltip: ""
 }
+
+FruitBrownie: {
+	// DisplayName: Fruit Brownie
+	// Tooltip: "'This is edible, but just not a brownie'"
+}

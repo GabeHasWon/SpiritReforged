@@ -172,3 +172,8 @@ RageGlyphBuff: {
 	DisplayName: Fúria Descontrolada [{0}]
 	Description: Dano guardado: {0}
 }
+
+ColumbatBuff: {
+	// DisplayName: Columbat
+	// Description: The being of bat
+}

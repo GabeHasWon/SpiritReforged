@@ -172,3 +172,8 @@ RageGlyphBuff: {
 	DisplayName: Zorniger Schaden [{0}]
 	Description: Gespeicherter Schaden: {0}
 }
+
+ColumbatBuff: {
+	// DisplayName: Columbat
+	// Description: The being of bat
+}
