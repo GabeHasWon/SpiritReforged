@@ -1,9 +1,7 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs.Shock;
-using Terraria;
 using Terraria.Audio;
-using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Forest.Katanas.LightningSword;
 
@@ -74,7 +72,7 @@ public class VajraLightning : ModProjectile, IDrawPixelated
 	void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
 	{
 		_chain?.Draw(spriteBatch, Matrix.Identity);
-		_reverseChain.Draw(spriteBatch, Matrix.Identity);
+		_reverseChain?.Draw(spriteBatch, Matrix.Identity);
 
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 		Vector2 position = Projectile.Center - Main.screenPosition;

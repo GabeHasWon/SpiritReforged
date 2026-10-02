@@ -37,13 +37,8 @@ public interface IDrawPixelated
 
 			foreach (Particle.Particle particle in ParticleHandler.Particles)
 			{
-				if (particle is null || particle.TimeActive > particle.MaxTime)
-					continue;
-
 				if (particle is IDrawPixelated iDrawPixelated)
-				{
 					pixelQueue.Add(iDrawPixelated);
-				}
 			}
 
 			graphics.SetRenderTarget(PixelTarget.Value);
