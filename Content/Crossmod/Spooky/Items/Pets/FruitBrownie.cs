@@ -28,6 +28,8 @@ internal class FruitBrownie : ModItem
 
 		public override void AI()
 		{
+			SetFrame();
+
 			Player owner = Main.player[Projectile.owner];
 			var modPlayer = owner.GetModPlayer<PetPlayer>();
 			modPlayer.pets.Add(Projectile.type);
@@ -49,9 +51,9 @@ internal class FruitBrownie : ModItem
 				}
 
 				if (DieTimer > 15)
-				{
 					Projectile.active = false;
-				}
+
+				return;
 			}
 
 			float off = owner.Center.X - Projectile.Center.X;
@@ -67,14 +69,12 @@ internal class FruitBrownie : ModItem
 
 			Projectile.rotation = Projectile.velocity.X * 0.06f;
 			Projectile.Center = Vector2.Lerp(Projectile.Center, owner.Center - new Vector2(owner.direction * 40, 80), 0.3f);
-
-			SetFrame();
 		}
 
 		private void SetFrame()
 		{
 			FrameCounter++;
-			Projectile.frame = (int)(FrameCounter / 4f % Main.projFrames[Type]);
+			Projectile.frame = (int)(FrameCounter / 4f % 4);
 
 			if (DieTimer > 0)
 				Projectile.frame = 4;

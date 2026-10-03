@@ -3701,3 +3701,8 @@ FruitBrownie: {
 	DisplayName: Fruit Brownie
 	Tooltip: "'This is edible, but just not a brownie'"
 }
+
+SandBrownie: {
+	DisplayName: Sand Brownie
+	Tooltip: "'At least it's not glass?'"
+}
