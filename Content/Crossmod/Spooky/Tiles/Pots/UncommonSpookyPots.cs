@@ -180,12 +180,6 @@ public class UncommonSpookyPots : PotTile, ILootable
 				SoundEngine.PlaySound(SoundID.NPCHit1 with { Volume = .3f, Pitch = .25f }, pos);
 				SoundEngine.PlaySound(SoundID.NPCDeath1, pos);
 			}
-			else if (style is Style.NoseTemple)
-			{
-				SoundEngine.PlaySound(Squish, pos);
-				SoundEngine.PlaySound(JungleBreak, pos);
-				SoundEngine.PlaySound(SoundID.Dig, pos);
-			}
 			else if (style == Style.SpookyForest)
 				SoundEngine.PlaySound(SoundID.Dig, pos);
 			else
@@ -289,7 +283,7 @@ public class UncommonSpookyPots : PotTile, ILootable
 				{
 					dustType = DustID.OrangeStainedGlass;
 
-					for (int k = 0; k < 3; ++k)
+					for (int k = 0; k < 2; ++k)
 						Gore.NewGore(source, GetRandom(), Vector2.Zero, Mod.Find<ModGore>("OrangeGift" + k).Type);
 				}
 

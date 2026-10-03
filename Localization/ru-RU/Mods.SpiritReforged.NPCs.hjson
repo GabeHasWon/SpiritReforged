@@ -816,4 +816,27 @@ DhampirNPC: {
 	// Entry: Cast away for being too cool for Little Eye, the Dhampir wander the world. Somewhere seasoned, they found the coolest place to be.
 }
 
-// SpookyMummyNPC.DisplayName: Spooky Mummy N P C
+SpookyMummyNPC: {
+	// DisplayName: Mammoth Mummy
+	// Entry: A giant mummy who's been revived well enough to walk, but not well enough to stay together. According to Little Eye, that's definitely not his fault.
+}
+
+SpookyMummyHand: {
+	// DisplayName: Mammoth Mummy Hand
+	// Entry: It's fast at running for sure, but you should see this guy's skill with a pencil. Deeply talented artist.
+}
+
+SpookyMummyHead: {
+	// DisplayName: Mammoth Mummy Head
+	// Entry: Head honcho. Leader of the group. The brains behind the operation. Well, if they still had a brain.
+}
+
+SpookyMummyHeart: {
+	// DisplayName: Mammoth Mummy Heart
+	// Entry: Yipes! I gotta get out of here!
+}
+
+SpookyMummyLegs: {
+	// DisplayName: Mammoth Mummy Legs
+	// Entry: Every group has an honest, down-to-earth hard worker. Literally.
+}

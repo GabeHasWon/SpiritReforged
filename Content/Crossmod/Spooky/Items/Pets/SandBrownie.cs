@@ -89,7 +89,12 @@ internal class SandBrownie : ModItem
 			if (distSq <= 120 * 120)
 				Projectile.velocity.X *= 0.9f;
 			else if (distSq < FlyDist)
-				Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X, Math.Sign(owner.Center.X - Projectile.Center.X) * 6, 0.15f);
+			{
+				if (Math.Abs(Projectile.Center.X - owner.Center.X) > 10)
+					Projectile.velocity.X = MathHelper.Lerp(Projectile.velocity.X, Math.Sign(owner.Center.X - Projectile.Center.X) * 6, 0.15f);
+				else
+					Projectile.velocity.X *= 0.94f;
+			}
 			else if (distSq >= FlyDist)
 			{
 				Projectile.velocity = Vector2.Lerp(Projectile.velocity, Projectile.DirectionTo(owner.Center) * 9, 0.2f);
