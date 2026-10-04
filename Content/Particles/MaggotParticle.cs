@@ -40,7 +40,7 @@ public class MaggotParticle : Particle
 		Vector2 anchorPosition = settings.AnchorPosition;
 
 		DrawHelpers.DrawOutline(offset =>
-			spriteBatch.Draw(texture, Position + anchorPosition + offset, source, Color.Black * fade * 0.3f, rotation, source.Size() / 2, Scale, 0, 0));
+			spriteBatch.Draw(texture, Position + anchorPosition + offset, source, Color.Black * fade * 0.2f, rotation, source.Size() / 2, Scale, 0, 0));
 
 		spriteBatch.Draw(texture, Position + anchorPosition, source, Lighting.GetColor(Position.ToTileCoordinates()) * fade, rotation, source.Size() / 2, Scale, 0, 0);
 	}

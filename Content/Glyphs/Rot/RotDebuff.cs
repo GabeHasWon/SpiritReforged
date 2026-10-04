@@ -191,7 +191,7 @@ public class RotDebuff : ModBuff
 
 	public override void Update(Player player, ref int buffIndex) => UpdateBlight(player, 0);
 
-	public override void Update(NPC npc, ref int buffIndex) => UpdateBlight(npc, npc.TryGetGlobalNPC(out RotNPC rotNPC) ? rotNPC.blightStacks / STACK_TIME : 0);
+	public override void Update(NPC npc, ref int buffIndex) => UpdateBlight(npc, npc.TryGetGlobalNPC(out RotNPC rotNPC) ? (float)rotNPC.blightStacks / STACK_TIME : 0);
 
 	public override void ModifyBuffText(ref string buffName, ref string tip, ref int rare)
 	{
