@@ -186,13 +186,6 @@ internal class NewBeginningsCompat : ModSystem
 
 		ZigguratMicropass.ZigguratBiome ziggurat = WorldGen.genRand.Next([.. ziggurats]);
 		Point16 pos = ziggurat.Position;
-
-		WorldGen.PlaceTile(pos.X, pos.Y, TileID.Meteorite, true, true);
-		WorldGen.PlaceTile(pos.X, pos.Y - 1, TileID.Meteorite, true, true);
-		WorldGen.PlaceTile(pos.X, pos.Y + 1, TileID.Meteorite, true, true);
-		WorldGen.PlaceTile(pos.X + 1, pos.Y, TileID.Meteorite, true, true);
-		WorldGen.PlaceTile(pos.X - 1, pos.Y, TileID.Meteorite, true, true);
-
 		Point16 spawn;
 		Tile tile;
 

@@ -6,3 +6,6 @@ v0.2.2.9
 - Added "Sunburnt Zombie" to Thorium Zombie Repellent list
 - Fixed pickups going into backpacks
 - Added pickup toggle for backpacks, allowing (or disallowing) them from picking up items directly
+- Added 3 Desert Torches to Disentombed origin, as otherwise you are in pitch blackness often lol
+- Fixed Disentombed origin not working properly on spawn
+- 
