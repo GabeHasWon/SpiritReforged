@@ -174,10 +174,18 @@ public class Crossbow : ModItem, ReloadPlayer.IPerfectReload
 			if (ReloadAnimation)
 			{
 				if (Counter == (int)SwingTime / 2)
+				{
 					SoundEngine.PlaySound(SoundID.Unlock with { Pitch = 0.3f }, Projectile.Center);
+					SoundEngine.PlaySound(Draw, Projectile.Center);
+				}
 
 				if (!status.Reloading) //Reloading has ended sooner than expected (perfect reload)
+				{
+					if (Counter > SwingTime - 20)
+						SoundEngine.PlaySound(Draw, Projectile.Center);
+
 					Counter = Math.Max(Counter, (int)SwingTime - 20);
+				}
 			}
 			else
 			{
@@ -250,12 +258,15 @@ public class Crossbow : ModItem, ReloadPlayer.IPerfectReload
 
 	public readonly record struct CrossbowConfiguration(EaseFunction Easing, int Reach, int Width, int ReloadTime) : SwungProjectile.IConfiguration;
 
+	public static readonly SoundStyle Fire = new("SpiritReforged/Assets/SFX/Item/CrossbowFire", 3);
+	public static readonly SoundStyle Draw = new("SpiritReforged/Assets/SFX/Item/CrossbowDraw", 2);
+
 	public bool PerfectReload { get; set; }
 
 	public override void SetDefaults()
     {
 		Item.DefaultToBow(50, 10, true);
-		Item.UseSound = SoundID.DD2_BallistaTowerShot with { Pitch = 0.5f };
+		Item.UseSound = Fire;
 		Item.useAmmo = ModContent.ItemType<Bolt>();
 		Item.damage = 10;
 		Item.knockBack = 4.5f;
