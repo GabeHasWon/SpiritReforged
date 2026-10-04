@@ -3,6 +3,7 @@ using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class SharpStarParticle : Particle
 {
 	private Color starColor;

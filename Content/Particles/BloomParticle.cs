@@ -4,6 +4,7 @@ using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class BloomParticle : GlowParticle
 {
 	public BloomParticle(Vector2 position, Vector2 velocity, Color startColor, Color endColor, float scale, int maxTime, int maxTrailLength = 1, Action<Particle> extraUpdateAction = null) : base(position, velocity, startColor, endColor, scale, maxTime, maxTrailLength, extraUpdateAction) { }

@@ -30,6 +30,8 @@ public class StarParticle : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		opacity = (float)Math.Sin(Progress * MathHelper.Pi);
 		Color = bloomColor * opacity;
 		Lighting.AddLight(Position, Color.R / 255f, Color.G / 255f, Color.B / 255f);
@@ -37,8 +39,6 @@ public class StarParticle : Particle
 		Rotation += rotSpeed * (Velocity.X > 0 ? 0.07f : -0.07f);
 
 		_action?.Invoke(this);
-
-		base.Update(ref settings);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)

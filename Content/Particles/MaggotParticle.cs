@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Visuals;
+﻿using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;

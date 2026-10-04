@@ -139,9 +139,12 @@ public sealed class ParticleRenderers : ModSystem
 	/// <summary> Draws all particles within the given <paramref name="renderer"/> then calls <see cref="OnDrawParticles"/>. </summary>
 	/// <param name="spriteBatch"></param>
 	/// <param name="renderer"></param>
-	public static void DrawParticles(SpriteBatch spriteBatch, ParticleRenderer renderer)
+	/// <param name="uiLayer"></param>
+	public static void DrawParticles(SpriteBatch spriteBatch, ParticleRenderer renderer, bool uiLayer = false)
 	{
-		renderer.Settings.AnchorPosition = -Main.screenPosition; //Ensure screen position is always accurate
+		if (!uiLayer)
+			renderer.Settings.AnchorPosition = -Main.screenPosition; //Ensure screen position is always accurate
+
 		renderer.Draw(spriteBatch);
 
 		OnDrawParticles?.Invoke(renderer);
@@ -256,12 +259,12 @@ public sealed class ParticleRenderers : ModSystem
 	private static void PostDrawInventory(On_Main.orig_DrawInventory orig, Main self)
 	{
 		orig(self);
-		DrawParticles(Main.spriteBatch, OverInventory);
+		DrawParticles(Main.spriteBatch, OverInventory, true);
 	}
 
 	private static void PostDrawHealthBars(On_Main.orig_DrawInterface_14_EntityHealthBars orig, Main self)
 	{
 		orig(self);
-		DrawParticles(Main.spriteBatch, OverHealthBars);
+		DrawParticles(Main.spriteBatch, OverHealthBars, true);
 	}
 }

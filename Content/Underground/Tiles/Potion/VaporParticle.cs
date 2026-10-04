@@ -22,6 +22,8 @@ public class VaporParticle : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		_frameCounter = (_frameCounter + 0.2f) % NumFrames;
 		Velocity *= 0.95f;
 	}

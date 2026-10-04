@@ -31,9 +31,8 @@ public class LargeBeeParticle(Vector2 position, Vector2 velocity, float rotation
 		if (++_frameCounter > 3)
 		{
 			_frameCounter = 0;
-			_frame++;
 
-			if (_frame >= FRAME_COUNT)
+			if (++_frame >= FRAME_COUNT)
 				_frame = 0;
 		}
 	}
@@ -58,6 +57,6 @@ public class LargeBeeParticle(Vector2 position, Vector2 velocity, float rotation
 		DrawHelpers.DrawOutline(offset =>
 			spriteBatch.Draw(texture, Position + anchorPosition + offset, frame, Color.Black * fade * 0.3f, rotation, frame.Size() / 2, Scale, 0, 0));
 
-		spriteBatch.Draw(texture, Position + anchorPosition, frame, Lighting.GetColor(Position.ToPoint()) * fade, rotation, frame.Size() / 2, Scale, flip, 0);
+		spriteBatch.Draw(texture, Position + anchorPosition, frame, Lighting.GetColor(Position.ToTileCoordinates()) * fade, rotation, frame.Size() / 2, Scale, flip, 0);
 	}
 }

@@ -7,84 +7,11 @@ using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Content.Glyphs.Bee;
 
 public class BeeGlyph : GlyphItem
 {
-	public class BeeInOrbit : Particle
-	{
-		public NPC Parent => Main.npc[_parentWhoAmI];
-
-		public Vector2 Cosine
-		{
-			get
-			{
-				float rate = TimeActive * _animationSpeed;
-				return new Vector2((float)Math.Cos(rate), (float)Math.Sin(rate));
-			}
-		}
-
-		public bool DrawBehind
-		{
-			get => _drawBehind = true;
-			set
-			{
-				if (_drawBehind != value)
-				{
-					(!value ? ParticleRenderers.UnderSolids : ParticleRenderers.OverNPCs).Particles.Remove(this); //Change particle renderers with layer
-					(value ? ParticleRenderers.UnderSolids : ParticleRenderers.OverNPCs).Add(this);
-
-					_drawBehind = value;
-				}
-			}
-		}
-		private bool _drawBehind;
-
-		private float _rotationOffset;
-		private readonly int _parentWhoAmI;
-		private readonly float _animationSpeed;
-
-		public BeeInOrbit(NPC npc, float speed)
-		{
-			_parentWhoAmI = npc.whoAmI;
-			_animationSpeed = speed;
-
-			MaxTime = 60 * 5;
-			Scale = 1f;
-		}
-
-		public override void Update(ref ParticleRendererSettings settings)
-		{
-			base.Update(ref settings);
-			_rotationOffset += Main.rand.NextFloat(0.05f);
-
-			Position = Parent.Center + new Vector2(Parent.width * Cosine.X, 0f).RotatedBy(_rotationOffset);
-			Rotation = MathHelper.Lerp(Rotation, Cosine.X, 0.05f);
-
-			if (Cosine.Y is < 1f and > (-0.5f))
-				DrawBehind = true;
-			else
-				DrawBehind = false;
-		}
-
-		public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
-		{
-			const int type = ProjectileID.Bee;
-
-			Texture2D texture = TextureAssets.Projectile[type].Value;
-			Rectangle source = texture.Frame(1, Main.projFrames[type], 0, (int)(TimeActive / 4 % Main.projFrames[type]), 0, 0);
-			Color color = Lighting.GetColor(Position.ToTileCoordinates());
-			SpriteEffects effects = Position.X < Parent.Center.X ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-			if (DrawBehind)
-				color = color.MultiplyRGB(Color.White * 0.75f);
-
-			spriteBatch.Draw(texture, Position + settings.AnchorPosition, source, color, Rotation, source.Size() / 2, 1, effects, 0);
-		}
-	}
-
 	public class BeeOnNPC : Particle
 	{
 		public const int MAX_TIME = 600;

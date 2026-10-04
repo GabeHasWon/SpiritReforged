@@ -48,6 +48,8 @@ public class PulseCircle : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (entity != null)
 		{
 			if (!entity.active)
@@ -67,8 +69,6 @@ public class PulseCircle : Particle
 
 		Scale = _maxRadius * progress;
 		_opacity = Math.Min(3 * (1 - progress), 1f);
-
-		base.Update(ref settings);
 	}
 
 	private float GetProgress()

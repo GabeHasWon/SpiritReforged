@@ -3,6 +3,7 @@ using SpiritReforged.Common.Misc;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class FireParticle : DissipatingImage
 {
 	private readonly EaseFunction _acceleration;
