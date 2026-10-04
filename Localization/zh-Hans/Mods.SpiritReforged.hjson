@@ -123,5 +123,5 @@ EcotoneEdges: {
 }
 
 DamageClasses.HybridDamageClass.DisplayName: 混合伤害
-// BackpackPickupEnabled: Direct pickup: Enabled
-// BackpackPickupDisabled: Direct pickup: Disabled
+BackpackPickupEnabled: 直接拾取：启用
+BackpackPickupDisabled: 直接拾取：禁用
