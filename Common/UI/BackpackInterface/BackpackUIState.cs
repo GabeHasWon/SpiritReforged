@@ -4,6 +4,7 @@ using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Common.UI.System;
 using System.IO;
+using Terraria.Audio;
 using Terraria.GameContent.UI.Elements;
 using Terraria.ModLoader.UI;
 using Terraria.UI;
@@ -40,6 +41,8 @@ internal class BackpackUIState : AutoUIState
 			Main.player[player].GetModPlayer<BackpackPlayer>().packPickup = enabled;
 		}
 	}
+
+	private static bool HasBackpack => Main.LocalPlayer.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false };
 
 	internal static bool HasPotionSlotMod { get; private set; }
 
@@ -97,17 +100,26 @@ internal class BackpackUIState : AutoUIState
 			}
 
 			Rectangle frame = new(Main.LocalPlayer.GetModPlayer<BackpackPlayer>().packPickup ? 0 : 22, hover ? 26 : 0, 20, 24);
+
+			if (!HasBackpack)
+				frame = Rectangle.Empty;
+
 			_pickupToggle.SetFrame(frame);
 		};
 
 		_pickupToggle.OnLeftClick += (_, _) =>
 		{
+			if (!HasBackpack)
+				return;
+
 			ref bool pickup = ref Main.LocalPlayer.GetModPlayer<BackpackPlayer>().packPickup;
 			pickup = !pickup;
 
 			if (Main.netMode == NetmodeID.MultiplayerClient)
 				new BackpackPickupPacket(pickup).Send();
 		};
+
+		_pickupToggle.OnMouseOver += (_, _) => SoundEngine.PlaySound(SoundID.MenuTick);
 
 		Append(_pickupToggle);
 	}
