@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Content.Ziggurat.Biome;
+﻿using SpiritReforged.Content.Crossmod.Spooky.Items;
+using SpiritReforged.Content.Ziggurat.Biome;
+using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 
@@ -45,7 +47,7 @@ internal class SpookyMummyNPC : ModNPC
 
 		NPC.TargetClosest();
 		
-		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, MathF.Sign(Target.Center.X - NPC.Center.X) * 2, 0.02f);
+		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, MathF.Sign(Target.Center.X - NPC.Center.X) * MathHelper.Lerp(3.5f, 2, NPC.life / NPC.lifeMax), 0.02f);
 		NPC.direction = NPC.spriteDirection = -MathF.Sign(NPC.velocity.X);
 		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 	}
@@ -68,6 +70,18 @@ internal class SpookyMummyNPC : ModNPC
 				Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(hitbox), NPC.velocity, type);
 			}
 		}
+	}
+
+	public override float SpawnChance(NPCSpawnInfo spawnInfo)
+	{
+		Tile tile = Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY];
+
+		if (spawnInfo.Player.HasItem(ModContent.ItemType<MummyQuestItem>()) && (spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>() 
+			|| spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrickCracked>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneSlab>()) 
+			&& tile.WallType == WallID.None)
+			return 0.1f;
+
+		return 0;
 	}
 
 	public override void OnKill()

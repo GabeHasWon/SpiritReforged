@@ -3647,8 +3647,8 @@ DhampirQuestItem: {
 	// DisplayName: Sad Little Bat
 	/* Tooltip:
 		'''
-		Allows the Dhampir to spawn in Salt Flats
-		"You feel an instinctual need to care for it"
+		Attracts a certain creature in the salt flats while in your inventory
+		'You feel an instinctual need to care for it'
 		''' */
 }
 
@@ -3708,6 +3708,25 @@ SandBrownie: {
 }
 
 MummyQuestItem: {
-	// DisplayName: Mummy Quest Item
+	// DisplayName: Ancient Crown
+	/* Tooltip:
+		'''
+		Attracts a certain creature on top of the ziggurat while in your inventory
+		'This is disproportionally small'
+		''' */
+}
+
+BallOfBandages: {
+	// DisplayName: Ball Of Bandages
+	// Tooltip: ""
+}
+
+DhampirCompletionItem: {
+	// DisplayName: Dhampir Completion Item
+	// Tooltip: ""
+}
+
+MummyBandageScrap: {
+	// DisplayName: Mummy Bandage Scrap
 	// Tooltip: ""
 }

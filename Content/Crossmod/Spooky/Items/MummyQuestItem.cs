@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Content.Crossmod.Spooky;
+﻿namespace SpiritReforged.Content.Crossmod.Spooky.Items;
 
 internal class MummyQuestItem : ModItem
 {
