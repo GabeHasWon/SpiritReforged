@@ -1,0 +1,220 @@
+Biomes: {
+	SavannaBiome: {
+		DisplayName: Savanne
+		TownNPCDialogueName: der Savanne
+	}
+
+	SaltBiome: {
+		DisplayName: Salzebene
+		TownNPCDialogueName: der Salzebene
+	}
+
+	ZigguratBiome: {
+		DisplayName: Ziggurat
+		TownNPCDialogueName: der Ziggurat
+	}
+}
+
+SlotContexts.Backpack: Rucksack
+
+Conditions: {
+	InSavanna: In der Savanne
+	PeevedTumbler: Beim Glitzern
+	Discovered: Entdeckung
+	Submerged: Untergetaucht
+	InSaltFlats: In der Salzebene
+	IsPrickly: Wenn stachelig
+	InZiggurat: In der Ziggurat
+	InSpace: Im Weltraum
+	NotSnow: Nicht im Schnee
+}
+
+Misc: {
+	Pins: {
+		Move: Pin verschieben
+		Obtained: Diesen Pin besitzt du bereits
+		UseItem: Rechtsklick, um diesen Pin zu deiner Sammlung hinzuzufügen
+	}
+
+	Enchantment: {
+		PlaceToEnchant: Platziere einen Gegenstand hier, um ihn zu verzaubern
+		Enchant: Verzaubern
+		Cost: "{0} [c/{1}:Chromatisches Wachs]"
+		Clear: Verzauberung entfernen
+		Random: Verzauberung zufällig auswählen
+	}
+
+	NoStock: Ausverkauft
+	GraveText: <wavy>Der Text ist alt und verblasst; du kannst nicht ganz erkennen, was dort steht.
+	MenuButton: Menü-Stil verwenden
+	UnchangedMap: Die Karte hat keine Änderungen.
+	ShareMap: Karte wurde geteilt.
+	ShareAndUpdateMap: Karte wurde geteilt & aktualisiert.
+}
+
+DamageSources: {
+	Impaling: {
+		0: "{0} wurde aufgespießt."
+		1: "{0} wurde durchbohrt."
+	}
+}
+
+GameTips: {
+	# Release
+	ReforgedTip0: Trag immer Essen mit dir herum. Man weiß nie, wann es nützlich sein könnte!
+	ReforgedTip1: Selten kann man Schmetterlinge finden, die sich in unterirdischen Hainen verstecken.
+	ReforgedTip2: Pins sind nützlich! Schau in deinem Pin-Inventar unten links auf der Karte nach.
+	ReforgedTip3: Savannentiere können nicht mit dem Insektennetz gefangen werden.
+	ReforgedTip4: Rucksäcke. Jetzt hast du mehr Platz.
+	ReforgedTip5: Die Tiefen des Ozeans bergen viele interessante Dinge.
+	ReforgedTip6: Sterngras bietet eine schöne Verschnaufpause in der Dunkelheit der Nacht.
+	ReforgedTip7: Wolkenstängel wächst immer unter Wolken. Vergiss nicht, nach oben zu schauen!
+	ReforgedTip8: Du kannst auf Akazienbäumen stehen, wenn du etwas Höhe brauchst.
+	ReforgedTip9: Manchmal spült es Dinge im Ozean an; schau ab und zu mal vorbei!
+	# Caves & Clubs
+	ReforgedTip10: Viele Töpfe sind in den Höhlen unter deinen Füßen verstreut! Halt die Augen offen.
+	ReforgedTip11: Keulen bieten starken, fokussierten Schaden gegen einzelne Ziele.
+	# Sunscorched
+	ReforgedTip12: Legenden erzählen von einer Opfergabe aus Edelsteinen auf einem uralten Altar...
+	ReforgedTip13: Vorsicht beim Erkunden der uralten Ziggurat! Überraschungen lauern an jeder Ecke.
+	ReforgedTip14: Versunkene Oasen können eine dringend benötigte Verschnaufpause vom Chaos der unterirdischen Wüste bieten.
+	ReforgedTip15: Bernstein verbirgt Geheimnisse! Vielleicht findest du etwas darin...
+	ReforgedTip16: Vorsicht beim Herumlaufen in den Ruinen der Wüste! Manche Böden sind weniger stabil, als du denkst.
+	# Spellbound
+	ReforgedTip17: Glyphen verleihen deinen Waffen mächtige Effekte, die ihre Verwendung grundlegend verändern!
+	ReforgedTip18: Chromatisches Wachs findet man in Töpfen, Kisten und als Beute beim Besiegen bestimmter Gegner.
+	ReforgedTip19: Der Verzauberer kann deine Waffe mit einer Vielzahl einzigartiger Glyphen versehen. Probier sie alle aus!
+}
+
+Emotes: {
+	CartographerEmote.Command: kartograf
+	HikerEmote.Command: wanderer
+	EnchanterEmote.Command: verzaubereremote
+}
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: Rechnungsbuch
+		Description: Preis-Tooltips werden angezeigt
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: Schimmersicht
+		Description: Shimmer-Tooltips werden angezeigt
+	}
+}
+
+Ecotones: {
+	SaltFlatsEcotone: Salzebene
+	SavannaEcotone: Savanne
+}
+
+EcotoneEdges: {
+	Forest: Wald
+	Desert: Wüste
+	Ocean: Ozean
+	Snow: Schnee
+	Jungle: Dschungel
+	Corruption: Korruption
+	Crimson: Crimson
+	Hallow: Hallow
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+}
+
+DamageClasses.HybridDamageClass.DisplayName: Hybrid-Schadensklasse
+// BackpackPickupEnabled: Direct pickup: Enabled
+// BackpackPickupDisabled: Direct pickup: Disabled
+
+CrossMod: {
+	Spooky: {
+		DhampirBounty: {
+			Dialogue: {
+				# For continuity sake, these dialogue entries are read sequentially, one eye, one player - so it'd be Eye.0, then Player.0, then Eye.1, etc
+				Eye: {
+					// 0: You know, I once knew someone like you! Someone spry, strong, and easy to use! But oh me oh my, they could only get so far, before the light of the sun left them scarred...so with a little bit of magic, I inverted their condition! A perfect specimen for daytime missions!
+					// 1: Uh...yeah, I mean, I had a more elaborate rhyme but, yeah that's about what I want. Do keep in mind that they are invisible, but just looove seeing their own reflection. Here, I have a malnourished bat I poke with a stick every night in a dinky cage that you can use to lure them out of hiding.
+					// 2: They probably just think they are too cool to hang around with little old me now. How ungrateful!
+				}
+
+				Player: {
+					// 0: And then they left right?
+					// 1: ...yeah, I wonder why they would ever leave!
+					// 2: Yeah, no other reason, got it.
+				}
+			}
+
+			RecoveryDialogue: {
+				Eye: {
+					// 0: You are back! Have you assassinated the deserter yet?
+					// 1: Oh don't worry, I have a big pile of malnourished bats I poke with a stick every night in dinky cages. I keep them around to remind myself of how much better I am than that stupid Dhampir. Grr...stupid dumb Dhampir...
+					// 2: ...oh me oh my, many things, but yet you help me so, we aren't so different...are we?
+				}
+
+				Player: {
+					// 0: No, Little Eye, no. I'm here because I lost the bat.
+					// 1: What's wrong with you?!
+					// 2: Ahuh. Just give me the bat already.
+				}
+			}
+
+			CompletionDialogue: {
+				Eye: {
+					// 0: Has the deserter been left in the salts?
+					// 1: Congratulations are in order! Here, take this trinket, I think you'll like it!
+					// 2: Mods.SpiritReforged.CrossMod.Spooky.DhampirBounty.CompletionDialogue.Eye.2
+				}
+
+				Player: {
+					// 0: You're so unsettling, but yes.
+					// 1: If you say so.
+					// 2: Mods.SpiritReforged.CrossMod.Spooky.DhampirBounty.CompletionDialogue.Player.2
+				}
+			}
+		}
+
+		MummyBounty: {
+			Dialogue: {
+				Eye: {
+					// 0: Oh me oh my! You've returned. Speaking of returned, have you heard of the mummy? I had a little pet project for a while, but they were a bit of a dummy!
+					// 1: Well...no. They fell apart, and they seemed to leave to depart...er...something. They didn't want to stick together, and moaned about how they must "return to their tomb".
+					// 2: It's your joy to corral them! Here, take this...thing. I think the dummy- er, mummy, liked it.
+				}
+
+				Player: {
+					// 0: They ran away at the earliest opportunity, didn't they.
+					// 1: And it's my job to corral them?
+					// 2: ...okay.
+				}
+			}
+
+			RecoveryDialogue: {
+				Eye: {
+					// 0: Aha! Have you gotten the spoils of the mummy?
+					// 1: Good thing I had already cloned them! Good thing to lord over your wretched creation sometimes, right?
+					// 2: I'm sure you'll figure it out someday. Here you go!
+				}
+
+				Player: {
+					// 0: No, I lost that crown thing.
+					// 1: That's so far removed from what I relate to that it's baffling.
+					// 2: I hope I don't have to talk to you again.
+				}
+			}
+
+			CompletionDialogue: {
+				Eye: {
+					// 0: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Eye.0
+					// 1: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Eye.1
+					// 2: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Eye.2
+				}
+
+				Player: {
+					// 0: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Player.0
+					// 1: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Player.1
+					// 2: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Player.2
+				}
+			}
+		}
+	}
+}

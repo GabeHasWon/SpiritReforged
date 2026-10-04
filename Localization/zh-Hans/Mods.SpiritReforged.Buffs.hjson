@@ -172,3 +172,13 @@ RageGlyphBuff: {
 	DisplayName: 狂怒伤害 [{0}]
 	Description: 存储的伤害：{0}
 }
+
+ColumbatBuff: {
+	// DisplayName: Columbat
+	// Description: The being of bat
+}
+
+ColumbaldBuff: {
+	// DisplayName: Columbald
+	// Description: The being of bald
+}

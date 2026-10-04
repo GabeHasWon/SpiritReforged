@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+﻿using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -107,7 +108,7 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
 			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnInZiggurat);
-			AddOrigin("Disentombed", [], equip, misc, dele);
+			AddOrigin("Disentombed", [(ItemID.DesertTorch, 3)], equip, misc, dele);
 		}
 
 		void AddWorshipper()
@@ -178,23 +179,43 @@ internal class NewBeginningsCompat : ModSystem
 
 	private static Point16 SpawnInZiggurat()
 	{
-		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicropass.ZigguratBiome).ToHashSet();
+		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicropass.ZigguratBiome).Select(x => (ZigguratMicropass.ZigguratBiome)x).ToHashSet();
 
 		if (ziggurats.Count == 0)
 			return Point16.NegativeOne;
 
-		Point16 pos = WorldGen.genRand.Next([.. ziggurats]).Position;
+		ZigguratMicropass.ZigguratBiome ziggurat = WorldGen.genRand.Next([.. ziggurats]);
+		Point16 pos = ziggurat.Position;
+
+		WorldGen.PlaceTile(pos.X, pos.Y, TileID.Meteorite, true, true);
+		WorldGen.PlaceTile(pos.X, pos.Y - 1, TileID.Meteorite, true, true);
+		WorldGen.PlaceTile(pos.X, pos.Y + 1, TileID.Meteorite, true, true);
+		WorldGen.PlaceTile(pos.X + 1, pos.Y, TileID.Meteorite, true, true);
+		WorldGen.PlaceTile(pos.X - 1, pos.Y, TileID.Meteorite, true, true);
+
 		Point16 spawn;
 		Tile tile;
 
 		do
 		{
-			spawn = new Point16(pos.X + WorldGen.genRand.Next(-100, 300), pos.Y + WorldGen.genRand.Next(-200, 200));
+			Rectangle bounds = ziggurat.FullArea;
+			spawn = new Point16(pos.X + WorldGen.genRand.Next(-bounds.Width / 2, bounds.Width / 2), pos.Y + WorldGen.genRand.Next(-10, bounds.Height - 20));
 			tile = Main.tile[spawn];
-		} while (tile.HasTile || !(tile.WallType == ModContent.WallType<RedSandstoneBrickCrackedWall>() || tile.WallType == ModContent.WallType<RedSandstoneBrickWall>())
-			|| Collision.SolidCollision(spawn.ToWorldCoordinates() - new Vector2(36), 72, 72) || !Collision.SolidCollision(spawn.ToWorldCoordinates() + new Vector2(-18, 36), 36, 16));
+		} while (tile.HasTile || !DisentombedIsValidWall(tile) || !DisentombedOpenSpace(spawn));
 
 		return spawn;
+	}
+
+	private static bool DisentombedOpenSpace(Point16 spawn)
+	{
+		Vector2 worldSpawn = spawn.ToWorldCoordinates(0, 0);
+		return Collision.SolidCollision(worldSpawn - new Vector2(36, 0), 72, 36, false) && !Collision.SolidCollision(worldSpawn + new Vector2(-18, -40), 36, 36);
+	}
+
+	private static bool DisentombedIsValidWall(Tile t)
+	{
+		SpiritReforgedMod mod = SpiritReforgedMod.Instance;
+		return t.WallType == mod.Find<ModWall>("RedSandstoneBrickWallUnsafe").Type || t.WallType == mod.Find<ModWall>("RedSandstoneBrickWallUnsafe").Type;
 	}
 
 	private static Point16 SpawnUnderground()

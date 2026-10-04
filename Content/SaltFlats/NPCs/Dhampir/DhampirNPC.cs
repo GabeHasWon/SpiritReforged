@@ -3,7 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Crossmod.Spooky;
+using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.SaltFlats.Biome;
@@ -111,7 +111,11 @@ internal class DhampirNPC : ModNPC
 		NPC.lifeMax = ModeUtils.ByMode(1000, 2000, 2500, 5000);
 	}
 
-	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
+	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
+	{
+		bestiaryEntry.UIInfoProvider = new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[Type], true);
+		bestiaryEntry.AddInfo(this, "");
+	}
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 	{
@@ -292,6 +296,8 @@ internal class DhampirNPC : ModNPC
 	}
 
 	private void SpawnMist() => _particles.Add(new MistParticle(NPC) { Timer = Main.rand.Next(15) });
+
+	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<DhampirCompletionItem>();
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{

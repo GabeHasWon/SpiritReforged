@@ -1055,7 +1055,7 @@ ExplorerTreadsItem: {
 	Tooltip:
 		'''
 		Даёт 50% шанс избежать урона от ловушки
-		Получение урона от ловушки даёт короткий бафф, увеличивающий скорость передвижения
+		Получение урона от ловушки даёт короткий бафф, увеличивающий мобильность
 		«С такими ботинками даже исследование храмов превращается в обычную прогулку»
 		'''
 }
@@ -3336,7 +3336,7 @@ CelestialStamp: {
 
 RageGlyph: {
 	DisplayName: Глиф ярости
-	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесёт при следующей атаке
+	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесён при следующей атаке
 	Effect: Мстительный
 
 	Gendered: {
@@ -3428,7 +3428,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Верстак зачарований
+	DisplayName: Стол для печатей
 	Tooltip: ""
 }
 
@@ -3539,8 +3539,8 @@ ChromaticWaxShaderDummy: {
 }
 
 WaxPlatformItem: {
-	// DisplayName: Wax Platform
-	// Tooltip: ""
+	DisplayName: Восковая платформа
+	Tooltip: ""
 }
 
 PinSpookyFarms: {
@@ -3659,22 +3659,86 @@ DhampirQuestItem: {
 	// DisplayName: Sad Little Bat
 	/* Tooltip:
 		'''
-		Allows the Dhampir to spawn in Salt Flats
-		"You feel an instinctual need to care for it"
+		Attracts a certain creature in the salt flats while in your inventory
+		'You feel an instinctual need to care for it'
 		''' */
 }
 
-LookerClub: {
-	// DisplayName: Looker Club
+UncommonSpookyPotsLowerCatacombsItem: {
+	// DisplayName: "{$Tiles.Records.LowerCatacombs.Name}"
 	// Tooltip: ""
 }
 
-PumpkinClub: {
-	// DisplayName: Pumpkin Club
+UncommonSpookyPotsUpperCatacombsItem: {
+	// DisplayName: "{$Tiles.Records.UpperCatacombs.Name}"
 	// Tooltip: ""
 }
 
-ShovelClub: {
-	// DisplayName: Shovel Club
+UncommonSpookyPotsKrampusItem: {
+	// DisplayName: "{$Tiles.Records.Krampus.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsTarPitsItem: {
+	// DisplayName: "{$Tiles.Records.TarPits.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsRottenDepthsItem: {
+	// DisplayName: "{$Tiles.Records.RottenDepths.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsFetidFarmsItem: {
+	// DisplayName: "{$Tiles.Records.FetidFarms.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsNoseTempleItem: {
+	// DisplayName: "{$Tiles.Records.NoseTemple.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsSpiderGrottoItem: {
+	// DisplayName: "{$Tiles.Records.SpiderGrotto.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsSpookyForestItem: {
+	// DisplayName: "{$Tiles.Records.SpookyForest.Name}"
+	// Tooltip: ""
+}
+
+FruitBrownie: {
+	// DisplayName: Fruit Brownie
+	// Tooltip: "'This is edible, but just not a brownie'"
+}
+
+SandBrownie: {
+	// DisplayName: Sand Brownie
+	// Tooltip: "'At least it's not glass?'"
+}
+
+MummyQuestItem: {
+	// DisplayName: Ancient Crown
+	/* Tooltip:
+		'''
+		Attracts a certain creature on top of the ziggurat while in your inventory
+		'This is disproportionally small'
+		''' */
+}
+
+BallOfBandages: {
+	// DisplayName: Ball Of Bandages
+	// Tooltip: ""
+}
+
+DhampirCompletionItem: {
+	// DisplayName: Dhampir Completion Item
+	// Tooltip: ""
+}
+
+MummyBandageScrap: {
+	// DisplayName: Mummy Bandage Scrap
 	// Tooltip: ""
 }

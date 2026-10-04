@@ -25,7 +25,9 @@
 	  </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Content\Crossmod\Spooky\SpookyForest\PumpkinClub\Gores\" />
+    <Folder Include="Content\Ziggurat\NPCs\SpookyMummy\Gores\" />
+    <Folder Include="Localization\de-DE\" />
+    <Folder Include="Content\Crossmod\Spooky\Tiles\Pots\Gores\" />
     <Folder Include="Localization\ru-RU\" />
   </ItemGroup>
   <ItemGroup>

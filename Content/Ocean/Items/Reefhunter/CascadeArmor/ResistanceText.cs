@@ -113,14 +113,27 @@ internal class ResistanceTextHandler : ILoadable
 	private static void PostDrawCombatText(ILContext il)
 	{
 		ILCursor c = new(il);
+		if (!c.TryGotoNext(x => x.MatchLdsfld<Main>("hideUI")))
+		{
+			SpiritReforgedMod.Instance.LogIL("Post Draw Combat Text", "Member 'hideUI' not found.");
+			return;
+		}
 
-		c.GotoNext(x => x.MatchLdsfld<Main>("hideUI"));
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall("ReLogic.Graphics.DynamicSpriteFontExtensionMethods", "DrawString"))) //Reversed gravity
+		{
+			SpiritReforgedMod.Instance.LogIL("Post Draw Combat Text", "Method 'DrawString' (reversed gravity) not found.");
+			return;
+		}
 
-		c.GotoNext(MoveType.After, x => x.MatchCall("ReLogic.Graphics.DynamicSpriteFontExtensionMethods", "DrawString")); //Reversed gravity
 		c.Emit(OpCodes.Ldloc_S, (byte)35);
 		c.EmitDelegate(DrawResistance);
 
-		c.GotoNext(MoveType.After, x => x.MatchCall("ReLogic.Graphics.DynamicSpriteFontExtensionMethods", "DrawString")); //Normal gravity
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall("ReLogic.Graphics.DynamicSpriteFontExtensionMethods", "DrawString"))) //Normal gravity
+		{
+			SpiritReforgedMod.Instance.LogIL("Post Draw Combat Text", "Method 'DrawString' (normal gravity) not found.");
+			return;
+		}
+
 		c.Emit(OpCodes.Ldloc_S, (byte)35);
 		c.EmitDelegate(DrawResistance);
 	}
