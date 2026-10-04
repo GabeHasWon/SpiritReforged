@@ -48,8 +48,8 @@ public class EnergyImpact : ModProjectile, IDrawOverTiles
 	{
 		const float bloomTime = 10f;
 
-		var shatter = Particle.GetTexture<Shatter>();
-		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Texture2D shatter = Particle.GetTexture<Shatter>();
+		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		float opacity = (float)Projectile.timeLeft / TimeLeftMax * 0.4f;
 		float bloomOp = (float)((Projectile.timeLeft - (TimeLeftMax - bloomTime)) / bloomTime);
