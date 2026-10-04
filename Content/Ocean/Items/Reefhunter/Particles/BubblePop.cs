@@ -1,3 +1,4 @@
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
@@ -19,8 +20,8 @@ public class BubblePop : Particle
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var texture = Texture;
-		var color = Lighting.GetColor(Position.ToTileCoordinates());
+		Texture2D texture = Texture;
+		Color color = Lighting.GetColor(Position.ToTileCoordinates()).Additive();
 
 		int frameNumber = (int)Math.Floor((double)(Progress * NUMFRAMES));
 		var frame = texture.Frame(1, NUMFRAMES, 0, frameNumber, 0, -2);
