@@ -20,9 +20,10 @@ Developed by Team Spirit.
 
 -- Localization --
 English (by Team Spirit)
-Português Brasileiro (Tradução por Lucas Rotulo e Hari)
-Русский (Перевод от Nana Team совместно с RUnion)
-简体中文 (translated by Lacewing, Fox Radish, and Lin)
+Deustch (by BardSmard)
+Русский (by Nana Team and RUnion)
+简体中文 (by Lacewing, Fox Radish, and Lin)
+Português Brasileiro (by Lucas Rotulo and Hari)
 
 -- Contributors --
 tomat, alinahvoshch, Halmska, mathica, z_e_n_

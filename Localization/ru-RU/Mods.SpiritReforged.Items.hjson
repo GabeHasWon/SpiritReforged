@@ -1296,7 +1296,7 @@ DriftwoodHammer: {
 }
 
 RemedyPotion: {
-	DisplayName: Иммунное зелье
+	DisplayName: Зелье иммунитета
 	Tooltip:
 		'''
 		Даёт невосприимчивость к следующим дебаффам:

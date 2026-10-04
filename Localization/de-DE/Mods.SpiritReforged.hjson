@@ -125,6 +125,8 @@ EcotoneEdges: {
 DamageClasses.HybridDamageClass.DisplayName: Hybrid-Schadensklasse
 // BackpackPickupEnabled: Direct pickup: Enabled
 // BackpackPickupDisabled: Direct pickup: Disabled
+// BackpackPickupEnabled: Direct pickup: Enabled
+// BackpackPickupDisabled: Direct pickup: Disabled
 
 CrossMod: {
 	Spooky: {
