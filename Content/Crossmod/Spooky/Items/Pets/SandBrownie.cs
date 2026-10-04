@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.BuffCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ProjectileCommon;
 using Terraria.Audio;
 
@@ -9,6 +10,8 @@ internal class SandBrownie : ModItem
 	public sealed class Columbald : ModProjectile
 	{
 		private ref float DieTimer => ref Projectile.ai[0];
+
+		public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 		public override void SetStaticDefaults()
 		{
@@ -116,8 +119,12 @@ internal class SandBrownie : ModItem
 
 	public class ColumbaldBuff : PetBuff<Columbald>
 	{
+		public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+
 		protected override (string, string) BuffInfo => ("Columbald", "The being of bald");
 	}
+
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 	public override void SetDefaults()
 	{

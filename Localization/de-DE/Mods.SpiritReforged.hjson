@@ -158,5 +158,35 @@ CrossMod: {
 				}
 			}
 		}
+
+		MummyBounty: {
+			Dialogue: {
+				Eye: {
+					// 0: Oh me oh my! You've returned. Speaking of returned, have you heard of the mummy? I had a little pet project for a while, but they were a bit of a dummy!
+					// 1: Well...no. They fell apart, and they seemed to leave to depart...er...something. They didn't want to stick together, and moaned about how they must "return to their tomb".
+					// 2: It's your joy to corral them! Here, take this...thing. I think the dummy- er, mummy, liked it.
+				}
+
+				Player: {
+					// 0: They ran away at the earliest opportunity, didn't they.
+					// 1: And it's my job to corral them?
+					// 2: ...okay.
+				}
+			}
+
+			RecoveryDialogue: {
+				NPC: {
+					// 0: Aha! Have you gotten the spoils of the mummy?
+					// 1: Good thing I had already cloned them! Good thing to lord over your wretched creation sometimes, right?
+					// 2: I'm sure you'll figure it out someday. Here you go!
+				}
+
+				Player: {
+					// 0: No, I lost that crown thing.
+					// 1: That's so far removed from what I relate to that it's baffling.
+					// 2: I hope I don't have to talk to you again.
+				}
+			}
+		}
 	}
 }

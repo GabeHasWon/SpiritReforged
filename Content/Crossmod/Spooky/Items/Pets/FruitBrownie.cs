@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.BuffCommon;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ProjectileCommon;
 using Terraria.Audio;
 
@@ -10,6 +11,8 @@ internal class FruitBrownie : ModItem
 	{
 		private ref float FrameCounter => ref Projectile.ai[0];
 		private ref float DieTimer => ref Projectile.ai[1];
+
+		public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 		public override void SetStaticDefaults()
 		{
@@ -83,8 +86,12 @@ internal class FruitBrownie : ModItem
 
 	public class ColumbatBuff : PetBuff<Columbat>
 	{
+		public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+
 		protected override (string, string) BuffInfo => ("Columbat", "The being of bat");
 	}
+
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 	public override void SetDefaults()
 	{

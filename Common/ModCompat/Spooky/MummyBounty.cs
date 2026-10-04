@@ -3,7 +3,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ModCompat.Spooky;
 
-internal class DhampirBounty : SpookyBounty
+internal class MummyBounty : SpookyBounty
 {
 	private static bool BountyActive = false;
 
@@ -16,8 +16,8 @@ internal class DhampirBounty : SpookyBounty
 			return;
 
 		Mod spooky = ModLoader.GetMod("Spooky");
-		Asset<Texture2D> tex = ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/Spooky/DhampirBounty");
-		spooky.Call("EyeQuest", SpiritReforgedMod.Instance, "DhampirBounty", tex, () => BountyActive, (Action<bool>)OnActivate, () => false, MapDialogue(false), MapDialogue(true));
+		Asset<Texture2D> tex = ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/Spooky/MummyBounty");
+		spooky.Call("EyeQuest", SpiritReforgedMod.Instance, "MummyBounty", tex, () => BountyActive, (Action<bool>)OnActivate, () => false, MapDialogue(false), MapDialogue(true));
 	}
 
 	private static void OnActivate(bool recover)
@@ -25,6 +25,6 @@ internal class DhampirBounty : SpookyBounty
 		BountyActive = true;
 
 		NPC entity = Main.npc[GetLittleEyeIndex()];
-		Item.NewItem(new EntitySource_Gift(entity), entity.Hitbox, ModContent.ItemType<DhampirQuestItem>());
+		Item.NewItem(new EntitySource_Gift(entity), entity.Hitbox, ModContent.ItemType<MummyQuestItem>());
 	}
 }

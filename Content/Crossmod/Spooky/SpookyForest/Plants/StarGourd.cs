@@ -52,6 +52,11 @@ internal abstract class StarGourd : ModTile
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style3x2);
 			TileObjectData.newTile.Origin = new Point16(1, 1);
 			TileObjectData.newTile.DrawYOffset = 2;
+			TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
+
+			TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+			TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+			TileObjectData.addAlternate(1);
 		}
 
 		if (copyInstance.ModifyObjectData(tile, TileObjectData.newTile) && addEntry)

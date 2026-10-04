@@ -3693,3 +3693,8 @@ SandBrownie: {
 	// DisplayName: Sand Brownie
 	// Tooltip: "'At least it's not glass?'"
 }
+
+MummyQuestItem: {
+	// DisplayName: Mummy Quest Item
+	// Tooltip: ""
+}

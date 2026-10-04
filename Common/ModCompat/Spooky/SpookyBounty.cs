@@ -50,6 +50,9 @@ internal abstract class SpookyBounty : ILoadable, ILocalizedModType
 		InnerLoad();
 	}
 
+	/// <summary>
+	/// Maps the loaded dialogue to a (string, string)[].
+	/// </summary>
 	public (string, string)[] MapDialogue(bool recover)
 	{
 		if (recover)
