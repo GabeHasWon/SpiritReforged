@@ -1055,7 +1055,7 @@ ExplorerTreadsItem: {
 	Tooltip:
 		'''
 		Даёт 50% шанс избежать урона от ловушки
-		Получение урона от ловушки даёт короткий бафф, увеличивающий скорость передвижения
+		Получение урона от ловушки даёт короткий бафф, увеличивающий мобильность
 		«С такими ботинками даже исследование храмов превращается в обычную прогулку»
 		'''
 }
@@ -1296,7 +1296,7 @@ DriftwoodHammer: {
 }
 
 RemedyPotion: {
-	DisplayName: Иммунное зелье
+	DisplayName: Зелье иммунитета
 	Tooltip:
 		'''
 		Даёт невосприимчивость к следующим дебаффам:
@@ -3336,7 +3336,7 @@ CelestialStamp: {
 
 RageGlyph: {
 	DisplayName: Глиф ярости
-	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесёт при следующей атаке
+	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесён при следующей атаке
 	Effect: Мстительный
 
 	Gendered: {
@@ -3428,7 +3428,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Верстак зачарований
+	DisplayName: Стол для печатей
 	Tooltip: ""
 }
 
@@ -3539,8 +3539,8 @@ ChromaticWaxShaderDummy: {
 }
 
 WaxPlatformItem: {
-	// DisplayName: Wax Platform
-	// Tooltip: ""
+	DisplayName: Восковая платформа
+	Tooltip: ""
 }
 
 BasaltTileItem: {

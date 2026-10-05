@@ -123,3 +123,5 @@ EcotoneEdges: {
 }
 
 DamageClasses.HybridDamageClass.DisplayName: Hybrid Damage Class
+BackpackPickupEnabled: Direct pickup: Enabled
+BackpackPickupDisabled: Direct pickup: Disabled

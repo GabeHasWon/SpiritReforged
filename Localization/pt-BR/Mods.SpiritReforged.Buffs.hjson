@@ -159,8 +159,8 @@ RotDebuff: {
 }
 
 SanguineStackingBuff: {
-	DisplayName: Maldição Sangrenta
-	Description: Mods.SpiritReforged.Buffs.SanguineStackingBuff.Description
+	DisplayName: Energia Sangrenta [{0}]
+	Description: Dano aumentado em {0}%
 }
 
 BlazeDebuff: {
@@ -169,6 +169,6 @@ BlazeDebuff: {
 }
 
 RageGlyphBuff: {
-	DisplayName: Efeito do Glifo da Raiva
-	Description: Mods.SpiritReforged.Buffs.RageGlyphBuff.Description
+	DisplayName: Fúria Descontrolada [{0}]
+	Description: Dano guardado: {0}
 }

@@ -1,6 +1,6 @@
-﻿using StructureHelper.Content.GUI;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq;
+using Terraria.UI;
 
 namespace SpiritReforged.Common.Misc;
 
@@ -8,6 +8,27 @@ public class HybridDamageClass : DamageClass
 {
 	public sealed class HybridDamageItem : GlobalItem
 	{
+		public override void Load() => On_ItemSorting.Sort += StopDamageClassConfusion;
+
+		/// <summary> Prevents HybridDamageClass items from throwing exceptions when attempting to find sorting categories. </summary>
+		private static void StopDamageClassConfusion(On_ItemSorting.orig_Sort orig, Item[] inv, int[] ignoreSlots)
+		{
+			Dictionary<Item, DamageClass> itemClassCache = [];
+			foreach (Item item in inv)
+			{
+				if (item.DamageType is HybridDamageClass)
+				{
+					itemClassCache.Add(item, item.DamageType);
+					item.DamageType = ContentSamples.ItemsByType[item.type].DamageType; //Reset to the factory damage type
+				}
+			}
+
+			orig(inv, ignoreSlots);
+
+			foreach (Item item in itemClassCache.Keys)
+				item.DamageType = itemClassCache[item]; //Restore damage classes
+		}
+
 		public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
 		{
 			if (item.DamageType is not HybridDamageClass hybridDamageClass)

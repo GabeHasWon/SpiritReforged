@@ -1,8 +1,15 @@
-v0.2.2.6
-- Fixed visual offset in stargrass tree branch glowmasks
-- Made Foreground Red Sandstone Brick Wall only merge with the any Red Sandstone tile so it's consistent between mid-game and reframing on world entry
-- Expanded the Generation Configuration UI + some of its buttons substantially to allow more space for translation and text
-- Added Verdant's Aquamarine to the Graverobber's Loot Bag drop pool if it's enabled
-- Made Chromatic Wax not count as a dye item
-- Fixed issue where ocean decor would overflow the container array for special drawing points in certain scenarios
-- Updated Russian, Chinese and Portuguese localization
+v0.2.2.9
+- Added complete Spanish translation! Thank you to MrBurrito7w7 for the translation
+- Updated Russian and Chinese localizations
+- Fixed enchanted Wax Presses being bombable (normal Wax Presses can explode normally)
+- Made Enchanted Mirrors not blow up, allow hammering or breaking its anchors - can still be mined normally
+- Added "Sunburnt Zombie" to Thorium Zombie Repellent list
+- Fixed stat pickups (like mana stars or hearts) going into backpacks
+- Added pickup toggle for backpacks, allowing (or disallowing) them from picking up items directly
+- Added 3 Desert Torches to Disentombed origin, as otherwise you are in pitch blackness often lol
+- Fixed Disentombed origin not working properly on spawn
+- Improved the performance of the Adorned Bow's visual effects
+- Falling stacked pots no longer deal any damage
+- Increased Hunting Rifle drop rate substantially (Tumbleweed Zombies: to 1/100 from 1/300, Safari Zombie: to 1/30 from 1/100)
+- Fixed Scarabeus bestiary entry not working properly when at not 100% UI zoom
+- Fixed Silver Food Platter hard crashing the game if placed on a table, and then the table being broken

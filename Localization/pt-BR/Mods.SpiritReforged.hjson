@@ -123,3 +123,5 @@ EcotoneEdges: {
 }
 
 DamageClasses.HybridDamageClass.DisplayName: Classe de Dano Hibrido
+// BackpackPickupEnabled: Direct pickup: Enabled
+// BackpackPickupDisabled: Direct pickup: Disabled

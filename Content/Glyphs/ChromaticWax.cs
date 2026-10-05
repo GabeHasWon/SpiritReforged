@@ -547,7 +547,13 @@ public abstract class GlyphItem : ModItem
 		Enchanter.SpecialShop.Add(Type, 3);
 	}
 
-	public virtual bool CanApplyGlyph(Item item) => item.damage > 0 && item.maxStack == 1 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type && !item.accessory;
+	public virtual bool CanApplyGlyph(Item item)
+	{
+		if (CrossMod.Classic.Enabled && (int)CrossMod.Classic.Instance.Call("getGlyph", item) != 0)
+			return false;
+
+		return item.damage > 0 && item.maxStack == 1 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type && !item.accessory;
+	}
 
 	/// <summary> Called when this glyph effect is applied to <paramref name="item"/>. </summary>
 	/// <param name="item"> The item being affected. </param>
