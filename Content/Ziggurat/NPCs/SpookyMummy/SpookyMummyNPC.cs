@@ -75,13 +75,34 @@ internal class SpookyMummyNPC : ModNPC
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
 		Tile tile = Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY];
-
-		if (spawnInfo.Player.HasItem(ModContent.ItemType<MummyQuestItem>()) && (spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrick>() 
-			|| spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneBrickCracked>() || spawnInfo.SpawnTileType == ModContent.TileType<RedSandstoneSlab>()) 
-			&& tile.WallType == WallID.None)
+		bool hasItem = spawnInfo.Player.HasItem(ModContent.ItemType<MummyQuestItem>());
+		
+		if (hasItem && Main.tileSand[spawnInfo.SpawnTileType] && CanSpawn(spawnInfo) && tile.WallType == WallID.None && !NPC.AnyNPCs(Type))
 			return 0.1f;
 
 		return 0;
+	}
+
+	private static bool CanSpawn(NPCSpawnInfo spawnInfo)
+	{
+		int x = spawnInfo.SpawnTileX;
+		int y = spawnInfo.SpawnTileY;
+
+		for (int i = x - 20; i < x + 20; ++i)
+		{
+			for (int j = y - 15; j < y + 15; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && (tile.TileType == ModContent.TileType<RedSandstoneBrick>() || tile.TileType == ModContent.TileType<RedSandstoneBrickCracked>() ||
+					tile.TileType == ModContent.TileType<RedSandstoneSlab>()))
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public override void OnKill()

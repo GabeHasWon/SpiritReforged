@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Ziggurat.Biome;
+﻿using SpiritReforged.Content.Crossmod.Spooky.Items;
+using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.GameContent.Bestiary;
 using Terraria.Map;
 
@@ -35,6 +36,8 @@ internal class SpookyMummyHead : ModNPC
 		bestiaryEntry.UIInfoProvider = new CommonEnemyUICollectionInfoProvider(ContentSamples.NpcBestiaryCreditIdsByNpcNetIds[Type], true);
 		bestiaryEntry.AddInfo(this, "");
 	}
+
+	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<MummyBandageScrap>(1, 2, 2);
 
 	public override void AI()
 	{

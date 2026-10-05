@@ -6,5 +6,6 @@ internal class MummyBandageScrap : ModItem
 	{
 		Item.CloneDefaults(ItemID.Star);
 		Item.rare = ItemRarityID.Quest;
+		Item.maxStack = Item.CommonMaxStack;
 	}
 }

@@ -125,3 +125,92 @@ EcotoneEdges: {
 DamageClasses.HybridDamageClass.DisplayName: Daño de clase hibrida
 // BackpackPickupEnabled: Direct pickup: Enabled
 // BackpackPickupDisabled: Direct pickup: Disabled
+
+CrossMod: {
+	Spooky: {
+		DhampirBounty: {
+			Dialogue: {
+				# For continuity sake, these dialogue entries are read sequentially, one eye, one player - so it'd be Eye.0, then Player.0, then Eye.1, etc
+				Eye: {
+					// 0: You know, I once knew someone like you! Someone spry, strong, and easy to use! But oh me oh my, they could only get so far, before the light of the sun left them scarred...so with a little bit of magic, I inverted their condition! A perfect specimen for daytime missions!
+					// 1: Uh...yeah, I mean, I had a more elaborate rhyme but, yeah that's about what I want. Do keep in mind that they are invisible, but just looove seeing their own reflection. Here, I have a malnourished bat I poke with a stick every night in a dinky cage that you can use to lure them out of hiding.
+					// 2: They probably just think they are too cool to hang around with little old me now. How ungrateful!
+				}
+
+				Player: {
+					// 0: And then they left right?
+					// 1: ...yeah, I wonder why they would ever leave!
+					// 2: Yeah, no other reason, got it.
+				}
+			}
+
+			RecoveryDialogue: {
+				Eye: {
+					// 0: You are back! Have you assassinated the deserter yet?
+					// 1: Oh don't worry, I have a big pile of malnourished bats I poke with a stick every night in dinky cages. I keep them around to remind myself of how much better I am than that stupid Dhampir. Grr...stupid dumb Dhampir...
+					// 2: ...oh me oh my, many things, but yet you help me so, we aren't so different...are we?
+				}
+
+				Player: {
+					// 0: No, Little Eye, no. I'm here because I lost the bat.
+					// 1: What's wrong with you?!
+					// 2: Ahuh. Just give me the bat already.
+				}
+			}
+
+			CompletionDialogue: {
+				Eye: {
+					// 0: Has the deserter been left in the salts?
+					// 1: Congratulations are in order! Here, take this trinket, I think you'll like it!
+				}
+
+				Player: {
+					// 0: You're so unsettling, but yes.
+					// 1: If you say so.
+				}
+			}
+		}
+
+		MummyBounty: {
+			Dialogue: {
+				Eye: {
+					// 0: Oh me oh my! You've returned. Speaking of returned, have you heard of the mummy? I had a little pet project for a while, but they were a bit of a dummy!
+					// 1: Well...no. They fell apart, and they seemed to leave to depart...er...something. They didn't want to stick together, and moaned about how they must "return to their tomb".
+					// 2: It's your joy to corral them! Here, take this...thing. I think the dummy- er, mummy, liked it.
+				}
+
+				Player: {
+					// 0: They ran away at the earliest opportunity, didn't they.
+					// 1: And it's my job to corral them?
+					// 2: ...okay.
+				}
+			}
+
+			RecoveryDialogue: {
+				Eye: {
+					// 0: Aha! Have you gotten the spoils of the mummy?
+					// 1: Good thing I had already cloned them! Great way to lord over your wretched creation sometimes, right?
+					// 2: I'm sure you'll figure it out someday. Here you go!
+				}
+
+				Player: {
+					// 0: No, I lost that crown thing.
+					// 1: That's so far removed from what I relate to that it's baffling.
+					// 2: I hope I don't have to talk to you again.
+				}
+			}
+
+			CompletionDialogue: {
+				Eye: {
+					// 0: Is that an inconspicuous bundle of weathered bandages I see? I'd be so happy for you and me.
+					// 1: Don't be so glum! Here, this was in a pile way in the back. Hopefully it doesn't have too much flesh on it!
+				}
+
+				Player: {
+					// 0: ...yes.
+					// 1: Gross!
+				}
+			}
+		}
+	}
+}

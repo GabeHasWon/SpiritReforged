@@ -8,5 +8,5 @@ internal class BallOfBandages : ModItem
 		Item.rare = ItemRarityID.Quest;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient<MummyBandageScrap>(4).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient<MummyBandageScrap>(6).Register();
 }

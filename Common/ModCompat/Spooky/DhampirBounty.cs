@@ -1,4 +1,7 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
+using SpiritReforged.Content.Crossmod.Spooky.Items.Pets;
+using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ModCompat.Spooky;
@@ -39,5 +42,7 @@ internal class DhampirBounty : SpookyBounty
 		NPC entity = Main.npc[GetLittleEyeIndex()];
 		Main.LocalPlayer.ConsumeItem(ModContent.ItemType<DhampirCompletionItem>());
 		Item.NewItem(new EntitySource_Gift(entity), entity.Hitbox, ItemID.Zenith);
+		Item.NewItem(new EntitySource_Gift(entity), entity.Hitbox, AutoContent.ItemType<DhampirPainting>());
+		Item.NewItem(new EntitySource_Gift(entity), entity.Hitbox, ModContent.ItemType<FruitBrownie>());
 	}
 }

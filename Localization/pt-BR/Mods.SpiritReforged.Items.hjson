@@ -3705,15 +3705,48 @@ MummyQuestItem: {
 
 BallOfBandages: {
 	// DisplayName: Ball Of Bandages
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Little Eye may be interested in this
+		'Uniquely odd to hold'
+		''' */
 }
 
 DhampirCompletionItem: {
-	// DisplayName: Dhampir Completion Item
-	// Tooltip: ""
+	// DisplayName: Dhampir Ear
+	/* Tooltip:
+		'''
+		Little Eye may be interested in this
+		'Yeowch!'
+		''' */
 }
 
 MummyBandageScrap: {
 	// DisplayName: Mummy Bandage Scrap
+	// Tooltip: Little Eye wants a ball of these...for some reason
+}
+
+LookerClub: {
+	// DisplayName: Looker
 	// Tooltip: ""
+}
+
+PumpkinClub: {
+	// DisplayName: Smack-o-Lantern
+	// Tooltip: ""
+}
+
+ShovelClub: {
+	// DisplayName: Gravedigger's Shovel
+	// Tooltip: ""
+}
+
+DhampirPaintingItem: {
+	// DisplayName: Dhampir at Dusk
+	// Tooltip: "'S. Pookie'"
+}
+
+MummyPaintingItem: {
+	// DisplayName: Sparkling Gourds
+	// Tooltip: "'S. Pookie'"
 }

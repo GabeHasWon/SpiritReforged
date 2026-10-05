@@ -361,7 +361,9 @@ internal class DhampirNPC : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Player.HasItem(ModContent.ItemType<DhampirQuestItem>()) && spawnInfo.SpawnTileType == ModContent.TileType<SaltBlockReflective>() && Main.dayTime)
+		bool hasItem = spawnInfo.Player.HasItem(ModContent.ItemType<DhampirQuestItem>());
+
+		if (hasItem && spawnInfo.SpawnTileType == ModContent.TileType<SaltBlockReflective>() && Main.dayTime && !NPC.AnyNPCs(Type))
 			return 0.1f;
 
 		return 0;

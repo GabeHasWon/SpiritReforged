@@ -3531,3 +3531,236 @@ WaxPlatformItem: {
 	DisplayName: Plataforma de cera
 	Tooltip: ""
 }
+
+PinSpookyFarms: {
+	// DisplayName: Fetid Farms Pin
+	// Tooltip: ""
+}
+
+PinSpookyKrampus: {
+	// DisplayName: Krampus' Workshop Pin
+	// Tooltip: ""
+}
+
+PinSpookyNose: {
+	// DisplayName: Temple of Moco Pin
+	// Tooltip: ""
+}
+
+PinSpookyRotten: {
+	// DisplayName: Rotten Depths Pin
+	// Tooltip: ""
+}
+
+StarGourdGreenCarvedItem: {
+	// DisplayName: Carved Green Stargourd
+	// Tooltip: ""
+}
+
+StarGourdLimeCarvedItem: {
+	// DisplayName: Carved Lime Stargourd
+	// Tooltip: ""
+}
+
+StarGourdOrangeLimeCarvedItem: {
+	// DisplayName: Carved Orange-Lime Stargourd
+	// Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	// DisplayName: Carved Orange Stargourd
+	// Tooltip: ""
+}
+
+StarGourdRedCarvedItem: {
+	// DisplayName: Carved Red Stargourd
+	// Tooltip: ""
+}
+
+StarGourdRottenCarvedItem: {
+	// DisplayName: Carved Rotten Stargourd
+	// Tooltip: ""
+}
+
+StarGourdWhiteCarvedItem: {
+	// DisplayName: Carved White Stargourd
+	// Tooltip: ""
+}
+
+StarGourdYellowCarvedItem: {
+	// DisplayName: Carved Yellow Stargourd
+	// Tooltip: ""
+}
+
+StarGourdYellowGreenCarvedItem: {
+	// DisplayName: Carved Yellow-Green Stargourd
+	// Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	// DisplayName: Pumpkin Pail
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Classically spooky'
+		''' */
+}
+
+PumpkinPailPurple: {
+	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Unabashedly spooky'
+		''' */
+}
+
+PumpkinPailWhite: {
+	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Actually spooky'
+		''' */
+}
+
+TrellisOldBirchItem: {
+	// DisplayName: Crossed Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisOldBirchTwoItem: {
+	// DisplayName: Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodItem: {
+	// DisplayName: Crossed Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodTwoItem: {
+	// DisplayName: Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+DhampirQuestItem: {
+	// DisplayName: Sad Little Bat
+	/* Tooltip:
+		'''
+		Attracts a certain creature in the salt flats while in your inventory
+		'You feel an instinctual need to care for it'
+		''' */
+}
+
+UncommonSpookyPotsLowerCatacombsItem: {
+	// DisplayName: "{$Tiles.Records.LowerCatacombs.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsUpperCatacombsItem: {
+	// DisplayName: "{$Tiles.Records.UpperCatacombs.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsKrampusItem: {
+	// DisplayName: "{$Tiles.Records.Krampus.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsTarPitsItem: {
+	// DisplayName: "{$Tiles.Records.TarPits.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsRottenDepthsItem: {
+	// DisplayName: "{$Tiles.Records.RottenDepths.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsFetidFarmsItem: {
+	// DisplayName: "{$Tiles.Records.FetidFarms.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsNoseTempleItem: {
+	// DisplayName: "{$Tiles.Records.NoseTemple.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsSpiderGrottoItem: {
+	// DisplayName: "{$Tiles.Records.SpiderGrotto.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsSpookyForestItem: {
+	// DisplayName: "{$Tiles.Records.SpookyForest.Name}"
+	// Tooltip: ""
+}
+
+FruitBrownie: {
+	// DisplayName: Fruit Brownie
+	// Tooltip: "'This is edible, but just not a brownie'"
+}
+
+SandBrownie: {
+	// DisplayName: Sand Brownie
+	// Tooltip: "'At least it's not glass?'"
+}
+
+MummyQuestItem: {
+	// DisplayName: Ancient Crown
+	/* Tooltip:
+		'''
+		Attracts a certain creature on top of the ziggurat while in your inventory
+		'This is disproportionally small'
+		''' */
+}
+
+BallOfBandages: {
+	// DisplayName: Ball Of Bandages
+	/* Tooltip:
+		'''
+		Little Eye may be interested in this
+		'Uniquely odd to hold'
+		''' */
+}
+
+DhampirCompletionItem: {
+	// DisplayName: Dhampir Ear
+	/* Tooltip:
+		'''
+		Little Eye may be interested in this
+		'Yeowch!'
+		''' */
+}
+
+MummyBandageScrap: {
+	// DisplayName: Mummy Bandage Scrap
+	// Tooltip: Little Eye wants a ball of these...for some reason
+}
+
+LookerClub: {
+	// DisplayName: Looker
+	// Tooltip: ""
+}
+
+PumpkinClub: {
+	// DisplayName: Smack-o-Lantern
+	// Tooltip: ""
+}
+
+ShovelClub: {
+	// DisplayName: Gravedigger's Shovel
+	// Tooltip: ""
+}
+
+DhampirPaintingItem: {
+	// DisplayName: Dhampir at Dusk
+	// Tooltip: "'S. Pookie'"
+}
+
+MummyPaintingItem: {
+	// DisplayName: Sparkling Gourds
+	// Tooltip: "'S. Pookie'"
+}

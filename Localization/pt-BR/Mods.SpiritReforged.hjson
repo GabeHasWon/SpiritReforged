@@ -162,13 +162,11 @@ CrossMod: {
 				Eye: {
 					// 0: Has the deserter been left in the salts?
 					// 1: Congratulations are in order! Here, take this trinket, I think you'll like it!
-					// 2: Mods.SpiritReforged.CrossMod.Spooky.DhampirBounty.CompletionDialogue.Eye.2
 				}
 
 				Player: {
 					// 0: You're so unsettling, but yes.
 					// 1: If you say so.
-					// 2: Mods.SpiritReforged.CrossMod.Spooky.DhampirBounty.CompletionDialogue.Player.2
 				}
 			}
 		}
@@ -191,7 +189,7 @@ CrossMod: {
 			RecoveryDialogue: {
 				Eye: {
 					// 0: Aha! Have you gotten the spoils of the mummy?
-					// 1: Good thing I had already cloned them! Good thing to lord over your wretched creation sometimes, right?
+					// 1: Good thing I had already cloned them! Great way to lord over your wretched creation sometimes, right?
 					// 2: I'm sure you'll figure it out someday. Here you go!
 				}
 
@@ -204,15 +202,13 @@ CrossMod: {
 
 			CompletionDialogue: {
 				Eye: {
-					// 0: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Eye.0
-					// 1: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Eye.1
-					// 2: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Eye.2
+					// 0: Is that an inconspicuous bundle of weathered bandages I see? I'd be so happy for you and me.
+					// 1: Don't be so glum! Here, this was in a pile way in the back. Hopefully it doesn't have too much flesh on it!
 				}
 
 				Player: {
-					// 0: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Player.0
-					// 1: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Player.1
-					// 2: Mods.SpiritReforged.CrossMod.Spooky.MummyBounty.CompletionDialogue.Player.2
+					// 0: ...yes.
+					// 1: Gross!
 				}
 			}
 		}
