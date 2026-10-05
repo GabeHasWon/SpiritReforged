@@ -4,12 +4,23 @@ using SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Dart;
 using SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Rocket;
 using SpiritReforged.Common.ItemCommon.MagazineSystem.UI.Shell;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Content.Forest.Misc;
 
 namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
 
 [Autoload(Side = ModSide.Client)]
 public class MagazinePlayer : ModPlayer
 {
+	/// <summary>
+	/// Defaults to false. Used by <see cref="LeatherSling"/> and similar accessories to reload magazine weapons whilst in inventory.
+	/// </summary>
+	public bool shouldInventoryReload;
+
+	/// <summary>
+	/// Defaults to 0f. The relative reload speed compared to base reload speed. Used by <see cref="LeatherSling"/> and similar accessories to reload magazine weapons whilst in inventory.
+	/// </summary>
+	public float inventoryReloadTimeMultiplier;
+
 	/// <summary>
 	/// Defaults to 0
 	/// </summary>
@@ -79,6 +90,8 @@ public class MagazinePlayer : ModPlayer
 
 	public override void ResetEffects()
 	{
+		shouldInventoryReload = false;
+		inventoryReloadTimeMultiplier = 0;
 		additionalMagazineSize = 0;
 		magazineSizeMultiplier = 1;
 		additionalReloadTime = 0;

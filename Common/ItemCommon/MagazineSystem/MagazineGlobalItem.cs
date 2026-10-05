@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Content.Aether.Items;
+using SpiritReforged.Content.Forest.Misc;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -128,6 +129,9 @@ public class MagazineGlobalItem : GlobalItem
 
 	// Whether or not the weapon uses magazine functionality on right click. Defaults to true.
 	private bool shouldUseMagazineOnRightClick;
+
+	// Used for reloading magazine weapons in the inventory.
+	public int inventoryReloadTimer;
 
 	private Vector2 _itemSize;
 	private Vector2 _itemOrigin;
@@ -365,7 +369,7 @@ public class MagazineGlobalItem : GlobalItem
 					ItemVisualHelpers.SetGunUseStyle(player, item, _shootDirection, _shotRecoil, EaseQuinticIn, EaseOutBack(), _itemSize, _itemOrigin, _animationRatio);
 
 				_reloadIdleTimer = 0;
-			}		
+			}
 		}
 	}
 
@@ -495,86 +499,117 @@ public class MagazineGlobalItem : GlobalItem
 
 	public override void UpdateInventory(Item item, Player player)
 	{
-		if (Active && player.HeldItem == item)
+		if (Active)
 		{
-			if (reloadCancelCooldown > 0)
-				reloadCancelCooldown--;
+			if (player.HeldItem == item)
+				HeldLogic(item, player);
+			else if (player.GetModPlayer<MagazinePlayer>().shouldInventoryReload)
+				InventoryLogic(item, player);
+		}
+	}
 
-			if (reloadDelay > 0)
+	void HeldLogic(Item item, Player player)
+	{
+		if (reloadCancelCooldown > 0)
+			reloadCancelCooldown--;
+
+		if (reloadDelay > 0)
+		{
+			reloadDelay--;
+		}
+		else
+		{
+			if (_currentMagazine.ReloadTimer > 0)
 			{
-				reloadDelay--;
+				item.holdStyle = ItemHoldStyleID.HoldFront;
+
+				/*if (ReloadType == MagazineReloadType.OneAtATime && player.controlUseItem && AmmoRemaining(player) > 0 && reloadCancelCooldown <= 0)
+				{
+					reloadCancelCooldown = _magazineData._reloadTime; 
+					_maxReloadTimer = 0;
+					_currentMagazine.ReloadTimer = 0;
+					return;
+				}*/
+
+				_currentMagazine.ReloadTimer--;
+
+				if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
+				{
+					float interpolant = 1 - MagazineProgress(player);
+					float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
+
+					const float padding = 0.25f;
+
+					if (reloadProgress is > padding and < (1f - padding))
+					{
+						float lerp = 1f - (reloadProgress - padding) / (1f - padding * 2);
+
+						int old = _currentMagazine.AmmoUsed;
+						_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
+
+						if (old != _currentMagazine.AmmoUsed)
+						{
+							MagazinePlayer.UnempowerShot();
+
+							SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+						}
+					}
+				}
+				else if (ReloadType == MagazineReloadType.EntireMagazine)
+				{
+					if (_currentMagazine.ReloadTimer == 0)
+					{
+						// TODO: Replace this
+						SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f });
+						MagazinePlayer.UnempowerAllShots();
+						_currentMagazine.AmmoUsed = 0;
+					}
+				}
+
+				if (_currentMagazine.ReloadTimer == 0)
+					item.holdStyle = oldHoldStyle;
 			}
 			else
 			{
-				if (_currentMagazine.ReloadTimer > 0)
+				item.holdStyle = oldHoldStyle;
+
+				if (_oldAmmoUsed > 0)
+					_oldAmmoUsed = 0;
+
+				if (_currentMagazine.AmmoUsed > 0)
 				{
-					item.holdStyle = ItemHoldStyleID.HoldFront;
-
-					/*if (ReloadType == MagazineReloadType.OneAtATime && player.controlUseItem && AmmoRemaining(player) > 0 && reloadCancelCooldown <= 0)
+					if (++_reloadIdleTimer >= _maxReloadIdleTimer) // activate reload after a period of idling (no shooting)
 					{
-						reloadCancelCooldown = _magazineData._reloadTime; 
-						_maxReloadTimer = 0;
-						_currentMagazine.ReloadTimer = 0;
-						return;
-					}*/
+						ActivateReload(player, item, _currentMagazine.AmmoUsed);
 
-					_currentMagazine.ReloadTimer--;
-
-					if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
-					{
-						float interpolant = 1 - MagazineProgress(player);
-						float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
-
-						const float padding = 0.25f;
-
-						if (reloadProgress is > padding and < (1f - padding))
-						{
-							float lerp = 1f - (reloadProgress - padding) / (1f - padding * 2);
-
-							int old = _currentMagazine.AmmoUsed;
-							_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
-
-							if (old != _currentMagazine.AmmoUsed)
-							{
-								MagazinePlayer.UnempowerShot();
-
-								SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
-							}
-						}
-					}
-					else if (ReloadType == MagazineReloadType.EntireMagazine)
-					{
-						if (_currentMagazine.ReloadTimer == 0)
-						{
-							// TODO: Replace this
-							SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f });
-							MagazinePlayer.UnempowerAllShots();
-							_currentMagazine.AmmoUsed = 0;
-						}
-					}
-
-					if (_currentMagazine.ReloadTimer == 0)
-						item.holdStyle = oldHoldStyle;
-				}
-				else
-				{
-					item.holdStyle = oldHoldStyle;
-
-					if (_oldAmmoUsed > 0)
-						_oldAmmoUsed = 0;
-
-					if (_currentMagazine.AmmoUsed > 0)
-					{
-						if (++_reloadIdleTimer >= _maxReloadIdleTimer) // activate reload after a period of idling (no shooting)
-						{
-							ActivateReload(player, item, _currentMagazine.AmmoUsed);
-
-							_reloadIdleTimer = 0;
-						}
+						_reloadIdleTimer = 0;
 					}
 				}
 			}
 		}
+	}
+
+	/// <summary>
+	/// Used specifically to reload magazine weapons in the inventory, for items similar to <see cref="LeatherSling"/>
+	/// </summary>
+	/// <param name="item"></param>
+	/// <param name="player"></param>
+	void InventoryLogic(Item item, Player player)
+	{
+		var magazinePlayer = player.GetModPlayer<MagazinePlayer>();
+
+		if (_currentMagazine.AmmoUsed > 0)
+		{
+			Main.NewText(inventoryReloadTimer);
+
+			if (++inventoryReloadTimer > _magazineData._reloadTime * magazinePlayer.inventoryReloadTimeMultiplier)
+			{
+				_currentMagazine.AmmoUsed = 0;
+				Main.NewText("Fully Reloaded: " + item.Name);
+			}			
+		}
+		else if (inventoryReloadTimer > 0)
+			inventoryReloadTimer = 0;
 	}
 
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
