@@ -29,7 +29,7 @@ public class BeetleLicense : ModItem
 	public override bool? UseItem(Player player)
 	{
 		Point16 pos = Main.MouseWorld.ToTileCoordinates16();
-		Microbiome.Create<BasaltBiome>(pos);
+		BasaltBiome.Place(pos);
 		return true;
 		if (player.ItemAnimationJustStarted && (!WorldSystem.CheckWorldFlag(UsedLicense) || NPC.AnyNPCs(ModContent.NPCType<BeetleTownPet>())))
 		{

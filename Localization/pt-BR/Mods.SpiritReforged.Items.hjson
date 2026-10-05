@@ -3522,3 +3522,8 @@ BasaltTileItem: {
 	// DisplayName: Basalt Tile Item
 	// Tooltip: ""
 }
+
+AccentBasaltItem: {
+	// DisplayName: Accent Basalt Item
+	// Tooltip: ""
+}

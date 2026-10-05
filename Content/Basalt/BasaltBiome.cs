@@ -1,13 +1,25 @@
 ﻿using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses;
 using SpiritReforged.Content.Basalt.Tiles;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.IO;
+using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.Basalt;
 
-internal class BasaltBiome : Microbiome
+internal class BasaltBiome : Micropass
 {
-	protected override void OnPlace(Point16 point)
+	public override string WorldGenName => "Basalt";
+
+	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Granite");
+
+	public override void Run(GenerationProgress progress, GameConfiguration config)
+	{
+		// TBD
+	}
+
+	public static void Place(Point16 point)
 	{
 		int reps = WorldGen.genRand.Next(5) + 1;
 
