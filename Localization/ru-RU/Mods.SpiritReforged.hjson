@@ -99,12 +99,12 @@ Emotes: {
 InfoDisplays: {
 	LedgerInfoDisplay: {
 		DisplayName: Стоимость предметов
-		Description: Видимость стоимости: ВКЛ
+		Description: Стоимость видима
 	}
 
 	ScryingLensInfoDisplay: {
 		DisplayName: Трансмутации в мерцании
-		Description: Видимость трансмутаций: ВКЛ
+		Description: Трансмутации видимы
 	}
 }
 
@@ -133,3 +133,6 @@ DamageClasses: {
 	// MagazineDamageClass.DisplayName: "{$LegacyTooltip.3}"
 	// ShotgunClass.DisplayName: "{$LegacyTooltip.3}"
 }
+
+BackpackPickupEnabled: Автоматический подбор предметов: ВКЛ
+BackpackPickupDisabled: Автоматический подбор предметов: ВЫКЛ

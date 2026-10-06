@@ -1306,7 +1306,7 @@ DriftwoodHammer: {
 }
 
 RemedyPotion: {
-	DisplayName: Иммунное зелье
+	DisplayName: Зелье иммунитета
 	Tooltip:
 		'''
 		Даёт невосприимчивость к следующим дебаффам:
@@ -3346,7 +3346,7 @@ CelestialStamp: {
 
 RageGlyph: {
 	DisplayName: Глиф ярости
-	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесёт при следующей атаке
+	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесён при следующей атаке
 	Effect: Мстительный
 
 	Gendered: {
@@ -3438,7 +3438,7 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Верстак зачарований
+	DisplayName: Стол для печатей
 	Tooltip: ""
 }
 

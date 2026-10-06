@@ -129,3 +129,6 @@ DamageClasses: {
 	// MagazineDamageClass.DisplayName: "{$LegacyTooltip.3}"
 	// ShotgunClass.DisplayName: "{$LegacyTooltip.3}"
 }
+
+// BackpackPickupEnabled: Direct pickup: Enabled
+// BackpackPickupDisabled: Direct pickup: Disabled

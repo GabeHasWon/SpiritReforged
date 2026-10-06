@@ -425,10 +425,10 @@ public partial class Scarabeus : ModNPC
 			if (effect == null)
 				return;
 
-			ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection, false);
+			ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection, true);
 
 			if (effect.HasParameter("WorldViewProjection"))
-				effect.Parameters["WorldViewProjection"].SetValue(Matrix.CreateTranslation(-0.5f, -0.5f, 0) * projection);
+				effect.Parameters["WorldViewProjection"].SetValue(view * projection);
 
 			foreach (EffectPass pass in effect.CurrentTechnique.Passes.Where(x => x.Name == "DefaultPass"))
 				pass.Apply();
