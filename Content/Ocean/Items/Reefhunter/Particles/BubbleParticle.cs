@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using Terraria.Graphics.Renderers;
 
@@ -13,6 +14,7 @@ public class BubbleParticle : Particle
 	{
 		Position = position;
 		Scale = scale;
+		Color = Color.White.Additive();
 		_maxScale = scale;
 		MaxTime = lifetime;
 		Velocity = velocity;

@@ -73,7 +73,9 @@ public abstract class Particle : IPooledParticle, IParticle
 	public virtual void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
 	{
 		Texture2D texture = Texture;
-		spritebatch.Draw(texture, Position + settings.AnchorPosition, null, Color, Rotation, texture.Size() / 2, Scale, 0, 0);
+		Color color = Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGBA(Color);
+
+		spritebatch.Draw(texture, Position + settings.AnchorPosition, null, color, Rotation, texture.Size() / 2, Scale, 0, 0);
 	}
 
 	/// <summary> This particle's basic behaviour. By default, updates position by velocity and expires over time. </summary>
@@ -146,7 +148,6 @@ public sealed class ParticleRenderers : ModSystem
 			renderer.Settings.AnchorPosition = -Main.screenPosition; //Ensure screen position is always accurate
 
 		renderer.Draw(spriteBatch);
-
 		OnDrawParticles?.Invoke(renderer);
 	}
 

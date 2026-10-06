@@ -7,13 +7,12 @@ namespace SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 public class BubblePop : Particle
 {
 	private const int NUMFRAMES = 8;
-	private readonly float _opacity;
 
 	public BubblePop(Vector2 position, float scale, float opacity, int animationTime, float rotation = 0f)
 	{
 		Position = position;
 		Scale = scale;
-		_opacity = opacity;
+		Color = Color.White.Additive() * opacity;
 		MaxTime = animationTime;
 		Rotation = rotation;
 	}
@@ -21,12 +20,12 @@ public class BubblePop : Particle
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Texture2D texture = Texture;
-		Color color = Lighting.GetColor(Position.ToTileCoordinates()).Additive();
+		Color color = Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGBA(Color);
 
 		int frameNumber = (int)Math.Floor((double)(Progress * NUMFRAMES));
-		var frame = texture.Frame(1, NUMFRAMES, 0, frameNumber, 0, -2);
-		var origin = frame.Size() / 2 + new Vector2(0, 5);
+		Rectangle source = texture.Frame(1, NUMFRAMES, 0, frameNumber, 0, -2);
+		Vector2 origin = source.Size() / 2 + new Vector2(0, 5);
 
-		spriteBatch.Draw(texture, Position - Main.screenPosition, frame, color * _opacity, Rotation, origin, Scale, SpriteEffects.None, 0);
+		spriteBatch.Draw(texture, Position + settings.AnchorPosition, source, color, Rotation, origin, Scale, SpriteEffects.None, 0);
 	}
 }
