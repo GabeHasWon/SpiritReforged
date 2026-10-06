@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 using Terraria.Utilities;
@@ -132,7 +132,7 @@ public partial class Scarabeus : ModNPC
 			Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7) * strength;
 			Color[] colors = GetTilePalette(FindGroundFromPosition(NPC.Center));
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+			ParticleRenderers.UnderSolids.Add(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -141,8 +141,7 @@ public partial class Scarabeus : ModNPC
 				TertiaryColor = colors[2],
 				PixelDivisor = 3,
 				Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-				ColorLerpExponent = 0.5f,
-				Layer = ParticleLayer.BelowSolid
+				ColorLerpExponent = 0.5f
 			});
 		}
 
@@ -171,7 +170,7 @@ public partial class Scarabeus : ModNPC
 		for (int j = -1; j <= 1; j += 2)
 			BouncingTileWave(j, numTiles, maxHeight, totalTime, offset);
 
-		ParticleHandler.SpawnParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero)), totalTime / 2, maxHeight));
+		ParticleRenderers.OverSolids.Add(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero)), totalTime / 2, maxHeight));
 	}
 
 	private void BouncingTileWave(int direction, int numTiles, float maxHeight, int totalTime = 60, Vector2? offset = null)
@@ -183,7 +182,7 @@ public partial class Scarabeus : ModNPC
 		{
 			float height = MathHelper.Lerp(maxHeight, 0, EaseFunction.EaseQuadIn.Ease(i / numTiles));
 			int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
-			ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero) + direction * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
+			ParticleRenderers.QueueParticle(ParticleRenderers.OverSolids, new MovingBlockParticle(FindGroundFromPosition(NPC.Center + (offset ?? Vector2.Zero) + direction * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
 		}
 	}
 

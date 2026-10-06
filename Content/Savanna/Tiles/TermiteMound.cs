@@ -1,5 +1,6 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -38,7 +39,7 @@ public class TermiteMoundLarge : ModTile
 		if (!Main.dedServ)
 		{
 			for (int x = 0; x < 3; x++)
-				ParticleHandler.SpawnParticle(new Particles.SmokeCloud(new Vector2(i, j) * 16 + new Vector2(24, 70), Vector2.UnitY * -.5f, Color.SandyBrown, .2f, Common.Easing.EaseFunction.EaseQuarticInOut, 120));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(new Vector2(i, j) * 16 + new Vector2(24, 70), Vector2.UnitY * -0.5f, Color.SandyBrown, 0.2f, Common.Easing.EaseFunction.EaseQuarticInOut, 120));
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -117,7 +118,7 @@ public class TermiteMoundMedium : ModTile
 		if (!Main.dedServ)
 		{
 			for (int x = 0; x < 2; x++)
-				ParticleHandler.SpawnParticle(new Particles.SmokeCloud(new Vector2(i, j) * 16 + new Vector2(24, 54), Vector2.UnitY * -.5f, Color.SandyBrown, .2f, Common.Easing.EaseFunction.EaseQuarticInOut, Main.rand.Next(80, 140)));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(new Vector2(i, j) * 16 + new Vector2(24, 54), Vector2.UnitY * -.5f, Color.SandyBrown, .2f, Common.Easing.EaseFunction.EaseQuarticInOut, Main.rand.Next(80, 140)));
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -137,7 +138,7 @@ public class TermiteMoundMedium : ModTile
 	public override bool KillSound(int i, int j, bool fail)
 	{
 		if (!fail)
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/StoneCrack2") { Pitch = .5f, PitchVariance = .4f }, new Vector2(i, j) * 16 + new Vector2(24));
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/StoneCrack2") { Pitch = 0.5f, PitchVariance = 0.4f }, new Vector2(i, j) * 16 + new Vector2(24));
 
 		return true;
 	}
@@ -180,7 +181,7 @@ public class TermiteMoundSmall : ModTile
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		if (!Main.dedServ)
-			ParticleHandler.SpawnParticle(new Particles.SmokeCloud(new Vector2(i, j) * 16 + new Vector2(16, 16), Vector2.UnitY * -.25f, Color.SandyBrown, .12f, Common.Easing.EaseFunction.EaseQuarticInOut, Main.rand.Next(80, 140)));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(new Vector2(i, j) * 16 + new Vector2(16, 16), Vector2.UnitY * -0.25f, Color.SandyBrown, 0.12f, Common.Easing.EaseFunction.EaseQuarticInOut, Main.rand.Next(80, 140)));
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			return;

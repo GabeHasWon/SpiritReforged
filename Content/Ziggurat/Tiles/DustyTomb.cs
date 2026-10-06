@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ziggurat.NPCs.Mummy;
 using System.IO;
@@ -106,7 +105,7 @@ public class DustyTomb : ModTile
 				for (int g = 1; g < 5; g++)
 					Gore.NewGore(new EntitySource_TileUpdate(i, j), Main.rand.NextVector2FromRectangle(topArea), -Vector2.UnitY, SpiritReforgedMod.Instance.Find<ModGore>("RedBrick" + g).Type, 1f);
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(topArea.Center() + new Vector2(0, 8), -Vector2.UnitY, Color.SandyBrown * 0.8f, 0.1f, Common.Easing.EaseFunction.EaseCircularOut, 120)
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(topArea.Center() + new Vector2(0, 8), -Vector2.UnitY, Color.SandyBrown * 0.8f, 0.1f, Common.Easing.EaseFunction.EaseCircularOut, 120)
 				{
 					Pixellate = true,
 					PixelDivisor = 3,

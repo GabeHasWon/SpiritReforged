@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -12,18 +13,8 @@ public class EmberParticle : Particle
 
 	private readonly Color _startColor;
 	private readonly Color _endColor;
-	private ParticleLayer _drawLayer = ParticleLayer.BelowProjectile;
 	private Action<Particle> _extraAction;
 	private readonly Vector2[] oldPositions = [];
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-	public override ParticleLayer DrawLayer => _drawLayer;
-
-	public EmberParticle OverrideDrawLayer(ParticleLayer newLayer)
-	{
-		_drawLayer = newLayer;
-		return this;
-	}
 
 	public EmberParticle AddAction(Action<Particle> action)
 	{
@@ -48,8 +39,10 @@ public class EmberParticle : Particle
 
 	public EmberParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, int maxTrailLength = 1) : this(position, velocity, color, color, scale, maxTime, maxTrailLength) { }
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		float fadeintime = MaxTime * FADETIME;
 		Color = Color.Lerp(_startColor, _endColor, Progress);
 
@@ -74,9 +67,9 @@ public class EmberParticle : Particle
 		}
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var tex = ParticleHandler.GetTexture(Type);
+		Texture2D texture = Texture;
 		float scaleTimeModifier = EaseFunction.EaseCubicOut.Ease(1 - Progress);
 
 		for (int i = 0; i < oldPositions.Length; i++)
@@ -87,8 +80,8 @@ public class EmberParticle : Particle
 
 			var position = oldPositions[i] - Main.screenPosition;
 
-			spriteBatch.Draw(tex, position, null, Color.Additive() * opacity, 0, tex.Size() / 2, easeModifier * Scale * scaleTimeModifier, default, 0);
-			spriteBatch.Draw(tex, position, null, Color.Lerp(Color, Color.White, 0.5f).Additive() * opacity * 3, 0, tex.Size() / 2, easeModifier * Scale * scaleTimeModifier * 0.5f, default, 0);
+			spriteBatch.Draw(texture, position, null, Color.Additive() * opacity, 0, texture.Size() / 2, easeModifier * Scale * scaleTimeModifier, default, 0);
+			spriteBatch.Draw(texture, position, null, Color.Lerp(Color, Color.White, 0.5f).Additive() * opacity * 3, 0, texture.Size() / 2, easeModifier * Scale * scaleTimeModifier * 0.5f, default, 0);
 		}
 	}
 }
@@ -108,10 +101,6 @@ public class CurvingEmberParticle : Particle
 	private readonly Color _startColor;
 	private readonly Color _endColor;
 	private readonly Vector2[] oldPositions = [];
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
-	public override ParticleLayer DrawLayer => Layer;
 
 	public CurvingEmberParticle(Vector2 position, Vector2 velocity, Color startColor, Color endColor, float scale, int maxTime, int direction, int timeToCurve, int maxTrailLength = 1)
 	{
@@ -135,8 +124,9 @@ public class CurvingEmberParticle : Particle
 
 	public CurvingEmberParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, int direction, int timeToCurve, int maxTrailLength = 1) : this(position, velocity, color, color, scale, maxTime, direction, timeToCurve, maxTrailLength) { }
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
 		_time++;
 
 		if (_time % _timeBetweenCurving == 0)
@@ -164,9 +154,9 @@ public class CurvingEmberParticle : Particle
 		}
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var tex = ParticleHandler.GetTexture(Type);
+		Texture2D texture = Texture;
 		float scaleTimeModifier = EaseFunction.EaseCubicOut.Ease(1 - Progress);
 
 		for (int i = 0; i < oldPositions.Length; i++)
@@ -177,8 +167,8 @@ public class CurvingEmberParticle : Particle
 
 			var position = oldPositions[i] - Main.screenPosition;
 
-			spriteBatch.Draw(tex, position, null, Color.Additive() * opacity, 0, tex.Size() / 2, easeModifier * Scale * scaleTimeModifier, default, 0);
-			spriteBatch.Draw(tex, position, null, Color.Lerp(Color, Color.White, 0.5f).Additive() * opacity * 3, 0, tex.Size() / 2, easeModifier * Scale * scaleTimeModifier * 0.5f, default, 0);
+			spriteBatch.Draw(texture, position, null, Color.Additive() * opacity, 0, texture.Size() / 2, easeModifier * Scale * scaleTimeModifier, default, 0);
+			spriteBatch.Draw(texture, position, null, Color.Lerp(Color, Color.White, 0.5f).Additive() * opacity * 3, 0, texture.Size() / 2, easeModifier * Scale * scaleTimeModifier * 0.5f, default, 0);
 		}
 	}
 }

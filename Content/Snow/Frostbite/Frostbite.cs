@@ -3,8 +3,8 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -134,14 +134,14 @@ public class FrostbiteProj : ModProjectile
 		}
 
 		var color = Color.Lerp(Color.White, Color.Cyan, Main.rand.NextFloat(.75f)).Additive(180);
-		ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, Projectile.velocity * .08f, color * .3f, Main.rand.NextFloat(.25f), Common.Easing.EaseFunction.EaseCircularOut, 60));
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Projectile.Center, Projectile.velocity * .08f, color * .3f, Main.rand.NextFloat(.25f), Common.Easing.EaseFunction.EaseCircularOut, 60));
 
 		if (Main.rand.NextBool())
 		{
 			var pos = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f);
 			var vel = (Projectile.velocity * Main.rand.NextFloat(.02f, .075f)).RotatedByRandom(.25f);
 
-			ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, Color.White, Color.CornflowerBlue, Main.rand.NextFloat(0.15f, 0.45f), Main.rand.Next(30, 50), 1, delegate (Particle p)
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, vel, Color.White, Color.CornflowerBlue, Main.rand.NextFloat(0.15f, 0.45f), Main.rand.Next(30, 50), 1, delegate (Particle p)
 			{
 				p.Velocity *= .95f;
 			}));
@@ -155,7 +155,7 @@ public class FrostbiteProj : ModProjectile
 
 			var p = new TexturedPulseCircle(pos, Color.White * (1f - mag) * .75f, Color.Blue, .5f, MathHelper.Lerp(300, 20, mag), 60, "Star", new Vector2(Main.rand.NextFloat(.25f, 2f)), Common.Easing.EaseFunction.EaseCubicOut).WithSkew(.75f, Projectile.velocity.RotatedByRandom(.25f).ToRotation());
 			p.Velocity = vel;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 		}
 
 		if (Main.rand.NextBool(8))
@@ -164,7 +164,7 @@ public class FrostbiteProj : ModProjectile
 			var vel = Vector2.Normalize(Projectile.velocity).RotatedByRandom(1) * .25f;
 
 			var p = new StarParticle(pos, vel, Color.White, Color.Blue * .25f, Main.rand.NextFloat(.03f, .1f), 60, 0);
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 		}
 
 		if (Counter % 25 == 0)
@@ -180,11 +180,11 @@ public class FrostbiteProj : ModProjectile
 				p.Velocity = p.Velocity.RotatedByRandom(.05f);
 				p.Rotation += p.Velocity.Length() * .025f;
 			});
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 		}
 
 		if (Main.timeForVisualEffects % 10 == 0)
-			ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Projectile.velocity.RotatedByRandom(.5f) * .05f, Color.White * .75f, new Vector2(.12f, .4f), 20));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Projectile.velocity.RotatedByRandom(.5f) * .05f, Color.White * .75f, new Vector2(.12f, .4f), 20));
 	}
 
 	private void UpdateSound()

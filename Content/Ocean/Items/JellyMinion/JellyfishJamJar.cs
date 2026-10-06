@@ -1,7 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using Terraria.Audio;
@@ -55,7 +55,7 @@ public class JellyfishJamJar : ModItem, IDrawHeld
 
 		for (int i = 0; i < 3; i++)
 		{
-			ParticleHandler.SpawnParticle(new BubbleParticle(position + Main.rand.NextVector2Circular(15f, 15f), Main.rand.NextVector2Circular(2.5f, 2.5f), Main.rand.NextFloat(0.12f, 0.26f), Main.rand.Next(20, 40)));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(position + Main.rand.NextVector2Circular(15f, 15f), Main.rand.NextVector2Circular(2.5f, 2.5f), Main.rand.NextFloat(0.12f, 0.26f), Main.rand.Next(20, 40)));
 			Dust.NewDustPerfect(position + Main.rand.NextVector2Circular(15f, 15f), DustID.Water, Main.rand.NextVector2Circular(5f, 5f), 55, default, 0.7f).noGravity = true;
 		}
 

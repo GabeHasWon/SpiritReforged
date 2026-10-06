@@ -1,10 +1,10 @@
 using Terraria.Audio;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Forest.FairyWhistle;
 
@@ -116,7 +116,7 @@ public class FairyMinion : BaseMinion
 				SoundEngine.PlaySound(SoundID.Item9 with { PitchVariance = 0.3f }, Projectile.Center);
 
 				for (int i = 0; i < 6; i++)
-					ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 1f),
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(0.5f, 1f),
 						StyleColor(Style) * 0.66f, Main.rand.NextFloat(0.35f, 0.5f), 35, 10, p => RandomCurveParticleMovement(p, 0.12f, 0.97f)));
 			}
 		}

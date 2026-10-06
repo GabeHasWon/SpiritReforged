@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -123,16 +123,17 @@ public class SunStaffHeld : ModProjectile
 			var particleColor = new Color(250, 167, 32, 0);
 			float scale = Main.rand.NextFloat(0.6f, 0.8f);
 			int lifeTime = Main.rand.Next(30, 40);
-			static void delegateAction(Particle p)
-			{
-				p.Velocity.Y -= 0.07f * EaseFunction.EaseQuadOut.Ease(p.TimeActive / (float)p.MaxTime);
-				p.Velocity.X *= 0.95f;
-			}
 
-			ParticleHandler.SpawnParticle(new GlowParticle(particleCenter, particleVel, particleColor, scale, lifeTime, 3, delegateAction).OverrideDrawLayer(ParticleLayer.AbovePlayer));
+			ParticleRenderers.OverPlayers.Add(new GlowParticle(particleCenter, particleVel, particleColor, scale, lifeTime, 3, delegateAction));
 		}
 
 		SoundEngine.PlaySound(SoundID.Item43, Projectile.Center);
+
+		static void delegateAction(Particle p)
+		{
+			p.Velocity.Y -= 0.07f * EaseFunction.EaseQuadOut.Ease(p.TimeActive / (float)p.MaxTime);
+			p.Velocity.X *= 0.95f;
+		}
 	}
 
 	public override bool PreDraw(ref Color lightColor)

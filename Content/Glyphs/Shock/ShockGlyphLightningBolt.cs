@@ -1,15 +1,16 @@
+using SpiritReforged.Common.CombatTextCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Content.Particles;
-using Terraria.Audio;
-using System.IO;
-using SpiritReforged.Common.CombatTextCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Dusts;
-using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Content.Particles;
+using System.IO;
+using Terraria.Audio;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Glyphs.Shock;
 
@@ -106,23 +107,23 @@ public partial class ShockGlyph
 
 					for (int i = 0; i < 3; i++)
 					{
-						ParticleHandler.SpawnParticle(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+						ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
 							Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
 
-						ParticleHandler.SpawnParticle(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+						ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(Projectile.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
 							Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
 
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
 						Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
 
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
 
 						pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
 						velocity = Main.rand.NextVector2Circular(4f, 4f);
 
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
 					}
 
 					for (int i = 0; i < 5; i++)
@@ -173,14 +174,14 @@ public partial class ShockGlyph
 					{
 						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(5f);
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
-						ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+						ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(pos, vel, Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
 					}
 
 					if (Main.rand.NextBool(25))
 					{
 						Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(2f, 2f);
 						Vector2 vel = Projectile.DirectionTo(Main.npc[TargetWhoAmI].Center).RotatedByRandom(0.3f) * Main.rand.NextFloat(4f, 5f);
-						ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
+						ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(pos, vel, Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(30, 60)));
 					}
 				}
 
@@ -220,23 +221,23 @@ public partial class ShockGlyph
 
 			for (int i = 0; i < 2; i++)
 			{
-				ParticleHandler.SpawnParticle(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
+				ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f),
 					Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 30)));
 
-				ParticleHandler.SpawnParticle(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
+				ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(target.Center + Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1.1f),
 					Color.Yellow, Color.LightGoldenrodYellow, 0f, Main.rand.NextFloat(0.4f, 0.9f), 10 + Main.rand.Next(10, 60)));
 
 				Vector2 pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
 				Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.Yellow.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
 
 				pos = target.Center + Main.rand.NextVector2Circular(5f, 5f);
 				velocity = Main.rand.NextVector2Circular(4f, 4f);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.Cyan.Additive(), 0.6f, 40, extraUpdateAction: DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.White.Additive(), 0.45f, 40, extraUpdateAction: DecelerateAction));
 			}
 
 			static void DecelerateAction(Particle p) => p.Velocity *= 0.9f;

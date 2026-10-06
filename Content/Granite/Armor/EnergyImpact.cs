@@ -1,8 +1,7 @@
-﻿using SpiritReforged.Common.ConfigurationCommon;
-using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -49,8 +48,8 @@ public class EnergyImpact : ModProjectile, IDrawOverTiles
 	{
 		const float bloomTime = 10f;
 
-		var shatter = ParticleHandler.GetTexture(ParticleHandler.TypeOf<Shatter>());
-		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Texture2D shatter = Particle.GetTexture<Shatter>();
+		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		float opacity = (float)Projectile.timeLeft / TimeLeftMax * 0.4f;
 		float bloomOp = (float)((Projectile.timeLeft - (TimeLeftMax - bloomTime)) / bloomTime);
@@ -123,8 +122,8 @@ public class EnergyPlunge : ModProjectile
 			Vector2 linePos = Projectile.Center + Main.rand.NextVector2Unit() * mag * 15f;
 			Vector2 lineVel = Vector2.Normalize(owner.velocity) * mag * 4f;
 
-			ParticleHandler.SpawnParticle(new ImpactLine(linePos, lineVel, Color.Blue.Additive() * 0.5f, new Vector2(0.3f, mag * 2.5f), (int)(mag * 15)));
-			ParticleHandler.SpawnParticle(new ImpactLine(linePos, lineVel, Color.White.Additive() * 0.5f, new Vector2(0.3f, mag * 2.5f) * 0.5f, (int)(mag * 15)));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(linePos, lineVel, Color.Blue.Additive() * 0.5f, new Vector2(0.3f, mag * 2.5f), (int)(mag * 15)));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(linePos, lineVel, Color.White.Additive() * 0.5f, new Vector2(0.3f, mag * 2.5f) * 0.5f, (int)(mag * 15)));
 
 			var dust = Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Electric, Scale: 0.3f);
 			dust.noGravity = true;
@@ -154,7 +153,7 @@ public class EnergyPlunge : ModProjectile
 				Projectile.NewProjectile(Projectile.GetSource_Death(), center, Vector2.Zero, ModContent.ProjectileType<EnergyImpact>(), damage, knockback, Projectile.owner, strengthCapped);
 			}
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(center + new Vector2(0, 5), Color.Cyan.Additive() * strengthCapped * 0.2f, 1f,
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(center + new Vector2(0, 5), Color.Cyan.Additive() * strengthCapped * 0.2f, 1f,
 				220, 20, "Scorch", new Vector2(2), Common.Easing.EaseFunction.EaseCircularOut));
 
 			for (int i = 0; i < 2; i++)
@@ -162,7 +161,7 @@ public class EnergyPlunge : ModProjectile
 				var lineCol = ((i == 0) ? Color.Cyan : Color.White).Additive();
 				var scale = new Vector2(1, 3) * ((i == 0) ? 1.4f : 1f) * strengthCapped;
 
-				ParticleHandler.SpawnParticle(new ImpactLine(center + new Vector2(0, 2), Vector2.Zero, lineCol, scale, 15) { Rotation = MathHelper.PiOver2 });
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(center + new Vector2(0, 2), Vector2.Zero, lineCol, scale, 15) { Rotation = MathHelper.PiOver2 });
 			}
 
 			for (int i = 0; i < 20; i++)

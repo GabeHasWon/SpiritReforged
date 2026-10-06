@@ -1,6 +1,5 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -43,7 +42,7 @@ internal class OpenWoundsNPC : GlobalNPC
 				SoundEngine.PlaySound(SoundID.NPCHit2 with { Pitch = .1f }, npc.Center);
 
 				for (int i = 0; i < 8; i++)
-					ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(), Color.White, Color.Red, Main.rand.NextFloat(.3f, .75f), 30, 4));
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(npc.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(), Color.White, Color.Red, Main.rand.NextFloat(.3f, .75f), 30, 4));
 			}
 
 			return true;
@@ -64,7 +63,7 @@ internal class OpenWoundsNPC : GlobalNPC
 		_bleedTime = (short)Math.Max(_bleedTime - 1, 0);
 
 		if (!Main.dedServ && _bleedTime > 0 && Main.rand.NextBool(8))
-			ParticleHandler.SpawnParticle(new RedBubble(npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f), Color.White, Main.rand.NextFloat(.5f, 1f), 20));
+			ParticleRenderers.UnderProjectiles.Add(new RedBubble(npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f), Color.White, Main.rand.NextFloat(0.5f, 1f), 20));
 	}
 
 	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) //Draw the mark icon

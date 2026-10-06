@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
@@ -42,7 +42,8 @@ internal class ArcaneNecklaceGlobalNPC : GlobalNPC
 			SoundEngine.PlaySound(SoundID.Item158 with { Pitch = 1f });
 			SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Pitch = 1f });
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(pos, Color.RoyalBlue.Additive() * 0.75f, 3, 50, 40, "supPerlin", new Vector2(2), Common.Easing.EaseFunction.EaseCircularOut));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(pos, Color.RoyalBlue.Additive() * 0.75f, 3, 50, 40, "supPerlin", new Vector2(2), Common.Easing.EaseFunction.EaseCircularOut));
+			
 			for (int i = 0; i < 3; i++)
 				ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.StardustPunch, new ParticleOrchestraSettings() { PositionInWorld = pos });
 

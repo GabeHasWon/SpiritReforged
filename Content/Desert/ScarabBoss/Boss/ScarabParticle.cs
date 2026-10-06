@@ -1,5 +1,6 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -32,19 +33,17 @@ public class ScarabParticle : Particle
 		_horizontalSpeedMult = Main.rand.NextFloat(1, 2);
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		Velocity.X = _direction * (_isBackground ? 10 : 24) * _horizontalSpeedMult;
 		Velocity.Y -= _acceleration;
 	}
 
-	public override ParticleLayer DrawLayer => (_isBackground) ? ParticleLayer.BelowWall : ParticleLayer.AbovePlayer;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		Texture2D tex = ParticleHandler.GetTexture(Type);
+		Texture2D tex = Texture;
 
 		float opacity = EaseFunction.EaseCircularOut.Ease(EaseFunction.EaseSine.Ease(Progress));
 		opacity = EaseFunction.EaseCircularOut.Ease(opacity);
@@ -72,7 +71,7 @@ public class ScarabParticle : Particle
 		}
 
 		Vector2 drawPosition = Position - Vector2.Lerp(Main.screenPosition, _startCamera, parallaxLerper);
-		if(!_isBackground)
+		if (!_isBackground)
 			drawPosition = Position - Vector2.Lerp(Main.screenPosition, Main.screenPosition - 2 * (_startCamera - Main.screenPosition), 1 - parallaxLerper);
 
 		spriteBatch.Draw(tex, drawPosition, drawFrame, drawColor * opacity, Velocity.X * -0.005f, drawFrame.Size() / 2, scale, _direction > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 1 - _distFromScreen);

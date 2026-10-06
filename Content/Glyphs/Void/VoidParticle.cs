@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Glyphs.Void;
 
@@ -24,8 +25,10 @@ public class VoidParticle : Particle
 			_offset = Position - _entity.Center;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (!_clientInitialized)
 		{
 			SingularityRenderSystem.ShaderItems.Add(_shaderItem = new());
@@ -57,13 +60,9 @@ public class VoidParticle : Particle
 		}
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
 		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, Color * 0.33f, 0, bloomtexture.Size() / 2, Scale * (1f - TimeActive / (float)MaxTime), SpriteEffects.None, 0);
 	}
-
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 }

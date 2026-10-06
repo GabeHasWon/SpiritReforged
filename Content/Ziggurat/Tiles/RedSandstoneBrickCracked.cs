@@ -1,7 +1,8 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
@@ -15,8 +16,10 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 			MaxTime = 90;
 		}
 
-		public override void Update()
+		public override void Update(ref ParticleRendererSettings settings)
 		{
+			base.Update(ref settings);
+
 			if (TimeActive == 1)
 				SoundEngine.PlaySound(Main.rand.Next([DebrisQuiet with { Volume = 0.8f, PitchRange = (0.5f, 1f) }, DebrisLoud with { Volume = 0.1f, Pitch = 1f, PitchVariance = 0.4f }]), Position);
 
@@ -55,7 +58,7 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 	public override void NearbyEffects(int i, int j, bool closer)
 	{
 		if (!Main.dedServ && closer && !Main.gamePaused && Main.GameUpdateCount % 10 < 2 && Main.rand.NextBool(550) && Main.LocalPlayer.velocity.X != 0 && !WorldGen.SolidOrSlopedTile(i, j + 1))
-			ParticleHandler.SpawnParticle(new DustStream(new Vector2(i, j).ToWorldCoordinates(8, 16)));
+			ParticleRenderers.UnderProjectiles.Add(new DustStream(new Vector2(i, j).ToWorldCoordinates(8, 16)));
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
@@ -78,7 +81,7 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 		}
 		else if (effectOnly && Main.rand.NextBool(4))
 		{
-			ParticleHandler.SpawnParticle(new DustStream(new Vector2(i, j).ToWorldCoordinates(8, 16)));
+			ParticleRenderers.UnderProjectiles.Add(new DustStream(new Vector2(i, j).ToWorldCoordinates(8, 16)));
 		}
 	}
 }

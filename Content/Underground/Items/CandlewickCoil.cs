@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Tiles;
 
 namespace SpiritReforged.Content.Underground.Items;

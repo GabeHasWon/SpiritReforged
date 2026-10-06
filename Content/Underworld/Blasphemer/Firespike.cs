@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
@@ -57,7 +56,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 					Color[] colors = [new Color(255, 200, 0, 100), new Color(255, 115, 0, 110), new Color(200, 3, 33, 120)];
 					Vector2 velocity = -Vector2.UnitY * EaseCubicIn.Ease(Main.rand.NextFloat());
 					float scale = Main.rand.NextFloat(0.025f, 0.075f);
-					ParticleHandler.SpawnParticle(new FireParticle(position - Vector2.UnitY * 4, velocity, colors, 1f, scale, EaseQuadIn, maxTime)
+					ParticleRenderers.UnderProjectiles.Add(new FireParticle(position - Vector2.UnitY * 4, velocity, colors, 1f, scale, EaseQuadIn, maxTime)
 					{ 
 						ColorLerpExponent = 2f, 
 						FinalScaleMod = 2.5f,
@@ -73,7 +72,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 				var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f);
 				var velocity = (Vector2.UnitY * -Main.rand.NextFloat(2f)).RotatedByRandom(0.25f);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.3f), 100, 5));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.3f), 100, 5));
 			}
 		}
 		else
@@ -83,7 +82,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 				var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f);
 				var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1f, 5f)).RotatedByRandom(0.25f);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.5f), 100, 5));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.5f), 100, 5));
 
 				for (int i = 0; i < 2; i++)
 					Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, ModContent.DustType<FireClubDust>(), 0, -Main.rand.NextFloat(5f), Scale: Main.rand.NextFloat(0.5f));
@@ -112,8 +111,8 @@ class Firespike : ModProjectile, IDrawOverTiles
 		SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode with { Pitch = step - 0.4f, Volume = step, MaxInstances = 3 }, center);
 		SoundEngine.PlaySound(SoundID.Item34 with { MaxInstances = 3 }, center);
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(center, Color.OrangeRed.Additive(), 0.9f, 170, 15, "supPerlin", Vector2.One).WithSkew(0.8f, PiOver2));
-		ParticleHandler.SpawnParticle(new LightBurst(center - Vector2.UnitY * 10, 0, Color.Goldenrod.Additive(), 1f, 14));
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(center, Color.OrangeRed.Additive(), 0.9f, 170, 15, "supPerlin", Vector2.One).WithSkew(0.8f, PiOver2));
+		ParticleRenderers.UnderProjectiles.Add(new LightBurst(center - Vector2.UnitY * 10, 0, Color.Goldenrod.Additive(), 1f, 14));
 
 		//Sine movement ember particles
 		for (int i = 0; i < 5; i++)
@@ -134,7 +133,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 			float rotationAmount = Main.rand.NextFloat(PiOver4);
 			float numCycles = Main.rand.NextFloat(0.5f, 2);
 
-			ParticleHandler.SpawnParticle(new GlowParticle(dustPos, velocity * -Vector2.UnitY, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(30, 80), 3,
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(dustPos, velocity * -Vector2.UnitY, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f, 0.6f), Main.rand.Next(30, 80), 3,
 				p => ParticleDelegate(p, velocity * -Vector2.UnitY, timeOffset, rotationAmount, numCycles)));
 		}
 
@@ -143,7 +142,7 @@ class Firespike : ModProjectile, IDrawOverTiles
 			Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1, 4);
 			Color[] colors = [new Color(255, 200, 0, 150), new Color(255, 115, 0, 150), new Color(200, 3, 33, 150) * 0.75f];
 			float scale = Main.rand.NextFloat(0.06f, 0.16f);
-			ParticleHandler.SpawnParticle(new FireParticle(center, velocity, colors, 1.25f, scale, EaseQuadOut, Main.rand.Next(30, 60)) { ColorLerpExponent = 2, PixelDivisor = 2 });
+			ParticleRenderers.UnderProjectiles.Add(new FireParticle(center, velocity, colors, 1.25f, scale, EaseQuadOut, Main.rand.Next(30, 60)) { ColorLerpExponent = 2, PixelDivisor = 2 });
 		}
 	}
 

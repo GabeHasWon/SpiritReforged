@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Common.ConfigurationCommon;
-
-namespace SpiritReforged.Common.ProjectileCommon;
+﻿namespace SpiritReforged.Common.ProjectileCommon;
 
 [ReinitializeDuringResizeArrays]
 internal class HeldProjectileSet : ModSystem

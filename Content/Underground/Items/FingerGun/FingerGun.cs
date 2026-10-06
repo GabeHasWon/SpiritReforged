@@ -2,8 +2,8 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
@@ -68,7 +68,7 @@ public class FingerGun : ModItem
 				Rotation = 0
 			};
 
-			ParticleHandler.SpawnParticle(fire);
+			ParticleRenderers.OverPlayers.Add(fire);
 		}
 	}
 
@@ -109,7 +109,7 @@ public class FingerGunArmManager : ModPlayer
 		{
 			Vector2 velocity = Player.DirectionTo(mouse) * Player.HeldItem.shootSpeed;
 			Vector2 handPos = Player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, velocity.ToRotation() - MathHelper.PiOver2);
-			ParticleHandler.SpawnParticle(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
+			ParticleRenderers.OverPlayers.Add(new LightBurst(handPos, Main.rand.NextFloatDirection(), Color.Lerp(Color.LightCyan, Color.Cyan, 0.5f).Additive(), 0.25f, 12));
 			float manaPercentage = Player.statMana / (float)Player.statManaMax2;
 
 			for (int i = 0; i < 5; i++)
@@ -120,7 +120,7 @@ public class FingerGunArmManager : ModPlayer
 				int maxTime = Main.rand.Next(10, 40);
 
 				var fire = new FireParticle(handPos, particleVelocity, colors, manaPercentage * manaPercentage, scale, EaseFunction.EaseCircularIn, maxTime);
-				ParticleHandler.SpawnParticle(fire);
+				ParticleRenderers.OverPlayers.Add(fire);
 			}
 		}
 

@@ -2,74 +2,20 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Glyphs.Bee;
 
 public class BeeGlyph : GlyphItem
 {
-	public class BeeInOrbit : Particle
-	{
-		public NPC Parent => Main.npc[_parentWhoAmI];
-
-		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-		public bool drawBehind;
-		private float _rotationOffset;
-		private readonly int _parentWhoAmI;
-		private readonly float _animationSpeed;
-
-		public override ParticleLayer DrawLayer => drawBehind ? ParticleLayer.BelowSolid : ParticleLayer.AboveNPC;
-
-		public BeeInOrbit(NPC npc, float speed)
-		{
-			_parentWhoAmI = npc.whoAmI;
-			_animationSpeed = speed;
-
-			MaxTime = 60 * 5;
-			Scale = 1f;
-		}
-
-		public override void Update()
-		{
-			_rotationOffset += Main.rand.NextFloat(0.05f);
-
-			float rate = TimeActive * _animationSpeed;
-			float sin = (float)Math.Sin(rate);
-			float cos = (float)Math.Cos(rate);
-
-			Position = Parent.Center + new Vector2(Parent.width * cos, 0f).RotatedBy(_rotationOffset);
-			Rotation = MathHelper.Lerp(Rotation, cos, 0.05f);
-
-			if (sin is < 1f and > (-0.5f))
-				drawBehind = true;
-			else
-				drawBehind = false;
-		}
-
-		public override void CustomDraw(SpriteBatch spriteBatch)
-		{
-			const int type = ProjectileID.Bee;
-
-			Texture2D texture = TextureAssets.Projectile[type].Value;
-			Rectangle source = texture.Frame(1, Main.projFrames[type], 0, (int)(TimeActive / 4 % Main.projFrames[type]), 0, 0);
-			Color color = Lighting.GetColor(Position.ToTileCoordinates());
-			SpriteEffects effects = Position.X < Parent.Center.X ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
-
-			if (drawBehind)
-				color = color.MultiplyRGB(Color.White * 0.75f);
-
-			spriteBatch.Draw(texture, Position - Main.screenPosition, source, color, Rotation, source.Size() / 2, 1, effects, 0);
-		}
-	}
-
 	public class BeeOnNPC : Particle
 	{
+		public const int MAX_TIME = 600;
+
 		public NPC Parent => Main.npc[_parentWhoAmI];
 
 		private readonly int _parentWhoAmI;
@@ -78,24 +24,22 @@ public class BeeGlyph : GlyphItem
 
 		private Vector2 PositionToBe => Parent.Center + _offset;
 
-		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-		public override ParticleLayer DrawLayer => ParticleLayer.AboveNPC;
-
 		public BeeOnNPC(NPC npc, Vector2 offset)
 		{
 			_parentWhoAmI = npc.whoAmI;
 			_offset = offset;
 
 			Position = npc.Center + offset;
-
-			MaxTime = Main.rand.Next(5, 8) * 60;
+			MaxTime = MAX_TIME;
 			Velocity = Main.rand.NextVector2Circular(0.5f, 0.5f);
 		}
 
-		public override void Update()
+		public override void Update(ref ParticleRendererSettings settings)
 		{
+			base.Update(ref settings);
+
 			if (!Parent.active)
-				Kill();
+				ShouldBeRemovedFromRenderer = true;
 
 			Position = Vector2.Lerp(Position, PositionToBe, 0.12f);
 
@@ -105,7 +49,7 @@ public class BeeGlyph : GlyphItem
 			_offset += Main.rand.NextVector2Circular(1.5f, 1.5f);
 		}
 
-		public override void CustomDraw(SpriteBatch spriteBatch)
+		public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 		{
 			const int type = ProjectileID.Bee;
 
@@ -129,15 +73,15 @@ public class BeeGlyph : GlyphItem
 
 			float scale = MathHelper.Lerp(0.6f, 1.1f, EaseFunction.EaseCircularIn.Ease(glyphEffectProgress));
 
-			spriteBatch.End();
+			spriteBatch.End(); //BATCH ME!!!
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			spriteBatch.Draw(bloom, Position + offset - Main.screenPosition, null, Color.Black * 0.35f * fade, 0f, bloom.Size() / 2, scale * 0.5f, 0, 0);
+			spriteBatch.Draw(bloom, Position + offset + settings.AnchorPosition, null, Color.Black * 0.35f * fade, 0f, bloom.Size() / 2, scale * 0.5f, 0, 0);
 
 			spriteBatch.End();
 			spriteBatch.BeginDefault();
 
-			spriteBatch.Draw(texture, Position + offset - Main.screenPosition, source, color * fade, Rotation, source.Size() / 2, scale, effects, 0);
+			spriteBatch.Draw(texture, Position + offset + settings.AnchorPosition, source, color * fade, Rotation, source.Size() / 2, scale, effects, 0);
 		}
 	}
 
@@ -254,7 +198,7 @@ public class BeeGlyph : GlyphItem
 		if (Main.rand.NextBool(45))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2CircularEdge(item.width / 3, item.height / 3);
-			ParticleHandler.SpawnParticle(new StickyHoneyParticle(pos, Vector2.Zero, Main.rand.NextFloat(0.8f, 1.5f), Main.rand.Next(100, 180), Main.rand.NextFloat(0.03f, 0.08f)));
+			ParticleRenderers.OverPlayers.Add(new StickyHoneyParticle(pos, Vector2.Zero, Main.rand.NextFloat(0.8f, 1.5f), Main.rand.Next(100, 180), Main.rand.NextFloat(0.03f, 0.08f)));
 		}
 
 		if (Main.rand.NextBool(50))
@@ -264,9 +208,9 @@ public class BeeGlyph : GlyphItem
 			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(-0.5f, 0.5f);
 
 			if (Main.rand.NextBool(3))
-				ParticleHandler.SpawnParticle(new LargeBeeParticle(pos, velocity, 0f, 1f, 180));
+				ParticleRenderers.OverPlayers.Add(new LargeBeeParticle(pos, velocity, 0f, 1f, 180));
 			else
-				ParticleHandler.SpawnParticle(new BeeParticle(pos, velocity, 0f, 1f, 90));
+				ParticleRenderers.OverPlayers.Add(new BeeParticle(pos, velocity, 0f, 1f, 90));
 		}
 	}
 
@@ -294,13 +238,15 @@ public class BeeGlyph : GlyphItem
 			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), DustID.Honey2, -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(4f), 50 + Main.rand.Next(100), default, Main.rand.NextFloat(0.5f, 1.5f)).noGravity = true;
 
 		if (Main.rand.NextBool(25 + 20 * projectile.extraUpdates))
-			ParticleHandler.SpawnParticle(new BeeParticle(projectile.Center, Main.rand.NextVector2Circular(3f, 3f), 0f, Main.rand.NextFloat(0.8f, 1.2f), 40));
+			ParticleRenderers.OverPlayers.Add(new BeeParticle(projectile.Center, Main.rand.NextVector2Circular(3f, 3f), 0f, Main.rand.NextFloat(0.8f, 1.2f), 40));
 	}
 }
 
 public class BeeGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
 {
-	private Effect GetEffect => shader.Value;
+	private Effect GetEffect => _shader.Value;
+
+	private readonly Asset<Effect> _shader = shader;
 
 	public override void Apply(Entity entity, DrawData? drawData = null)
 	{

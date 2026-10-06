@@ -2,7 +2,6 @@
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using SpiritReforged.Common.ModCompat.EcotoneMapper;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;

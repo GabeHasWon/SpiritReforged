@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon.Abstract;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Forest.Misc;

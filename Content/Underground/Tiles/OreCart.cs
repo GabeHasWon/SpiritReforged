@@ -1,4 +1,4 @@
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -115,7 +115,7 @@ public class OreCarts : ModTile
 		SoundEngine.PlaySound(SoundID.Item89 with { Pitch = .5f }, area.Center());
 		SoundEngine.PlaySound(Break, area.Center());
 
-		ParticleHandler.SpawnParticle(new Particles.SmokeCloud(area.Bottom(), Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
+		ParticleRenderers.UnderProjectiles.Add(new Particles.SmokeCloud(area.Bottom(), Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
 
 		for (int i = 0; i < 20; i++)
 		{

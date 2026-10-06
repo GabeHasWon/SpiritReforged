@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.Audio;
 using Terraria.DataStructures;

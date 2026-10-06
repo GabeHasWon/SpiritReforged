@@ -2,7 +2,6 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -127,7 +126,7 @@ public class SingularCollapse : ModProjectile
 					Vector2 pos = Projectile.Center + Main.rand.NextVector2CircularEdge(90f, 90f) * _intensity;
 					Vector2 velocity = pos.DirectionTo(Projectile.Center) * 3f;
 
-					ParticleHandler.SpawnParticle(new VoidParticle(pos, velocity, Color.Purple.Additive(), 0f, Main.rand.NextFloat(0.15f, 0.3f) * _intensity, 45));
+					ParticleRenderers.UnderProjectiles.Add(new VoidParticle(pos, velocity, Color.Purple.Additive(), 0f, Main.rand.NextFloat(0.15f, 0.3f) * _intensity, 45));
 				}
 
 				if (Projectile.timeLeft > 0 && GetPulseTime() == 0)
@@ -139,19 +138,19 @@ public class SingularCollapse : ModProjectile
 					{
 						Vector2 velocity = Main.rand.NextVector2Circular(6f, 6f);
 						float rotation = Main.rand.NextFloat(6.28f);
-						ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
+						ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
 						{ Rotation = rotation });
 
-						ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction)
+						ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction)
 						{ Rotation = rotation });
 
 						velocity = Main.rand.NextVector2Circular(8f, 0.5f).RotatedByRandom(0.3f);
 
-						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
-						ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.3f, 40, 3, DecelerateAction));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, velocity, Color.Purple.Additive(), 0.5f, 40, 3, DecelerateAction));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, velocity, Color.LightPink.Additive(), 0.3f, 40, 3, DecelerateAction));
 
-						ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Main.rand.NextVector2CircularEdge(9f, 9f) * Main.rand.NextFloat(0.9f, 1.1f), Color.Purple * 0.5f, new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 60, 0.9f));
-						ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Main.rand.NextVector2CircularEdge(9f, 9f) * Main.rand.NextFloat(0.9f, 1.1f), Color.Black * 0.5f, new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 60, 0.9f));
+						ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Main.rand.NextVector2CircularEdge(9f, 9f) * Main.rand.NextFloat(0.9f, 1.1f), Color.Purple * 0.5f, new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 60, 0.9f));
+						ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Main.rand.NextVector2CircularEdge(9f, 9f) * Main.rand.NextFloat(0.9f, 1.1f), Color.Black * 0.5f, new Vector2(0.7f, 1f) * Main.rand.NextFloat(0.3f, 0.5f), 60, 0.9f));
 					}
 
 					SoundEngine.PlaySound(Main.rand.NextBool() ? VoidGlyph.VoidHit1 : VoidGlyph.VoidHit2, Projectile.Center);

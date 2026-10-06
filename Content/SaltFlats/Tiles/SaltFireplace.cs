@@ -1,5 +1,4 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using Terraria.Audio;
 using Terraria.GameContent.ObjectInteractions;

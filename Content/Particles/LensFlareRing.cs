@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Easing;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -8,8 +6,6 @@ public class LensFlareRing(Vector2 position, float ringWidth, float maxRadius, i
 {
 	private readonly Texture2D _texture = AssetLoader.LoadedTextures["noise"].Value;
 	private readonly Vector2 _textureStretch = new(1, 1);
-
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
 
 	internal override string EffectPassName => "LensFlareStyle";
 

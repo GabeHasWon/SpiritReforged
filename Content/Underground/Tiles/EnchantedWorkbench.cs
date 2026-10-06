@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
@@ -181,7 +181,7 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 				{
 					float scale = Main.rand.NextFloat(0.5f, 1);
 
-					ParticleHandler.SpawnParticle(Main.rand.NextBool() 
+					ParticleRenderers.UnderProjectiles.Add(Main.rand.NextBool() 
 						? new ShimmerStar(position, ChromaticWax.SpecialColor.Additive(), scale, 20, -Vector2.UnitY)
 						: new EmberParticle(position, -Vector2.UnitY, ChromaticWax.SpecialColor.Additive(), scale * 0.5f, 60, 1));
 				}

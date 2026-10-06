@@ -2,7 +2,7 @@
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -263,8 +263,8 @@ public partial class Scarabeus : ModNPC
 					{
 						Vector2 pos = NPC.Bottom + new Vector2(Main.rand.Next(-30, 30), 0);
 
-						KickupDust(pos, new Vector2(0, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), ParticleLayer.BelowSolid);
-						KickupDust(pos, new Vector2(0, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3));
+						KickupDust(pos, new Vector2(0, -2f).RotatedByRandom(0.5f) * Main.rand.NextFloat(1, 5), true);
+						KickupDust(pos, new Vector2(0, -1f).RotatedByRandom(1.5f) * Main.rand.NextFloat(1, 3), false);
 					}
 				}
 
@@ -424,7 +424,7 @@ public partial class Scarabeus : ModNPC
 			float scale = Main.rand.NextFloat(0.06f, 0.09f);
 			int maxTime = (int)(Main.rand.Next(10, 35));
 
-			ParticleHandler.SpawnParticle(new FireParticle(position, velocity, colors, 1.25f, scale, EaseFunction.EaseQuadOut, maxTime)
+			ParticleRenderers.UnderProjectiles.Add(new FireParticle(position, velocity, colors, 1.25f, scale, EaseFunction.EaseQuadOut, maxTime)
 			{
 				ColorLerpExponent = 2.5f
 			});
@@ -441,8 +441,7 @@ public partial class Scarabeus : ModNPC
 				);
 
 			p.emitLight = false;
-
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 		}
 
 		if (Main.rand.NextBool())
@@ -456,9 +455,7 @@ public partial class Scarabeus : ModNPC
 				30);
 
 			p.Pixellate = true;
-			p.Layer = ParticleLayer.BelowProjectile;
-
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 		}
 	}
 
@@ -782,13 +779,13 @@ public partial class Scarabeus : ModNPC
 			Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), impartedVelocity * 1.5f + Vector2.UnitX * (i == 1 ? -1 : 1) * Main.rand.NextFloat(4f, 10f), Mod.Find<ModGore>("ScarabeusDuo" + i.ToString()).Type, 1f);
 
 		for (int i = 0; i < 3; i++)
-			ParticleHandler.SpawnParticle(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f) + impartedVelocity));
+			ParticleRenderers.UnderSolids.Add(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(1.5f, 4f) + impartedVelocity));
 
 		for (int i = 0; i < 10; i++)
 		{
 			Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(pos, Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(3f, 10f) + impartedVelocity, Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.3f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(pos, Main.rand.NextVector2CircularEdge(1f, 1f) * Main.rand.NextFloat(3f, 10f) + impartedVelocity, Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.3f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -887,7 +884,7 @@ public partial class Scarabeus : ModNPC
 			Vector2 particleVel = -Vector2.UnitY * Main.rand.NextFloat(4, 7);
 			Color[] colors = GetTilePalette(FindGroundFromPosition(rumbleCenter));
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(Main.rand.NextVector2FromRectangle(rumbleArea), particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+			ParticleRenderers.UnderSolids.Add(new SmokeCloud(Main.rand.NextVector2FromRectangle(rumbleArea), particleVel, colors[0], Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -896,8 +893,7 @@ public partial class Scarabeus : ModNPC
 				TertiaryColor = colors[2],
 				PixelDivisor = 3,
 				Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
-				ColorLerpExponent = 0.5f,
-				Layer = ParticleLayer.BelowSolid
+				ColorLerpExponent = 0.5f
 			});
 		}
 
@@ -945,11 +941,11 @@ public partial class Scarabeus : ModNPC
 			{
 				float height = MathHelper.Lerp(maxHeight, 0, EaseFunction.EaseQuadIn.Ease(i / numTiles));
 				int delay = (int)MathHelper.Lerp(0, totalTime / 2, (i + 1) / numTiles);
-				ParticleHandler.SpawnQueuedParticle(new MovingBlockParticle(FindGroundFromPosition(rumblePos + (offset ?? Vector2.Zero) + j * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
+				ParticleRenderers.QueueParticle(ParticleRenderers.OverSolids, new MovingBlockParticle(FindGroundFromPosition(rumblePos + (offset ?? Vector2.Zero) + j * Vector2.UnitX * 16 * (i + 1)), totalTime / 2, height), delay);
 			}
 		}
 
-		ParticleHandler.SpawnParticle(new MovingBlockParticle(FindGroundFromPosition(rumblePos + (offset ?? Vector2.Zero)), totalTime / 2, maxHeight));
+		ParticleRenderers.OverSolids.Add(new MovingBlockParticle(FindGroundFromPosition(rumblePos + (offset ?? Vector2.Zero)), totalTime / 2, maxHeight));
 	}
 
 	public override bool PreHoverInteract(bool mouseIntersects)

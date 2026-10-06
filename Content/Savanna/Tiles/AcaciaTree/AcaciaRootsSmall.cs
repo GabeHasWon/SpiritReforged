@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.DataStructures;
 using TileHelper.Common;

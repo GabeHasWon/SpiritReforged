@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -49,9 +49,9 @@ public class HydrothermalVentPlume : ModProjectile
 		{
 			if (Main.rand.NextBool(12))
 			{
-				ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + new Vector2(Main.rand.NextFloat(-1f, 1f) * 4, 0),
-					(Projectile.velocity * Main.rand.NextFloat(.25f)).RotatedByRandom(.4f), Color.OrangeRed, Main.rand.NextFloat(.1f, .4f), 190, 8, delegate (Particle p)
-					{ p.Velocity = p.Velocity.RotatedByRandom(.05f); }));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + new Vector2(Main.rand.NextFloat(-1f, 1f) * 4, 0),
+					(Projectile.velocity * Main.rand.NextFloat(.25f)).RotatedByRandom(.4f), Color.OrangeRed, Main.rand.NextFloat(0.1f, 0.4f), 190, 8, delegate (Particle p)
+					{ p.Velocity = p.Velocity.RotatedByRandom(0.05f); }));
 			}
 
 			for (int i = 0; i < 2; i++)

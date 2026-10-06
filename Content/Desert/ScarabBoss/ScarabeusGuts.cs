@@ -1,15 +1,12 @@
 using SpiritReforged.Common.MathHelpers;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss;
 
 public class ScarabeusGuts : Particle
 {
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public override ParticleLayer DrawLayer => ParticleLayer.BelowSolid;
-
 	private SpriteFrame _source;
 	private Vector2 _offset;
 	private float _opacity;
@@ -19,15 +16,16 @@ public class ScarabeusGuts : Particle
 		Position = position;
 		Velocity = velocity;
 		MaxTime = Gore.goreTime * 3;
-		Color = Color.White;
 
 		_source = new(2, 3, 0, (byte)Main.rand.Next(3));
 		_opacity = 1;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
 		const float fadeout_speed = 0.01f;
+
+		base.Update(ref settings);
 
 		Velocity.X *= 0.98f;
 		Velocity.Y = Math.Min(Velocity.Y + 0.2f, 8);
@@ -47,9 +45,9 @@ public class ScarabeusGuts : Particle
 			_opacity -= fadeout_speed;
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Rectangle source = _source.GetSourceRectangle(Texture);
-		spriteBatch.Draw(Texture, Position - Main.screenPosition + _offset, source, Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGB(Color) * _opacity, Rotation, source.Size() / 2, 1, 0, 0);
+		spriteBatch.Draw(Texture, Position - Main.screenPosition + _offset, source, Lighting.GetColor(Position.ToTileCoordinates()) * _opacity, Rotation, source.Size() / 2, 1, 0, 0);
 	}
 }

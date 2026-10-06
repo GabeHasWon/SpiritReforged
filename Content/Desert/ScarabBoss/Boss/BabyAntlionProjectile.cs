@@ -1,7 +1,6 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -156,7 +155,7 @@ public class BabyAntlionProjectile : ModProjectile
 		{
 			if (!Main.dedServ)
 			{
-				ParticleHandler.SpawnParticle(new FireSploshion(Projectile.Center, Main.rand.Next(15, 25)));
+				ParticleRenderers.OverNPCs.Add(new FireSploshion(Projectile.Center, Main.rand.Next(15, 25)));
 
 				for (int i = 0; i < 5; i++)
 				{
@@ -164,15 +163,13 @@ public class BabyAntlionProjectile : ModProjectile
 
 					if (Main.rand.NextBool(2))
 					{
-						var p = new EmberParticle(
+						ParticleRenderers.UnderProjectiles.Add(new EmberParticle(
 							Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
 							Main.rand.NextVector2Circular(3f, 3f),
 							Color.Orange,
 							Main.rand.NextFloat(0.2f, 0.5f),
 							30
-							);
-
-						ParticleHandler.SpawnParticle(p);
+							));
 					}
 				}					
 			}
@@ -234,15 +231,14 @@ public class BabyAntlionProjectile : ModProjectile
 			{
 				Color[] palette = Scarabeus.GetTilePalette(Projectile.Center);
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(1, 3) * MathHelper.Lerp(0.7f, 2f, progress), palette[0] * 0.7f, Main.rand.NextFloat(0.07f, 0.2f) * progress, EaseFunction.EaseQuadOut, Main.rand.Next(20, 40))
+				ParticleRenderers.UnderSolids.Add(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(1, 3) * MathHelper.Lerp(0.7f, 2f, progress), palette[0] * 0.7f, Main.rand.NextFloat(0.07f, 0.2f) * progress, EaseFunction.EaseQuadOut, Main.rand.Next(20, 40))
 				{
 					Pixellate = true,
 					DissolveAmount = 1,
 					SecondaryColor = palette[1] * 0.7f,
 					TertiaryColor = palette[2] * 0.7f,
 					PixelDivisor = 3,
-					ColorLerpExponent = 0.25f,
-					Layer = ParticleLayer.BelowSolid
+					ColorLerpExponent = 0.25f
 				});
 			}
 
@@ -323,7 +319,7 @@ public class BabyAntlionProjectile : ModProjectile
 				float scale = Main.rand.NextFloat(0.06f, 0.09f);
 				int maxTime = (int)(Main.rand.Next(10, 35));
 
-				ParticleHandler.SpawnParticle(new FireParticle(position, velocity, colors, 1.25f, scale, EaseFunction.EaseQuadOut, maxTime)
+				ParticleRenderers.UnderProjectiles.Add(new FireParticle(position, velocity, colors, 1.25f, scale, EaseFunction.EaseQuadOut, maxTime)
 				{
 					ColorLerpExponent = 2.5f
 				});
@@ -341,7 +337,7 @@ public class BabyAntlionProjectile : ModProjectile
 
 				p.emitLight = false;
 
-				ParticleHandler.SpawnParticle(p);
+				ParticleRenderers.UnderProjectiles.Add(p);
 			}
 
 			if (Main.rand.NextBool())
@@ -355,9 +351,7 @@ public class BabyAntlionProjectile : ModProjectile
 					30);
 
 				p.Pixellate = true;
-				p.Layer = ParticleLayer.BelowProjectile;
-
-				ParticleHandler.SpawnParticle(p);
+				ParticleRenderers.UnderProjectiles.Add(p);
 			}
 
 			//Get destroyed if overlapping with a scourge segment

@@ -1,7 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -45,13 +46,15 @@ public class PulseCircle : Particle
 
 	public PulseCircle(Vector2 position, Color color, float ringWidth, float maxRadius, int maxTime, EaseFunction MovementStyle = null, bool inverted = false, float endRingWidth = 0) : this(position, color, color * 0.25f, ringWidth, maxRadius, maxTime, MovementStyle, inverted, endRingWidth) { }
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (entity != null)
 		{
 			if (!entity.active)
 			{
-				Kill();
+				ShouldBeRemovedFromRenderer = true;
 				return;
 			}
 
@@ -78,11 +81,9 @@ public class PulseCircle : Particle
 		return newProgress;
 	}
 
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
 	internal virtual string EffectPassName => "GeometricStyle";
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Effect effect = AssetLoader.LoadedShaders["PulseCircle"].Value;
 		effect.Parameters["RingColor"].SetValue(Color.ToVector4());
@@ -130,7 +131,4 @@ public class PulseCircle : Particle
 		_offset = Position - entity.Center;
 		return this;
 	}
-
-	public ParticleLayer Layer { get; set; } = ParticleLayer.AbovePlayer;
-	public override ParticleLayer DrawLayer => Layer;
 }

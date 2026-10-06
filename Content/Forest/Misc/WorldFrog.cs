@@ -3,7 +3,6 @@ using MonoMod.Utils;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
@@ -80,8 +79,8 @@ public class WorldFrog : ModNPC
 			int maxTime = Main.rand.Next(5, 30);
 			var velocity = Vector2.UnitY * -Main.rand.NextFloat();
 
-			ParticleHandler.SpawnParticle(new GlowParticle(position, velocity, Color.Lerp(Color.Cyan, Color.Goldenrod, Main.rand.NextFloat()).Additive(), scale, maxTime));
-			ParticleHandler.SpawnParticle(new GlowParticle(position, velocity, Color.White.Additive(), scale * 0.75f, maxTime));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, velocity, Color.Lerp(Color.Cyan, Color.Goldenrod, Main.rand.NextFloat()).Additive(), scale, maxTime));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, velocity, Color.White.Additive(), scale * 0.75f, maxTime));
 		}
 
 		SoundEngine.PlaySound(SoundID.Item176, NPC.Center);

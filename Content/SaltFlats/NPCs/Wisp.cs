@@ -1,11 +1,11 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
@@ -264,8 +264,8 @@ public class Wisp : ModNPC
 					SoundEngine.PlaySound(SoundID.DD2_BetsysWrathShot with { PitchVariance = 0.5f }, NPC.Center);
 
 					_trails = null;
-					ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.OrangeRed.Additive(100), 1f, 100, 30, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
-					ParticleHandler.SpawnParticle(new TexturedPulseCircle(NPC.Center, Color.White.Additive(), 0.5f, 100, 30, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
+					ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(NPC.Center, Color.OrangeRed.Additive(100), 1f, 100, 30, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
+					ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(NPC.Center, Color.White.Additive(), 0.5f, 100, 30, "supPerlin", Vector2.One, EaseFunction.EaseCircularOut));
 
 					for (int i = 0; i < 3; i++)
 						Main.ParticleSystem_World_OverPlayers.Add(new PrettySparkleParticle()
@@ -428,7 +428,7 @@ public class Wisp : ModNPC
 		if (!Main.dedServ && NPC.life <= 0)
 		{
 			for (int i = 0; i < 2; i++)
-				ParticleHandler.SpawnParticle(new EmberParticle(NPC.Center, -Vector2.UnitY, Color.PaleVioletRed, 1, 30));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(NPC.Center, -Vector2.UnitY, Color.PaleVioletRed, 1, 30));
 
 			for (int i = 0; i < 20; i++)
 			{

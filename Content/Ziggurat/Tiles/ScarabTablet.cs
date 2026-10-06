@@ -1,7 +1,6 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using System.Linq;
 using Terraria.DataStructures;
 using TileHelper.Common;

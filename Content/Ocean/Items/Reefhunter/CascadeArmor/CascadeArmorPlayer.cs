@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -142,7 +142,7 @@ public class CascadeArmorPlayer : ModPlayer
 
 		if (!Main.dedServ)
 		{
-			ParticleHandler.SpawnParticle(new BubblePop(Player.Center, GetBaseBubbleScale, 0.8f * _bubbleVisual, 30));
+			ParticleRenderers.OverPlayers.Add(new BubblePop(Player.Center, GetBaseBubbleScale, 0.8f * _bubbleVisual, 30));
 
 			SoundEngine.PlaySound(SoundID.Item54 with { PitchVariance = 0.2f }, Player.Center);
 			SoundEngine.PlaySound(SoundID.NPCHit3 with { PitchVariance = 0.2f, Pitch = -.5f }, Player.Center);

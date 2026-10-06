@@ -3,7 +3,6 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Stand;
@@ -122,7 +121,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 				SoundEngine.PlaySound(RogueKnifeMinion.BigSwing with { Volume = 0.7f, Pitch = 0.3f, PitchVariance = 0.1f }, Projectile.Center);
 
 				for (int i = 0; i < 3; i++)
-					ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center + new Vector2(34, -34).RotatedBy(Projectile.rotation), Main.rand.NextVector2Unit(), Color.Yellow, 1, 10));
+					ParticleRenderers.OverPlayers.Add(new EmberParticle(Projectile.Center + new Vector2(34, -34).RotatedBy(Projectile.rotation), Main.rand.NextVector2Unit(), Color.Yellow, 1, 10));
 			}
 
 			return;
@@ -133,7 +132,7 @@ public class CeremonialDaggerSwing : SwungProjectile
 		if (Stab)
 		{
 			if (Counter == 1)
-				ParticleHandler.SpawnParticle(new BasicNoiseCone(Projectile.Center - Projectile.velocity * 30, Projectile.velocity * 3, 20, new(75, 150)).SetColors(Color.SandyBrown, new Color(200, 160, 90)).SetIntensity(2));
+				ParticleRenderers.OverPlayers.Add(new BasicNoiseCone(Projectile.Center - Projectile.velocity * 30, Projectile.velocity * 3, 20, new(75, 150)).SetColors(Color.SandyBrown, new Color(200, 160, 90)).SetIntensity(2));
 
 			var owner = Main.player[Projectile.owner];
 			Player.CompositeArmStretchAmount amount = (int)(Progress * 4f) switch

@@ -1,8 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
-using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -10,8 +11,6 @@ public class LightningParticle : Particle
 {
 	private Vector2 _endPosition;
 	private Vector2 _distortion;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
 	public LightningParticle(Vector2 positionStart, Vector2 positionEnd, Color color, int maxTime, float scale)
 	{
@@ -25,7 +24,7 @@ public class LightningParticle : Particle
 		_distortion = new Vector2(distortBase, -distortBase);
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		float length = Vector2.Distance(Position, _endPosition);
 		float rotation = (_endPosition - Position).ToRotation();

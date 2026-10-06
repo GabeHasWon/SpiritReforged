@@ -1,5 +1,6 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 
@@ -19,11 +20,10 @@ public class UrchinShard : Particle
 		Rotation = Main.rand.NextFloat(MathHelper.TwoPi);
 	}
 
-	public override ParticleDrawType DrawType => ParticleDrawType.DefaultAlphaBlend;
-
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
-		Color = Lighting.GetColor(Position.ToTileCoordinates()) * EaseFunction.EaseQuadOut.Ease(1 - Progress);
+		base.Update(ref settings);
+		//Color = Lighting.GetColor(Position.ToTileCoordinates()) * EaseFunction.EaseQuadOut.Ease(1 - Progress);
 
 		Scale = MathHelper.Lerp(_maxScale, 0, EaseFunction.EaseCubicIn.Ease(Progress));
 		Velocity = Vector2.Lerp(_initialVel, Vector2.UnitY, EaseFunction.EaseQuadIn.Ease(Progress));

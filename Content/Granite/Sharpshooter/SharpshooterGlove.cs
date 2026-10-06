@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -132,10 +131,10 @@ internal class SharpshooterPlayer : ModPlayer
 		}
 
 		Vector2 position = target.Hitbox.ClosestPointInRect(proj.Center);
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, (Color.Cyan * 0.5f).Additive(), 1f, 100, 20, "supPerlin", Vector2.One, Common.Easing.EaseFunction.EaseQuinticOut).WithSkew(0.7f, proj.velocity.ToRotation()));
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(position, (Color.Cyan * 0.5f).Additive(), 1f, 100, 20, "supPerlin", Vector2.One, Common.Easing.EaseFunction.EaseQuinticOut).WithSkew(0.7f, proj.velocity.ToRotation()));
 
 		Vector2 scale = new(0.5f, 2);
-		ParticleHandler.SpawnParticle(new ImpactLine(position, Vector2.Normalize(proj.velocity) * 2, Color.Cyan.Additive(), scale, 10));
-		ParticleHandler.SpawnParticle(new ImpactLine(position, Vector2.Normalize(proj.velocity) * 2, Color.White.Additive(), scale * 0.5f, 10));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, Vector2.Normalize(proj.velocity) * 2, Color.Cyan.Additive(), scale, 10));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, Vector2.Normalize(proj.velocity) * 2, Color.White.Additive(), scale * 0.5f, 10));
 	}
 }

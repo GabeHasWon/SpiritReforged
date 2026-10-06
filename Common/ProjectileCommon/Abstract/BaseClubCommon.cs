@@ -1,6 +1,6 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using static Microsoft.Xna.Framework.MathHelper;
@@ -160,7 +160,7 @@ public abstract partial class BaseClubProj : ModProjectile
 		int lifetime = 24;
 		float zRotation = 0.9f;
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
 			pos,
 			Color.LightGray * opacity,
 			Color.LightGray * opacity,
@@ -194,7 +194,7 @@ public abstract partial class BaseClubProj : ModProjectile
 
 			int lifeTime = (int)(40 + Main.rand.Next(-15, 16) * (1 + chargeFactor));
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(smokePos, -Vector2.UnitY * speed, Color.LightGray * 0.75f, scale, EaseQuadOut, lifeTime));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(smokePos, -Vector2.UnitY * speed, Color.LightGray * 0.75f, scale, EaseQuadOut, lifeTime));
 		}
 	}
 

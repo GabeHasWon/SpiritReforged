@@ -1,10 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.NPCs;
@@ -139,7 +139,7 @@ public class WormPot : PotTile, WindTileRenderer.IDrawInWind, ILootable, ICutAtt
 				for (int w = 0; w < wormCount; w++)
 				{
 					var npc = NPC.NewNPCDirect(new EntitySource_TileBreak(i, j), position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f), (int)type);
-					npc.velocity = (Vector2.UnitY * -Main.rand.NextFloat(.5f, 2f)).RotatedByRandom(2f);
+					npc.velocity = (Vector2.UnitY * -Main.rand.NextFloat(0.5f, 2f)).RotatedByRandom(2f);
 				}
 			}
 
@@ -157,8 +157,8 @@ public class WormPot : PotTile, WindTileRenderer.IDrawInWind, ILootable, ICutAtt
 				Gore.NewGore(source, position, Vector2.Zero, goreType);
 			}
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(new Vector2(i, j).ToWorldCoordinates(16, 16),
-				-Vector2.UnitY, Color.LightSeaGreen, .2f, Common.Easing.EaseFunction.EaseSine, 60));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(new Vector2(i, j).ToWorldCoordinates(16, 16),
+				-Vector2.UnitY, Color.LightSeaGreen, 0.2f, Common.Easing.EaseFunction.EaseSine, 60));
 		}
 	}
 

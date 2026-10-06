@@ -1,5 +1,4 @@
-﻿using NVorbis.Contracts;
-using ReLogic.Utilities;
+﻿using ReLogic.Utilities;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using Terraria.DataStructures;
