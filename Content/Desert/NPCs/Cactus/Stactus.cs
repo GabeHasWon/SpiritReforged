@@ -14,7 +14,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
-using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
@@ -126,7 +125,7 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() { Position = new Vector2(0, 12) };
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
-		Faces.Add(Type, DrawHelpers.RequestLocal(GetType(), Name + "Faces", false));
+		Faces.Add(Type, Graphics.Request<Texture2D>(Name + "Faces"));
 
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Plantlike);
 	}

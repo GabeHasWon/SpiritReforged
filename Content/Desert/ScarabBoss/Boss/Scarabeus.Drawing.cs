@@ -262,7 +262,7 @@ public partial class Scarabeus : ModNPC
 				float lerp = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) * 0.5f;
 				Main.EntitySpriteDraw(glowmask, position, NPC.frame, NPC.DrawColor(Color.White), NPC.rotation, origin, scale, effects);
 
-				DrawHelpers.DrawOutline(spriteBatch, glowmask, NPC.Center - Main.screenPosition, default, (offset) =>
+				Graphics.DrawOutline(spriteBatch, glowmask, NPC.Center - Main.screenPosition, default, (offset) =>
 					Main.EntitySpriteDraw(glowmask, position + offset, NPC.frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, NPC.rotation, origin, scale, effects));
 			}
 		}
@@ -405,7 +405,7 @@ public partial class Scarabeus : ModNPC
 		int frame = (int)Main.timeForVisualEffects / 12 % 2;
 		source = texture.Frame(EmoteBubble.EMOTE_SHEET_HORIZONTAL_FRAMES, 39, emote * 2 % 8 + frame, 1 + emote / 4);
 
-		DrawHelpers.DrawOutline(spriteBatch, texture, position - Main.screenPosition, Color.White, (offset) =>
+		Graphics.DrawOutline(spriteBatch, texture, position - Main.screenPosition, Color.White, (offset) =>
 			spriteBatch.Draw(texture, position - Main.screenPosition + offset, source, Color.White.Additive(), 0f, origin, 1f, effect, 0f));
 
 		spriteBatch.Draw(texture, position - Main.screenPosition, source, Color.White, 0f, origin, 1f, effect, 0f);

@@ -153,7 +153,7 @@ public class CampfireSlot : SingleSlotEntity
 
 public class RoastGlobalTile : GlobalTile
 {
-	private static readonly Asset<Texture2D> TileTexture = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(RoastGlobalTile), "CampfireSpit_Tile"));
+	private static readonly Asset<Texture2D> TileTexture = Graphics.Request<Texture2D>("CampfireSpit_Tile");
 
 	internal static Dictionary<int, int> CookedByRaw;
 

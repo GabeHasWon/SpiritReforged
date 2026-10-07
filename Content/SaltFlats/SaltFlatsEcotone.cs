@@ -90,7 +90,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static FastNoiseLite Noise;
 
-	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false))
+	PageInfo IGenerationPage.Info => new("SaltFlats", Graphics.Request<Texture2D>("SaltFlatsPage"), Graphics.Request<Texture2D>("SaltFlatsPageButton"))
 	{
 		Presets = 
 		[

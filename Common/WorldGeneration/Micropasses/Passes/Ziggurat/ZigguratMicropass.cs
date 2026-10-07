@@ -126,7 +126,7 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 	[Slider]
 	private static int AbovegroundPillarChance = 3;
 
-	PageInfo IGenerationPage.Info => new("Ziggurat", DrawHelpers.RequestLocal(GetType(), "ZigguratPage", false), DrawHelpers.RequestLocal(GetType(), "ZigguratPageButton", false))
+	PageInfo IGenerationPage.Info => new("Ziggurat", Graphics.Request<Texture2D>("ZigguratPage"), Graphics.Request<Texture2D>("ZigguratPageButton"))
 	{
 		Presets =
 		[

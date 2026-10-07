@@ -196,7 +196,7 @@ public partial class SpiritReforgedMod : Mod
 			tileRecord.AddDescription(description);
 
 		if (displayName != null)
-			tileRecord.AddDescription(displayName);
+			tileRecord.AddDisplayName(displayName);
 
 		RecordHandler.Records.Add(tileRecord);
 		return true;

@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Tiles;
 
 namespace SpiritReforged.Content.Underground.Items;
@@ -10,7 +9,7 @@ public class CandlewickCoil : ModItem
 {
 	public sealed class CandlewickCoilThrown : ModProjectile
 	{
-		public static readonly Asset<Texture2D> ChainTexture = DrawHelpers.RequestLocal<CandlewickCoil>(nameof(CandlewickCoil) + "_Chain", false);
+		public static readonly Asset<Texture2D> ChainTexture = Graphics.Request<Texture2D>(nameof(CandlewickCoil) + "_Chain");
 
 		public override LocalizedText DisplayName => ModContent.GetInstance<CandlewickCoil>().DisplayName;
 

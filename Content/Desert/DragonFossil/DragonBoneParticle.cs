@@ -5,7 +5,7 @@ namespace SpiritReforged.Content.Desert.DragonFossil;
 
 public class DragonBoneParticle(int style) : ABasicParticle
 {
-	public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(DragonBoneParticle), "DragonBoneParticle", false);
+	public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>(nameof(DragonBoneParticle));
 	protected readonly int _style = style;
 	protected int _timeActive;
 

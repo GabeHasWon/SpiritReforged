@@ -21,7 +21,7 @@ internal class NewNeonsMicropass : Micropass, IGenerationPage
 	[GenConfigurable(1, 6)]
 	private static int NeonMossChance = 2;
 
-	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	PageInfo IGenerationPage.Info => new("Caves", Graphics.Request<Texture2D>("UndergroundPage"), Graphics.Request<Texture2D>("UndergroundPageButton"))
 	{
 		CopiedPage = new HouseLoader()
 	};

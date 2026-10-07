@@ -19,7 +19,7 @@ namespace SpiritReforged.Content.Ziggurat;
 
 public class CeremonialDagger : ModItem, SwordStand.ISwordStandTexture
 {
-	public Asset<Texture2D> StandTexture => DrawHelpers.RequestLocal(GetType(), "CeremonialDagger_Stand", false);
+	public Asset<Texture2D> StandTexture => Graphics.Request<Texture2D>("CeremonialDagger_Stand");
 
 	private float _swingArc;
 
