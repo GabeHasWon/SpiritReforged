@@ -2,6 +2,7 @@ using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Replacement;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
@@ -145,7 +146,7 @@ public class Muramasa : ModItem, IDrawHeld
 				}
 
 				if (Counter == 5)
-					SoundEngine.PlaySound(Wisp.Death with { Pitch = 0.9f, Volume = 0.4f }, Projectile.Center);
+					SoundEngine.PlaySound(Wisp.Death with { Pitch = 0.9f, Volume = 0.5f }, Projectile.Center);
 
 				if (Progress < 0.5f && Main.rand.NextBool(3))
 				{
@@ -300,6 +301,8 @@ public class Muramasa : ModItem, IDrawHeld
 	{
 		Item.CloneDefaults(ItemID.Muramasa);
 		Item.DefaultToSpear(ModContent.ProjectileType<MuramasaSwing>(), 1, Item.useAnimation);
+		Item.UseSound = Katana.Swing;
+		MoRHelper.SetSlashBonus(Item);
 	}
 
 	public override void HoldItem(Player player)

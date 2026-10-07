@@ -127,6 +127,7 @@ public class Onimaru : ModItem, IDrawHeld
 	{
 		Item.DefaultToSpear(ModContent.ProjectileType<OnimaruSwing>(), 1, 22);
 		Item.SetShopValues(ItemRarityColor.Green2, Item.sellPrice(silver: 30));
+		Item.UseSound = Katana.Swing;
 		Item.damage = 12;
 		Item.knockBack = 3;
 		Item.autoReuse = true;

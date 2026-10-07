@@ -178,6 +178,7 @@ public class BlackBlade : ModItem, IDrawHeld
 	{
 		Item.DefaultToSpear(ModContent.ProjectileType<BlackBladeSwing>(), 1, 20);
 		Item.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(silver: 10));
+		Item.UseSound = Katana.Swing;
 		Item.damage = 12;
 		Item.crit = 2;
 		Item.knockBack = 3;

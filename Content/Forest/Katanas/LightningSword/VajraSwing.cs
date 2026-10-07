@@ -74,7 +74,10 @@ public class VajraSwing : SwungProjectile, IDrawPixelated
 		}
 
 		if (justSpawned)
+		{
 			SoundEngine.PlaySound(KendoBladeLunge.BigSwing with { Pitch = (SwingArc == 0) ? 1 : 0.5f, PitchVariance = 0.2f }, Projectile.Center);
+			SoundEngine.PlaySound(Katana.Swing with { Pitch = (SwingArc == 0) ? 0 : -0.2f }, Projectile.Center);
+		}
 
 		if (_noiseCone != null) //Update the noise cone if any
 		{

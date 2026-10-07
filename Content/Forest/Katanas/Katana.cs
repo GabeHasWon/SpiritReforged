@@ -1,11 +1,20 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Replacement;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Granite.Armor;
+using SpiritReforged.Content.Jungle.Bamboo.Items;
+using SpiritReforged.Content.Particles;
+using Terraria;
+using Terraria.Audio;
 using Terraria.DataStructures;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Content.Forest.Katanas;
 
@@ -22,6 +31,8 @@ public class Katana : ModItem, IDrawHeld
 
 		public override float SwingTime => Secondary ? base.SwingTime * 2 : base.SwingTime;
 
+		private bool _falling = true;
+
 		public override IConfiguration SetConfiguration() => new BasicConfiguration(EaseFunction.EaseQuarticOut, 72, 25);
 
 		public override float GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch) => base.GetRotation(out armRotation, out stretch) + MathHelper.PiOver4 * SwingDirection;
@@ -32,7 +43,7 @@ public class Katana : ModItem, IDrawHeld
 			if (Secondary) //Leap
 			{
 				Player owner = Main.player[Projectile.owner];
-				if (Counter == 1)
+				if (Counter == 1) //Just started the swing
 				{
 					owner.velocity += Projectile.velocity * 8;
 					owner.velocity.Y -= 6;
@@ -40,6 +51,44 @@ public class Katana : ModItem, IDrawHeld
 
 				DashSwordPlayer mp = owner.GetModPlayer<DashSwordPlayer>();
 				mp.SetDash(30);
+
+				if (_falling)
+				{
+					if (owner.velocity.Y == 0) //Impact
+					{
+						if (!Main.dedServ)
+						{
+							if (Projectile.owner == Main.myPlayer)
+								ScreenshakeHelper.Shake(Projectile.Center, Vector2.UnitY, 6f, 3, 20);
+
+							ParticleHandler.SpawnParticle(new TexturedPulseCircle(owner.Bottom + new Vector2(0, 5), Color.Silver.Additive() * 0.3f, 0.2f, 220, 10, "Scorch", new Vector2(2), EaseFunction.EaseCircularOut).WithSkew(0.5f, MathHelper.PiOver2));
+
+							for (int i = 0; i < 20; i++)
+							{
+								float reach = 50;
+								float speed = Main.rand.NextFloat(3);
+
+								Dust.NewDustPerfect(owner.Bottom + new Vector2(reach * Main.rand.NextFloat(-1f, 1f), 0), DustID.Smoke, Vector2.UnitY * -speed, (int)MathHelper.Lerp(10, 200, speed / 3f), Scale: Main.rand.NextFloat(0.5f, 2f)).noGravity = true;
+							}
+
+							SoundEngine.PlaySound(SoundID.Run with { Pitch = 0.5f }, Projectile.Center);
+						}
+
+						_falling = false;
+					}
+
+					owner.noKnockback = true;
+					owner.noFallDmg = true;
+					owner.maxFallSpeed = 20f;
+
+					if (Counter >= SwingTime - 3)
+					{
+						Counter--; //Pause
+
+						owner.velocity.X *= 0.98f;
+						owner.velocity.Y += 0.5f * owner.gravDir;
+					}
+				}
 			}
 		}
 
@@ -80,6 +129,8 @@ public class Katana : ModItem, IDrawHeld
 
 	public override string Texture => "Terraria/Images/Item_" + ItemID.Katana;
 
+	public static readonly SoundStyle Swing = new("SpiritReforged/Assets/SFX/Item/KatanaSwing", 3);
+
 	public static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<Katana>("Katana_Held", false);
 	private float _swingArc;
 
@@ -93,6 +144,8 @@ public class Katana : ModItem, IDrawHeld
 	{
 		Item.CloneDefaults(ItemID.Katana);
 		Item.DefaultToSpear(ModContent.ProjectileType<KatanaSwing>(), 1, Item.useAnimation);
+		Item.UseSound = Swing;
+		MoRHelper.SetSlashBonus(Item);
 	}
 
 	public override void HoldItem(Player player)

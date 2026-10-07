@@ -145,6 +145,7 @@ public class GhostBlade : ModItem, IDrawHeld
 	{
 		Item.DefaultToSpear(ModContent.ProjectileType<GhostBladeSwing>(), 8, 18);
 		Item.SetShopValues(ItemRarityColor.Blue1, Item.sellPrice(gold: 1, silver: 30));
+		Item.UseSound = Katana.Swing;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.damage = 12;
 		Item.knockBack = 3;
