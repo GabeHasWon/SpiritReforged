@@ -11,9 +11,8 @@ public abstract class RapierProjectile : SwungProjectile
 {
 	public readonly record struct RapierConfiguration(EaseFunction Easing, int Reach, int Width, int SweetSpotScale, int ParryWindow) : IConfiguration;
 
-	public static readonly SoundStyle DefaultSwing = new("SpiritReforged/Assets/SFX/Projectile/SwordSlash1")
+	public static readonly SoundStyle DefaultSwing = new("SpiritReforged/Assets/SFX/Item/RapierSwing", 3)
 	{
-		Pitch = 1f,
 		PitchVariance = 0.15f
 	};
 
