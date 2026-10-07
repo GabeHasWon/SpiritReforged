@@ -73,7 +73,7 @@ public partial class SpiritReforgedMod : Mod
 				arguments = arguments[1..];
 
 				ParameterInfo[] parameters = info.GetParameters();
-				int optionalCount = parameters.Where(x => x.IsOptional).Count(); //The number of optional parameters of this method
+				int optionalCount = parameters.Count(x => x.IsOptional); //The number of optional parameters of this method
 				object[] namedObjects = new object[parameters.Length];
 
 				if (arguments.Length > parameters.Length)
@@ -189,7 +189,7 @@ public partial class SpiritReforgedMod : Mod
 			{
 				if (loot is TileLootTable t)
 					lootPool.Invoke(t.Style, t.Coordinates, loot);
-			});
+			}, type);
 		else if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool))
 			TileLootSystem.RegisterLoot(pool, type);
 
@@ -197,7 +197,7 @@ public partial class SpiritReforgedMod : Mod
 			tileRecord.AddDescription(description);
 
 		if (displayName != null)
-			tileRecord.AddDescription(displayName);
+			tileRecord.AddDisplayName(displayName);
 
 		RecordHandler.Records.Add(tileRecord);
 		return true;
@@ -222,7 +222,7 @@ public partial class SpiritReforgedMod : Mod
 			{
 				if (loot is TileLootTable t)
 					lootPool.Invoke(t.Style, loot);
-			});
+			}, type);
 		else if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool))
 			TileLootSystem.RegisterLoot(pool, type);
 
@@ -230,7 +230,7 @@ public partial class SpiritReforgedMod : Mod
 			tileRecord.AddDescription(description);
 
 		if (displayName != null)
-			tileRecord.AddDescription(displayName);
+			tileRecord.AddDisplayName(displayName);
 
 		RecordHandler.Records.Add(tileRecord);
 		SpiritReforgedMod.Instance.Logger.Debug("[Mod.Call] Consider using the new overload: ManualAddRecord(int type, int[] styles, string recordName, byte rating = byte.MaxValue, Func<bool>? hidden = null, Action<int, Point16, ILoot>? lootPool = null, LocalizedText? description = null, LocalizedText? displayName = null)");
