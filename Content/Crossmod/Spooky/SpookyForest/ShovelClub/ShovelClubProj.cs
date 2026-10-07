@@ -282,7 +282,7 @@ class ShovelClubBoneProjectile : ModProjectile
 		Projectile.penetrate = 1;
 
 		Projectile.rotation = Main.rand.NextFloat(6.28f);
-		// First frame (skull) 10% of the time, otherwise on of the other three with equal chance
+		// First frame (skull) 10% of the time, otherwise one of the other three with equal chance
 		Projectile.frame = Main.rand.NextBool(10) ? 0 : Main.rand.Next(1, 4);
 	}
 
@@ -321,11 +321,6 @@ class ShovelClubBoneProjectile : ModProjectile
 
 			Dust.NewDustPerfect(Projectile.Center, DustID.Bone, Main.rand.NextVector2Circular(5, 5), 50, default, Main.rand.NextFloat(1f, 2f)).noGravity = true;
 		}
-
-		/*float strength = Main.rand.NextFloat(0.9f, 1.1f);
-
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, new(91, 91, 61, 50), new(36, 36, 24), 1f, 50 * strength, (int)(30 * strength), "Smoke", Vector2.One, EaseFunction.EaseQuinticOut)
-		{ Angle = Main.rand.NextFloat(MathHelper.TwoPi) });*/
 	}
 
 	public override bool PreDraw(ref Color lightColor)

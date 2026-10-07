@@ -2,6 +2,7 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 using Terraria;
@@ -10,6 +11,8 @@ using Terraria.Audio;
 namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.LookerClub;
 public class EyeballMinion : BaseMinion
 {
+	public static readonly Asset<Texture2D> EyeballTexture = DrawHelpers.RequestLocal<EyeballMinion>("EyeballMinion_Eye", false);
+
 	public EyeballMinion() : base(400, 600, new(12)) { }
 
 	public ref float AiTimer => ref Projectile.ai[0];
@@ -50,15 +53,9 @@ public class EyeballMinion : BaseMinion
 		return true;
 	}
 
-	public override bool OnTileCollide(Vector2 oldVelocity)
-	{
-		return false;
-	}
+	public override bool OnTileCollide(Vector2 oldVelocity) => false;
 
-	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-	{
-		overPlayers.Add(index);
-	}
+	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => overPlayers.Add(index);
 
 	public override void IdleMovement(Player player)
 	{
@@ -94,7 +91,7 @@ public class EyeballMinion : BaseMinion
 
 			Projectile.frame = 0;
 
-			if (AiTimer > 15 || AiTimer < 5)
+			if (AiTimer is > 15 or < 5)
 				Projectile.frame = 1;
 
 			if (AiTimer >= 20)
@@ -139,7 +136,7 @@ public class EyeballMinion : BaseMinion
 
 			Projectile.frame = 0;
 
-			if (AiTimer > 15 || AiTimer < 5)
+			if (AiTimer is > 15 or < 5)
 				Projectile.frame = 1;
 
 			if (AiTimer >= 20)
@@ -246,7 +243,7 @@ public class EyeballMinion : BaseMinion
 
 	public override void PostDraw(Color lightColor)
 	{
-		var eyeballTexture = ModContent.Request<Texture2D>(Texture + "_Eye").Value;
+		var eyeballTexture = EyeballTexture.Value;
 		var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
 
 		Vector2 eyeballPos = Projectile.Center + Vector2.One.RotatedBy(eyeballRotation - MathHelper.PiOver2) * 1f - Main.screenPosition;
