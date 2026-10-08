@@ -1,8 +1,6 @@
-﻿using SpiritReforged.Common.ItemCommon;
+﻿namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-namespace SpiritReforged.Common.TileCommon.PresetTiles;
-
-public abstract class PlanterBoxTile : ModTile, IAutoloadTileItem
+public abstract class PlanterBoxTile : ModTile
 {
 	public virtual void StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 25;
 	public virtual void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(silver: 1);
@@ -15,10 +13,12 @@ public abstract class PlanterBoxTile : ModTile, IAutoloadTileItem
 		Main.tileNoAttach[Type] = true;
 		Main.tileTable[Type] = true;
 
+		TileID.Sets.Platforms[Type] = true;
+
 		AddMapEntry(new Color(185, 150, 110));
 		DustType = DustID.WoodFurniture;
 
-		PlanterBoxMerge.PlanterTypes.Add(Type);
+		SpiritSets.IsPlanterBox[Type] = true;
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
@@ -61,12 +61,8 @@ public abstract class PlanterBoxTile : ModTile, IAutoloadTileItem
 }
 
 /// <summary> Allows <see cref="PlanterBoxTile"/> and vanilla planter boxes to merge. </summary>
-public class PlanterBoxMerge : GlobalTile
+public sealed class PlanterBoxMerge : GlobalTile
 {
-	/// <summary> Includes modded tile types that use <see cref="TileID.PlanterBox"/> or <see cref="TileID.ClayPot"/> behaviour.<para/>
-	/// Types are expected to be added during <see cref="ModType.SetStaticDefaults"/>. </summary>
-	public static readonly HashSet<int> PlanterTypes = [];
-
 	public override void Load()
 	{
 		On_WorldGen.CanCutTile += StopCut;
@@ -76,7 +72,7 @@ public class PlanterBoxMerge : GlobalTile
 	/// <summary> Prevent planted herbs (presumably) from being cut above custom planters, like vanilla does. </summary>
 	private static bool StopCut(On_WorldGen.orig_CanCutTile orig, int x, int y, TileCuttingContext context)
 	{
-		if (Main.tile[x, y + 1] != null && PlanterTypes.Contains(Main.tile[x, y + 1].TileType))
+		if (Main.tile[x, y + 1] != null && SpiritSets.IsPlanterBox[Main.tile[x, y + 1].TileType])
 			return false; //Skips orig
 
 		return orig(x, y, context);
@@ -85,7 +81,7 @@ public class PlanterBoxMerge : GlobalTile
 	/// <summary> Allow herbs to be placed on custom planters. </summary>
 	private static bool ForcePlaceAlch(On_WorldGen.orig_PlaceAlch orig, int x, int y, int style)
 	{
-		if (Main.tile[x, y + 1] != null && PlanterTypes.Contains(Main.tile[x, y + 1].TileType))
+		if (Main.tile[x, y + 1] != null && SpiritSets.IsPlanterBox[Main.tile[x, y + 1].TileType])
 		{
 			var tile = Main.tile[x, y];
 
@@ -102,7 +98,7 @@ public class PlanterBoxMerge : GlobalTile
 
 	public override bool TileFrame(int i, int j, int type, ref bool resetFrame, ref bool noBreak)
 	{
-		if ((type is TileID.Plants or TileID.Plants2 || Main.tileAlch[type]) && PlanterTypes.Contains(Framing.GetTileSafely(i, j + 1).TileType))
+		if ((type is TileID.Plants or TileID.Plants2 || Main.tileAlch[type]) && SpiritSets.IsPlanterBox[Main.tile[i, j + 1].TileType])
 			noBreak = true; //Prevent vanilla herbs from breaking on custom planters
 		else if (type == TileID.PlanterBox)
 		{

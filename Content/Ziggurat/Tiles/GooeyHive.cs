@@ -4,10 +4,11 @@ using SpiritReforged.Common.TileCommon.TileMerging;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Ziggurat.NPCs;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class GooeyHive : ModTile, IAutoloadTileItem
+public class GooeyHive : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10).AddCondition(Condition.InGraveyard).Register();
 
@@ -19,7 +20,7 @@ public class GooeyHive : ModTile, IAutoloadTileItem
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
-		this.Merge(TileID.Sand, ModContent.TileType<CrackedSandstone>(), ModContent.TileType<PaleHive>());
+		TileMethods.Merge(Type, TileID.Sand, ModContent.TileType<CrackedSandstone>(), ModContent.TileType<PaleHive>());
 		AddMapEntry(new Color(180, 180, 180));
 
 		DustType = DustID.Silk;

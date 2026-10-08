@@ -1,12 +1,12 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.Savanna.NPCs;
 using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class Jarboa : CageTile, IAutoloadTileItem
+public class Jarboa : CageTile, ILoadItem
 {
 	public override int NumFrames => 24;
 

@@ -25,7 +25,7 @@ public class Flarepowder : ModItem
 		MaxInstances = 2
 	};
 
-	private static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld", false);
+	private static readonly Asset<Texture2D> HeldTexture = Graphics.Request<Texture2D>("PowderHeld");
 	private static readonly Dictionary<int, int> PowderTypes = [];
 
 	public bool IsDerived => GetType() != typeof(Flarepowder);
@@ -73,8 +73,6 @@ public class Flarepowder : ModItem
 		
 		if (!IsDerived)
 		{
-			NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, new NPCShop.Entry(Type)));
-
 			TileLootSystem.RegisterLoot(static (loot) =>
 			{
 				int chance = (loot is TileLootTable t && t.Coordinates.Y < Main.rockLayer) ? 17 : 0;
@@ -134,7 +132,7 @@ internal class FlarepowderDust : ModProjectile
 	/// <summary> Must have 5 elements. Normally a gradient from light to dark. </summary>
 	public virtual Color[] Colors => [Color.LightGoldenrodYellow, Color.Yellow, Color.Orange, Color.OrangeRed, Color.DarkRed];
 
-	public override string Texture => DrawHelpers.RequestLocal(GetType(), nameof(FlarepowderDust));
+	public override string Texture => Graphics.RequestPath(nameof(FlarepowderDust));
 
 	public static readonly SoundStyle Impact = new("SpiritReforged/Assets/SFX/Projectile/Impact_Hard")
 	{
@@ -147,7 +145,12 @@ internal class FlarepowderDust : ModProjectile
 	public (float, float) randomTimeLeft;
 	private bool _spawned = true;
 
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 3;
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		Projectile.Size = new(8);

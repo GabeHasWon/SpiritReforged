@@ -78,8 +78,8 @@ GildedScarabBuff: {
 	Description: Defense increased by {0}
 }
 
-PoolNoodleBubbleBuff: {
-	DisplayName: Pool Noodle Bubble Buff
+Bubbled: {
+	DisplayName: Bubbled
 	Description: You've found the secret Spirit Lore Codex... Stay tuned for our superboss Darksteel, the Fallen Star!
 }
 
@@ -146,4 +146,29 @@ ScarabLightPetBuff: {
 ScarabMountBuff: {
 	DisplayName: Pillbug Mount
 	Description: "'Hold on!'"
+}
+
+DivineStrike: {
+	DisplayName: Divine Strike
+	Description: Your next attack is empowered
+}
+
+RotDebuff: {
+	DisplayName: Rotting [{0}]
+	Description: "'Your skin is turning green'"
+}
+
+SanguineStackingBuff: {
+	DisplayName: Sanguine Energy [{0}]
+	Description: Damage increased by {0}%
+}
+
+BlazeDebuff: {
+	DisplayName: Blazing
+	Description: This is fine!
+}
+
+RageGlyphBuff: {
+	DisplayName: Wrathful Damage [{0}]
+	Description: Stored damage: {0}
 }

@@ -17,7 +17,7 @@ public class DustStormWind : ILoadable
 
 		var tileAbove = Main.tile[i, j - 1];
 
-		if ((SceneTileCounter.GetSurvey<SavannaBiome>().tileTypes.Contains(type) || type == TileID.Sand) && !WorldGen.SolidTile(tileAbove)) //Spawn our dusts
+		if ((SceneTileCounter.GetSurvey<SavannaBiome>().typesToRead.Contains(type) || type == TileID.Sand) && !WorldGen.SolidTile(tileAbove)) //Spawn our dusts
 		{
 			float wind = Main.rand.NextFloat(Main.windSpeedCurrent);
 

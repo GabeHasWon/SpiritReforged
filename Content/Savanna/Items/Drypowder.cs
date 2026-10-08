@@ -55,7 +55,7 @@ internal class DrypowderSpray : ModProjectile
 		}
 
 		Point pt = Projectile.Center.ToTileCoordinates();
-		WorldGen.Convert(pt.X, pt.Y, SavannaConversion.ConversionType, 3);
+		WorldGen.Convert(pt.X, pt.Y, SavannaConversion.ConversionType, 3, true, true);
 	}
 
 	public override bool? CanCutTiles() => false;

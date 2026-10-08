@@ -2,10 +2,11 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
 using SpiritReforged.Content.Desert.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class GooBlock : ModTile, IAutoloadTileItem
+public class GooBlock : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<PolishedAmber>(), 10).AddCondition(Condition.InGraveyard).Register();
 
@@ -17,7 +18,7 @@ public class GooBlock : ModTile, IAutoloadTileItem
 		TileID.Sets.GeneralPlacementTiles[Type] = false;
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
-		this.Merge(ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
+		TileMethods.Merge(Type, ModContent.TileType<PaleHive>(), ModContent.TileType<GooeyHive>());
 		AddMapEntry(new Color(220, 115, 25));
 
 		DustType = DustID.OrangeStainedGlass;

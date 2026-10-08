@@ -1,17 +1,31 @@
-﻿using SpiritReforged.Content.Forest.Misc;
+﻿using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
+using SpiritReforged.Content.Forest.Misc;
 using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class HeroMemorialMicropass : Micropass
+internal class HeroMemorialMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "A Hero's Memorial";
 
+	[GenConfigurable(1, 10)]
+	[ReverseMinMax]
+	[Denominator]
+	private static int HeroChance = 10;
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new CanyonEntrance(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
+
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
-		if (!WorldGen.genRand.NextBool(10))
+		if (!WorldGen.genRand.NextBool(HeroChance))
 			return -1;
 
 		afterIndex = false;

@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
 
@@ -16,6 +17,7 @@ public class CactusSpine : ModProjectile
 		ProjectileID.Sets.TrailCacheLength[Type] = 20;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
 		Main.projFrames[Type] = 3; //Rows
+		HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 	}
 
 	public override void SetDefaults()

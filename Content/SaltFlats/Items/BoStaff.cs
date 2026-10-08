@@ -20,7 +20,7 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 	/// <summary> Hit combo counter used by Bo for the owning client only. </summary>
 	internal static int HitCombo;
 
-	public Asset<Texture2D> StandTexture => DrawHelpers.RequestLocal(GetType(), "BoStaffSwing", false);
+	public Asset<Texture2D> StandTexture => Graphics.Request<Texture2D>("BoStaffSwing");
 
 	public override void SetStaticDefaults()
 	{
@@ -88,7 +88,8 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 
 public class BoStaffSwing : ModProjectile
 {
-	private class BoNoiseCone(Entity entity, Vector2 basePosition, Vector2 velocity, float width, float length, float rotation, int maxTime, float taperExponent, int detatchTime = -1) : MotionNoiseCone(entity, basePosition, velocity, width, length, rotation, maxTime, detatchTime)
+	private class BoNoiseCone(Entity entity, Vector2 basePosition, Vector2 velocity, float width, float length, float rotation, int maxTime, float taperExponent, int detatchTime = -1) 
+		: MotionNoiseCone(entity, basePosition, velocity, width, length, rotation, maxTime, detatchTime)
 	{
 		internal override bool UseLightColor => true;
 		private readonly float _taperExponent = taperExponent;
@@ -208,6 +209,8 @@ public class BoStaffSwing : ModProjectile
 		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, altParameters, p => Ease, SwingTrail.BasicSwingShaderParams));
 		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, p => Ease, SwingTrail.BasicSwingShaderParams));
 	}
+
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 	public override void SetDefaults()
 	{

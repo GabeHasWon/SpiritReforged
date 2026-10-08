@@ -3,7 +3,7 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Items.Food;
@@ -174,7 +174,7 @@ public class Ostrich : ModNPC
 					var tilePos = ((NPC.Center + new Vector2(NPC.width * NPC.direction, 8)) / 16).ToPoint();
 					var direction = Vector2.UnitX * (Main.rand.NextBool() ? -1 : 1);
 
-					TileSwayHelper.SetWindTime(tilePos.X, tilePos.Y, direction);
+					WindTileRenderer.SetWindTime(tilePos.X, tilePos.Y, direction);
 				} //Cause tiles to sway while munching
 
 				break;

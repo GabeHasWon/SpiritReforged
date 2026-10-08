@@ -13,7 +13,7 @@ public class Relics : ModTile
 	public const int FrameHeight = 18 * 4;
 	public const int NumRelics = 1;
 
-	public static readonly Asset<Texture2D> PropTexture = DrawHelpers.RequestLocal<Relics>("RelicProp", false);
+	public static readonly Asset<Texture2D> PropTexture = Graphics.Request<Texture2D>("RelicProp");
 
 	public override void SetStaticDefaults() {
 		Main.tileShine[Type] = 400; 
@@ -62,7 +62,7 @@ public class Relics : ModTile
 			SpriteEffects effects = (tile.TileFrameY / FrameHeight != 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 
 			float offset = (float)MathF.Round(MathF.Sin(Main.GlobalTimeWrappedHourly * MathHelper.TwoPi / 5f) * 4);
-			Vector2 drawPos = worldPos + TileExtensions.TileOffset - Main.screenPosition + new Vector2(0f, -40f) + new Vector2(0f, offset);
+			Vector2 drawPos = worldPos + TileMethods.TileOffset - Main.screenPosition + new Vector2(0f, -40f) + new Vector2(0f, offset);
 
 			spriteBatch.Draw(texture, drawPos, frame, color, 0f, origin, 1f, effects, 0f);
 

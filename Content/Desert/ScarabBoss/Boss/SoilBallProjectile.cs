@@ -230,7 +230,7 @@ public class SoilBallProjectile : ModProjectile
 			foreach (VertexTrail trail in _trails)
 			{
 				trail.Opacity = 1f;
-				trail?.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, Main.spriteBatch.GraphicsDevice);
+				trail?.Draw(TrailSystem.TrailShaders, Main.spriteBatch.GraphicsDevice);
 			}
 		}
 

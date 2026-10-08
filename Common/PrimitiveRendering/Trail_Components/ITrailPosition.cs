@@ -18,3 +18,20 @@ public readonly struct ProjectileOffsetTrailPosition(Projectile entity, Vector2 
 
 	public Vector2 GetNextTrailPosition() => Projectile.Center + offset.RotatedBy(Projectile.rotation + rotationOffset);
 }
+
+// for Lightning effects
+public readonly struct RandomizedTrailPosition(Entity entity, float strength) : ITrailPosition
+{
+	public Vector2 GetNextTrailPosition() => entity.Center + Main.rand.NextVector2Circular(strength, strength);
+}
+
+// for lightning particle
+public readonly struct ParticleRandomizedTrailPosition(Particle.Particle particle, float strength) : ITrailPosition
+{
+	public Vector2 GetNextTrailPosition() => particle.Position + Main.rand.NextVector2Circular(strength, strength);
+}
+
+public readonly struct ParticleTrailPosition(Particle.Particle particle) : ITrailPosition
+{
+	public Vector2 GetNextTrailPosition() => particle.Position;
+}

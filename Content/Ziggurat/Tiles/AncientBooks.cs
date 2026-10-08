@@ -1,13 +1,13 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using Terraria.GameContent.ItemDropRules;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class AncientBooks : ModTile, IAutoloadTileItem
+public class AncientBooks : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item)
+	public void SetStaticItemDefaults(ModItem item)
 	{
 		ItemLootDatabase.AddItemRule(ItemID.OasisCrate, ItemDropRule.Common(item.Type, 2, 3, 5));
 		ItemLootDatabase.AddItemRule(ItemID.OasisCrateHard, ItemDropRule.Common(item.Type, 2, 3, 5));

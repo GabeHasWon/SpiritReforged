@@ -28,7 +28,7 @@ internal class ArcaneNecklaceGlobalNPC : GlobalNPC
 		if (target.type == NPCID.TargetDummy)
 			return;
 
-		if ((player.HasEquip<ArcaneNecklaceGold>() || player.HasEquip<ArcaneNecklacePlatinum>()) && player.statMana < player.statManaMax2 && Main.rand.NextBool(15))
+		if ((player.HasFlag<ArcaneNecklaceGold>() || player.HasFlag<ArcaneNecklacePlatinum>()) && player.statMana < player.statManaMax2 && Main.rand.NextBool(15))
 		{
 			var pos = target.Center;
 
@@ -38,11 +38,11 @@ internal class ArcaneNecklaceGlobalNPC : GlobalNPC
 					break;
 			}
 
-			SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (.65f, .8f) }, target.Center);
+			SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { PitchRange = (0.65f, 0.8f) }, target.Center);
 			SoundEngine.PlaySound(SoundID.Item158 with { Pitch = 1f });
 			SoundEngine.PlaySound(SoundID.DD2_DarkMageHealImpact with { Pitch = 1f });
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(pos, Color.RoyalBlue.Additive() * .75f, 3, 50, 40, "supPerlin", new Vector2(2), Common.Easing.EaseFunction.EaseCircularOut));
+			ParticleHandler.SpawnParticle(new TexturedPulseCircle(pos, Color.RoyalBlue.Additive() * 0.75f, 3, 50, 40, "supPerlin", new Vector2(2), Common.Easing.EaseFunction.EaseCircularOut));
 			for (int i = 0; i < 3; i++)
 				ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.StardustPunch, new ParticleOrchestraSettings() { PositionInWorld = pos });
 

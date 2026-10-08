@@ -1,5 +1,4 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
 using Terraria.Audio;
@@ -10,7 +9,7 @@ namespace SpiritReforged.Content.Underground.Items.ExplorerTreads;
 
 [AutoloadEquip(EquipType.Shoes)]
 [FromClassic("ExplorerTreads")]
-public class ExplorerTreadsItem : EquippableItem
+public class ExplorerTreadsItem : ModItem, IFlagged
 {
 	public override void SetStaticDefaults()
 	{

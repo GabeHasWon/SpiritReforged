@@ -2,12 +2,125 @@
 using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
+using Terraria.GameContent.Achievements;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.ItemCommon.Backpacks;
 
 internal class BackpackPlayer : ModPlayer
 {
+	internal class BackpackGlobalItem : GlobalItem
+	{
+		public override bool ItemSpace(Item incomingItem, Player player)
+		{
+			BackpackPlayer backPack = player.GetModPlayer<BackpackPlayer>();
+
+			if (backPack.packPickup && backPack.backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			{
+				foreach (Item item in back.Items)
+					if (item.IsAir || item.type == ItemID.None || ItemCanStack(incomingItem, item))
+						return true;
+			}
+
+			return false;
+		}
+
+		public override bool OnPickup(Item incomingItem, Player player)
+		{
+			BackpackPlayer backPlr = player.GetModPlayer<BackpackPlayer>();
+
+			if (backPlr.packPickup && backPlr.backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			{
+				if (ItemID.Sets.IsAPickup[incomingItem.type] || ItemID.Sets.NebulaPickup[incomingItem.type] || ItemID.Sets.ItemsThatShouldNotBeInInventory[incomingItem.type])
+					return true;
+
+				if (InventoryHasItem(incomingItem, player.inventory))
+					return true;
+
+				if (InventoryHasItem(incomingItem, player.bank4.item))
+					return true;
+
+				int index = -1;
+
+				if (Main.netMode != NetmodeID.SinglePlayer)
+				{
+					// Item.whoAmI is "unused" per the XML doc so I'm doing this to avoid any weird issues
+					// even though it's pretty weird itself. 1.4.5 should fix this anyway
+					for (int j = 0; j < Main.maxItems; ++j)
+					{
+						if (Main.item[j] == incomingItem)
+						{
+							index = j;
+							break;
+						}
+					}
+				}
+
+				for (int i = 0; i < back.Items.Length; i++)
+				{
+					ref Item it = ref back.Items[i];
+
+					if (ItemCanStack(incomingItem, it))
+					{
+						SharedItemFunctionality(index, incomingItem);
+
+						it.stack += incomingItem.stack;
+						GetItemSettings.PickupItemFromWorld.HandlePostAction(it);
+
+						if (incomingItem.stack <= 0)
+						{
+							incomingItem.active = false;
+							incomingItem.SetDefaults(ItemID.None);
+						}
+
+						return false;
+					}
+				}
+
+				for (int i = 0; i < back.Items.Length; i++)
+				{
+					ref Item item = ref back.Items[i];
+
+					if (item.IsAir || item.type == ItemID.None)
+					{
+						SharedItemFunctionality(index, incomingItem);
+
+						item = incomingItem.Clone();
+						incomingItem.active = false;
+						incomingItem.SetDefaults(ItemID.None);
+						return false;
+					}
+				}
+			}
+
+			return true;
+
+			static void SharedItemFunctionality(int index, Item item)
+			{
+				PopupText.NewText(PopupTextContext.RegularItemPickup, item, item.stack);
+				AchievementsHelper.NotifyItemPickup(Main.LocalPlayer, item);
+
+				if (Main.netMode != NetmodeID.SinglePlayer && index != -1)
+					NetMessage.SendData(MessageID.SyncItem, -1, -1, null, index);
+			}
+		}
+
+		private static bool InventoryHasItem(Item incomingItem, Item[] inventory)
+		{
+			foreach (Item inv in inventory)
+			{
+				if (ItemCanStack(incomingItem, inv))
+					return true;
+			}
+
+			return false;
+		}
+
+		private static bool ItemCanStack(Item pickup, Item item) 
+			=> item.type > ItemID.None && item.stack < item.maxStack && item.netID == pickup.netID && item.type == pickup.type && ItemLoader.CanStack(item, pickup);
+	}
+
 	[Flags]
 	private enum BackpackState
 	{
@@ -21,17 +134,153 @@ internal class BackpackPlayer : ModPlayer
 	public Item vanityBackpack = new();
 	public Item packDye = new();
 	public bool packVisible = true;
+	public bool packPickup = true;
 
 	private int _lastSelectedEquipPage = 0;
 	private bool _hadBackpack = false;
 	private BackpackState _state = BackpackState.None;
 	private BackpackState _oldState = BackpackState.None;
 
+	/// <summary>
+	/// Whether the given player has the given item in the inventory or in a worn backpack.
+	/// </summary>
+	public static bool HasItemInInventoryOrBackpack(Player player, int id)
+	{
+		if (player.HasItem(id))
+			return true;
+
+		BackpackPlayer plr = player.GetModPlayer<BackpackPlayer>();
+
+		if (plr.packPickup && plr.backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			return player.HasItem(id, back.Items);
+
+		return false;
+	}
+
 	#region detours
 	public override void Load()
 	{
 		On_Player.QuickBuff_PickBestFoodItem += SelectFoodFromPack;
 		On_Player.QuickHeal_GetItemToUse += SelectHealingFromPack;
+		On_Player.TakeUnityPotion += CheckBackpacksForWormholePot;
+		On_Player.HasUnityPotion += AddUnityPotionCheck;
+		On_Player.QuickBuff += On_Player_QuickBuff;
+		On_Player.HasItemInAnyInventory += AddBackpackCheck;
+	}
+
+	private bool AddBackpackCheck(On_Player.orig_HasItemInAnyInventory orig, Player self, int type)
+	{
+		if (orig(self, type))
+			return true;
+
+		if (self.GetModPlayer<BackpackPlayer>().backpack is not null and { IsAir: false } backpack && backpack.ModItem is BackpackItem back)
+			return self.HasItem(type, back.Items);
+
+		return false;
+	}
+
+	private bool AddUnityPotionCheck(On_Player.orig_HasUnityPotion orig, Player self)
+	{
+		if (orig(self))
+			return true;
+
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+			foreach (Item item in i.Items)
+				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
+					return true;
+
+		return false;
+	}
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "QuickBuff_ShouldBotherUsingThisBuff")]
+	public static extern bool QuickBuff_ShouldBotherUsingThisBuff(Player player, int attemptedType);
+
+	[UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ItemCheck_CheckCanUse")]
+	public static extern bool ItemCheck_CheckCanUse(Player player, Item item);
+
+	private void On_Player_QuickBuff(On_Player.orig_QuickBuff orig, Player self)
+	{
+		orig(self);
+
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+		{
+			foreach (Item item in i.Items)
+			{
+				if (item.stack <= 0 || item.type <= ItemID.None || item.buffType <= 0 || item.CountsAsClass(DamageClass.Summon) || !ItemCheck_CheckCanUse(self, item))
+					continue;
+
+				bool canUse = CombinedHooks.CanUseItem(self, item) && QuickBuff_ShouldBotherUsingThisBuff(self, item.buffType);
+
+				if (item.mana > 0 && canUse)
+				{
+					if (self.CheckMana(item, -1, pay: true, blockQuickMana: true))
+						self.manaRegenDelay = (int)self.maxRegenDelay;
+					else
+						canUse = false;
+				}
+
+				if (self.whoAmI == Main.myPlayer && item.type == ItemID.Carrot && !Main.runningCollectorsEdition)
+					canUse = false;
+
+				int buffType = item.buffType;
+
+				if (item.buffType == BuffID.FairyBlue)
+				{
+					buffType = Main.rand.Next(3);
+
+					if (buffType == 0)
+						buffType = 27;
+					else if (buffType == 1)
+						buffType = 101;
+					else
+						buffType = 102;
+				}
+
+				if (!canUse)
+					continue;
+
+				ItemLoader.UseItem(item, self);
+				
+				int buffTime = item.buffTime;
+
+				if (buffTime == 0)
+					buffTime = 3600;
+				
+				self.AddBuff(buffType, buffTime);
+
+				if (item.consumable && ItemLoader.ConsumeItem(item, self))
+				{
+					item.stack--;
+					if (item.stack <= 0)
+						item.TurnToAir();
+				}
+
+				if (self.CountBuffs() == Player.MaxBuffs)
+					break;
+			}
+		}
+	}
+
+	private void CheckBackpacksForWormholePot(On_Player.orig_TakeUnityPotion orig, Player self)
+	{
+		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
+		{
+			foreach (Item item in i.Items)
+			{
+				if (item.type == ItemID.WormholePotion && item.stack > 0 && !item.IsAir)
+				{
+					if (ItemLoader.ConsumeItem(item, self))
+						item.stack--;
+
+					if (item.stack <= 0)
+						item.SetDefaults();
+
+					return;
+				}
+			}
+		}
+
+		orig(self);
 	}
 
 	private static Item SelectFoodFromPack(On_Player.orig_QuickBuff_PickBestFoodItem orig, Player self)
@@ -40,7 +289,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			Item item = BuffPlayer.SortByPriority(i.items, self).LastOrDefault();
+			Item item = BuffPlayer.SortByPriority(i.Items, self).LastOrDefault();
 
 			if (!item.IsAir && item.buffTime > 0 && item.buffType != 0 && !HasBetterFoodBuff(self, item.buffType, item.buffTime))
 				return item;
@@ -72,7 +321,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (self.TryGetModPlayer(out BackpackPlayer p) && p.backpack.ModItem is BackpackItem i)
 		{
-			Item item = BuffPlayer.SortByPriority(i.items, self, true).LastOrDefault();
+			Item item = BuffPlayer.SortByPriority(i.Items, self, true).LastOrDefault();
 
 			if (!item.IsAir && item.potion && item.healLife > 0)
 				return item;
@@ -100,7 +349,7 @@ internal class BackpackPlayer : ModPlayer
 
 		if (backpack.ModItem is BackpackItem bp) //Update backpack contents as though they were in the inventory
 		{
-			foreach (var item in bp.items)
+			foreach (var item in bp.Items)
 			{
 				ItemLoader.UpdateInventory(item, Player);
 				Player.RefreshInfoAccsFromItemType(item);
@@ -111,7 +360,6 @@ internal class BackpackPlayer : ModPlayer
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 		{
 			// Track current & old state so we can sync as needed
-
 			_oldState = _state;
 			_state = BackpackState.None;
 
@@ -125,7 +373,7 @@ internal class BackpackPlayer : ModPlayer
 				_state |= BackpackState.HasDye;
 
 			if (_oldState != _state)
-				new BackpackPlayerData(packVisible, (byte)Player.whoAmI).Send();
+				new BackpackPlayerData(packVisible, packPickup, (byte)Player.whoAmI).Send();
 		}
 	}
 
@@ -161,6 +409,7 @@ internal class BackpackPlayer : ModPlayer
 			tag.Add("dye", ItemIO.Save(packDye));
 
 		tag.Add(nameof(packVisible), packVisible);
+		tag.Add(nameof(packPickup), packPickup);
 	}
 
 	public override void LoadData(TagCompound tag)
@@ -174,27 +423,31 @@ internal class BackpackPlayer : ModPlayer
 		if (tag.TryGet("dye", out TagCompound dye))
 			packDye = ItemIO.Load(dye);
 
-		packVisible = tag.Get<bool>(nameof(packVisible));
+		packVisible = tag.GetBool(nameof(packVisible));
+		packPickup = tag.GetBool(nameof(packPickup));
 	}
 
-	public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) => new BackpackPlayerData(packVisible, (byte)Player.whoAmI).Send();
+	public override void SyncPlayer(int toWho, int fromWho, bool newPlayer) => new BackpackPlayerData(packVisible, packPickup, (byte)Player.whoAmI).Send();
 }
 
 internal class BackpackPlayerData : PacketData
 {
 	private readonly bool _visibility;
+	private readonly bool _pickup;
 	private readonly byte _playerIndex;
 
 	public BackpackPlayerData() { }
-	public BackpackPlayerData(bool value, byte playerIndex)
+	public BackpackPlayerData(bool value, bool pickup, byte playerIndex)
 	{
 		_visibility = value;
+		_pickup = pickup;
 		_playerIndex = playerIndex;
 	}
 
 	public override void OnReceive(BinaryReader reader, int whoAmI)
 	{
 		bool visibility = reader.ReadBoolean();
+		bool pickup = reader.ReadBoolean();
 		byte who = reader.ReadByte();
 
 		Item backpack = ItemIO.Receive(reader);
@@ -203,6 +456,7 @@ internal class BackpackPlayerData : PacketData
 
 		Player player = Main.player[who];
 		player.GetModPlayer<BackpackPlayer>().packVisible = visibility;
+		player.GetModPlayer<BackpackPlayer>().packPickup = pickup;
 
 		if (Main.myPlayer != who) // Don't override backpack on player who sent the packet
 		{
@@ -212,12 +466,13 @@ internal class BackpackPlayerData : PacketData
 		}
 
 		if (Main.netMode == NetmodeID.Server)
-			new BackpackPlayerData(visibility, who).Send(ignoreClient: who);
+			new BackpackPlayerData(visibility, pickup, who).Send(ignoreClient: who);
 	}
 
 	public override void OnSend(ModPacket modPacket)
 	{
 		modPacket.Write(_visibility);
+		modPacket.Write(_pickup);
 		modPacket.Write(_playerIndex);
 
 		BackpackPlayer player = Main.player[_playerIndex].GetModPlayer<BackpackPlayer>();

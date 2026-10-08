@@ -5,6 +5,7 @@ using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Items.Crates;
 
@@ -44,7 +45,7 @@ public class SaltCrate : ModItem
 		{
 			if (RestoredType != Type && type is ItemID.PaintScraper or ItemID.SpectrePaintScraper)
 			{
-				TileExtensions.GetTopLeft(ref i, ref j);
+				(i, j) = Helpers.GetTopLeft(i, j);
 
 				for (int x = i; x < i + 2; x++)
 				{

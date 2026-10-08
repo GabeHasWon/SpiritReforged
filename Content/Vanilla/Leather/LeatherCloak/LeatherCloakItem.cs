@@ -1,11 +1,11 @@
-﻿using SpiritReforged.Common.ItemCommon.Abstract;
+﻿using SpiritReforged.Common.ItemCommon;
 
 namespace SpiritReforged.Content.Vanilla.Leather.LeatherCloak;
 
 [AutoloadEquip(EquipType.Front)]
-internal class LeatherCloakItem : EquippableItem
+internal class LeatherCloakItem : ModItem, IFlagged
 {
-	public override void SetDefaults()
+	public override void SetDefaults()	
 	{
 		Item.width = 26;
 		Item.height = 26;

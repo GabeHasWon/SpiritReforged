@@ -32,5 +32,5 @@ public abstract class BaseTrail
 	protected virtual void OnStartDissolve() { }
 
 	/// <summary> How the trail is drawn to the screen. </summary>
-	public virtual void Draw(Effect effect, BasicEffect effect2, GraphicsDevice device) { }
+	public virtual void Draw(Effect effect, GraphicsDevice device, Matrix? view = null) { }
 }

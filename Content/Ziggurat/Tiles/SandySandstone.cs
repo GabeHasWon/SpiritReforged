@@ -1,9 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class SandySandstone : ModTile, IAutoloadTileItem
+public class SandySandstone : ModTile, ILoadItem
 {
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>()).AddIngredient(ItemID.SandBlock).AddTile(TileID.WorkBenches).Register();
 
@@ -15,7 +16,7 @@ public class SandySandstone : ModTile, IAutoloadTileItem
 
 		TileID.Sets.ChecksForMerge[Type] = true;
 
-		this.Merge(TileID.Sandstone, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<CrackedSandstone>());
+		TileMethods.Merge(Type, TileID.Sandstone, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<CrackedSandstone>());
 		AddMapEntry(new Color(174, 74, 48));
 		RegisterItemDrop(AutoContent.ItemType<CrackedSandstone>());
 

@@ -227,7 +227,7 @@ public class Jerboa : ModNPC
 		{
 			Tile tile = Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY];
 
-			if (tile.WallType == WallID.None && SceneTileCounter.GetSurvey<SavannaBiome>().tileTypes.Contains(spawnInfo.SpawnTileType))
+			if (tile.WallType == WallID.None && SceneTileCounter.GetSurvey<SavannaBiome>().typesToRead.Contains(spawnInfo.SpawnTileType))
 				return 0.2f;
 		}
 

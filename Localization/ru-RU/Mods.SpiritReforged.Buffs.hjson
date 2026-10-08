@@ -78,14 +78,14 @@ GildedScarabBuff: {
 	Description: Защита увеличена на {0} ед.
 }
 
-PoolNoodleBubbleBuff: {
-	DisplayName: Пузырь нудла
-	Description: Вы познали древнюю тайну истории Spirit... Ждите встречи с нашим супербоссом — Тёмной Сталью, Падшей звездой!
+Bubbled: {
+	DisplayName: Запузыренный
+	Description: Вы познали древнюю тайну истории Spirit... Ждите встречи с нашим супербоссом — Темносталью, Падшей звездой!
 }
 
 ExplorerSpeed: {
 	DisplayName: Скорость исследователя
-	Description: Ваша скорость значительно увеличена
+	Description: Мобильность значительно увеличена
 }
 
 RemedyPotionBuff: {
@@ -125,7 +125,7 @@ Slowed: {
 
 ToucaneMinion_Buff: {
 	DisplayName: Туканотрость
-	Description: За вас сражается туканострость?
+	Description: За вас сражается туканотрость?
 }
 
 TinyDragonPet_Buff: {
@@ -135,7 +135,7 @@ TinyDragonPet_Buff: {
 
 EnlilBuff: {
 	DisplayName: Благословение Энлиля
-	Description: Вертикальная подвижность увеличена
+	Description: Вертикальная мобильность увеличена
 }
 
 ScarabLightPetBuff: {
@@ -146,4 +146,29 @@ ScarabLightPetBuff: {
 ScarabMountBuff: {
 	DisplayName: Ездовой жук-пилюльщик
 	Description: «Держитесь!»
+}
+
+DivineStrike: {
+	DisplayName: Божественный удар
+	Description: Ваша следующая атака нанесёт больше урона
+}
+
+RotDebuff: {
+	DisplayName: Гниение [{0}]
+	Description: «Ваша кожа зеленеет»
+}
+
+SanguineStackingBuff: {
+	DisplayName: Кровяная энергия [{0}]
+	Description: Урон увеличен на {0}%
+}
+
+BlazeDebuff: {
+	DisplayName: Пылающий
+	Description: This is fine!
+}
+
+RageGlyphBuff: {
+	DisplayName: Мстительный урон [{0}]
+	Description: Накоплено {0} ед. урона
 }

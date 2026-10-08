@@ -11,18 +11,17 @@ public class TrailRenderer<T> where T : BaseTrail
 		for (int i = 0; i < Trails.Count; i++)
 		{
 			BaseTrail trail = Trails[i];
-
 			trail.Update();
 
 			if (trail.CanBeDisposed)
-				Trails.RemoveAt(i--);
+				Trails.RemoveAt(i--); //Move index back to account for the removed entry
 		}
 	}
 
 	public virtual void Draw(SpriteBatch spriteBatch)
 	{
 		foreach (BaseTrail trail in Trails)
-			trail.Draw(TrailSystem.TrailShaders, AssetLoader.BasicShaderEffect, spriteBatch.GraphicsDevice);
+			trail.Draw(TrailSystem.TrailShaders, spriteBatch.GraphicsDevice);
 	}
 }
 
@@ -33,6 +32,11 @@ public sealed class ProjectileTrailRenderer : TrailRenderer<BaseTrail>
 
 	public void CreateTrail(Projectile projectile, BaseTrail trail)
 	{
+#if !DEBUG
+		if (Main.gameMenu)
+			return;
+#endif
+
 		Trails.Add(trail);
 		_trailSettings.Add(new(projectile));
 	}
@@ -44,7 +48,7 @@ public sealed class ProjectileTrailRenderer : TrailRenderer<BaseTrail>
 		{
 			if (projectile == _trailSettings[i].Parent)
 			{
-				var trail = Trails[i];
+				BaseTrail trail = Trails[i];
 
 				if (dissolveSpeed > 0 && trail is VertexTrail t)
 					t.DissolveSpeed = dissolveSpeed;
@@ -61,13 +65,17 @@ public sealed class ProjectileTrailRenderer : TrailRenderer<BaseTrail>
 			BaseTrail trail = Trails[i];
 			trail.Update();
 
-			if (!_trailSettings[i].Parent.active)
+			if (i >= _trailSettings.Count || !_trailSettings[i].Parent.active)
 				trail.Dissolve();
 
 			if (trail.CanBeDisposed)
 			{
 				Trails.RemoveAt(i);
-				_trailSettings.RemoveAt(i--);
+
+				if (i < _trailSettings.Count)
+					_trailSettings.RemoveAt(i); //Move index back to account for the removed entry
+
+				i--;
 			}
 		}
 	}

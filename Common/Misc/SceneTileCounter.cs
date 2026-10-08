@@ -4,12 +4,28 @@ public class SceneTileCounter : ModSystem
 {
 	public sealed class Survey(HashSet<int> types, int limit)
 	{
-		public int count;
-		public readonly int limit = limit;
-		public readonly HashSet<int> tileTypes = types;
+		/// <summary> Checks whether <see cref="Count"/> has hit <see cref="limit"/>. </summary>
+		public bool Success => Count >= limit;
 
-		/// <summary> Checks whether <see cref="count"/> has hit <see cref="limit"/>. </summary>
-		public bool Success => count >= limit;
+		public int Count { get; private set; }
+
+		public readonly int limit = limit;
+		public readonly HashSet<int> typesToRead = types;
+		public readonly Dictionary<int, int> countByType = [];
+
+		public void SetCounts(ReadOnlySpan<int> tileCounts)
+		{
+			int count = 0;
+			countByType.Clear();
+
+			foreach (int type in typesToRead)
+			{
+				countByType.Add(type, tileCounts[type]);
+				count += tileCounts[type];
+			}
+
+			Count = count;
+		}
 	}
 
 	/// <summary> Stores Survey by <see cref="ModSceneEffect.Type"/>. </summary>
@@ -19,13 +35,6 @@ public class SceneTileCounter : ModSystem
 	public override void TileCountsAvailable(ReadOnlySpan<int> tileCounts)
 	{
 		foreach (int key in SurveyByType.Keys)
-		{
-			int count = 0;
-
-			foreach (int type in SurveyByType[key].tileTypes)
-				count += tileCounts[type];
-
-			SurveyByType[key].count = count;
-		}
+			SurveyByType[key].SetCounts(tileCounts);
 	}
 }

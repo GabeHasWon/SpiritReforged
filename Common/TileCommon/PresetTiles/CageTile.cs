@@ -1,10 +1,8 @@
-using SpiritReforged.Common.ItemCommon;
-using Terraria;
 using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class CageTile : ModTile, IAutoloadTileItem
+public abstract class CageTile : ModTile
 {
 	private readonly int[] cageFrames = new int[Main.cageFrames];
 	private readonly int[] cageFrameCounters = new int[Main.cageFrames];
@@ -22,11 +20,10 @@ public abstract class CageTile : ModTile, IAutoloadTileItem
 		TileID.Sets.CritterCageLidStyle[Type] = 0;
 
 		DustType = DustID.Glass;
-		AnimationFrameHeight = 54;
 		AdjTiles = [TileID.BirdCage];
+		AnimationFrameHeight = 54;
 
 		AddObjectData();
-		RegisterItemDrop(this.AutoItemType());
 	}
 
 	public virtual void AddObjectData()

@@ -5,10 +5,11 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, IAutoloadTileItem
+public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, ILoadItem
 {
 	public const int FrameWidth = 36;
 
@@ -45,7 +46,7 @@ public class SaltTallGate : EntityTile<SaltTallGateEntity>, ICustomDoor, IAutolo
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("MapObject.Door"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("MapObject.Door"));
 		AdjTiles = [TileID.ClosedDoor];
 		DustType = -1;
 	}
@@ -104,7 +105,8 @@ public class SaltTallGateOpen : EntityTile<SaltTallGateEntity>, ICustomDoor
 
 		RegisterItemDrop(AutoContent.ItemType<SaltTallGate>());
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
-		AddMapEntry(FurnitureTile.CommonColor, Language.GetText("MapObject.Door"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("MapObject.Door"));
+
 		AdjTiles = [TileID.ClosedDoor];
 		DustType = -1;
 	}
@@ -133,12 +135,12 @@ public class SaltTallGateEntity : ModTileEntity, IEntityUpdate
 	public override bool IsTileValidForEntity(int x, int y)
 	{
 		Tile tile = Main.tile[x, y];
-		return tile.HasTileType(ModContent.TileType<SaltTallGate>()) || tile.HasTileType(ModContent.TileType<SaltTallGateOpen>()) && TileObjectData.IsTopLeft(x, y);
+		return tile.Active(ModContent.TileType<SaltTallGate>()) || tile.Active(ModContent.TileType<SaltTallGateOpen>()) && TileObjectData.IsTopLeft(x, y);
 	}
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		var d = TileObjectData.GetTileData(Main.tile[i, j]);
 		var size = (d is null) ? new Point(1, 1) : new Point(d.Width, d.Height);
 
@@ -156,7 +158,7 @@ public class SaltTallGateEntity : ModTileEntity, IEntityUpdate
 	public void GlobalUpdate()
 	{
 		float rate = Math.Max(EaseFunction.EaseCubicOut.Ease(1f - frame / 7f), 0.1f);
-		bool closed = Framing.GetTileSafely(Position).HasTileType(ModContent.TileType<SaltTallGate>());
+		bool closed = Framing.GetTileSafely(Position).Active(ModContent.TileType<SaltTallGate>());
 		float lastFrame = frame;
 
 		if (closed)

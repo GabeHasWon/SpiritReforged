@@ -1,16 +1,14 @@
 using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.ButterflyStaff;
 
-[AutoloadGlowmask("100,100,100,0")]
 public class ButterflyStump : ModTile, IAutoloadRubble
 {
 	private const int FrameHeight = 18 * 4;
@@ -31,6 +29,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.DisableSmartCursor[Type] = true;
 		TileID.Sets.InteractibleByNPCs[Type] = true;
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(100, 100, 100, 0));
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = new Point16(1, 3);
@@ -53,7 +52,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		var overlap = MicrobiomeSystem.Microbiomes.Where(x => x is ButterflyShrineBiome e && e.Rectangle.Contains(new Point(i, j)));
+		var overlap = MicrobiomeSystem.Microbiomes.Where(x => x is ButterflyMicropass.ButterflyShrineBiome e && e.Area.Contains(new Point(i, j)));
 		bool removedAny = false;
 
 		foreach (var biome in overlap)
@@ -78,7 +77,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 	{
 		if (HasItem(i, j) && !Autoloader.IsRubble(Type))
 		{
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 
 			for (int x = i; x < i + 2; x++)
 				for (int y = j; y < j + 4; y++)
@@ -138,7 +137,7 @@ public class ButterflyStump : ModTile, IAutoloadRubble
 		if (!HasItem(i, j))
 			return;
 
-		var color = new Vector3(255, 125, 255) * .001f;
+		var color = new Vector3(255, 125, 255) * 0.001f;
 		(r, g, b) = (color.X, color.Y, color.Z);
 	}
 }

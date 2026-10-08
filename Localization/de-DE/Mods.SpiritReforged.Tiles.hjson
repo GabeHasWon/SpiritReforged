@@ -1,0 +1,49 @@
+Records: {
+	CoinPortal:
+		'''
+		Enthält immer ein Münzportal.
+
+		Ein glücklicher Fund!
+		'''
+	Common:
+		'''
+		Ein gewöhnlicher Topf, der manchmal nützliche Dinge enthält.
+
+		Der Wert steigt, je tiefer unter der Erde.
+		'''
+	Zenith:
+		'''
+		Ein gewöhnlicher Topf, der manchmal nützliche Dinge enthält ... dieser hier ist unnötig protzig.
+
+		Der Wert steigt, je tiefer unter der Erde.
+		'''
+	Potion: Enthält ein potentes Gebräu.
+	UpsideDown: `Fertigungsfehler`
+	Worm: Verstreut eine Vielzahl an Würmern, wenn er zerstört wird.
+	Platter: Eine warme Mahlzeit, bereit zum Zugreifen. Wer würde das hier zurücklassen wollen?
+	WickerBasket: Ein Picknick, nur für dich!
+	Aether: Bietet verschiedene nützliche, glitzernde Upgrades.
+	Stuffed: Was für ein seltsamer Ort, um einen Händler zu finden. Er bittet geradezu darum, belästigt zu werden.
+	Scrying: Enthüllt bei Zerstörung einen großen Teil der Karte.
+	Biome: Enthält eine größere Vielfalt an Beute als gewöhnliche Töpfe.
+	Boulder: Rollt am Boden entlang, wenn er gestört wird.
+	Wax: Mit starken magischen Energien durchdrungen.
+}
+
+FablesGraves: {
+	SetNames: {
+		Savanna: Savannen-Gräber
+		SaltFlats: Salz-Gräber
+	}
+}
+
+HydrothermalVent.MapEntry: Hydrothermalschlot
+OreCarts.MapEntry: Lore
+PotionVats.MapEntry: Tränkebottich
+ObsidianShroom.MapEntry: Obsidianpilz
+Starflower.MapEntry: Sternblume
+BonsaiTrees.MapEntry: Bonsai
+DustyTomb.MapEntry: Staubiges Grabmal
+# Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
+OganessonMoss.MapEntry: Oganesson-Moos
+RadonMoss.MapEntry: Radon-Moos

@@ -46,14 +46,14 @@ public class ToucanFeather : ModProjectile
 
 		for (int i = 0; i < 5; i++)
 		{
-			var dust = Dust.NewDustPerfect(Projectile.Center, 90, Projectile.velocity.RotatedByRandom(MathHelper.Pi / 12) * Main.rand.NextFloat(0.5f, 0.7f), 100, default, Main.rand.NextFloat(0.7f, 1f));
+			var dust = Dust.NewDustPerfect(Projectile.Center, DustID.GemRuby, Projectile.velocity.RotatedByRandom(MathHelper.Pi / 12) * Main.rand.NextFloat(0.5f, 0.7f), 100, default, Main.rand.NextFloat(0.7f, 1f));
 			dust.fadeIn = 0.75f;
 			dust.noGravity = true;
 		}
 
 		for (int j = 0; j < 10; j++)
 		{
-			var dust = Dust.NewDustPerfect(Projectile.Center, 90, Projectile.velocity.RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(0.1f, 0.3f), 100, default, Main.rand.NextFloat(0.2f, 0.4f));
+			var dust = Dust.NewDustPerfect(Projectile.Center, DustID.GemRuby, Projectile.velocity.RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(0.1f, 0.3f), 100, default, Main.rand.NextFloat(0.2f, 0.4f));
 			dust.fadeIn = 0.75f;
 			dust.noGravity = true;
 		}

@@ -222,6 +222,9 @@ public class LootBag : ModNPC
 				npcLoot.AddCommon(aquamarine.Type, 3, 1, 2);
 		}
 
+		if (CrossMod.Verdant.Enabled && CrossMod.Verdant.TryFind("AquamarineItem", out ModItem verdantAquamarine))
+			npcLoot.AddCommon(verdantAquamarine.Type, 3, 1, 2);
+
 		LeadingConditionRule rule = new(new InZiggurat());
 		rule.OnSuccess(ItemDropRule.Common(AutoContent.ItemType<CarvedLapis>(), 1, 10, 35));
 

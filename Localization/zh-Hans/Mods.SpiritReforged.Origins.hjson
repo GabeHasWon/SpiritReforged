@@ -31,13 +31,13 @@ Hiker: {
 Caveman: {
 	DisplayName: 穴居人
 	Flavor: 简简单单的生活反而很充实。一个字概括就是：嘎。
-	Description: 以隐匿束腰外衣和木棒在……在地下的任意高度开始游戏。
+	Description: 以皮制束腰外衣和木棒在……在地下的任意高度开始游戏。
 }
 
 Disentombed: {
 	DisplayName: 掘出坟墓者
 	Flavor: 三千年已逝……我的统治将重现。我将归来。
-	Description: 以木乃伊时装在庙塔开始游戏。
+	Description: 以木乃伊时装和3根沙漠火把在庙塔开始游戏。
 }
 
 Worshipper: {
@@ -50,4 +50,10 @@ Purifier: {
 	DisplayName: 净化者
 	Flavor: 邪恶退散；在我纯净的锋芒下化为灰烬。
 	Description: 以长棍法杖和摩诃迦罗面具在盐滩开始游戏（如果可行）。
+}
+
+Enchanter: {
+	DisplayName: 附魔师
+	Flavor: 好哇！想要更多火光吗？让我们从一簇火花开始吧！
+	Description: 以60个闪耀之尘、3个彩蜡和魔石法师时装与附魔师NPC一同开始游戏。
 }

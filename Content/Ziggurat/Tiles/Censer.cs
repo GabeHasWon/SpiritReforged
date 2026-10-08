@@ -1,14 +1,16 @@
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class Censer : ModTile, IAutoloadTileItem
+public class Censer : ModTile, ILoadItem
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 30);
+
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup("GoldBars", 3).AddTile(TileID.Anvils).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileTable[Type] = true;

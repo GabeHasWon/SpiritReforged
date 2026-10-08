@@ -1,33 +1,22 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat.Classic;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-public class HerosMemorialStatue : ModTile
+public class HerosMemorialStatue : ModTile, ILoadItem
 {
-	public class HerosMemorialStatueItem : ModItem
+	public void SetItemDefaults(ModItem modItem)
 	{
-		public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<HerosMemorialStatueMossyItem>();
-		public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.StoneBlock, 50).AddTile(TileID.HeavyWorkBench).Register();
-
-		public override void SetDefaults()
-		{
-			Item.DefaultToPlaceableTile(ModContent.TileType<HerosMemorialStatue>(), 0);
-			Item.rare = ItemRarityID.Orange;
-			Item.Size = new Vector2(30, 48);
-		}
+		modItem.Item.rare = ItemRarityID.Orange;
+		modItem.Item.Size = new Vector2(30, 48);
 	}
 
-	public class HerosMemorialStatueMossyItem : ModItem
-	{
-		public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<HerosMemorialStatueItem>();
-
-		public override void SetDefaults()
-		{
-			Item.DefaultToPlaceableTile(ModContent.TileType<HerosMemorialStatue>(), 1);
-			Item.rare = ItemRarityID.Orange;
-			Item.Size = new Vector2(30, 48);
-		}
-	}
+	public void AddItemRecipes(ModItem modItem) => modItem.CreateRecipe()
+			.AddIngredient(ItemID.StoneBlock, 50)
+			.AddTile(TileID.HeavyWorkBench)
+			.Register();
 
 	public override void SetStaticDefaults()
 	{
@@ -52,6 +41,7 @@ public class HerosMemorialStatue : ModTile
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(216, 216, 216), Language.GetText("Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName"));
+		SpiritClassic.AddItemReplacement("HerosMemorialStatue", AutoContent.ItemType<HerosMemorialStatue>()); //Register a Classic item replacement
 
 		DustType = DustID.Stone;
 	}

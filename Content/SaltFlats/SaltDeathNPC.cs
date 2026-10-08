@@ -19,7 +19,7 @@ public class SaltDeathNPC : GlobalNPC
 		Point16 pos = (npc.Bottom + new Vector2(0, 4)).ToTileCoordinates16();
 		Tile tile = Main.tile[pos];
 
-		if (tile.HasTileType(ModContent.TileType<SaltBlockDull>()) || tile.HasTileType(ModContent.TileType<SaltBlockReflective>()))
+		if (tile.Active(ModContent.TileType<SaltBlockDull>()) || tile.Active(ModContent.TileType<SaltBlockReflective>()))
 		{
 			npc.GetGlobalNPC<SaltDeathNPC>().salted = true;
 		}

@@ -1,4 +1,4 @@
-using SpiritReforged.Content.Ocean;
+using SpiritReforged.Content.Ocean.Boids;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;
@@ -8,9 +8,6 @@ namespace SpiritReforged.Common.ConfigurationCommon;
 class ReforgedClientConfig : ModConfig
 {
 	public override ConfigScope Mode => ConfigScope.ClientSide;
-
-	[DefaultValue(OceanGeneration.OceanShape.Piecewise_V)]
-	public OceanGeneration.OceanShape OceanShape { get; set; }
 
 	[Range(0, 3)]
 	[DrawTicks]
@@ -24,9 +21,22 @@ class ReforgedClientConfig : ModConfig
 	[DefaultValue(1)]
 	public float ScreenshakeStrength { get; set; }
 
+	[DefaultValue(true)]
+	public bool GlyphProjectileVisualEffects { get; set; }
+
+	[DefaultValue(true)]
+	public bool GlyphItemVisualEffects { get; set; }
+
 	[DefaultValue(false)]
 	[ReloadRequired]
 	public bool DisableWater { get; set; }
+
+	[DefaultValue(true)]
+	public bool BannerJingle { get; set; }
+
+	[Header("Developer")]
+	[DefaultValue(false)]
+	public bool DebugEcotones { get; set; }
 
 	public override void OnChanged()
 	{

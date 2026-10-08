@@ -1,12 +1,11 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.PlayerCommon;
 using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat.Scarab;
 
-public class GildedScarab : EquippableItem
+public class GildedScarab : ModItem, IFlagged
 {
 	public override void SetStaticDefaults()
 	{
@@ -53,7 +52,7 @@ internal class GildedScarabPlayer : ModPlayer
 
 	public override void OnHurt(Player.HurtInfo info)
 	{
-		if (Player.HasEquip<GildedScarab>())
+		if (Player.HasFlag<GildedScarab>())
 		{
 			if (info.DamageSource.SourceOtherIndex is 3 or 2) //Lava or spike damage
 				return;

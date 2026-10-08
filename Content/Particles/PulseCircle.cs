@@ -131,5 +131,6 @@ public class PulseCircle : Particle
 		return this;
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
+	public ParticleLayer Layer { get; set; } = ParticleLayer.AbovePlayer;
+	public override ParticleLayer DrawLayer => Layer;
 }

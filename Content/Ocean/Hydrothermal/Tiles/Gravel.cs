@@ -1,15 +1,15 @@
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Ocean.Items;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 
-public class Gravel : ModTile, IAutoloadTileItem
+public class Gravel : ModTile, ILoadItem
 {
-	public void AddItemRecipes(ModItem item)
+	public void AddItemRecipes(ModItem modItem)
 	{
-		item.CreateRecipe(10).AddIngredient(ModContent.ItemType<MineralSlag>(), 1).AddTile(TileID.WorkBenches).Register();
-		Recipe.Create(ItemID.Cave8Echo, 4).AddIngredient(item.Type).AddTile(TileID.WorkBenches).AddCondition(Condition.InGraveyard).Register();
+		modItem.CreateRecipe(10).AddIngredient(ModContent.ItemType<MineralSlag>(), 1).AddTile(TileID.WorkBenches).Register();
+		Recipe.Create(ItemID.Cave8Echo, 4).AddIngredient(modItem.Type).AddTile(TileID.WorkBenches).AddCondition(Condition.InGraveyard).Register();
 	}
 
 	public override void SetStaticDefaults()
@@ -20,6 +20,7 @@ public class Gravel : ModTile, IAutoloadTileItem
 
 		Main.tileMerge[TileID.Sand][Type] = true; //Ensure sand tries to merge back with gravel
 		Main.tileMerge[TileID.HardenedSand][Type] = true;
+
 		TileID.Sets.ChecksForMerge[Type] = true;
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 
@@ -27,8 +28,6 @@ public class Gravel : ModTile, IAutoloadTileItem
 		DustType = DustID.Asphalt;
 		MineResist = 0.5f;
 		HitSound = SoundID.Tink;
-
-		Mod.Find<ModItem>(Name + "Item").Item.ResearchUnlockCount = 100;
 	}
 
 	public override void RandomUpdate(int i, int j)

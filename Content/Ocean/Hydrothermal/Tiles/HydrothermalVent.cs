@@ -9,6 +9,7 @@ using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Hydrothermal.Tiles;
 
@@ -81,17 +82,17 @@ public class HydrothermalVent : ModTile
 
 	public override void NearbyEffects(int i, int j, bool closer) //Client effects
 	{
-		if (!TileObjectData.IsTopLeft(i, j) || Main.gamePaused)
+		if (Main.dedServ || Main.gamePaused || !TileObjectData.IsTopLeft(i, j))
 			return;
 
-		var t = Framing.GetTileSafely(i, j);
-		int fullWidth = TileObjectData.GetTileData(t).CoordinateFullWidth;
-		var position = new Vector2(i, j) * 16 + tops[t.TileFrameX / fullWidth].ToVector2();
+		Tile tile = Framing.GetTileSafely(i, j);
+		int fullWidth = TileObjectData.GetTileData(tile).CoordinateFullWidth;
+		Vector2 position = new Vector2(i, j) * 16 + tops[tile.TileFrameX / fullWidth].ToVector2();
 
 		if (Main.rand.NextBool(5)) //Passive smoke effects
 		{
-			var velocity = new Vector2(0, -Main.rand.NextFloat(2f, 2.5f));
-			var smoke = new SmokeCloud(position, velocity, new Color(40, 40, 50), Main.rand.NextFloat(0.1f, 0.15f), EaseFunction.EaseQuadOut, Main.rand.Next(50, 120), false)
+			Vector2 velocity = new(0, -Main.rand.NextFloat(2f, 2.5f));
+			SmokeCloud smoke = new(position, velocity, new Color(40, 40, 50), Main.rand.NextFloat(0.1f, 0.15f), EaseFunction.EaseQuadOut, Main.rand.Next(50, 120), false)
 			{
 				SecondaryColor = Color.SlateGray,
 				TertiaryColor = Color.Black,
@@ -110,7 +111,7 @@ public class HydrothermalVent : ModTile
 		if (Main.rand.NextBool()) //Passive ash effects
 		{
 			float range = Main.rand.NextFloat();
-			var velocity = new Vector2(0, -Main.rand.NextFloat(range * 8f)).RotatedByRandom((1f - range) * 1.5f);
+			Vector2 velocity = new Vector2(0, -Main.rand.NextFloat(range * 8f)).RotatedByRandom((1f - range) * 1.5f);
 
 			var dust = Dust.NewDustPerfect(position, DustID.Ash, velocity, Alpha: 180);
 			dust.noGravity = true;
@@ -141,9 +142,10 @@ public class HydrothermalVent : ModTile
 	}
 
 	public override void RandomUpdate(int i, int j) => TryErupt(i, j);
+
 	private static bool TryErupt(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		var pt = new Point16(i, j);
 		if (IsValid(i, j) && !cooldowns.ContainsKey(pt))
@@ -165,11 +167,12 @@ public class HydrothermalVent : ModTile
 
 	public static void Erupt(int i, int j)
 	{
-		var t = Framing.GetTileSafely(i, j);
-		if (TileObjectData.GetTileData(t) is not { } tileData)
+		Tile tile = Framing.GetTileSafely(i, j);
+		if (TileObjectData.GetTileData(tile) is not { } tileData)
 			return;
+
 		int fullWidth = tileData.CoordinateFullWidth;
-		var position = new Vector2(i, j) * 16 + tops[t.TileFrameX / fullWidth].ToVector2();
+		Vector2 position = new Vector2(i, j) * 16 + tops[tile.TileFrameX / fullWidth].ToVector2();
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
 			Projectile.NewProjectile(new EntitySource_Wiring(i, j), position, Vector2.UnitY * -4f, ModContent.ProjectileType<HydrothermalVentPlume>(), 5, 0f);
@@ -182,7 +185,7 @@ public class HydrothermalVent : ModTile
 				Dust.NewDustPerfect(position, ModContent.DustType<Dusts.FireClubDust>(), new Vector2(0, 6).RotatedByRandom(1) * Main.rand.NextFloat(-1, 1));
 
 			SoundEngine.PlaySound(Main.rand.Next(EruptionSounds), position);
-			SoundEngine.PlaySound(SoundID.Drown with { Pitch = -.5f, PitchVariance = .25f, Volume = 1.5f }, position);
+			SoundEngine.PlaySound(SoundID.Drown with { Pitch = -0.5f, PitchVariance = 0.25f, Volume = 1.5f }, position);
 
 			ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.Yellow, 0.75f, 200, 20, "supPerlin",
 				new Vector2(4, 0.75f), EaseFunction.EaseCubicOut).WithSkew(0.75f, MathHelper.Pi - MathHelper.PiOver2));

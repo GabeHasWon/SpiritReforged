@@ -7,7 +7,6 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.SaltFlats.Items;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -68,7 +67,7 @@ public class WindshearScepter : ModItem
 
 	public class CloudParticle(int style) : ABasicParticle
 	{
-		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(CloudParticle), "CloudParticle", false);
+		public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("CloudParticle");
 
 		public float Opacity;
 		public int TimeToLive = 60;

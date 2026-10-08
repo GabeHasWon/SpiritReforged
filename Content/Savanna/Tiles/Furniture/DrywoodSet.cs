@@ -1,26 +1,42 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
+using static TileHelper.Autoloader;
 
 namespace SpiritReforged.Content.Savanna.Tiles.Furniture;
 
-public class DrywoodSet : FurnitureSet
+public class DrywoodSet : ILoadable
 {
-	public override string Name => "Drywood";
-	public override FurnitureTile.IFurnitureData GetInfo(FurnitureTile tile)
+	public void Load(Mod mod) => ILoadItem.PostAutoloadItems += LoadDrywoodFurniture;
+
+	private static void LoadDrywoodFurniture()
 	{
-		bool blurry = tile is not ChandelierTile and not LanternTile;
-		return new FurnitureTile.LightedInfo(tile.AutoModItem(), AutoContent.ItemType<Drywood>(), Color.Orange.ToVector3(), DustID.t_PearlWood, blurry);
+		string name = typeof(DrywoodSet).Namespace + ".Drywood";
+		var light = Color.Orange.ToVector3();
+
+		TileHelper.ArgumentCollection arguments = AllArgs(DustID.Pearlwood, new(light, true))
+			- new BarrelTile()
+			- new BenchTile()
+			- new ChairTile();
+
+		arguments.Get<ChandelierTile>().Settings = new(light, false);
+
+		LanternTile lanternTile = arguments.Get<LanternTile>();
+		lanternTile.WindCycle = 0;
+		lanternTile.Settings = new(light, false);
+
+		LoadFurnitureSet(name, arguments, AutoContent.ItemType<Drywood>());
 	}
 
-	public override bool Autoload(FurnitureTile tile) => Excluding(tile, Types.Barrel, Types.Bench, Types.Chair);
+	public void Unload() { }
 }
 
-public class DrywoodChair : ChairTile
+public class DrywoodChair : ChairTile, ILoadItem
 {
-	public override IFurnitureData Info => ModContent.GetInstance<DrywoodSet>().GetInfo(this);
-	public override void StaticDefaults()
+	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<Drywood>());
+
+	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
@@ -45,8 +61,10 @@ public class DrywoodChair : ChairTile
 		TileObjectData.addTile(Type);
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsChair);
-		AddMapEntry(new Color(100, 100, 60), Language.GetText("ItemName.Chair"));
+
 		AdjTiles = [TileID.Chairs];
 		DustType = -1;
+
+		base.SetStaticDefaults();
 	}
 }

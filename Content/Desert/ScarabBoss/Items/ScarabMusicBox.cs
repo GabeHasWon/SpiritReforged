@@ -3,11 +3,11 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.UI;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
@@ -15,7 +15,7 @@ public class ScarabMusicBox : ModItem
 {
 	private sealed class PhaseButton : ISlotButton
 	{
-		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal<PhaseButton>("ScarabMusicBoxToggle", false);
+		public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("ScarabMusicBoxToggle");
 
 		public void Draw(SpriteBatch spriteBatch, Vector2 center, Item item, bool hoveredOver)
 		{
@@ -47,7 +47,6 @@ public class ScarabMusicBox : ModItem
 		}
 	}
 
-	[AutoloadGlowmask("255,255,255")]
 	public sealed class ScarabMusicBoxTile : ModTile
 	{
 		public override void Load() => TileEvents.OnSwitchMusicBox += StopSwitchMusicBox;
@@ -61,6 +60,7 @@ public class ScarabMusicBox : ModItem
 
 			TileID.Sets.HasOutlines[Type] = true;
 			TileID.Sets.DisableSmartCursor[Type] = true;
+			TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
 			TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 			TileObjectData.newTile.Origin = new Point16(0, 1);
@@ -87,7 +87,7 @@ public class ScarabMusicBox : ModItem
 			int width = data.CoordinateFullWidth;
 			float pitch = 0;
 
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 
 			for (int y = 0; y < data.Width; y++)
 			{

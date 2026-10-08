@@ -185,7 +185,7 @@ public class OceanKelp : ModTile, ISetConversion
 		if (Main.rand.Next(1000) <= 1) //Spawns little bubbles
 		{
 			Vector2 pos = new Vector2(i * 16, j * 16) + new Vector2(2 + Main.rand.Next(12), Main.rand.Next(16));
-			Dust.NewDustPerfect(pos, 34, new Vector2(Main.rand.NextFloat(-0.08f, 0.08f), Main.rand.NextFloat(-0.2f, -0.02f)));
+			Dust.NewDustPerfect(pos, DustID.BreatheBubble, new Vector2(Main.rand.NextFloat(-0.08f, 0.08f), Main.rand.NextFloat(-0.2f, -0.02f)));
 		}
 	}
 
@@ -245,7 +245,7 @@ public class OceanKelp : ModTile, ISetConversion
 
 	private static void DrawClump(int i, int j, SpriteBatch spriteBatch, int clumpAmount, Rectangle frame, Vector2 drawPos, int clump)
 	{
-		TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture);
+		TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture);
 
 		var tint = color.MultiplyRGB(Color.Lerp(Color.White, Color.Black, clump / (float)clumpAmount));
 		frame = new Rectangle(GetGroupFrameX(i, j) == 48 ? 168 : 94, frame.Y / 18 * 34, 72, 32);
@@ -255,7 +255,7 @@ public class OceanKelp : ModTile, ISetConversion
 
 	private static void DrawSingleKelp(int i, int j, SpriteBatch spriteBatch, int clumpAmount, Rectangle frame, Vector2 drawPos, int clump, int realClump)
 	{
-		TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture);
+		TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture);
 
 		var tint = color.MultiplyRGB(Color.Lerp(Color.White, Color.Black, clump / (float)clumpAmount));
 		frame.X = GetGroupFrameX(i + clump, j);

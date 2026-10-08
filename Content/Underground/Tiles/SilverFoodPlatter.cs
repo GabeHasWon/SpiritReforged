@@ -3,10 +3,11 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.UI;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, IAutoloadTileItem
+public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, ILoadItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -16,6 +17,8 @@ public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, IAutoloadTileItem
 		Main.tileMergeDirt[Type] = false;
 		Main.tileBlockLight[Type] = false;
 		Main.tileFrameImportant[Type] = true;
+
+		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = false; // This causes a stack overflow since this can be placed on multitiles
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.DrawYOffset = 2;
@@ -54,7 +57,7 @@ public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, IAutoloadTileItem
 
 			int yOffset = 18 - t.TileFrameX / 36 * 2;
 
-			var position = new Vector2(i * 16 - (int)Main.screenPosition.X + 16, j * 16 - (int)Main.screenPosition.Y + yOffset) + TileExtensions.TileOffset;
+			var position = new Vector2(i * 16 - (int)Main.screenPosition.X + 16, j * 16 - (int)Main.screenPosition.Y + yOffset) + TileMethods.TileOffset;
 			spriteBatch.Draw(texture, position, source, currentColor, 0f, origin, scale, default, 0);
 
 			if (slot.item.color != default)

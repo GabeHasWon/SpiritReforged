@@ -68,6 +68,8 @@ public class Cartographer : WorldNPC, ITravelNPC
 	{
 		base.SetStaticDefaults();
 
+		NPCHeadLayer.Types.Add(Type);
+
 		Main.npcFrameCount[Type] = 25;
 
 		NPCID.Sets.ExtraFramesCount[Type] = 9;

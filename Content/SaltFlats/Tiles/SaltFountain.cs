@@ -6,14 +6,15 @@ using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltFountain : ModTile, IAutoloadTileItem
+public class SaltFountain : ModTile, ILoadItem
 {
 	private const int FrameHeight = 72;
 
-	void IAutoloadTileItem.SetItemDefaults(ModItem item) => item.Item.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(0, 4, 0, 0));
+	public void SetItemDefaults(ModItem item) => item.Item.SetShopValues(ItemRarityColor.Blue1, Item.buyPrice(0, 4, 0, 0));
 
 	public override void SetStaticDefaults()
 	{
@@ -69,7 +70,7 @@ public class SaltFountain : ModTile, IAutoloadTileItem
 
 	private void ToggleTile(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		for (int x = i; x < i + 2; x++)
 		{

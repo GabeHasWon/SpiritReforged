@@ -1,14 +1,15 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
-public class BambooBarrel : BarrelTile
+public class BambooBarrel : BarrelTile, ILoadItem
 {
-	public override IFurnitureData Info => new BasicInfo(this.AutoModItem(), AutoContent.ItemType<StrippedBamboo>());
+	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<StrippedBamboo>());
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.tileSpelunker[Type] = true;
 		Main.tileContainer[Type] = true;
@@ -34,7 +35,8 @@ public class BambooBarrel : BarrelTile
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.SolidSide, TileObjectData.newTile.Width, 0);
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(100, 100, 60), MapEntry);
+		AddMapEntry(MapColor, MapEntry);
+
 		AdjTiles = [TileID.Containers];
 		DustType = DustID.PalmWood;
 	}

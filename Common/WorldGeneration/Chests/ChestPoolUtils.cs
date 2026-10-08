@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Terraria.Utilities;
 
 namespace SpiritReforged.Common.WorldGeneration.Chests;
 
@@ -40,11 +41,13 @@ public static class ChestPoolUtils
 	}
 
 	// Helper method for adding items to chests
-	private static void AddItemsToChest(IEnumerable<ChestInfo> list, Chest chest, int itemIndex)
+	private static void AddItemsToChest(IEnumerable<ChestInfo> list, Chest chest, int itemIndex, UnifiedRandom random = null)
 	{
+		random ??= WorldGen.genRand;
+
 		foreach (ChestInfo chestInfo in list)
 		{
-			chest.item[itemIndex].SetDefaults(chestInfo.itemTypes[Main.rand.Next(chestInfo.itemTypes.Length)]);
+			chest.item[itemIndex].SetDefaults(chestInfo.itemTypes[random.Next(chestInfo.itemTypes.Length)]);
 			chest.item[itemIndex].stack = chestInfo.Stack;
 			chest.item[itemIndex].Prefix(-1);
 
@@ -56,15 +59,16 @@ public static class ChestPoolUtils
 	/// Method to greatly reduce the amount of effort needed to make a chest pool. <br />
 	/// Input the chest's pool as a list of structs representing the item pool for each slot, stack for that pool, and chance to be added.
 	/// </summary>
-	public static void PlaceChestItems(List<ChestInfo> list, Chest chest, int startIndex = 0)
+	public static void PlaceChestItems(List<ChestInfo> list, Chest chest, int startIndex = 0, UnifiedRandom random = null)
 	{
+		random ??= WorldGen.genRand;
 		int itemIndex = startIndex;
 
 		var newList = new List<ChestInfo>();
 
 		foreach (ChestInfo c in list)
 		{ //prune the list based on the chances of items being added and stacks
-			if (Main.rand.NextFloat() >= c.chance || c.Stack == 0)
+			if (random.NextFloat() >= c.chance || c.Stack == 0)
 				continue; //skip
 
 			newList.Add(c);
@@ -80,16 +84,17 @@ public static class ChestPoolUtils
 		AddItemsToChest(newList, chest, itemIndex);
 	}
 
-	public static void PlaceModChestItemsWCheck(List<ChestInfo> list, Chest chest, ref bool[] placedItems)
+	public static void PlaceModChestItemsWCheck(List<ChestInfo> list, Chest chest, ref bool[] placedItems, UnifiedRandom random = null)
 	{
+		random ??= WorldGen.genRand;
 		int itemIndex = 0;
 
-		int[] importantItemPool = (int[])list.ElementAt(0).itemTypes;
+		int[] importantItemPool = list.ElementAt(0).itemTypes;
 		int itemToPlace = 0;
 		bool canPlace = false;
 		while (!canPlace)
 		{ //check if the chosen item has been placed before, and if all items havent already been placed
-			itemToPlace = WorldGen.genRand.Next(importantItemPool.Length);
+			itemToPlace = random.Next(importantItemPool.Length);
 			if (!placedItems[itemToPlace] || placedItems.All(x => x == true))
 			{
 				placedItems[itemToPlace] = true;
@@ -105,50 +110,50 @@ public static class ChestPoolUtils
 			itemIndex++;
 		}
 
-		AddItemsToChest(list.Skip(1), chest, itemIndex);
-
+		AddItemsToChest(list.Skip(1), chest, itemIndex, random);
 	}
 
-	public static void AddToModdedChest(List<ChestInfo> list, int chestType)
+	public static void AddToModdedChest(List<ChestInfo> list, int chestType, UnifiedRandom random = null)
 	{
 		for (int chestIndex = 0; chestIndex < Main.chest.Length; chestIndex++)
 		{
 			Chest chest = Main.chest[chestIndex];
 			if (chest != null && Main.tile[chest.x, chest.y].TileType == chestType)
-				PlaceChestItems(list, chest);
+				PlaceChestItems(list, chest, 0, random);
 		}
 	}
 
-	public static void AddToModdedChestWithOverlapCheck(List<ChestInfo> list, int chestType)
+	public static void AddToModdedChestWithOverlapCheck(List<ChestInfo> list, int chestType, UnifiedRandom random = null)
 	{
-		int[] items = (int[])list.ElementAt(0).itemTypes;
+		int[] items = list.ElementAt(0).itemTypes;
 		bool[] placedItems = new bool[items.Length];
 
 		for (int chestIndex = 0; chestIndex < Main.chest.Length; chestIndex++)
 		{
 			Chest chest = Main.chest[chestIndex];
 			if (chest != null && Main.tile[chest.x, chest.y].TileType == chestType)
-				PlaceModChestItemsWCheck(list, chest, ref placedItems);
+				PlaceModChestItemsWCheck(list, chest, ref placedItems, random);
 		}
 	}
 
 	/// <inheritdoc cref="AddToVanillaChest(List{ChestInfo}, int, int, ushort)"/>
 	/// <param name="item"> The <see cref="ChestInfo"/> to add. </param>
-	public static void AddToVanillaChest(ChestInfo item, int chestFrame, int index, ushort tileType = TileID.Containers) => AddToVanillaChest(item.ToList(), chestFrame, index, tileType);
+	public static void AddToVanillaChest(ChestInfo item, int chestFrame, int index, ushort tileType = TileID.Containers, UnifiedRandom random = null) 
+		=> AddToVanillaChest(item.ToList(), chestFrame, index, tileType, random);
 
 	/// <summary> Adds the given item info to chest inventories. </summary>
 	/// <param name="items"> The <see cref="ChestInfo"/> to add. </param>
 	/// <param name="chestFrame"> The horizontal frame of <paramref name="tileType"/> to consider. See <see cref="VanillaChestID"/> and <see cref="VanillaChestID2"/>. </param>
 	/// <param name="index"> The chest inventory index. </param>
 	/// <param name="tileType"> The chest tile type. </param>
-	public static void AddToVanillaChest(List<ChestInfo> items, int chestFrame, int index = 0, ushort tileType = TileID.Containers)
+	public static void AddToVanillaChest(List<ChestInfo> items, int chestFrame, int index = 0, ushort tileType = TileID.Containers, UnifiedRandom random = null)
 	{
 		chestFrame *= 36;
 		for (int chestIndex = 0; chestIndex < Main.chest.Length; chestIndex++)
 		{
 			Chest chest = Main.chest[chestIndex];
 			if (chest != null && Main.tile[chest.x, chest.y].TileType == tileType && Main.tile[chest.x, chest.y].TileFrameX == chestFrame)
-				PlaceChestItems(items, chest, index);
+				PlaceChestItems(items, chest, index, random);
 		}
 	}
 }

@@ -1,11 +1,11 @@
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
 
 namespace SpiritReforged.Content.Underground.Moss.Radon;
 
 [AutoloadGlowmask("255,255,255")]
-public class RadonBobber : EquippableItem
+public class RadonBobber : ModItem, IFlagged
 {
 	public override void SetDefaults()
 	{
@@ -24,6 +24,7 @@ public class RadonBobber : EquippableItem
 	}
 
 	public override void UpdateVanity(Player player) => player.overrideFishingBobber = ModContent.ProjectileType<RadonBobberProjectile>();
+
 	public override void PostDrawInWorld(SpriteBatch spriteBatch, Color lightColor, Color alphaColor, float rotation, float scale, int whoAmI)
 		=> Lighting.AddLight(Item.Center, Color.Yellow.ToVector3() * 0.25f);
 

@@ -84,7 +84,7 @@ public class BlunderbussTile : ModTile
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 			return false;
 
 		var t = Main.tile[i, j];

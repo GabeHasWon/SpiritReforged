@@ -3,6 +3,7 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
@@ -14,10 +15,10 @@ public class StackablePots : ModTile
 	private static readonly Dictionary<Point16, Point16> Offsets = [];
 	public override string Texture => Pots.PotTexture;
 
-	/// <summary> Returns final coordinates from <see cref="TileExtensions.GetTopLeft"/>. </summary>
+	/// <summary> Returns final coordinates from <see cref="Helpers.GetTopLeft"/>. </summary>
 	private static Point16 Get(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		return new Point16(i, j);
 	}
 
@@ -94,7 +95,7 @@ public class StackablePots : ModTile
 		int style = x % 3 + y * 3;
 		var velocity = (Vector2.UnitY * -Main.rand.NextFloat(3f, 5f)).RotatedByRandom(1f);
 
-		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), velocity, ModContent.ProjectileType<FallingPot>(), 10, 0, ai0: style);
+		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), velocity, ModContent.ProjectileType<FallingPot>(), 0, 0, ai0: style);
 
 		Offsets.Remove(new Point16(i, j));
 	}
@@ -114,7 +115,7 @@ public class StackablePots : ModTile
 		var color = Lighting.GetColor(i, j);
 
 		if (Main.LocalPlayer.findTreasure)
-			color = TileExtensions.GetSpelunkerTint(color);
+			color = TileMethods.GetSpelunkerTint(color);
 
 		spriteBatch.Draw(texture, position, source, color, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
 		return false;

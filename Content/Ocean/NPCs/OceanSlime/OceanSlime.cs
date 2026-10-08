@@ -30,8 +30,8 @@ public class OceanSlime : ModNPC
 		NPC.defense = 5;
 		NPC.lifeMax = 45;
 		NPC.value = 12f;
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 1;
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.Slime;
 
 		AIType = NPCID.BlueSlime;
 		AnimationType = NPCID.BlueSlime;

@@ -3,6 +3,7 @@ using SpiritReforged.Common.TileCommon;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Misc.ChristmasTreeTops;
 
@@ -172,7 +173,7 @@ internal class ChristmasTreeFunctionality : GlobalTile
 		if (tree.Topper != -1)
 		{
 			Texture2D tex = TreeTopper.TopperTextures[tree.Topper].Value;
-			spriteBatch.Draw(tex, TileExtensions.DrawPosition(i - 1, j, new Vector2(-5, 0)), Color.White);
+			spriteBatch.Draw(tex, Helpers.GetTilePosition(i - 1, j) - new Vector2(-5, 0), Color.White);
 		}
 	}
 

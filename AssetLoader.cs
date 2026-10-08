@@ -3,6 +3,7 @@ using System.Linq;
 using System.Reflection;
 using Terraria.ModLoader.Core;
 using SpiritReforged;
+using Terraria.Graphics.Shaders;
 
 [Autoload(Side = ModSide.Client)]
 internal sealed class AssetLoader : ILoadable
@@ -18,6 +19,7 @@ internal sealed class AssetLoader : ILoadable
 	public void Load(Mod mod)
 	{
 		ShaderHelpers.GetWorldViewProjection(out Matrix view, out Matrix projection);
+
 		Main.QueueMainThreadAction(() => BasicShaderEffect = new BasicEffect(Main.graphics.GraphicsDevice)
 		{
 			VertexColorEnabled = true,

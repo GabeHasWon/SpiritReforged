@@ -1,8 +1,8 @@
-using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class BrownShingles : ModTile, IAutoloadTileItem
+public class BrownShingles : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddRecipeGroup(RecipeGroupID.Wood).AddTile(TileID.Sawmill).Register();
 

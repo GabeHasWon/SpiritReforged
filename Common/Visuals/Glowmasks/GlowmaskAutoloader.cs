@@ -22,12 +22,12 @@ internal class GlowmaskAutoloader : ModSystem
 					GlowmaskNPC.NpcIdToGlowmask.Add(id, new(glowMask, color, autoDraw));
 			}
 
-			else if (type is ModTile tile)
+			/*else if (type is ModTile tile)
 			{
 				int id = tile.Type;
 				if (TryGetGlowmask(ModContent.GetModTile(id).Texture, out var glowMask))
 					GlowmaskTile.TileIdToGlowmask.Add(id, new(glowMask, color, autoDraw));
-			}
+			}*/
 
 			else if (type is ModProjectile projectile)
 			{

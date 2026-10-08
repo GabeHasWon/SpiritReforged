@@ -1,11 +1,11 @@
 using SpiritReforged.Common;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
-public abstract class SaltBlock : ModTile, IAutoloadTileItem
+public abstract class SaltBlock : ModTile, ILoadItem
 {
 
 	public static readonly SoundStyle Break = new("SpiritReforged/Assets/SFX/Tile/SaltMine", 3)
@@ -26,7 +26,7 @@ public abstract class SaltBlock : ModTile, IAutoloadTileItem
 		TileID.Sets.CrimsonBiome[Type] = -2;
 		SpiritSets.AntiInfectionStrength[Type] = 5;
 
-		this.Merge(TileID.IceBlock, TileID.SnowBlock, TileID.Sand, TileID.Dirt);
+		TileMethods.Merge(Type, TileID.IceBlock, TileID.SnowBlock, TileID.Sand, TileID.Dirt);
 
 		DustType = DustID.Pearlsand;
 		MineResist = 0.5f;

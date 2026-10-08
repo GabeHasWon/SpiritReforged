@@ -1,13 +1,11 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
+public class SavannaDirt : ModTile, ILoadItem, ICheckItemUse
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
-
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe().AddIngredient(ItemID.SandBlock).AddIngredient(ItemID.MudBlock).Register();
@@ -23,7 +21,7 @@ public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 		TileID.Sets.ChecksForMerge[Type] = true;
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 
-		this.Merge(TileID.Stone, TileID.Dirt, TileID.Mud, TileID.ClayBlock, ModContent.TileType<Drywood>());
+		TileMethods.Merge(Type, TileID.Stone, TileID.Dirt, TileID.Mud, TileID.ClayBlock, ModContent.TileType<Drywood>());
 		AddMapEntry(new Color(138, 79, 45));
 		MineResist = 0.5f;
 	}
@@ -53,6 +51,7 @@ public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 			switch (type)
 			{
 				case ItemID.StaffofRegrowth:
+				case ItemID.AcornAxe:
 					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrass>(), forced: true);
 					break;
 				case ItemID.CorruptSeeds:

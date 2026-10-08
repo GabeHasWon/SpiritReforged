@@ -11,8 +11,8 @@ namespace SpiritReforged.Content.Underground.Items.Zipline;
 
 internal class ZiplineHandler : ILoadable
 {
-	internal static Asset<Texture2D> HookTexture;
-	internal static Asset<Texture2D> WireTexture;
+	internal static readonly Asset<Texture2D> HookTexture = Graphics.Request<Texture2D>("Zipline_Hook");
+	internal static readonly Asset<Texture2D> WireTexture = Graphics.Request<Texture2D>("Zipline_Wire");
 
 	/// <summary> <see cref="Zipline"/>s belonging to all players.<para/>
 	/// Use <see cref="Add"/> and <see cref="Zipline.RemovePoint"/> instead of directly adding and removing points from this set. </summary>
@@ -45,13 +45,7 @@ internal class ZiplineHandler : ILoadable
 		}
 	}
 
-	public void Load(Mod mod)
-	{
-		On_Main.DoDraw_Tiles_NonSolid += DrawAllZiplines;
-
-		HookTexture = DrawHelpers.RequestLocal(GetType(), "Zipline_Hook", false);
-		WireTexture = DrawHelpers.RequestLocal(GetType(), "Zipline_Wire", false);
-	}
+	public void Load(Mod mod) => On_Main.DoDraw_Tiles_NonSolid += DrawAllZiplines;
 
 	private static void DrawAllZiplines(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 	{

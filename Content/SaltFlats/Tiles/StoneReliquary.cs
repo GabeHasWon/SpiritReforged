@@ -1,17 +1,18 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using System.Linq;
 using Terraria.DataStructures;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public sealed class StoneReliquary : ChestTile, ICustomContainer
+public sealed class StoneReliquary : ChestTile, ICustomContainer, ILoadItem
 {
-	public override void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 10);
+	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 10);
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
-		base.StaticDefaults();
+		base.SetStaticDefaults();
 		DustType = DustID.Stone;
 	}
 
@@ -54,7 +55,7 @@ public sealed class StoneReliquary : ChestTile, ICustomContainer
 
 	public static bool HasChest(int i, int j, out Chest chest)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		if (Chest.FindChest(i, j) is int search && search != -1)
 		{
 			chest = Main.chest[search];

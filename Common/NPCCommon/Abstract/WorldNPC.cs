@@ -6,12 +6,12 @@ namespace SpiritReforged.Common.NPCCommon.Abstract;
 
 public abstract class WorldNPC : ModNPC
 {
-	/// <summary> Whether this NPC has spawned today. Commonly checked in <see cref="SpawnChance"/> to prevent multiple spawns in one day. </summary>
+	/// <summary> Whether this NPC has spawned today. Commonly checked in <see cref="ModNPC.SpawnChance"/> to prevent multiple spawns in one day. </summary>
 	public bool SpawnedToday => WorldNPCFlags.SpawnedToday[Name];
 
 	/// <summary><inheritdoc/><para/>
 	/// Automatically registers this NPC for <see cref="WorldNPCFlags.SpawnedToday"/>.<br/>
-	/// Additionally sets <see cref="NPCID.Sets.ActsLikeTownNPC"/> and <see cref="NPCID.Sets.NoTownNPCHappiness[Type]"/> to true.
+	/// Additionally sets <see cref="NPCID.Sets.ActsLikeTownNPC"/> and <see cref="NPCID.Sets.NoTownNPCHappiness"/> to true.
 	/// </summary>
 	public override void SetStaticDefaults()
 	{

@@ -1,24 +1,26 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class TallSandstoneShelf : ModTile, IAutoloadTileItem
+public class TallSandstoneShelf : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+	public void SetItemStaticDefaults(ModItem item) => item.Item.ResearchUnlockCount = 30;
+
 	public virtual void AddItemRecipes(ModItem item) => item.CreateRecipe(10).AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 10).AddIngredient(AutoContent.ItemType<AncientBooks>()).AddTile(TileID.Sawmill).Register();
+	
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolidTop[Type] = true;
 		Main.tileSolid[Type] = true;
 		Main.tileTable[Type] = true;
 		SpiritSets.FrameHeight[Type] = 18;
+
+		AddMapEntry(FurnitureTile.MapColor);
+
 		AdjTiles = [TileID.Bookcases];
-
-		AddMapEntry(FurnitureTile.CommonColor);
-
 		DustType = DustID.Dirt;
 	}
 
@@ -35,30 +37,30 @@ public class TallSandstoneShelf : ModTile, IAutoloadTileItem
 		Tile top = Framing.GetTileSafely(i, j - 1);
 		Tile bottom = Framing.GetTileSafely(i, j + 1);
 
-		if (!top.HasTileType(Type) && !bottom.HasTileType(Type) && !left.HasTileType(Type) && !right.HasTileType(Type))
+		if (!top.Active(Type) && !bottom.Active(Type) && !left.Active(Type) && !right.Active(Type))
 		{
 			frameX = 0;
 			frameY = 18 * 3;
 		}
-		else if (!top.HasTileType(Type) && !bottom.HasTileType(Type))
+		else if (!top.Active(Type) && !bottom.Active(Type))
 		{
 			frameY += 18 * 2;
 		}
-		else if (!left.HasTileType(Type) && !right.HasTileType(Type))
+		else if (!left.Active(Type) && !right.Active(Type))
 		{
 			frameX -= 18 * 2;
 		}
 
-		if (left.HasTileType(Type))
+		if (left.Active(Type))
 			frameX += 18;
 
-		if (right.HasTileType(Type))
+		if (right.Active(Type))
 			frameX -= 18;
 
-		if (!top.HasTileType(Type))
+		if (!top.Active(Type))
 			frameY -= 18;
 
-		if (!bottom.HasTileType(Type))
+		if (!bottom.Active(Type))
 			frameY += 18;
 
 		int randomFrame;

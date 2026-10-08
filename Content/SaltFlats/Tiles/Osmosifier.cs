@@ -9,15 +9,17 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
 using Terraria.ModLoader.IO;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
+public class Osmosifier : SingleSlotTile<OsmosifierSlot>, ILoadItem
 {
 	private const int FrameHeight = 38;
 
-	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(gold: 1);
-	public void AddItemRecipes(ModItem item) => item.CreateRecipe()
+	public void SetItemDefaults(ModItem modItem) => modItem.Item.value = Item.sellPrice(gold: 1);
+
+	public void AddItemRecipes(ModItem modItem) => modItem.CreateRecipe()
 		.AddRecipeGroup("SilverBars", 5)
 		.AddTile(TileID.Anvils)
 		.Register();
@@ -58,7 +60,7 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
 	/// <summary> Checks whether this tile is submerged. </summary>
 	private static void CheckConditions(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		var bottomLeft = Main.tile[i, j + 1];
 		var bottomRight = Main.tile[i + 1, j + 1];
@@ -141,7 +143,7 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, IAutoloadTileItem
 		{
 			var texture = TextureAssets.Item[slot.item.type].Value;
 			float sine = (float)Math.Sin(Main.timeForVisualEffects / 30f);
-			var position = new Vector2(i, j).ToWorldCoordinates(16, -16) - Main.screenPosition + TileExtensions.TileOffset + Vector2.UnitY * sine * 2;
+			var position = new Vector2(i, j).ToWorldCoordinates(16, -16) - Main.screenPosition + TileMethods.TileOffset + Vector2.UnitY * sine * 2;
 
 			spriteBatch.Draw(texture, position, null, Color.White, 0, texture.Size() / 2, 1, default, 0);
 		}

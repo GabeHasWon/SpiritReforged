@@ -5,11 +5,12 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Desert.Tiles;
 
 /// <summary> A placeable amber tile that also generates naturally. </summary>
-public class PolishedAmber : ModTile, IAutoloadTileItem
+public class PolishedAmber : ModTile, ILoadItem
 {
 	public sealed class AmberGridOverlay : TileGridOverlay
 	{
@@ -17,7 +18,7 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 		{
 			foreach (var pt in _grid)
 			{
-				TileExtensions.DrawSingleTile(pt.X, pt.Y, true, Vector2.Zero);
+				TileMethods.DrawSingleTile(pt.X, pt.Y, true, Vector2.Zero);
 				TileMerger.DrawMerge(spriteBatch, pt.X, pt.Y, Color.Black, Vector2.Zero, TileID.Sand);
 			}
 		});
@@ -64,8 +65,6 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 		}
 	}
 
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
-
 	public void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(10).AddIngredient(ItemID.Amber).AddTile(TileID.WorkBenches).Register();
@@ -78,15 +77,14 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = false;
 		Main.tileLighted[Type] = true;
+
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
 		AddMapEntry(Color.Orange);
-		this.Merge(ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>(), TileID.Sand);
+		TileMethods.Merge(Type, ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>(), TileID.Sand);
 
 		DustType = DustID.GemAmber;
 		MineResist = 0.5f;
-
-		this.AutoItem().ResearchUnlockCount = 100;
 	}
 
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak) => TileFraming.Gemspark(i, j, resetFrame);
@@ -104,13 +102,13 @@ public class PolishedAmber : ModTile, IAutoloadTileItem
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out _))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out _))
 			return false;
 
 		Overlay.AddToGrid(i, j);
 
-		TileExtensions.DrawSingleTile(i, j, true, TileExtensions.TileOffset);
-		TileMerger.DrawMerge(spriteBatch, i, j, color, TileExtensions.TileOffset, TileID.Sand);
+		TileMethods.DrawSingleTile(i, j, true, TileMethods.TileOffset);
+		TileMerger.DrawMerge(spriteBatch, i, j, color, TileMethods.TileOffset, TileID.Sand);
 		return false;
 	}
 }

@@ -1,8 +1,10 @@
-﻿using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
+﻿using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
+[FromClassic("ScarabBow")]
 public class AdornedBow : ModItem
 {
 	public readonly record struct PrismaticPalette
@@ -41,7 +43,7 @@ public class AdornedBow : ModItem
 		Item.noUseGraphic = true;
 		Item.DamageType = DamageClass.Ranged;
 		Item.useTurn = false;
-		Item.autoReuse = true;
+		Item.autoReuse = false;
 		Item.rare = ItemRarityID.Green;
 		Item.value = Item.sellPrice(gold: 2);
 		Item.useStyle = ItemUseStyleID.Swing;

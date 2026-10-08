@@ -1,18 +1,18 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class ZigguratTikiTorch : ModTile, IAutoloadTileItem
+public class ZigguratTikiTorch : ModTile, ILoadItem
 {
 	public const int FrameWidth = 18;
 
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 5;
+	public void StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 5;
 
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(AutoContent.ItemType<RedSandstoneBrick>(), 4).AddIngredient(ItemID.Torch, 1).Register();
 
@@ -44,7 +44,7 @@ public class ZigguratTikiTorch : ModTile, IAutoloadTileItem
 
 	public override bool RightClick(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		SoundEngine.PlaySound(SoundID.Mech, new Vector2(i, j).ToWorldCoordinates());
 		HitWire(i, j);
@@ -127,7 +127,7 @@ public class ZigguratTikiTorch : ModTile, IAutoloadTileItem
 		{
 			Texture2D texture = TextureAssets.Flames[0].Value;
 			Rectangle source = new(0, 0, 22, 22);
-			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 4) - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 4) - Main.screenPosition + TileMethods.TileOffset;
 
 			spriteBatch.Draw(texture, position, source, Color.White.Additive(50), 0, source.Size() / 2, 1.3f, SpriteEffects.None, 0);
 
@@ -139,7 +139,7 @@ public class ZigguratTikiTorch : ModTile, IAutoloadTileItem
 		{
 			Texture2D texture = ZigguratTorch.Flame.Value;
 			var source = texture.Frame(1, 5, 0, frame, 0, -2);
-			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 2) - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 2) - Main.screenPosition + TileMethods.TileOffset;
 
 			spriteBatch.Draw(texture, position, source, color, 0, new Vector2(source.Width / 2, source.Height), 1, SpriteEffects.None, 0);
 		}

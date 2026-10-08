@@ -1,8 +1,9 @@
 using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;
 
-public class SaltGlass : ModTile, IAutoloadTileItem
+public class SaltGlass : ModTile, ILoadItem
 {
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddRecipeGroup("Salt", 2).AddTile(TileID.Furnaces).Register();
 

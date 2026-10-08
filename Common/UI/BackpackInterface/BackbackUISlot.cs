@@ -108,9 +108,9 @@ public class BackpackUISlot : UIElement
 		else if (vanity)
 		{
 			if (currentItem.IsAir)
-				return plr.HeldItem.ModItem is BackpackItem vanityPack && !vanityPack.items.Any(x => !x.IsAir);
+				return plr.HeldItem.ModItem is BackpackItem vanityPack && !vanityPack.Items.Any(x => !x.IsAir);
 		}
-		else if (!currentItem.IsAir && currentItem.ModItem is BackpackItem backpack && backpack.items.Any(x => !x.IsAir))
+		else if (!currentItem.IsAir && currentItem.ModItem is BackpackItem backpack && backpack.Items.Any(x => !x.IsAir))
 		{
 			if (currentItem.TryGetGlobalItem(out BackpackGlobal anim))
 				anim.StartAnimation();
@@ -149,7 +149,7 @@ public class BackpackUISlot : UIElement
 				SoundEngine.PlaySound(SoundID.MenuTick);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
-					new BackpackPlayerData(mPlayer.packVisible, (byte)Main.myPlayer).Send();
+					new BackpackPlayerData(mPlayer.packVisible, mPlayer.packPickup, (byte)Main.myPlayer).Send();
 			}
 
 			Main.HoverItem = new Item();

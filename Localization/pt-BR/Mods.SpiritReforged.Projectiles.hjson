@@ -73,7 +73,6 @@ CrookLocustGore.DisplayName: Restos mortais do Gafanhoto
 RoyalKhopeshThrown.DisplayName: Lançamento Real de Khopesh
 FloatingGem.DisplayName: Gema Flutuante
 BeamOLight.DisplayName: Luz
-ScarabPetProjectile.DisplayName: Mini Escarabeus
 SandShockwavePillar.DisplayName: Onda de choque do Pilar de Arenito
 SandballProjectile.DisplayName: Bola de Areia
 BabyAntlionProjectile.DisplayName: Projétil da Pequena Formiga-Leão
@@ -95,3 +94,10 @@ SoilBallProjectile.DisplayName: Bola de Tralha
 // SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 // SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 // SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
+Firefall.DisplayName: Chuva de Fogo
+WindBurstProjectile.DisplayName: Rajada de Vento
+SingularCollapse.DisplayName: Colapso
+ShockGlyphLightningBolt.DisplayName: Glifo de Choque Raio
+MariglowSeed.DisplayName: Sementes de Calêndula Solar
+RageHit.DisplayName: Ataque Raivoso
+MirrorReturnPortal.DisplayName: Portal do Espelho do Retorno

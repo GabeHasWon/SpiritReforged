@@ -1,6 +1,6 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 
@@ -37,9 +37,9 @@ public class ButterflyCritter : ModNPC
 		NPC.defense = 0;
 		NPC.lifeMax = 1;
 		NPC.dontCountMe = true;
-		NPC.DeathSound = SoundID.NPCDeath6 with { Pitch = .2f };
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 64;
+		NPC.DeathSound = SoundID.NPCDeath6 with { Pitch = 0.2f };
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.Firefly;
 		NPC.npcSlots = 0;
 		NPC.noGravity = true;
 		NPC.catchItem = ItemID.SilverCoin; //Allows bug nets to interact with this NPC, even though the player is never allowed to catch it
@@ -203,13 +203,13 @@ public class ButterflyCritter : ModNPC
 			var coord = new Point(spawnInfo.SpawnTileX, spawnInfo.SpawnTileY);
 			foreach (var biome in MicrobiomeSystem.Microbiomes)
 			{
-				if (biome is not ButterflyShrineBiome e)
+				if (biome is not ButterflyMicropass.ButterflyShrineBiome e)
 					continue;
 
-				if (e.Rectangle.Contains(coord))
+				if (e.Area.Contains(coord))
 					return 0.8f; //Commonly spawn butterflies in the zone
 
-				if (coord.Y < e.Position.Y && Math.Abs(coord.X - e.Position.X) < e.Rectangle.Width)
+				if (coord.Y < e.Position.Y && Math.Abs(coord.X - e.Position.X) < e.Area.Width)
 					return Main.dayTime ? 0.047f : 0.08f; //Rarely spawn butterflies anywhere above the zone
 			}
 		}

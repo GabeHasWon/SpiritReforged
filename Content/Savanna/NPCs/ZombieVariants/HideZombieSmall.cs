@@ -14,8 +14,8 @@ public class HideZombieSmall : HideZombieBig
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath2;
 		NPC.value = 46f;
-		NPC.knockBackResist = .52f;
-		NPC.aiStyle = 3;
+		NPC.knockBackResist = 0.52f;
+		NPC.aiStyle = NPCAIStyleID.Fighter;
 		AIType = NPCID.Zombie;
 		AnimationType = NPCID.Zombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);

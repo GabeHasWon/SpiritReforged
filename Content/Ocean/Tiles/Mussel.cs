@@ -1,14 +1,13 @@
-using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Tiles;
 
-public class Mussel : ModTile, IAutoloadTileItem
+public class Mussel : ModTile, ILoadItem
 {
 	public const int StyleRange = 3;
 
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
+	public void SetStaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 30;
 
 	public void SetItemDefaults(ModItem item)
 	{

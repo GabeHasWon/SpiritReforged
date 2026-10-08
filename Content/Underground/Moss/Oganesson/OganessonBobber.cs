@@ -1,10 +1,10 @@
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 
 namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
 [AutoloadGlowmask("255,255,255")]
-public class OganessonBobber : EquippableItem
+public class OganessonBobber : ModItem, IFlagged
 {
 	public override void SetDefaults()
 	{

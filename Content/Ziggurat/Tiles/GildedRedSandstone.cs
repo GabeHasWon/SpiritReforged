@@ -1,12 +1,11 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class GildedRedSandstone : ModTile, IAutoloadTileItem
+public class GildedRedSandstone : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(25).AddIngredient(ItemID.Sandstone, 20).AddRecipeGroup("GoldBars").AddTile(TileID.Anvils).Register();
 
 	public override void SetStaticDefaults()
@@ -14,7 +13,7 @@ public class GildedRedSandstone : ModTile, IAutoloadTileItem
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
-		this.Merge(TileID.Sandstone, TileID.Sand, TileID.HardenedSand, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());
+		TileMethods.Merge(Type, TileID.Sandstone, TileID.Sand, TileID.HardenedSand, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>());
 		AddMapEntry(new Color(174, 74, 48));
 
 		DustType = DustID.DynastyShingle_Red;

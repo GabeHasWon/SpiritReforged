@@ -7,6 +7,7 @@ using SpiritReforged.Content.Ziggurat.NPCs.Mummy;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
@@ -75,24 +76,25 @@ public class DustyTomb : ModTile
 
 	public static void OpenUp(int i, int j, bool fromNet)
 	{
-		const int fullWidth = 18 * 3;
+		const int full_width = 18 * 3;
+
 		Point16 origin = new(i, j);
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		Tile tile = Main.tile[i, j];
 
-		if (tile.TileFrameX % (fullWidth * 2) == 0) //Closed styles
+		if (tile.TileFrameX % (full_width * 2) == 0) //Closed styles
 		{
 			for (int x = i; x < i + 3; x++)
 			{
 				for (int y = j; y < j + 2; y++)
-					Main.tile[x, y].TileFrameX += fullWidth;
+					Main.tile[x, y].TileFrameX += full_width;
 			}
 
 			if (!fromNet && Main.netMode == NetmodeID.MultiplayerClient)
 				new TombSpawnData(new(i, j)).Send();
 
-			Rectangle topArea = new(i * 16, j * 16, fullWidth, 2);
+			Rectangle topArea = new(i * 16, j * 16, full_width, 2);
 
 			if (!Main.dedServ)
 			{

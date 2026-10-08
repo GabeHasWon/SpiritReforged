@@ -8,6 +8,7 @@ using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.Visuals;
@@ -17,11 +18,11 @@ using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
-using static SpiritReforged.Content.Ziggurat.Tiles.ScarabAltar;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
+public class ScarabAltar : EntityTile<ScarabAltarEntity>, ILoadItem
 {
 	public sealed class FloatingGem : ModProjectile
 	{
@@ -43,6 +44,8 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 		private Vector2 _origin;
 		private Color[] _sampleColors;
+
+		public override void SetStaticDefaults() => HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
 
 		public override void SetDefaults()
 		{
@@ -112,7 +115,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 			Texture2D texture = GetItemTexture();
 			Vector2 center = Projectile.Center - Main.screenPosition;
 
-			DrawHelpers.DrawOutline(Main.spriteBatch, texture, center, default, 
+			Graphics.DrawOutline(Main.spriteBatch, texture, center, default, 
 				(offset) => Main.EntitySpriteDraw(texture, center + offset, null, Color.White.Additive(), Projectile.rotation, texture.Size() / 2, Projectile.scale, default));
 
 			Main.EntitySpriteDraw(texture, center, null, Lighting.GetColor(Projectile.Center.ToTileCoordinates()), Projectile.rotation, texture.Size() / 2, Projectile.scale, default);
@@ -155,7 +158,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 	internal static int FablesDeadStormlionLarvaType = -1;
 	internal static int FablesStormlionBucketType = -1;
 
-	void IAutoloadTileItem.AddItemRecipes(ModItem item)
+	void ILoadItem.AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe().AddIngredient(ModContent.GetInstance<RedSandstoneBrick>().AutoItemType(), 15).AddIngredient(ModContent.GetInstance<CarvedLapis>().AutoItemType(), 5)
 			.AddRecipeGroup("GoldBars", 4).AddTile(TileID.Anvils).Register();
@@ -219,13 +222,23 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, IAutoloadTileItem
 
 	public override void MouseOver(int i, int j)
 	{
+		Player player = Main.LocalPlayer;
+
 		if (!CanReceiveOfferings)
+		{
+			if (!Main.dayTime)
+			{
+				player.noThrow = 2;
+				player.cursorItemIconEnabled = true;
+				player.cursorItemIconID = ModContent.ItemType<NotSunItemIcon>();
+			}
+
 			return;
+		}
 
 		if (_hoverTypes == null)
 			InitializeHoverTypes();
 
-		Player player = Main.LocalPlayer;
 		player.noThrow = 2;
 		player.cursorItemIconEnabled = true;
 		player.cursorItemIconID = FindSacrifice(Main.LocalPlayer, out Item result) ? result.type : _hoverTypes[(int)Math.Abs(Main.timeForVisualEffects / 90) % _hoverTypes.Length];
@@ -425,14 +438,14 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 	{
 		get
 		{
-			int projectileType = ModContent.ProjectileType<FloatingGem>();
+			int projectileType = ModContent.ProjectileType<ScarabAltar.FloatingGem>();
 			int value = consumableCount + Main.LocalPlayer.ownedProjectileCounts[projectileType];
 
 			if (Main.LocalPlayer.ownedProjectileCounts[projectileType] > 0)
 			{
 				foreach (Projectile projectile in Main.ActiveProjectiles)
 				{
-					if (projectile.ModProjectile is FloatingGem floatingGem && FablesStormlionItems[floatingGem.ItemType])
+					if (projectile.ModProjectile is ScarabAltar.FloatingGem floatingGem && ScarabAltar.FablesStormlionItems[floatingGem.ItemType])
 						value += FablesSecretNumber;
 				}
 			}
@@ -452,7 +465,7 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		var d = TileObjectData.GetTileData(Main.tile[i, j]);
 		var size = (d is null) ? new Point(1, 1) : new Point(d.Width, d.Height);
 

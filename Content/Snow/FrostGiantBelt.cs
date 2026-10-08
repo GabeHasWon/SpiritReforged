@@ -1,4 +1,4 @@
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
@@ -7,7 +7,7 @@ using Terraria.GameContent.ItemDropRules;
 namespace SpiritReforged.Content.Snow;
 
 [AutoloadEquip(EquipType.Waist)]
-public class FrostGiantBelt : EquippableItem
+public class FrostGiantBelt : ModItem, IFlagged
 {
 	/// <summary> Checks if <paramref name="player"/> is charging a club projectile. </summary>
 	public static bool ClubCharging(Player player)
@@ -19,7 +19,11 @@ public class FrostGiantBelt : EquippableItem
 		return false;
 	}
 
-	public override void SetStaticDefaults() => NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.UndeadViking), ItemDropRule.Common(Type, 15)));
+	public override void SetStaticDefaults()
+	{
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.UndeadViking), ItemDropRule.Common(Type, 15)));
+		NPCLootDatabase.AddLoot(new(NPCLootDatabase.MatchId(NPCID.ArmoredViking), ItemDropRule.Common(Type, 12)));
+	}
 
 	public override void SetDefaults()
 	{
@@ -36,7 +40,7 @@ internal class FrostGiantPlayer : ModPlayer
 
 	public override void UpdateEquips()
 	{
-		if (Player.HasEquip<FrostGiantBelt>())
+		if (Player.HasFlag<FrostGiantBelt>())
 		{
 			if(FrostGiantBelt.ClubCharging(Player))
 			{
@@ -57,7 +61,7 @@ internal class FrostGiantPlayer : ModPlayer
 
 	public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 	{
-		if (Player.HasEquip<FrostGiantBelt>() && FrostGiantBelt.ClubCharging(Player))
+		if (Player.HasFlag<FrostGiantBelt>() && FrostGiantBelt.ClubCharging(Player))
 			modifiers.Knockback *= 0.5f;
 	}
 }

@@ -1,6 +1,7 @@
 ﻿using Humanizer;
 using MonoMod.Utils;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
@@ -28,6 +29,7 @@ public class WorldFrog : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 10;
+		NPCHeadLayer.Types.Add(Type);
 		NPCID.Sets.NoTownNPCHappiness[Type] = true;
 
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new NPCID.Sets.NPCBestiaryDrawModifiers()
@@ -152,7 +154,7 @@ public class WorldFrog : ModNPC
 		var texture = TextureAssets.Npc[Type].Value;
 		var effects = (NPC.spriteDirection == 1) ? SpriteEffects.FlipHorizontally : default;
 
-		var frame = NPC.frame with { Width = NPC.frame.Width - 2, Height = NPC.frame.Height - 2 };
+		var frame = NPC.frame with { X = NPC.frame.X + 4, Width = 36, Height = 38 };
 		var origin = new Vector2(frame.Width / 2, frame.Height);
 		var position = NPC.Bottom - screenPos + new Vector2(0, NPC.gfxOffY + 2);
 
@@ -193,7 +195,7 @@ internal class UpdaterSystem : ModSystem
 	{
 		orig(playerIndex);
 
-		if (Main.netMode == NetmodeID.SinglePlayer && Instance.AnyTask()) //Only spawn in singleplayer to avoid potential complications
+		if (Main.netMode == NetmodeID.SinglePlayer && Instance.AnyTask() && !SubworldUtils.InSubworld()) //Only spawn in singleplayer to avoid potential complications
 			NPC.NewNPC(new EntitySource_SpawnNPC(), Main.spawnTileX * 16, Main.spawnTileY * 16, ModContent.NPCType<WorldFrog>());
 	}
 
@@ -288,5 +290,28 @@ internal class UpdaterSystem : ModSystem
 		WorldMethods.Generate(PotsMicropass.CreateBoulder, (int)(PotsMicropass.WorldMultiplier * 7), out _);
 		WorldMethods.Generate(PotsMicropass.CreatePicnic, (int)(PotsMicropass.WorldMultiplier * 2), out _, WickerBaskets.GetPicnicArea());
 		report = "CavesAndClubs";
+	}
+
+	[Ver("0.2.2")]
+	private static void Spellbound(out string report)
+	{
+		WorldMethods.Generate(PotsMicropass.CreateWax, (int)(PotsMicropass.WorldMultiplier * 7), out _);
+
+		float worldScale = Main.maxTilesX / WorldGen.WorldSizeSmallX;
+		CaveDecorMicropass.CreateMirrors((int)(worldScale * 8f));
+		WorldMethods.Generate(CreateEnchantedWorkbench, (int)(worldScale * 8f), out _, new Rectangle(20, (int)Main.worldSurface, Main.maxTilesX - 40, Main.maxTilesY - (int)Main.worldSurface - 20));
+
+		report = "Spellbound";
+
+		static bool CreateEnchantedWorkbench(int x, int y)
+		{
+			WorldMethods.FindGround(x, ref y);
+
+			if (Main.tile[x, y - 1].CheckingLiquid)
+				return false;
+
+			y--;
+			return Placer.Check(x, y, ModContent.TileType<EnchantedWorkbench>()).IsClear().Place().success;
+		}
 	}
 }

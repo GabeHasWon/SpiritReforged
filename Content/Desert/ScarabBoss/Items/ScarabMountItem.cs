@@ -1,10 +1,12 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.MountCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
+[FromClassic("ScarabPendant")]
 internal class ScarabMountItem : ModItem
 {
 	public class ScarabMountBuff : ModBuff
@@ -119,7 +121,8 @@ internal class ScarabMountItem : ModItem
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (!npc.isLikeATownNPC && !player.npcTypeNoAggro[npc.type] && (!npc.friendly || npc.lifeMax == 5) && npc.Hitbox.Intersects(hitbox) && plr.hitsPerNPC[npc.whoAmI] == 0)
+				if ((npc.CanBeChasedBy() || npc.type == NPCID.TargetDummy || npc.lifeMax == 5) && !player.npcTypeNoAggro[npc.type] && npc.Hitbox.Intersects(hitbox) 
+					&& plr.hitsPerNPC[npc.whoAmI] == 0 && !npc.immortal && !npc.dontTakeDamage)
 				{
 					plr.hitsPerNPC[npc.whoAmI] = 80;
 					npc.SimpleStrikeNPC(30, Math.Sign(player.velocity.X), false, 12, damageVariation: true);
@@ -207,7 +210,7 @@ internal class ScarabMountItem : ModItem
 		}
 	}
 
-	private static readonly Asset<Texture2D> Saddle = DrawHelpers.RequestLocal(typeof(ScarabMount), "ScarabMount_Saddle", false);
+	private static readonly Asset<Texture2D> Saddle = Graphics.Request<Texture2D>("ScarabMount_Saddle");
 
 	public override void SetDefaults()
 	{

@@ -95,7 +95,7 @@ public class VanillaNPCDialogue : GlobalNPC
 			SetChat(ref chat, player.ZoneBeach && Main.rand.NextBool(3), Language.GetTextValue(CommonPath + "Guide.Kelp"));
 		}
 
-		bool hasBoomShroom = player.HasItem(ModContent.ItemType<BoomShroom>()) || player.HasEquip<BoomShroom>() && Main.rand.NextBool(4);
+		bool hasBoomShroom = player.HasItem(ModContent.ItemType<BoomShroom>()) || player.HasFlag<BoomShroom>() && Main.rand.NextBool(4);
 		SetChat(ref chat, npc.type == NPCID.Demolitionist && hasBoomShroom, Language.GetTextValue(CommonPath + "Demolitionist.HasBoomshroom"));
 	}
 

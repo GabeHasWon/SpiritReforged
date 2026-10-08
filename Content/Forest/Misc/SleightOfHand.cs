@@ -27,7 +27,7 @@ public class SleightOfHand : ModItem
 		private int _timeLeft;
 
 		#region handling
-		private static readonly Asset<Texture2D> PopupTexture = DrawHelpers.RequestLocal(typeof(SleightOfHand), "SleightOfHand_Popup", false);
+		private static readonly Asset<Texture2D> PopupTexture = Graphics.Request<Texture2D>("SleightOfHand_Popup");
 		public static readonly List<Indicator> Indicators = [];
 
 		public void Load(Mod mod) => On_Main.DrawInterface_14_EntityHealthBars += static (orig, self) =>
@@ -70,12 +70,12 @@ public class SleightOfHand : ModItem
 			var currentSource = item.Frame();
 			ItemSlot.DrawItem_GetColorAndScale(new Item(_itemType), 1, ref currentWhite, 20, ref currentSource, out _, out float itemScale);
 
-			DrawHelpers.DrawOutline(sb, back, center, Color.White, (offset) => sb.Draw(back, center + offset, null, _primaryColor.Additive() * Progress, rotation, back.Size() / 2, squashScale, default, 0));
+			Graphics.DrawOutline(sb, back, center, Color.White, (offset) => sb.Draw(back, center + offset, null, _primaryColor.Additive() * Progress, rotation, back.Size() / 2, squashScale, default, 0));
 
 			sb.Draw(back, center, null, Color.Lerp(Color.Gray, Color.White, Progress) * EaseFunction.EaseCubicOut.Ease(Progress), rotation, back.Size() / 2, squashScale, default, 0);
 			sb.Draw(item, center, null, Color.White * EaseFunction.EaseCubicOut.Ease(Progress), rotation, item.Size() / 2, squashScale * itemScale, default, 0);
 
-			Texture2D pulse = TextureAssets.Extra[98].Value;
+			Texture2D pulse = TextureAssets.Extra[ExtrasID.SharpTears].Value;
 			Texture2D wave = TextureAssets.GlowMask[239].Value;
 
 			sb.Draw(wave, center, null, _primaryColor.Additive() * EaseFunction.EaseCircularIn.Ease(Progress) * 0.5f, MathHelper.PiOver2, wave.Size() / 2, 1f - Progress, default, 0);

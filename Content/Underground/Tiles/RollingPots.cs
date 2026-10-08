@@ -54,6 +54,8 @@ public class RollingPots : PotTile, ILootable
 		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), Vector2.Zero, ModContent.ProjectileType<PotBoulder>(), damage, 5, ai0: style);
 	}
 
+	public override bool IsTileDangerous(int i, int j, Player player) => true;
+
 	public void AddLoot(ILoot loot)
 	{
 		if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out var dele))

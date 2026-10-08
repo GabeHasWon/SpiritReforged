@@ -11,7 +11,7 @@ public class BronzeGrate : Trellis, IAutoloadUnsafeWall
 
 	public override void AddItemRecipes(ModItem item)
 	{
-		int plating = AutoContent.ItemType<BronzePlating>();
+		int plating = AutoContent.ItemType<BronzeGrateBlock>();
 		int type = item.Type;
 
 		item.CreateRecipe(4).AddIngredient(plating).AddTile(TileID.WorkBenches).Register();

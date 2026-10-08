@@ -2,7 +2,6 @@
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.DustStorm;
 using SpiritReforged.Content.Savanna.Items.Food;
@@ -26,7 +25,8 @@ public class AcaciaTree : CustomTree, ISetConversion
 		}
 	}
 
-	public override int TreeHeight => WorldGen.genRand.Next(8, 16);
+	public override int TreeHeight => Main.getGoodWorld ? WorldGen.genRand.Next(8, 30) : WorldGen.genRand.Next(8, 16);
+	public override HashSet<SegmentType> ShakeableTreetops => [SegmentType.Default];
 
 	public ConversionHandler.Set ConversionSet => new()
 	{
@@ -40,7 +40,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 	public static float GetSway(int i, int j, double factor = 0)
 	{
 		if (factor == 0)
-			factor = TileSwaySystem.TreeWindCounter;
+			factor = WindTileRenderer.TreeWindCounter;
 
 		return Main.instance.TilesRenderer.GetWindCycle(i, j, factor) * 0.4f;
 	}
@@ -117,15 +117,18 @@ public class AcaciaTree : CustomTree, ISetConversion
 
 		var position = new Vector2(i, j - 3) * 16;
 		int dropType = (int)drop;
-		if (dropType > ItemID.None)
-			Item.NewItem(null, new Rectangle((int)position.X, (int)position.Y, 16, 16), dropType);
 
-		GrowEffects(i, j, true);
+		if (dropType == ModContent.NPCType<Sparrow>())
+			NPC.NewNPC(new EntitySource_ShakeTree(i, j), i * 16, j * 16, dropType);
+		else if (dropType > ItemID.None)
+			Item.NewItem(new EntitySource_ShakeTree(i, j), new Rectangle((int)position.X, (int)position.Y, 16, 16), dropType);
+
+		GrowEffects(i, j, true, ModContent.GoreType<AcaciaTreeLeaf>());
 	}
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
@@ -223,7 +226,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 			}
 
 			for (int g = 0; g < loops; g++)
-				Gore.NewGorePerfect(new EntitySource_TileBreak(i, j), center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(range), 
+				Gore.NewGorePerfect(new EntitySource_TileBreak(i, j), center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(range) * new Vector2(2, 0.5f) - new Vector2(0, 50), 
 					Main.rand.NextVector2Unit(), goreType, 0.7f + Main.rand.NextFloat() * 0.6f);
 		}
 	}
@@ -311,7 +314,7 @@ public class AcaciaTreeHallow : AcaciaTree
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);

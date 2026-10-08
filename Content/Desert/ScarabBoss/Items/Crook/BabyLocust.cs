@@ -9,7 +9,7 @@ public class BabyLocust(int Lifetime, int ParentWhoAmI, bool ParentingNPC = true
 
 	public float AnimationSpeed => lifetime * 0.125f * (2 - scale);
 
-	public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal<BabyLocust>("CrookBabyLocust", false);
+	public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("CrookBabyLocust");
 
 	public bool drawBehind;
 	public bool parentingNPC = ParentingNPC;

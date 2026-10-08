@@ -6,7 +6,7 @@ internal class LeatherCloakPlayer : ModPlayer
 {
 	public override void PostUpdateRunSpeeds()
 	{
-		if (Player.HasEquip<LeatherCloakItem>())
+		if (Player.HasFlag<LeatherCloakItem>())
 		{
 			Player.runAcceleration *= 1.15f;
 			Player.maxRunSpeed += 0.1f;

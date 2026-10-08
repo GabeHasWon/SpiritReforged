@@ -1,13 +1,11 @@
 using SpiritReforged.Common;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class RuinedSandstonePillar : ModTile, IAutoloadTileItem
+public class RuinedSandstonePillar : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
-
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddIngredient(ItemID.SmoothSandstone).AddTile(TileID.Sawmill).Register();
 
 	public override void SetStaticDefaults()

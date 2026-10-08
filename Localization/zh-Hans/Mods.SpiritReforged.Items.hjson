@@ -76,7 +76,7 @@ TubewormItem: {
 }
 
 CascadeChestplate: {
-	DisplayName: 珊瑚猎人胸甲
+	DisplayName: 珊瑚猎人护胸
 	Tooltip: 50%击退抗性
 }
 
@@ -90,8 +90,8 @@ CascadeLeggings: {
 	Tooltip: 在水中时增加15%移动速度
 }
 
-JellyfishStaff: {
-	DisplayName: 水母法杖
+JellyfishJamJar: {
+	DisplayName: 水母果酱罐
 	Tooltip: 召唤一只小水母为你而战！
 }
 
@@ -99,7 +99,7 @@ Lifesaver: {
 	DisplayName: 救生圈
 	Tooltip:
 		'''
-		召唤可骑行的蝠鲼坐骑
+		召唤一只可骑乘的蝠鲼坐骑
 		蝠鲼不能在陆地上移动，但可以漂浮在液体上
 		'''
 }
@@ -236,7 +236,7 @@ CoconutMilk: {
 }
 
 DiverBody: {
-	DisplayName: 锈蚀潜渊者胸甲
+	DisplayName: 锈蚀潜渊者板甲
 	Tooltip: ""
 }
 
@@ -296,7 +296,7 @@ SteamedMussels: {
 
 JellyCandle: {
 	DisplayName: 水母蜡烛
-	Tooltip: 召唤漂浮水母跟着你
+	Tooltip: 召唤一只漂浮水母跟着你
 }
 
 SmallDriftwoodItem: {
@@ -315,7 +315,7 @@ LargeDriftwoodItem: {
 }
 
 DriftwoodChestplate: {
-	DisplayName: 浮木胸甲
+	DisplayName: 浮木护胸
 	Tooltip: ""
 }
 
@@ -325,7 +325,7 @@ DriftwoodHelmet: {
 }
 
 DriftwoodLeggings: {
-	DisplayName: 浮木护胫
+	DisplayName: 浮木护腿
 	Tooltip: ""
 }
 
@@ -392,7 +392,7 @@ MessageBottle: {
 	DisplayName: 瓶中信
 	Tooltip:
 		'''
-		召唤木筏坐骑
+		召唤一个木筏坐骑
 		在木筏上时增加渔力
 		'''
 }
@@ -430,7 +430,7 @@ KoiTotem: {
 
 FairyWhistle: {
 	DisplayName: 仙灵哨
-	Tooltip: 召唤保护仙灵环绕在你的身边
+	Tooltip: 召唤一个保护仙灵环绕在你的身边
 }
 
 TermiteItem: {
@@ -440,7 +440,7 @@ TermiteItem: {
 
 StarPowder: {
 	DisplayName: 星之尘
-	Tooltip: 扔在草地上，用星光为草地注能！
+	Tooltip: 扔在草地上，用星光灌注草地！
 }
 
 TermiteJar: {
@@ -452,7 +452,7 @@ ButterflyStaff: {
 	DisplayName: 缥缈幻蝶杖
 	Tooltip:
 		'''
-		召唤魔法幻蝶为你而战
+		召唤一只魔法幻蝶为你而战
 		“由完美的樱花形成”
 		'''
 }
@@ -469,7 +469,7 @@ PoolNoodle: {
 
 ToucaneItem: {
 	DisplayName: 巨嘴鸟手杖
-	Tooltip: 召唤愤怒的巨嘴鸟为你而战
+	Tooltip: 召唤一只愤怒的巨嘴鸟为你而战
 }
 
 QuenchPotion: {
@@ -494,12 +494,12 @@ LivingBaobabLeafWand: {
 
 LivingBaobabWand: {
 	DisplayName: 活面包树魔棒
-	Tooltip: 放置活面包树
+	Tooltip: 放置活面包木
 }
 
 WrithingSticks: {
 	DisplayName: 扭形枝
-	Tooltip: 召唤友善的风滚草跟着你
+	Tooltip: 召唤一个友善的风滚草跟着你
 }
 
 BaobabFruit: {
@@ -1017,11 +1017,11 @@ SparrowItem: {
 
 Blunderbuss: {
 	DisplayName: 喇叭型前膛枪
-	Tooltip: 发射大量子弹
+	Tooltip: 发射一大片子弹
 }
 
 SafekeeperRing: {
-	DisplayName: 保管员戒指
+	DisplayName: 守护者之戒
 	Tooltip:
 		'''
 		小幅度增加对亡灵生物的伤害
@@ -1042,7 +1042,7 @@ LeatherLegs: {
 }
 
 LeatherPlate: {
-	DisplayName: 神射手裤
+	DisplayName: 神射手板甲
 	Tooltip: ""
 }
 
@@ -1218,7 +1218,7 @@ DyeCrateItem: {
 	Tooltip:
 		'''
 		{$CommonItemTooltip.RightClickToOpen}
-		“闻起来...居然这么好闻！”
+		“闻起来……居然这么好闻！”
 		'''
 }
 
@@ -1308,7 +1308,7 @@ CloudstalkBoxItem: {
 OceanSlimeBannerItem.DisplayName: 椰子史莱姆旗
 
 OceanDepthsBoxItem: {
-	DisplayName: 八音盒（海洋深处）
+	DisplayName: 八音盒（深海）
 	Tooltip: ""
 }
 
@@ -1412,7 +1412,7 @@ MudBombSticky: {
 }
 
 HideTunic: {
-	DisplayName: 隐匿束腰外衣
+	DisplayName: 皮制束腰外衣
 	Tooltip: 增加25%近战大小和击退
 }
 
@@ -1620,7 +1620,7 @@ BombCannon: {
 	Tooltip:
 		'''
 		使用炸弹作为弹药
-		大炮发射的炸弹不会破坏五块
+		大炮发射的炸弹不会破坏物块
 		“一项开创性的发明”
 		'''
 }
@@ -1761,7 +1761,7 @@ Bowlder: {
 }
 
 BoStaff: {
-	DisplayName: 长棍法杖
+	DisplayName: 长棍
 	Tooltip: 连续命中积累连击
 }
 
@@ -1840,7 +1840,7 @@ FlaskRed: {
 }
 
 TitleMusicBoxItem: {
-	DisplayName: 八音盒（魂灵主界面）
+	DisplayName: 八音盒（魂灵标题）
 	Tooltip: ""
 }
 
@@ -1988,7 +1988,7 @@ SharpshooterGlove: {
 }
 
 BonsaiPot: {
-	DisplayName: 盆栽用盆
+	DisplayName: 盆栽盆
 	Tooltip: 用于制作装饰性盆栽
 }
 
@@ -2023,12 +2023,12 @@ EarthshakerWarmask: {
 }
 
 GraniteBody: {
-	DisplayName: 动能胸甲
+	DisplayName: 动能护胸
 	Tooltip: 小幅度增加跳跃高度
 }
 
 GraniteHead: {
-	DisplayName: 动能面甲
+	DisplayName: 动能面罩
 	Tooltip: "{$Items.GraniteBody.Tooltip}"
 }
 
@@ -2053,10 +2053,10 @@ FlaskOfFrost: {
 }
 
 HardlightVisor: {
-	DisplayName: 强光面甲
+	DisplayName: 强光面罩
 	Tooltip: ""
-	AltDisplayName: 硬光面甲
-	AltTooltip: “请勿与强光面甲混淆”
+	AltDisplayName: 硬光面罩
+	AltTooltip: “请勿与强光面罩混淆”
 }
 
 PolishedAmberItem: {
@@ -2126,7 +2126,7 @@ SilkSirwal: {
 }
 
 SilkTop: {
-	DisplayName: 太阳舞者上衣
+	DisplayName: 太阳舞者上装
 	Tooltip: 增加7%魔法伤害
 }
 
@@ -2654,7 +2654,7 @@ TinyDragon: {
 	DisplayName: 小龙
 	Tooltip:
 		'''
-		召唤小龙跟着你
+		召唤一只小龙跟着你
 		“最后的同类”
 		'''
 }
@@ -2785,12 +2785,12 @@ SaltCrateHardmode: {
 }
 
 SaltCrateRestored: {
-	DisplayName: 修复的盐腌匣
+	DisplayName: 复原的盐腌匣
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SaltCrateHardmodeRestored: {
-	DisplayName: 修复的盐水匣
+	DisplayName: 复原的盐水匣
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
@@ -2867,7 +2867,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: 锯齿爪
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -2926,7 +2926,7 @@ BedouinCowl: {
 }
 
 BedouinLeggings: {
-	DisplayName: 贝都因人护胫
+	DisplayName: 贝都因人护腿
 	Tooltip: 增加10%移动速度
 }
 
@@ -3065,7 +3065,7 @@ GooeyHiveItem: {
 }
 
 ScarabMountItem: {
-	DisplayName: 忍冬花蕾
+	DisplayName: 忍冬花芽
 	Tooltip: 召唤一只鼠妇坐骑
 }
 
@@ -3151,6 +3151,383 @@ SaltGravestoneItem: {
 
 SaltGraveMarkerItem: {
 	DisplayName: 盐墓石碑
+	Tooltip: ""
+}
+
+NotSunItemIcon: {
+	DisplayName: 非日图标
+	Tooltip: ""
+}
+
+ChromaticWax: {
+	DisplayName: 彩蜡
+	Tooltip: 可用于兑换魔法雕文
+	Gain: 被附魔的武器将获得：[c/{0}:{1}]
+	Target: 只能附魔于武器上
+	RightClick: 手持此雕文并右键你想要附魔的武器
+}
+
+BlazeGlyph: {
+	DisplayName: 炽焰雕文
+	Tooltip:
+		'''
+		造成伤害时会将你点燃
+		基于损失的生命值，至多可增加40%伤害和20%暴击率
+		'''
+	Effect: 点燃
+	Death: "{0}被怒火吞噬了……"
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		// Fem: Feminine
+		// Neutral: Neutral
+		// Plural: Plural
+	}
+}
+
+RadiantGlyph: {
+	DisplayName: 辐光雕文
+	Tooltip: 不造成伤害时会积蓄神圣能量，强化你的下次攻击
+	Effect: 辐光
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+StormGlyph: {
+	DisplayName: 风暴雕文
+	Tooltip:
+		'''
+		只能附魔于发射弹幕的武器上
+		增加弹幕速度
+		弹幕偶尔会生成强力烈风
+		'''
+	Effect: 风涌
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+MoonlightGlyph: {
+	DisplayName: 月光雕文
+	Tooltip:
+		'''
+		将20%的物品伤害转化为魔法伤害
+		伤害会随着魔力值的降低而增加
+		伤害敌人会汲取魔力
+		'''
+	Effect: 耀目
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+RotGlyph: {
+	DisplayName: 腐烂雕文
+	Tooltip:
+		'''
+		攻击会造成传染性枯萎病
+		染病的敌人也会对你造成枯萎病
+		'''
+	Effect: 枯萎
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+ShockGlyph: {
+	DisplayName: 雷击雕文
+	Tooltip: 暴击会造成10%额外伤害并电击附近的敌人
+	Effect: 感电
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+BeeGlyph: {
+	DisplayName: 蜜蜂雕文
+	Tooltip:
+		'''
+		将20%的物品伤害转化为召唤伤害
+		标记被击中的敌人
+		被标记的敌人在受到仆从的攻击时会释放蜜蜂
+		'''
+	Effect: 嗡鸣
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+SanguineGlyph: {
+	DisplayName: 染血雕文
+	Tooltip:
+		'''
+		降低20%伤害
+		攻击会偷取生命，偷取效果随着生命值的降低而增加
+		偷取生命时会获得衰减的可叠加增益
+		'''
+	Effect: 汲血
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+PrefixVoucher: {
+	DisplayName: "{0}前缀凭证"
+	Tooltip:
+		'''
+		{0}
+		附魔[c/{0}:{1}]
+		'''
+	AccessoryTooltip: 可右键对饰品使用
+	WeaponTooltip: 可右键对武器使用
+}
+
+EnchantedStamp: {
+	DisplayName: 附魔印章
+	Tooltip:
+		'''
+		解锁物品栏左侧的能力开关
+		开启时，在制作、掠夺和重铸物品时有几率获得雕文效果
+		'''
+	Active: 附魔开
+	Inactive: 附魔关
+}
+
+CelestialStamp: {
+	DisplayName: 天界印章
+	Tooltip:
+		'''
+		解锁物品栏左侧的能力开关
+		开启时，在制作、掠夺和重铸物品时有几率获得雕文效果
+		此外，允许物品同时获得前缀和雕文效果
+		'''
+}
+
+RageGlyph: {
+	DisplayName: 愤怒雕文
+	Tooltip: 击杀敌人造成的过量伤害和你受到的伤害会被存储并应用于下次攻击
+	Effect: 狂怒
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+CharmcasterHat: {
+	DisplayName: 魔石法师帽子
+	Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	DisplayName: 魔石法师护胫
+	Tooltip: ""
+}
+
+CharmcasterRobe: {
+	DisplayName: 魔石法师长袍
+	Tooltip: ""
+}
+
+VoidGlyph: {
+	DisplayName: 虚空雕文
+	Tooltip:
+		'''
+		攻击有几率造成可叠加的虚空坍塌
+		虚空坍塌在叠加一定层数后会创造一个降低敌人防御力的伤害性奇点
+		'''
+	Effect: 空无
+
+	Gendered: {
+		// Fem: ""
+		// Neutral: ""
+		// Plural: ""
+	}
+}
+
+GlitterPurse: {
+	DisplayName: 闪亮钱袋
+	Tooltip: 永久性增加背包的物品容量
+	StatusText: 你的背包变得更大了
+}
+
+MariglowSeedPouch: {
+	DisplayName: 光盏种子袋
+	Tooltip: 撒下会在沙子上长出光盏的种子
+}
+
+DisplayCaseItem: {
+	DisplayName: 展示柜
+	Tooltip: <right>将饰品放置在展示柜中
+}
+
+SkyPylonItem: {
+	DisplayName: 天空晶塔
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CandlewickItem: {
+	DisplayName: 烛芯绳
+	Tooltip: 可以攀爬
+}
+
+WaxBlockItem: {
+	DisplayName: 蜡块
+	Tooltip: ""
+}
+
+WaxPotItem: {
+	DisplayName: 蜡罐
+	Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	DisplayName: 返回之镜
+	Tooltip: <right>将你传送回家并创建一个传送门
+}
+
+MirrorItem: {
+	DisplayName: 镜子
+	Tooltip: ""
+}
+
+EnchantedWorkbenchItem: {
+	DisplayName: 压蜡台
+	Tooltip: ""
+}
+
+CandlewickCoil: {
+	DisplayName: 烛芯绳圈
+	Tooltip: 抛出以形成可攀爬的烛芯绳索
+}
+
+CandleBathtubItem: {
+	DisplayName: 蜡浴缸
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: 蜡床
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: 蜡书架
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: 蜡烛台
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: 蜡蜡烛
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: 蜡椅
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: 蜡吊灯
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: 蜡箱
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: 蜡门
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: 蜡梳妆台
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: 蜡灯
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: 蜡灯笼
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: 蜡水槽
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: 蜡沙发
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: 蜡桌
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: 蜡马桶
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: 蜡工作台
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: 蜡钟
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: 蜡钢琴
+	Tooltip: ""
+}
+
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	// DisplayName: Chromatic Wax Shader Dummy
+	// Tooltip: Hello all cheat mod users!
+}
+
+WaxPlatformItem: {
+	DisplayName: 蜡平台
 	Tooltip: ""
 }
 

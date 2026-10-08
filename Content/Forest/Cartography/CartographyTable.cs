@@ -2,10 +2,11 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Cartography;
 
-public class CartographyTable : ModTile, IAutoloadTileItem
+public class CartographyTable : ModTile, ILoadItem
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.buyPrice(gold: 1, silver: 20);
 
@@ -52,7 +53,7 @@ public class CartographyTable : ModTile, IAutoloadTileItem
 			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 			float y = (float)Math.Sin(Main.timeForVisualEffects / 20f) * 2f;
-			var position = new Vector2(i, j).ToWorldCoordinates(24, -8 + y) - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j).ToWorldCoordinates(24, -8 + y) - Main.screenPosition + TileMethods.TileOffset;
 
 			spriteBatch.Draw(texture, position, null, Color.White, 0, texture.Size() / 2, 1, default, 0);
 			spriteBatch.Draw(bloom, position, null, Color.Orange.Additive() * 0.3f, 0, bloom.Size() / 2, 0.2f, default, 0);

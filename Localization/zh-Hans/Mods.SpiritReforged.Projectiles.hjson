@@ -73,7 +73,6 @@ CrookLocustGore.DisplayName: 蝗虫尸块
 RoyalKhopeshThrown.DisplayName: 皇家镰形剑
 FloatingGem.DisplayName: 浮空宝石
 BeamOLight.DisplayName: 光束
-ScarabPetProjectile.DisplayName: 迷你圣甲虫
 SandShockwavePillar.DisplayName: 沙子冲击波柱
 SandballProjectile.DisplayName: 沙球
 BabyAntlionProjectile.DisplayName: 蚁狮宝宝
@@ -95,3 +94,10 @@ SaltHeadstoneProjectile.DisplayName: "{$Items.SaltHeadstoneItem.DisplayName}"
 SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
+Firefall.DisplayName: 火瀑
+WindBurstProjectile.DisplayName: 风爆
+SingularCollapse.DisplayName: 奇点
+ShockGlyphLightningBolt.DisplayName: 闪电矢
+MariglowSeed.DisplayName: 光盏种子
+RageHit.DisplayName: 愤怒一击
+MirrorReturnPortal.DisplayName: 返回之镜传送门

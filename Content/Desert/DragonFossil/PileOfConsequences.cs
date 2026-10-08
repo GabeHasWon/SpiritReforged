@@ -1,4 +1,5 @@
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 
@@ -47,7 +48,7 @@ public class PileOfConsequencesPet : ModProjectile
 		int direction = Math.Sign(Projectile.velocity.X);
 		Projectile.direction = Projectile.spriteDirection = (result.Length() < 0.2f) ? owner.direction : direction;
 		Projectile.rotation = Projectile.velocity.Y * 0.1f * Projectile.direction;
-		bool hasItem = owner.HasItem(ModContent.ItemType<PileOfConsequences>());
+		bool hasItem = BackpackPlayer.HasItemInInventoryOrBackpack(owner, ModContent.ItemType<PileOfConsequences>());
 
 		if (distance < 16 * 3 || !hasItem)
 			Projectile.Opacity = Math.Max(Projectile.Opacity - 0.1f, 0);
@@ -71,7 +72,7 @@ public class PileOfConsequencesPet : ModProjectile
 			Main.EntitySpriteDraw(texture, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, source, color, Projectile.oldRot[i], source.Size() / 2, Projectile.scale, effects);
 
 		DrawBones(ref lightColor, effects);
-		DrawHelpers.DrawChromaticAberration(Vector2.UnitX * 3, 1, (offset, color) =>
+		Graphics.DrawChromaticAberration(Vector2.UnitX * 3, 1, (offset, color) =>
 		{
 			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY) + offset;
 			Main.EntitySpriteDraw(texture, position, source, Projectile.GetAlpha(color) * 0.1f, Projectile.rotation, source.Size() / 2, Projectile.scale, effects, 0);
@@ -88,7 +89,7 @@ public class PileOfConsequencesPet : ModProjectile
 		float sine = EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 80f);
 		Rectangle source;
 
-		DrawHelpers.DrawChromaticAberration(Vector2.UnitX * 3, 1, (offset, color) =>
+		Graphics.DrawChromaticAberration(Vector2.UnitX * 3, 1, (offset, color) =>
 		{
 			Color alphaColor = Projectile.GetAlpha(color);
 

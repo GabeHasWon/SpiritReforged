@@ -1,11 +1,11 @@
 using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class Drywood : ModTile, IAutoloadTileItem
+public class Drywood : ModTile, ILoadItem
 {
 	public override void SetStaticDefaults()
 	{

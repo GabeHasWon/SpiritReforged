@@ -27,6 +27,7 @@ Records: {
 	Scrying: 被破坏时能揭示大片地图。
 	Biome: 比常见的罐子包含更多种类的战利品。
 	Boulder: 受到扰动时会沿着地面滚动。
+	Wax: 注入了强效魔法能量。
 }
 
 FablesGraves: {
@@ -40,7 +41,7 @@ HydrothermalVent.MapEntry: 热液喷口
 OreCarts.MapEntry: 矿车
 PotionVats.MapEntry: 药罐
 ObsidianShroom.MapEntry: 黑曜石蘑菇
-Starflower.MapEntry: 星状花
+Starflower.MapEntry: 向星葵
 BonsaiTrees.MapEntry: 盆栽
 DustyTomb.MapEntry: 尘埃陵墓
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality

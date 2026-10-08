@@ -12,11 +12,11 @@ namespace SpiritReforged.Common.ModCompat;
 
 internal class RussianTranslateCompat : ModSystem
 {
-	public override void PostSetupContent()
+	public static void tRUSupport()
 	{
-		var spiritR = Mod;
+		ModLoader.TryGetMod("SpiritReforged", out Mod spiritR);
 
-		if (!CrossMod.RussianTranslate.Enabled)
+		if (!CrossMod.RussianLocalizable)
 			return;
 
 		var tru = CrossMod.RussianTranslate.Instance;
@@ -29,7 +29,6 @@ internal class RussianTranslateCompat : ModSystem
 			"BambooHalberd",
 			"ToucaneItem",
 			"ClawCannon",
-			"HuntingRifle",
 			"BombCannon",
 			"Bowlder",
 			//Accessories
@@ -40,6 +39,8 @@ internal class RussianTranslateCompat : ModSystem
 
 		tru.Call("AddNeuterItems", spiritR, new[]
 		{
+			//Weapons
+			"HuntingRifle",
 			//Accessories
 			"ArcaneNecklaceGold",
 			"ArcaneNecklacePlatinum",
@@ -68,7 +69,7 @@ internal class RussianTranslateCompat : ModSystem
 				Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Botanist"));
 
 		tru.Call("AddArmorSetBonusPreview", ModContent.ItemType<GraniteHead>(), () =>
-				Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Granite"));
+				Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Granite", Language.GetTextValue(Main.ReversedUpDownArmorSetBonuses ? "Key.UP" : "Key.DOWN")));
 
 		tru.Call("AddArmorSetBonusPreview", ModContent.ItemType<DriftwoodHelmet>(), () =>
 				Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Driftwood"));

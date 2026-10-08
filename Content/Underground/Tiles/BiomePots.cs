@@ -3,17 +3,17 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Forest.Cloud.Items;
+using SpiritReforged.Content.Underground.Items;
 using SpiritReforged.Content.Underground.NPCs;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-[AutoloadGlowmask("200,200,200")]
 public class BiomePots : PotTile, ILootable
 {
 	/// <summary> Mirrors <see cref="Styles"/>. </summary>
@@ -144,6 +144,12 @@ public class BiomePots : PotTile, ILootable
 				modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.Granite, 3).AddTile(type).AddCondition(condition).Register();
 				break;
 		}
+	}
+
+	public override void SetStaticDefaults()
+	{
+		base.SetStaticDefaults();
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(200, 200, 200));
 	}
 
 	public override void AddMapData() => AddMapEntry(new Color(112, 60, 70), Language.GetText("MapObject.Pot"));
@@ -408,6 +414,7 @@ public class BiomePots : PotTile, ILootable
 
 		loot.AddOneFromOptions(32, [.. flasks]);
 		loot.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.Multiplayer), ItemID.WormholePotion, 30));
+		loot.Add(ItemDropRule.NormalvsExpert(ModContent.ItemType<PrefixVoucher>(), 30, 25));
 
 		int type = style switch
 		{
@@ -425,6 +432,8 @@ public class BiomePots : PotTile, ILootable
 				loot.Add(ItemDropRule.ByCondition(new DropConditions.Standard(Condition.DownedSkeletron), ItemID.Bone, 2, 10, 15));
 			if (style is Style.Granite)
 				loot.AddCommon(ItemID.Geode, 3);
+			if (style is Style.Desert)
+				loot.AddCommon(ItemID.FossilOre, 6, 4, 10);
 			else
 				loot.AddCommon(type, 2, 10, 15);
 		}

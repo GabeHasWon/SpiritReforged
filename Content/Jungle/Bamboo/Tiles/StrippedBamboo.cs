@@ -1,14 +1,13 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
-public class StrippedBamboo : ModTile, IAutoloadTileItem
+public class StrippedBamboo : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.StaticItemDefaults(ModItem item) => item.Item.ResearchUnlockCount = 100;
-
 	public void SetItemDefaults(ModItem item) => item.Item.value = 1;
+
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.BambooBlock).AddTile(TileID.WorkBenches).Register();
 
 	public override void SetStaticDefaults()
