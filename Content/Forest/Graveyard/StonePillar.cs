@@ -3,10 +3,11 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 using Terraria.IO;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Graveyard;
 
-public class StonePillar : ModTile, IAutoloadTileItem
+public class StonePillar : ModTile, ILoadItem
 {
 	/// <summary> Changes <see cref="StonePillar"/> tiles to <see cref="Main.tileFrameImportant"/> during world save for accurate player-applied framing. </summary>
 	public sealed class PillarSaveLoader : ILoadable

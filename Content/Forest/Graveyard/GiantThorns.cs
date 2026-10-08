@@ -1,6 +1,7 @@
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
+using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Graveyard;
 
@@ -39,17 +40,18 @@ public class GiantThorns : ModTile
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		Tile tile = Main.tile[i, j];
+		if (!TileDrawing.IsVisible(tile))
 			return false;
 
-		Tile tile = Main.tile[i, j];
+		Texture2D texture = Helpers.GetTileTextureValue(tile);
 		Rectangle source = new(tile.TileFrameX, tile.TileFrameY, 18, 18);
 
 		var renderer = Main.instance.TilesRenderer;
-		float wind = (renderer.InAPlaceWithWind(i, j, 1, 1) ? renderer.GetWindCycle(i, j, TileSwaySystem.SunflowerWindCounter) : 0) + renderer.GetWindGridPush(i, j, 20, 0.1f);
+		float wind = (renderer.InAPlaceWithWind(i, j, 1, 1) ? renderer.GetWindCycle(i, j, WindTileRenderer.SunflowerWindCounter) : 0) + renderer.GetWindGridPush(i, j, 20, 0.1f);
 		Vector2 position = new Vector2(i, j).ToWorldCoordinates() - Main.screenPosition + new Vector2(wind, wind);
 
-		spriteBatch.Draw(texture, position, source, color, wind * 0.05f, new(8), 1, 0, 0f);
+		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), wind * 0.05f, new Vector2(8), 1, 0, 0f);
 
 		return false;
 	}

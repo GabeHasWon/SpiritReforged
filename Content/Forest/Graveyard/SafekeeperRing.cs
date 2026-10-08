@@ -14,7 +14,7 @@ public class SafekeeperRing : ModItem, IFlagged
 	{
 		public override void ModifyHitNPC(NPC target, ref NPC.HitModifiers modifiers)
 		{
-			if (Player.HasEquip<SafekeeperRing>() && UndeadNPC.IsUndeadType(target.type))
+			if (Player.HasFlag<SafekeeperRing>() && UndeadNPC.IsUndeadType(target.type))
 				modifiers.FinalDamage *= 1.25f;
 		}
 
@@ -25,7 +25,7 @@ public class SafekeeperRing : ModItem, IFlagged
 			if (Main.dedServ)
 				return;
 
-			if (Player.HasEquip<SafekeeperRing>() && UndeadNPC.IsUndeadType(target.type) && target.life < MathHelper.Min(100, target.lifeMax * .25f))
+			if (Player.HasFlag<SafekeeperRing>() && UndeadNPC.IsUndeadType(target.type) && target.life < MathHelper.Min(100, target.lifeMax * .25f))
 			{
 				var points = new Vector2[Main.rand.Next(2, 4)];
 

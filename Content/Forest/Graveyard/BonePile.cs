@@ -1,5 +1,7 @@
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
+using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Graveyard;
 
@@ -20,14 +22,15 @@ public class BonePile : ModTile
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		Tile tile = Main.tile[i, j];
+		if (!TileDrawing.IsVisible(tile))
 			return false;
 
-		Tile tile = Main.tile[i, j];
+		Texture2D texture = Helpers.GetTileTextureValue(tile);
 		Rectangle source = new(tile.TileFrameX, tile.TileFrameY, 16, 16);
 		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + new Vector2(0, 2);
 
-		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, 0, 0f);
+		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, 0, 0f);
 
 		if (!Main.gamePaused)
 			SpawnDusts(new(i * 16, j * 16, 16, 16), Color.White);
