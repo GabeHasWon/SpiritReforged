@@ -556,8 +556,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: Winzige Larve
 	Entry: Fast so voller Potenzial wie voller Ekligkeit.
+	DisplayName: Winzige Larve
 }
 
 CactusZombie: {
@@ -781,3 +781,4 @@ Enchanter: {
 }
 
 SealedKnight.DisplayName: Versiegelter Ritter
+// PassiveGhost.DisplayName: Passive Ghost

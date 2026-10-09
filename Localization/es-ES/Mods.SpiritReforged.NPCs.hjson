@@ -556,8 +556,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: Larva diminuta
 	Entry: Casi tan lleno de potencial como de repulsión.
+	DisplayName: Larva diminuta
 }
 
 CactusZombie: {
@@ -781,3 +781,4 @@ Enchanter: {
 }
 
 SealedKnight.DisplayName: Caballero Sellado
+// PassiveGhost.DisplayName: Passive Ghost

@@ -3531,3 +3531,18 @@ WaxPlatformItem: {
 	DisplayName: Plataforma de cera
 	Tooltip: ""
 }
+
+GiantThornWallItem: {
+	// DisplayName: Giant Thorn Wall
+	// Tooltip: ""
+}
+
+StonePillarItem: {
+	// DisplayName: Stone Pillar
+	// Tooltip: ""
+}
+
+HerosMemorialStatueMossyItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.Tooltip}"
+}

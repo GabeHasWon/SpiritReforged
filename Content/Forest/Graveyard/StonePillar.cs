@@ -1,5 +1,4 @@
 using SpiritReforged.Common;
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 using Terraria.IO;
@@ -25,6 +24,8 @@ public class StonePillar : ModTile, ILoadItem
 
 	private static bool IsChippedFrame = false; //Preserves alternate framing past TileFrame
 
+	void ILoadItem.SetItemStaticDefaults(ModItem modItem) => modItem.Item.ResearchUnlockCount = 100;
+
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddIngredient(ItemID.StoneBlock).AddTile(TileID.HeavyWorkBench).Register();
 
 	public override void SetStaticDefaults()
@@ -38,7 +39,6 @@ public class StonePillar : ModTile, ILoadItem
 
 		AddMapEntry(new Color(100, 100, 100));
 		DustType = DustID.Stone;
-		this.AutoItem().ResearchUnlockCount = 100;
 
 		for (int type = 0; type < TileLoader.TileCount; type++)
 			Main.tileMerge[type][Type] |= Main.tileSolid[type]; //Have everything merge with this type
