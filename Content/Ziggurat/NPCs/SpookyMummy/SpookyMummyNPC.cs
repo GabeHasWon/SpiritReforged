@@ -12,6 +12,8 @@ internal class SpookyMummyNPC : ModNPC
 
 	private ref float SoundTimer => ref NPC.ai[0];
 
+	internal static bool IsGrounded(NPC npc) => npc.collideY || Collision.SolidCollision(npc.BottomLeft, npc.width, 6, true);
+
 	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 10;
 
 	public override void SetDefaults()
@@ -59,7 +61,7 @@ internal class SpookyMummyNPC : ModNPC
 		for (int i = 0; i < (dead ? 30 : 12); ++i)
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool(3) ? DustID.Blood : DustID.Sand, Scale: Main.rand.NextFloat(1.2f, 2f));
 
-		if (dead)
+		if (dead && !Main.dedServ)
 		{
 			Rectangle hitbox = NPC.Hitbox;
 			hitbox.Inflate(-16, -16);

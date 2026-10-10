@@ -58,7 +58,7 @@ internal class SpookyMummyHand : ModNPC
 		for (int i = 0; i < (dead ? 20 : 6); ++i)
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool(3) ? DustID.Blood : DustID.Sand, Scale: Main.rand.NextFloat(1.2f, 2f));
 
-		if (dead)
+		if (dead && !Main.dedServ)
 		{
 			for (int i = 0; i < 2; ++i)
 				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, NPC.velocity, ModContent.Find<ModGore>("SpiritReforged/Bandage" + Main.rand.Next(2)).Type);

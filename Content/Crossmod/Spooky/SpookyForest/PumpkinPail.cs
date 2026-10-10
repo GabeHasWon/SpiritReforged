@@ -28,7 +28,10 @@ internal class PumpkinPailOrange : BackpackItem
 		// Attempt to swap this backpack into the backpack slot
 		// This code is adjusted to allow consuming the item normally
 		if (!BackpackUISlot.CanClickItem(player.GetModPlayer<BackpackPlayer>().backpack))
+		{
+			Item.stack++;
 			return;
+		}
 
 		var oldPack = player.GetModPlayer<BackpackPlayer>().backpack;
 
@@ -86,5 +89,20 @@ public class PumpkinPailTile : ModTile
 		};
 
 		return true;
+	}
+
+	public override void MouseOver(int i, int j)
+	{
+		int style = Main.tile[i, j].TileFrameX / 36;
+
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = style switch
+		{
+			0 => ModContent.ItemType<PumpkinPailOrange>(),
+			1 => ModContent.ItemType<PumpkinPailPurple>(),
+			_ => ModContent.ItemType<PumpkinPailWhite>(),
+		};
 	}
 }

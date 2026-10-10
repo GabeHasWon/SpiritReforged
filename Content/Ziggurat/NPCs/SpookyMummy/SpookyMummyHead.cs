@@ -60,7 +60,7 @@ internal class SpookyMummyHead : ModNPC
 			Timer = 0;
 		}
 
-		if (NPC.collideY)
+		if (SpookyMummyNPC.IsGrounded(NPC))
 		{
 			NPC.velocity.X *= 0.85f;
 			Timer++;
@@ -81,7 +81,7 @@ internal class SpookyMummyHead : ModNPC
 		for (int i = 0; i < (dead ? 20 : 6); ++i)
 			Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool(2) ? DustID.Blood : DustID.Sand, Scale: Main.rand.NextFloat(1.2f, 2f));
 
-		if (dead)
+		if (dead && !Main.dedServ)
 		{
 			for (int i = 0; i < 4; ++i)
 				Gore.NewGore(NPC.GetSource_Death(), NPC.Center, NPC.velocity, ModContent.Find<ModGore>("SpiritReforged/Bandage" + Main.rand.Next(2)).Type);
