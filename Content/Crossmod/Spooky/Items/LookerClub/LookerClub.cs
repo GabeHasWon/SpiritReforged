@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon.Abstract;
 
-namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.LookerClub;
+namespace SpiritReforged.Content.Crossmod.Spooky.Items.LookerClub;
 
 // TODO: obtainment
 public class LookerClub : ClubItem

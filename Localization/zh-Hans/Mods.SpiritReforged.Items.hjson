@@ -3741,17 +3741,21 @@ MummyBandageScrap: {
 
 LookerClub: {
 	// DisplayName: Looker
-	// Tooltip: ""
+	// Tooltip: Charged strikes burst into temporary eyeball minions
 }
 
 PumpkinClub: {
 	// DisplayName: Smack-o-Lantern
-	// Tooltip: ""
+	// Tooltip: Charged strikes split into flaming chunks
 }
 
 ShovelClub: {
 	// DisplayName: Gravedigger's Shovel
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Charged strikes unearth skeletal remains
+		Aim those remains with the cursor
+		''' */
 }
 
 DhampirPaintingItem: {

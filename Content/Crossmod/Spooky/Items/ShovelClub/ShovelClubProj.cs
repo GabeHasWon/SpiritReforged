@@ -13,7 +13,7 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.TileCommon;
 using Terraria.Utilities;
 
-namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.ShovelClub;
+namespace SpiritReforged.Content.Crossmod.Spooky.Items.ShovelClub;
 class ShovelClubProj : BaseClubProj
 {
 	public ShovelClubProj() : base(new Vector2(76, 76)) { }

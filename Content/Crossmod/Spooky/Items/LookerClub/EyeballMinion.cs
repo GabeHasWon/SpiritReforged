@@ -8,7 +8,7 @@ using SpiritReforged.Content.Underground.Tiles;
 using Terraria;
 using Terraria.Audio;
 
-namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.LookerClub;
+namespace SpiritReforged.Content.Crossmod.Spooky.Items.LookerClub;
 public class EyeballMinion : BaseMinion
 {
 	public static readonly Asset<Texture2D> EyeballTexture = DrawHelpers.RequestLocal<EyeballMinion>("EyeballMinion_Eye", false);

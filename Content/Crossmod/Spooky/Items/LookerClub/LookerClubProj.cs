@@ -6,7 +6,7 @@ using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
-namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.LookerClub;
+namespace SpiritReforged.Content.Crossmod.Spooky.Items.LookerClub;
 
 class LookerClubProj : BaseClubProj
 {
