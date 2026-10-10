@@ -3742,7 +3742,11 @@ MummyBandageScrap: {
 
 LookerClub: {
 	// DisplayName: Looker
-	// Tooltip: Charged strikes burst into temporary eyeball minions
+	/* Tooltip:
+		'''
+		Charged strikes burst into temporary eyeball minions
+		These minions count as both melee and summon damage
+		''' */
 }
 
 PumpkinClub: {

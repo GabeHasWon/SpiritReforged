@@ -1,9 +1,8 @@
-﻿using SpiritReforged.Common.BuffCommon.Stacking;
-using SpiritReforged.Common.Multiplayer;
-using System.Collections;
+﻿using SpiritReforged.Common.Multiplayer;
 using System.IO;
-using System.Xml.Linq;
+using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SpiritReforged.Common.ModCompat.Spooky;
 
@@ -13,52 +12,46 @@ internal abstract class SpookyBounty : ILoadable, ILocalizedModType
 	{
 		public override bool IsLoadingEnabled(Mod mod) => ModLoader.HasMod("Spooky");
 
-		public override void LoadWorldData(TagCompound tag)
+		public override void SaveWorldData(TagCompound tag) => tag.Add("bountyInfo", PackInfo());
+		public override void LoadWorldData(TagCompound tag) => UnpackInfo(tag.GetByte("bountyInfo"));
+
+		public override void NetSend(BinaryWriter writer) => writer.Write(PackInfo());
+		public override void NetReceive(BinaryReader reader) => UnpackInfo(reader.ReadByte());
+
+		internal static byte PackInfo()
 		{
-			tag.Add("dhampirActive", DhampirBounty.BountyActive);
-			tag.Add("mummyActive", MummyBounty.BountyActive);
+			byte packed = (byte)DhampirBounty.Active.ToInt();
+			packed |= (byte)(DhampirBounty.Complete.ToInt() << 1);
+			packed |= (byte)(MummyBounty.Active.ToInt() << 2);
+			packed |= (byte)(MummyBounty.Complete.ToInt() << 3);
+			return packed;
 		}
 
-		public override void SaveWorldData(TagCompound tag)
+		internal static void UnpackInfo(byte packed)
 		{
-			DhampirBounty.BountyActive = tag.GetBool("dhampirActive");
-			MummyBounty.BountyActive = tag.GetBool("mummyActive");
-		}
-
-		public override void NetSend(BinaryWriter writer)
-		{
-			writer.Write(DhampirBounty.BountyActive);
-			writer.Write(MummyBounty.BountyActive);
-		}
-
-		public override void NetReceive(BinaryReader reader)
-		{
-			DhampirBounty.BountyActive = reader.ReadBoolean();
-			MummyBounty.BountyActive = reader.ReadBoolean();
+			DhampirBounty.Active = (packed & 0b_1) == 0b_1;
+			DhampirBounty.Complete = (packed & 0b_10) == 0b_10;
+			MummyBounty.Active = (packed & 0b_100) == 0b_100;
+			MummyBounty.Complete = (packed & 0b_1000) == 0b_1000;
 		}
 	}
 
 	public class SpookyBountyData : PacketData
 	{
-		private readonly int _index = 0;
+		private readonly byte _data = 0;
 
-		public SpookyBountyData() { }
-		public SpookyBountyData(int index) => _index = index;
+		public SpookyBountyData() => _data = SpookyBountySaving.PackInfo();
 
 		public override void OnReceive(BinaryReader reader, int whoAmI)
 		{
-			byte index = 0;
+			byte packed = reader.ReadByte();
+			SpookyBountySaving.UnpackInfo(packed);
 
 			if (Main.netMode == NetmodeID.Server)
-				NetMessage.SendData(MessageID.WorldData);
-
-			if (index == 0)
-				DhampirBounty.BountyActive = true;
-			else
-				MummyBounty.BountyActive = true;
+				new SpookyBountyData().Send();
 		}
 
-		public override void OnSend(ModPacket modPacket) => modPacket.Write((byte)_index);
+		public override void OnSend(ModPacket modPacket) => modPacket.Write(_data);
 	}
 
 	public enum DialogueType : byte
@@ -167,5 +160,13 @@ internal abstract class SpookyBounty : ILoadable, ILocalizedModType
 
 	public virtual void Unload()
 	{
+	}
+
+	public static void QuickItem(NPC entity, int type)
+	{
+		int number = Item.NewItem(new EntitySource_Gift(entity), entity.Hitbox, type);
+
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			NetMessage.SendData(MessageID.SyncItem, -1, -1, null, number, 1f);
 	}
 }

@@ -3741,7 +3741,7 @@ MummyBandageScrap: {
 
 LookerClub: {
 	DisplayName: Looker
-	Tooltip: 
+	Tooltip:
 		'''
 		Charged strikes burst into temporary eyeball minions
 		These minions count as both melee and summon damage
