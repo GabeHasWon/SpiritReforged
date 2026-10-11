@@ -3773,18 +3773,18 @@ MummyPaintingItem: {
 }
 
 DhampirCape: {
-	DisplayName: Dhampir Cape
+	DisplayName: Weathereed Cape
 	Tooltip:
 		'''
 		Reduces gravity and removes fall damage
 		Reduces aggro
 		Hides the player when the accessory is hidden
-		'Undoubtedly cool as hell'
+		'It looks about as good as it feels to wear'
 		'''
 }
 
 MummyReward: {
-	DisplayName: Mummy Reward
+	DisplayName: Box of Spare Limbs (WIP)
 	Tooltip: ""
 }
 
@@ -3794,6 +3794,6 @@ DhampirRelic: {
 }
 
 MummyRelic: {
-	DisplayName: Mummy Relic
+	DisplayName: Mummiath Relic
 	Tooltip: ""
 }
