@@ -42,7 +42,7 @@ internal class DhampirBounty : SpookyBounty
 	{
 		NPC entity = Main.npc[GetLittleEyeIndex()];
 		Main.LocalPlayer.ConsumeItem(ModContent.ItemType<DhampirCompletionItem>());
-		QuickItem(entity, ItemID.Zenith);
+		QuickItem(entity, ModContent.ItemType<DhampirCape>());
 		QuickItem(entity, AutoContent.ItemType<DhampirPainting>());
 		QuickItem(entity, ModContent.ItemType<FruitBrownie>());
 

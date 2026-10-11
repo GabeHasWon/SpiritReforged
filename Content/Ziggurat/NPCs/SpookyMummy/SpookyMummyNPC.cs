@@ -123,6 +123,6 @@ internal class SpookyMummyNPC : ModNPC
 	public override void FindFrame(int frameHeight)
 	{
 		NPC.frameCounter++;
-		NPC.frame.Y = frameHeight * (int)(NPC.frameCounter * 0.08f % Main.npcFrameCount[Type]);
+		NPC.frame.Y = frameHeight * (int)(NPC.frameCounter * 0.10f % Main.npcFrameCount[Type]);
 	}
 }

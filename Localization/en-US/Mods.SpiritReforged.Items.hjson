@@ -3771,3 +3771,14 @@ MummyPaintingItem: {
 	DisplayName: Sparkling Gourds
 	Tooltip: "'S. Pookie'"
 }
+
+DhampirCape: {
+	DisplayName: Dhampir Cape
+	Tooltip: 
+		'''
+		Reduces gravity and removes fall damage
+		Reduces aggro
+		Hides the player when the accessory is hidden
+		'Undoubtedly cool as hell'
+		'''
+}

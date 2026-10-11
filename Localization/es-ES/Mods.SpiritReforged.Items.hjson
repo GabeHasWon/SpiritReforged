@@ -3772,3 +3772,8 @@ MummyPaintingItem: {
 	// DisplayName: Sparkling Gourds
 	// Tooltip: "'S. Pookie'"
 }
+
+DhampirCape: {
+	// DisplayName: Dhampir Cape
+	// Tooltip: ""
+}
