@@ -3646,12 +3646,12 @@ TrellisOldBirchTwoItem: {
 }
 
 TrellisSpookyWoodItem: {
-	// DisplayName: Crossed Spooky Wood Trellis
+	// DisplayName: Crossed Old Wood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisSpookyWoodTwoItem: {
-	// DisplayName: Spooky Wood Trellis
+	// DisplayName: Old Wood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 

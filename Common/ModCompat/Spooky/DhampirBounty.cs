@@ -1,7 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Crossmod.Spooky.Items.Pets;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
+using SpiritReforged.Content.SaltFlats;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.ModCompat.Spooky;
@@ -24,7 +26,8 @@ internal class DhampirBounty : SpookyBounty
 		Asset<Texture2D> tex = ModContent.Request<Texture2D>("SpiritReforged/Common/ModCompat/Spooky/DhampirBounty");
 		spooky.Call("EyeQuest", SpiritReforgedMod.Instance, "DhampirBounty", tex, () => Active, (Action<bool>)OnActivate, 
 			() => Main.LocalPlayer.HasItem(ModContent.ItemType<DhampirCompletionItem>()), () => Complete, MapDialogue(DialogueType.Encounter), 
-			MapDialogue(DialogueType.Recover), MapDialogue(DialogueType.Complete), (Action)OnComplete);
+			MapDialogue(DialogueType.Recover), MapDialogue(DialogueType.Complete), (Action)OnComplete, null, 
+			() => !EcotoneSurfaceMapping.ContainsEcotone<SaltFlatsEcotone>());
 	}
 
 	private static void OnActivate(bool recover)
