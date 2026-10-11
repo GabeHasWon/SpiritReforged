@@ -817,26 +817,26 @@ DhampirNPC: {
 }
 
 SpookyMummyNPC: {
-	// DisplayName: Mammoth Mummy
+	// DisplayName: Mummiath
 	// Entry: A giant mummy who's been revived well enough to walk, but not well enough to stay together. According to Little Eye, that's definitely not his fault.
 }
 
 SpookyMummyHand: {
-	// DisplayName: Mammoth Mummy Hand
+	// DisplayName: Mummiath Hand
 	// Entry: It's fast at running for sure, but you should see this guy's skill with a pencil. Deeply talented artist.
 }
 
 SpookyMummyHead: {
-	// DisplayName: Mammoth Mummy Head
+	// DisplayName: Mummiath Head
 	// Entry: Head honcho. Leader of the group. The brains behind the operation. Well, if they still had a brain.
 }
 
 SpookyMummyHeart: {
-	// DisplayName: Mammoth Mummy Heart
+	// DisplayName: Mummiath Heart
 	// Entry: Yipes! I gotta get out of here!
 }
 
 SpookyMummyLegs: {
-	// DisplayName: Mammoth Mummy Legs
+	// DisplayName: Mummiath Legs
 	// Entry: Every group has an honest, down-to-earth hard worker. Literally.
 }
