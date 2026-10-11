@@ -36,7 +36,11 @@ internal class SpookyMummyLegs : ModNPC
 		bestiaryEntry.AddInfo(this, "");
 	}
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<MummyBandageScrap>();
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		npcLoot.AddCommon<MummyBandageScrap>();
+		SpookyMummyNPC.AddRelic(npcLoot);
+	}
 
 	public override void AI()
 	{

@@ -819,6 +819,7 @@ DhampirNPC: {
 SpookyMummyNPC: {
 	// DisplayName: Mummiath
 	// Entry: A giant mummy who's been revived well enough to walk, but not well enough to stay together. According to Little Eye, that's definitely not his fault.
+	// DropCondition: (Only if no other Mummiath limbs are remaining)
 }
 
 SpookyMummyHand: {

@@ -1,6 +1,8 @@
 ﻿using SpiritReforged.Content.Crossmod.Spooky.Items;
+using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 using Terraria.Map;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
@@ -37,7 +39,11 @@ internal class SpookyMummyHead : ModNPC
 		bestiaryEntry.AddInfo(this, "");
 	}
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<MummyBandageScrap>(1, 2, 2);
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		npcLoot.AddCommon<MummyBandageScrap>(1, 2, 2);
+		SpookyMummyNPC.AddRelic(npcLoot);
+	}
 
 	public override void AI()
 	{

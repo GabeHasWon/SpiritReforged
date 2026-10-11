@@ -4,6 +4,7 @@ using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
+using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.SaltFlats.Biome;
@@ -297,7 +298,11 @@ internal class DhampirNPC : ModNPC
 
 	private void SpawnMist() => _particles.Add(new MistParticle(NPC) { Timer = Main.rand.Next(15) });
 
-	public override void ModifyNPCLoot(NPCLoot npcLoot) => npcLoot.AddCommon<DhampirCompletionItem>();
+	public override void ModifyNPCLoot(NPCLoot npcLoot)
+	{
+		npcLoot.AddCommon<DhampirCompletionItem>();
+		npcLoot.AddMasterModeCommonDrop<DhampirRelic>();
+	}
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{

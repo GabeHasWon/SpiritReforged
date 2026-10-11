@@ -18,6 +18,8 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 		private static Asset<Texture2D> _topTex = null!;
 		private static Asset<Texture2D> _branchTex = null!;
 
+		bool IPostDrawTree.DrawAfter => false;
+
 		bool ILoadable.IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 		public void Load(Mod mod)
@@ -34,6 +36,8 @@ internal class StargrassTreeGlowEffects : GlobalTile, IPostDrawTree
 	{
 		private static Asset<Texture2D> _topTex = null!;
 		private static Asset<Texture2D> _branchTex = null!;
+
+		bool IPostDrawTree.DrawAfter => false;
 
 		bool ILoadable.IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 

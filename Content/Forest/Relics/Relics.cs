@@ -1,4 +1,3 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
@@ -11,20 +10,21 @@ public class Relics : ModTile
 {
 	public const int FrameWidth = 18 * 3;
 	public const int FrameHeight = 18 * 4;
-	public const int NumRelics = 1;
+	public const int NumRelics = 3;
 
 	public static readonly Asset<Texture2D> PropTexture = DrawHelpers.RequestLocal<Relics>("RelicProp", false);
 
-	public override void SetStaticDefaults() {
-		Main.tileShine[Type] = 400; 
-		Main.tileFrameImportant[Type] = true; 
-		TileID.Sets.InteractibleByNPCs[Type] = true; 
+	public override void SetStaticDefaults()
+	{
+		Main.tileShine[Type] = 400;
+		Main.tileFrameImportant[Type] = true;
+		TileID.Sets.InteractibleByNPCs[Type] = true;
 
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4); 
-		TileObjectData.newTile.LavaDeath = false; 
-		TileObjectData.newTile.DrawYOffset = 2; 
+		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
+		TileObjectData.newTile.LavaDeath = false;
+		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
-		TileObjectData.newTile.StyleHorizontal = false; 
+		TileObjectData.newTile.StyleHorizontal = false;
 
 		TileObjectData.newTile.StyleWrapLimitVisualOverride = 2;
 		TileObjectData.newTile.StyleMultiplier = 2;
@@ -41,21 +41,24 @@ public class Relics : ModTile
 		DustType = -1;
 	}
 
-	public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY) {
-		tileFrameX %= FrameWidth; 
-		tileFrameY %= FrameHeight * 2; 
+	public override void SetDrawPositions(int i, int j, ref int width, ref int offsetY, ref int height, ref short tileFrameX, ref short tileFrameY)
+	{
+		tileFrameX %= FrameWidth;
+		tileFrameY %= FrameHeight * 2;
 	}
 
-	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData) {
+	public override void DrawEffects(int i, int j, SpriteBatch spriteBatch, ref TileDrawInfo drawData)
+	{
 		if (TileObjectData.IsTopLeft(i, j))
 			Main.instance.TilesRenderer.AddSpecialLegacyPoint(i, j);
 	}
 
-	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch) {
+	public override void SpecialDraw(int i, int j, SpriteBatch spriteBatch)
+	{
 		if (Main.tile[i, j] is Tile tile && tile.HasTile)
 		{
 			Texture2D texture = PropTexture.Value;
-			Rectangle frame = texture.Frame(NumRelics, NumRelics, 0, tile.TileFrameX / FrameWidth, 0, -2);
+			Rectangle frame = texture.Frame(NumRelics, 1, tile.TileFrameX / FrameWidth, 0, 0, -2);
 			Vector2 origin = frame.Size() / 2f;
 			Vector2 worldPos = new Vector2(i, j).ToWorldCoordinates(24f, 64f);
 			Color color = Lighting.GetColor(i, j);
@@ -74,9 +77,4 @@ public class Relics : ModTile
 				spriteBatch.Draw(texture, drawPos + (MathHelper.TwoPi * num5).ToRotationVector2() * (6f + offset / 4f * 2f), frame, effectColor, 0f, origin, 1f, effects, 0f);
 		}
 	}
-}
-
-public class ScarabRelic : ModItem
-{
-	public override void SetDefaults() => Item.DefaultToRelic(0);
 }

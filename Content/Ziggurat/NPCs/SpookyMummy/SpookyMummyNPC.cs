@@ -1,18 +1,50 @@
 ﻿using SpiritReforged.Content.Crossmod.Spooky.Items;
+using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
 
 internal class SpookyMummyNPC : ModNPC
 {
+	public class LastMummyCondition : IItemDropRuleCondition
+	{
+		bool IItemDropRuleCondition.CanDrop(DropAttemptInfo info)
+		{
+			int count = 0;
+
+			foreach (NPC npc in Main.ActiveNPCs)
+			{
+				if (npc.type == ModContent.NPCType<SpookyMummyHand>())
+					count++;
+				else if (npc.type == ModContent.NPCType<SpookyMummyLegs>())
+					count++;
+				else if (npc.type == ModContent.NPCType<SpookyMummyHead>())
+					count++;
+			}
+
+			return count == 1;
+		}
+
+		bool IItemDropRuleCondition.CanShowItemDropInUI() => true;
+		string IProvideItemConditionDescription.GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.NPCs.SpookyMummyNPC.DropCondition");
+	}
+
 	public Player Target => Main.player[NPC.target];
 
 	private ref float SoundTimer => ref NPC.ai[0];
 
 	internal static bool IsGrounded(NPC npc) => npc.collideY || Collision.SolidCollision(npc.BottomLeft, npc.width, 6, true);
+
+	internal static void AddRelic(NPCLoot loot)
+	{
+		LeadingConditionRule rule = new(new LastMummyCondition());
+		rule.OnSuccess(ItemDropRule.MasterModeCommonDrop(ModContent.ItemType<MummyRelic>()));
+		loot.Add(rule);
+	}
 
 	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 10;
 

@@ -3788,3 +3788,13 @@ MummyReward: {
 	// DisplayName: Mummy Reward
 	// Tooltip: ""
 }
+
+DhampirRelic: {
+	// DisplayName: Dhampir Relic
+	// Tooltip: ""
+}
+
+MummyRelic: {
+	// DisplayName: Mummy Relic
+	// Tooltip: ""
+}
