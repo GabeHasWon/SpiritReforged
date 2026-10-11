@@ -149,8 +149,11 @@ public class PassiveGhost : ModNPC
 
 	public override bool PreHoverInteract(bool mouseIntersects)
 	{
-		Main.HoveringOverAnNPC = true;
-		_showingDialogueBubble = true;
+		if (mouseIntersects && !Main.HoveringOverAnNPC && Main.LocalPlayer.InInteractionRange((int)(NPC.Center.X / 16), (int)(NPC.Center.Y / 16), TileReachCheckSettings.Simple))
+		{
+			Main.HoveringOverAnNPC = true;
+			_showingDialogueBubble = true;
+		}
 
 		return false;
 	}

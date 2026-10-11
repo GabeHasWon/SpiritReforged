@@ -4,12 +4,12 @@ namespace SpiritReforged.Content.Forest.Graveyard;
 
 /// <summary> Passively spawns fireflies around graveyard light sources. </summary>
 [Autoload(Side = ModSide.Client)]
-public class FireflyCloud : ILoadable
+public sealed class FireflyCloud : ILoadable
 {
-	public void Load(Mod mod) => TileEvents.OnNearby += SpawnWind;
+	public void Load(Mod mod) => TileEvents.OnNearby += SpawnFirefly;
 	public void Unload() { }
 
-	private static void SpawnWind(int i, int j, int type, bool visual)
+	private static void SpawnFirefly(int i, int j, int type, bool visual)
 	{
 		if (!visual || Main.dayTime || Main.gamePaused || !Main.LocalPlayer.ZoneGraveyard)
 			return;

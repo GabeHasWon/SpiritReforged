@@ -3546,3 +3546,8 @@ HerosMemorialStatueMossyItem: {
 	// DisplayName: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName}"
 	// Tooltip: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.Tooltip}"
 }
+
+GloomyStatueItem: {
+	// DisplayName: Gloomy Statue
+	// Tooltip: ""
+}
