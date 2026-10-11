@@ -3761,5 +3761,16 @@ MummyPaintingItem: {
 
 DhampirCape: {
 	// DisplayName: Dhampir Cape
+	/* Tooltip:
+		'''
+		Reduces gravity and removes fall damage
+		Reduces aggro
+		Hides the player when the accessory is hidden
+		'Undoubtedly cool as hell'
+		''' */
+}
+
+MummyReward: {
+	// DisplayName: Mummy Reward
 	// Tooltip: ""
 }

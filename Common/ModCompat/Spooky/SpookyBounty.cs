@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Multiplayer;
+using System.Diagnostics;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
@@ -162,11 +163,50 @@ internal abstract class SpookyBounty : ILoadable, ILocalizedModType
 	{
 	}
 
-	public static void QuickItem(NPC entity, int type)
+	public static void QuickItem(NPC entity, int type, int stack = 1)
 	{
-		int number = Item.NewItem(new EntitySource_Gift(entity), entity.Hitbox, type);
+		int number = Item.NewItem(new EntitySource_Gift(entity), entity.Hitbox, type, stack);
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			NetMessage.SendData(MessageID.SyncItem, -1, -1, null, number, 1f);
+	}
+
+	public static void CommonDrops(NPC entity)
+	{
+		if (Main.rand.NextBool(5))
+		{
+			QuickItem(entity, Main.rand.Next(3) switch
+			{
+				0 => ItemID.ChainKnife,
+				1 => ItemID.BlackLens,
+				2 => ItemID.Katana,
+				_ => throw new UnreachableException()
+			});
+		}
+
+		if (Main.rand.NextBool(2))
+			QuickItem(entity, CrossMod.Spooky.Find<ModItem>("SnotMedication").Type);
+
+		if (Main.rand.NextBool(3))
+			QuickItem(entity, CrossMod.Spooky.Find<ModItem>("ThreeDimensionalGlasses").Type);
+
+		if (Main.rand.NextBool(3))
+			QuickItem(entity, ItemID.BloodMoonStarter);
+
+		if (Main.rand.NextBool(3))
+			QuickItem(entity, ItemID.ObsidianLockbox);
+
+		if (Main.rand.NextBool(2))
+		{
+			QuickItem(entity, CrossMod.Spooky.Find<ModItem>(Main.rand.Next(3) switch
+			{
+				0 => "BlackLicorice",
+				1 => "GoofyPretzel",
+				2 => "EyeChocolate",
+				_ => throw new UnreachableException(),
+			}).Type);
+		}
+
+		QuickItem(entity, ItemID.GoldCoin, 10);
 	}
 }

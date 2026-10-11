@@ -43,7 +43,11 @@ internal class MummyBounty : SpookyBounty
 		Main.LocalPlayer.ConsumeItem(ModContent.ItemType<BallOfBandages>());
 		QuickItem(entity, ItemID.Zenith);
 		QuickItem(entity, AutoContent.ItemType<MummyPainting>());
-		QuickItem(entity, ModContent.ItemType<SandBrownie>());
+
+		if (Main.rand.NextBool(20))
+			QuickItem(entity, ModContent.ItemType<SandBrownie>());
+
+		CommonDrops(entity);
 
 		Complete = true;
 
