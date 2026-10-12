@@ -1,5 +1,8 @@
-﻿using SpiritReforged.Content.Crossmod.Spooky.Items;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
+using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
@@ -59,7 +62,8 @@ internal class SpookyMummyNPC : ModNPC
 		NPC.Size = new Vector2(90, 102);
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath6;
-
+		NPC.friendly = false;
+	
 		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
 	}
 
@@ -90,8 +94,56 @@ internal class SpookyMummyNPC : ModNPC
 	{
 		bool dead = NPC.life <= 0;
 
-		for (int i = 0; i < (dead ? 30 : 12); ++i)
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool(3) ? DustID.Blood : DustID.Sand, Scale: Main.rand.NextFloat(1.2f, 2f));
+		for (int i = 0; i < 2; i++)
+		{
+			Vector2 hitSpot = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 3, NPC.height / 3);
+
+			for (int x = 0; x < 5; x++)
+			{
+				Vector2 hitVelocity = Vector2.UnitX.RotatedByRandom(2f) * Main.rand.NextFloat(6f) * hit.HitDirection;
+
+				var d = Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(20, 20), DustID.Blood,
+					hitVelocity, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(2f));
+
+				d.noGravity = !Main.rand.NextBool(5);
+				d.fadeIn = d.noGravity ? 1f : 0f;
+
+				Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(15, 15), DustID.Sand, hitVelocity.RotatedByRandom(0.15f) * Main.rand.NextFloat(1.1f),
+					90, default, Main.rand.NextFloat(1.5f)).noGravity = true;
+			}
+
+			hitSpot = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 3, NPC.height / 3);
+
+			// Tight puff of smoke and dust
+			if (Main.rand.NextBool(5))
+			{
+				Vector2 hitVelocity = Vector2.UnitX.RotatedByRandom(1.5f) * Main.rand.NextFloat(4f) * hit.HitDirection;
+
+				for (int x = 0; x < 7; x++)
+				{
+					if (Main.rand.NextBool(10))
+					{
+						int type = ModContent.Find<ModGore>("SpiritReforged/Bandage" + Main.rand.Next(2)).Type;
+						var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), hitSpot, hitVelocity * Main.rand.NextFloat(0.5f), type);
+
+						gore.sticky = true;
+						gore.alpha = 70;
+						gore.velocity -= Vector2.UnitY * 2f;
+						gore.timeLeft = 60;
+					}
+
+					Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(15, 15), DustID.Smoke, hitVelocity,
+										235, default, Main.rand.NextFloat(5f));
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(hitSpot + Main.rand.NextVector2Circular(5, 5), hitVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 0.75f), new Color(160, 155, 106) * 0.12f, Main.rand.NextFloat(0.05f, 0.2f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+					{
+						Pixellate = true,
+						PixelDivisor = 2,
+						Layer = ParticleLayer.BelowNPC
+					});
+				}			
+			}
+		}
 
 		if (dead && !Main.dedServ)
 		{
