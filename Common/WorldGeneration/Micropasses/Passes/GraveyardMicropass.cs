@@ -566,6 +566,7 @@ internal class GraveyardMicropass : Micropass
 
 		WorldUtils.Gen(bounds.Location, new ModShapes.All(data), Actions.Chain(
 			new Modifiers.RectangleMask(-bounds.Width, bounds.Width, 1, bounds.Height),
+			new Modifiers.Blotches(),
 			new Modifiers.IsNotSolid(),
 			new Actions.PlaceTile((ushort)ModContent.TileType<BonePile>())
 		));

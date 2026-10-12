@@ -32,6 +32,13 @@ public class BonePile : ModTile
 
 		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, 0, 0f);
 
+		if (tile.TileFrameX >= 18 && tile.TileFrameX <= 54 && tile.TileFrameY == 0)
+		{
+			int frame = tile.TileFrameX / 18 - 1;
+			Rectangle source2 = new(162 + 18 * frame, 72, 16, 16);
+			spriteBatch.Draw(texture, position - new Vector2(0, 10), source2, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, 0, 0f);
+		}
+
 		if (!Main.gamePaused)
 			SpawnDusts(new(i * 16, j * 16, 16, 16), Color.White);
 
