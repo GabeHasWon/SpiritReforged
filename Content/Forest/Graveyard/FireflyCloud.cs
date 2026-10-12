@@ -11,8 +11,8 @@ public sealed class FireflyCloud : ILoadable
 
 	private static void SpawnFirefly(int i, int j, int type, bool visual)
 	{
-		if (!visual || Main.dayTime || Main.gamePaused || !Main.LocalPlayer.ZoneGraveyard)
-			return;
+		if (!visual || Main.dayTime || Main.gamePaused || !Main.LocalPlayer.ZoneGraveyard || Main.lightning > 0)
+			return; //Don't spawn fireflies during lightning
 
 		if (Main.rand.NextBool(25) && Main.tile[i, j].WallType == WallID.None && Lighting.Brightness(i, j) > 1)
 		{
