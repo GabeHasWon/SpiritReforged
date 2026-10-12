@@ -32,12 +32,12 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 3;
 
-		/*TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
+		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 		TileObjectData.newAlternate.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
 		TileObjectData.newAlternate.AnchorAlternateTiles = [ModContent.TileType<BonePile>()];
-		TileObjectData.newAlternate.DrawYOffset = -(height - 18) + 4;
+		TileObjectData.newAlternate.DrawYOffset = -(height - 18) + 4; //Offset not working
 
-		TileObjectData.addAlternate(0);*/ //Alternate style not working, for some reason
+		TileObjectData.addAlternate(0);
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(165, 165, 150));

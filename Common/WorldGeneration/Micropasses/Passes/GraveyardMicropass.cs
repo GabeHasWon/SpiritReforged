@@ -1,8 +1,10 @@
-﻿using SpiritReforged.Common.TileCommon;
+﻿using Humanizer;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.SaltFlats.Tiles;
+using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Linq;
@@ -59,8 +61,9 @@ internal class GraveyardMicropass : Micropass
 	[WorldBound]
 	public static QuickConversion.BiomeType Biome;
 
-	private static MausoleumTilePalette MausoleumPalette;
+	private static readonly HashSet<char> Digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 	private static readonly HashSet<Rectangle> Platforms = [];
+	private static MausoleumTilePalette MausoleumPalette;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex) => passes.FindIndex(genpass => genpass.Name.Equals("Piles"));
 
@@ -251,7 +254,27 @@ internal class GraveyardMicropass : Micropass
 		else if (surfaceType is TileID.SnowBlock or TileID.IceBlock)
 			style = WorldGen.genRand.NextFromList(0, 2, 3, 5); //Avoid mossy variants
 
-		return Placer.PlaceTile(x, y, TileID.Tombstones, style).success;
+		if (Placer.PlaceTile(x, y, TileID.Tombstones, style).success)
+		{
+			string text = Language.GetTextValue("Mods.SpiritReforged.Misc.TombText." + Main.rand.Next(4));
+			int argsCount = 0;
+
+			foreach (char character in text)
+				if (Digits.Contains(character))
+					argsCount++;
+
+			string[] args = new string[argsCount];
+
+			for (int c = 0; c < argsCount; c++)
+				args[c] = Lang.GetNPCName(Main.rand.Next(NPCID.Count)).Value;
+
+			Sign.TextSign(Sign.ReadSign(x, y - 1), text.FormatWith(args));
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
 
 	private static bool PlaceNamedGrave(int x, int y)
@@ -473,6 +496,10 @@ internal class GraveyardMicropass : Micropass
 
 			WorldUtils.Gen(bottom, new Shapes.Rectangle(new(-(topArea.Width / 2) + 4, 0, 2, 3)), new Actions.ClearTile()); //Create left opening
 			WorldUtils.Gen(bottom, new Shapes.Rectangle(new(topArea.Width / 2 - 6, 0, 2, 3)), new Actions.ClearTile()); //Create right opening
+
+			Rectangle potRegion = bottomArea;
+			potRegion.Inflate(4, 10);
+			new Decorator(potRegion).Enqueue(ModContent.TileType<BiomePots>(), 3).Run(out _); //Add pots
 
 			if (Biome is QuickConversion.BiomeType.Desert) //Place Desert-specific grates
 			{

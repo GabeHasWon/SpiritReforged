@@ -48,6 +48,13 @@ Misc: {
 		Random: Случайное зачарование
 	}
 
+	TombText: {
+		// 0: Here rests {0}.
+		// 1: Here lies {0}, loved by many.
+		// 2: Here lies {0} AND {1}.
+		// 3: The grave is empty.
+	}
+
 	NoStock: Нет в наличии
 	GraveText: <wavy>Текст старый и выцветший; вы не можете разобрать, что здесь написано.
 	MenuButton: Использовать тему меню

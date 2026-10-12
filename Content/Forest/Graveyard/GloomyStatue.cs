@@ -45,6 +45,8 @@ public class GloomyStatue : ModTile, ILoadItem
 		public override void ResetNearbyTileEffects() => ForcedGraveyardIntensity = null;
 	}
 
+	void ILoadItem.AddItemRecipes(ModItem item) => item.CreateRecipe(20).AddIngredient(ItemID.StoneBlock).AddIngredient(ItemID.Bone, 8).AddTile(TileID.HeavyWorkBench).AddCondition(Condition.InGraveyard).Register();
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -72,7 +74,7 @@ public class GloomyStatue : ModTile, ILoadItem
 			(r, g, b) = (0.2f, 0.2f, 0.2f);
 	}
 
-	public override void NearbyEffects(int i, int j, bool closer) => GloomyLightingSystem.ForcedGraveyardIntensity = 1f;
+	public override void NearbyEffects(int i, int j, bool closer) => GloomyLightingSystem.ForcedGraveyardIntensity = Math.Max(Main.GraveyardVisualIntensity, 0.8f);
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
 	{
