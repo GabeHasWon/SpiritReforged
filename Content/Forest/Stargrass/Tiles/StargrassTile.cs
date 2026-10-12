@@ -11,16 +11,16 @@ using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-public class StargrassTile : GrassTile, ISetConversion
+public class StargrassTile : GrassTile
 {
-	public virtual ConversionHandler.Set ConversionSet => new()
-	{
-		{ BiomeConversionID.Corruption, TileID.CorruptGrass },
-		{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
-		{ BiomeConversionID.Hallow, TileID.HallowedGrass },
-		{ BiomeConversionID.PurificationPowder, TileID.Grass },
-		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
-	};
+	//public virtual ConversionHandler.Set ConversionSet => new()
+	//{
+	//	{ BiomeConversionID.Corruption, TileID.CorruptGrass },
+	//	{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
+	//	{ BiomeConversionID.Hallow, TileID.HallowedGrass },
+	//	{ BiomeConversionID.PurificationPowder, TileID.Grass },
+	//	{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
+	//};
 
 	public static Color GetGlowColor(int i, int j) 
 	{

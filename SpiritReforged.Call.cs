@@ -8,6 +8,8 @@ using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
+using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.SaltFlats;
@@ -72,7 +74,7 @@ public partial class SpiritReforgedMod : Mod
 				arguments = arguments[1..];
 
 				ParameterInfo[] parameters = info.GetParameters();
-				int optionalCount = parameters.Where(x => x.IsOptional).Count(); //The number of optional parameters of this method
+				int optionalCount = parameters.Count(x => x.IsOptional); //The number of optional parameters of this method
 				object[] namedObjects = new object[parameters.Length];
 
 				if (arguments.Length > parameters.Length)
@@ -188,7 +190,7 @@ public partial class SpiritReforgedMod : Mod
 			{
 				if (loot is TileLootTable t)
 					lootPool.Invoke(t.Style, t.Coordinates, loot);
-			});
+			}, type);
 		else if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool))
 			TileLootSystem.RegisterLoot(pool, type);
 
@@ -221,7 +223,7 @@ public partial class SpiritReforgedMod : Mod
 			{
 				if (loot is TileLootTable t)
 					lootPool.Invoke(t.Style, loot);
-			});
+			}, type);
 		else if (TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool))
 			TileLootSystem.RegisterLoot(pool, type);
 
@@ -229,7 +231,7 @@ public partial class SpiritReforgedMod : Mod
 			tileRecord.AddDescription(description);
 
 		if (displayName != null)
-			tileRecord.AddDescription(displayName);
+			tileRecord.AddDisplayName(displayName);
 
 		RecordHandler.Records.Add(tileRecord);
 		SpiritReforgedMod.Instance.Logger.Debug("[Mod.Call] Consider using the new overload: ManualAddRecord(int type, int[] styles, string recordName, byte rating = byte.MaxValue, Func<bool>? hidden = null, Action<int, Point16, ILoot>? lootPool = null, LocalizedText? description = null, LocalizedText? displayName = null)");
@@ -266,5 +268,8 @@ public partial class SpiritReforgedMod : Mod
 
 		return string.Empty;
 	}
+
+	[ModCall]
+	private static int TrellisVine(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path) => CrossmodTrellis.InternalRecieve(mod, itemStylePairs, name, path);
 	#endregion
 }

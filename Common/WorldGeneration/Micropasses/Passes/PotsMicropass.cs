@@ -147,7 +147,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
-	public override void Load(Mod mod)
+	public override void Load()
 	{
 		TileEvents.OnPlacePot += PotConversion;
 		On_WorldGen.PlaceTile += PotBoulderConversion;
