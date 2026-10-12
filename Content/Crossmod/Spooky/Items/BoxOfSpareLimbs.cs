@@ -5,11 +5,6 @@ namespace SpiritReforged.Content.Crossmod.Spooky.Items;
 
 internal class BoxOfSpareLimbs : ModItem, IFlagged
 {
-	public class SpareLeg : ModProjectile
-	{
-
-	}
-
 	public class SpareLimbPlayer : ModPlayer
 	{
 		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
@@ -24,8 +19,6 @@ internal class BoxOfSpareLimbs : ModItem, IFlagged
 			{
 				for (int i = 0; i < 6; ++i)
 					Dust.NewDust(Player.position, Player.width, Player.head, DustID.Sand, Player.velocity.X, Player.velocity.Y);
-
-
 			}
 		}
 	}
