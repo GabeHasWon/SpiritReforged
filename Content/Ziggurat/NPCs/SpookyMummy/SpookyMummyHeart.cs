@@ -1,4 +1,7 @@
-﻿using SpiritReforged.Content.Ziggurat.Biome;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Particle;
+using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
@@ -49,8 +52,19 @@ internal class SpookyMummyHeart : ModNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
-		for (int i = 0; i < (NPC.life <= 0 ? 16 : 5); ++i)
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, DustID.Blood, Scale: Main.rand.NextFloat(0.8f, 1.8f));
+		for (int i = 0; i < 6; ++i)
+			Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), DustID.Blood, Main.rand.NextVector2Circular(2f, 2f), 70, default, Main.rand.NextFloat(2f)).noGravity = true;
+
+		// Dead
+		if (NPC.life <= 0)
+		{
+			for (int i = 0; i < 10; ++i)
+				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), DustID.Blood, Main.rand.NextVector2CircularEdge(3f, 3f), 150, default, Main.rand.NextFloat(4f));
+
+			TexturedPulseCircle circle = new(NPC.Center, Color.DarkRed * 0.2f, 2, 90, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
+			circle.Angle = Main.rand.NextFloat(MathHelper.TwoPi);
+			ParticleHandler.SpawnParticle(circle);
+		}
 	}
 
 	public override void FindFrame(int frameHeight)

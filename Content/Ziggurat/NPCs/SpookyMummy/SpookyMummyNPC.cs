@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Particles;
@@ -11,6 +12,7 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
 
+[AutoloadGlowmask("255,255,255")]
 internal class SpookyMummyNPC : ModNPC
 {
 	public class LastMummyCondition : IItemDropRuleCondition
@@ -35,7 +37,6 @@ internal class SpookyMummyNPC : ModNPC
 		bool IItemDropRuleCondition.CanShowItemDropInUI() => true;
 		string IProvideItemConditionDescription.GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.NPCs.SpookyMummyNPC.DropCondition");
 	}
-
 	public Player Target => Main.player[NPC.target];
 
 	private ref float SoundTimer => ref NPC.ai[0];
@@ -89,27 +90,34 @@ internal class SpookyMummyNPC : ModNPC
 		NPC.direction = NPC.spriteDirection = -MathF.Sign(NPC.velocity.X);
 		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 	}
+	
+	// Used by the children (besides heart)
 
-	public override void HitEffect(NPC.HitInfo hit)
+	/// <summary>
+	/// Helper method to spawn dust for the Spooky Mummy and children
+	/// </summary>
+	/// <param name="NPC">the NPC</param>
+	/// <param name="hit">the <see cref="NPC.HitInfo"/></param>
+	/// <param name="scale">the scale multiplier of the dust</param>
+	/// <param name="strength">the strength multiplier of loops (iterations) and velocity</param>
+	public static void SpookyMummyHitEffect(NPC NPC, NPC.HitInfo hit, float scale = 1f, float strength = 1f)
 	{
-		bool dead = NPC.life <= 0;
-
-		for (int i = 0; i < 2; i++)
+		for (int i = 0; i < Math.Max(2 * strength, 1); i++)
 		{
 			Vector2 hitSpot = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 3, NPC.height / 3);
 
-			for (int x = 0; x < 5; x++)
+			for (int x = 0; x < Math.Max(5 * strength, 1); x++)
 			{
-				Vector2 hitVelocity = Vector2.UnitX.RotatedByRandom(2f) * Main.rand.NextFloat(6f) * hit.HitDirection;
+				Vector2 hitVelocity = Vector2.UnitX.RotatedByRandom(2f) * Main.rand.NextFloat(6f) * hit.HitDirection * strength;
 
 				var d = Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(20, 20), DustID.Blood,
-					hitVelocity, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(2f));
+					hitVelocity, 50 + Main.rand.Next(100), default, Main.rand.NextFloat(2f) * scale);
 
 				d.noGravity = !Main.rand.NextBool(5);
 				d.fadeIn = d.noGravity ? 1f : 0f;
 
 				Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(15, 15), DustID.Sand, hitVelocity.RotatedByRandom(0.15f) * Main.rand.NextFloat(1.1f),
-					90, default, Main.rand.NextFloat(1.5f)).noGravity = true;
+					90, default, Main.rand.NextFloat(1.5f) * scale).noGravity = true;
 			}
 
 			hitSpot = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 3, NPC.height / 3);
@@ -117,9 +125,9 @@ internal class SpookyMummyNPC : ModNPC
 			// Tight puff of smoke and dust
 			if (Main.rand.NextBool(5))
 			{
-				Vector2 hitVelocity = Vector2.UnitX.RotatedByRandom(1.5f) * Main.rand.NextFloat(4f) * hit.HitDirection;
+				Vector2 hitVelocity = Vector2.UnitX.RotatedByRandom(1.5f) * Main.rand.NextFloat(4f) * hit.HitDirection * strength;
 
-				for (int x = 0; x < 7; x++)
+				for (int x = 0; x < Math.Max(7 * strength, 1); x++)
 				{
 					if (Main.rand.NextBool(10))
 					{
@@ -133,17 +141,24 @@ internal class SpookyMummyNPC : ModNPC
 					}
 
 					Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(15, 15), DustID.Smoke, hitVelocity,
-										235, default, Main.rand.NextFloat(5f));
+										235, default, Main.rand.NextFloat(5f) * scale);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(hitSpot + Main.rand.NextVector2Circular(5, 5), hitVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 0.75f), new Color(160, 155, 106) * 0.12f, Main.rand.NextFloat(0.05f, 0.2f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+					ParticleHandler.SpawnParticle(new SmokeCloud(hitSpot + Main.rand.NextVector2Circular(5, 5), hitVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 0.75f), new Color(160, 155, 106) * 0.12f, Main.rand.NextFloat(0.05f, 0.2f) * scale, EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
 					{
 						Pixellate = true,
 						PixelDivisor = 2,
 						Layer = ParticleLayer.BelowNPC
 					});
-				}			
+				}
 			}
 		}
+	}
+
+	public override void HitEffect(NPC.HitInfo hit)
+	{
+		SpookyMummyHitEffect(NPC, hit);
+
+		bool dead = NPC.life <= 0;
 
 		if (dead && !Main.dedServ)
 		{

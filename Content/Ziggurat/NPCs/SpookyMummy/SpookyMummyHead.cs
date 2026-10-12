@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Crossmod.Spooky.Items;
+﻿using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.GameContent.Bestiary;
@@ -7,6 +8,7 @@ using Terraria.Map;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
 
+[AutoloadGlowmask("255,255,255")]
 internal class SpookyMummyHead : ModNPC
 {
 	public Player Target => Main.player[NPC.target];
@@ -84,8 +86,7 @@ internal class SpookyMummyHead : ModNPC
 	{
 		bool dead = NPC.life <= 0;
 
-		for (int i = 0; i < (dead ? 20 : 6); ++i)
-			Dust.NewDust(NPC.position, NPC.width, NPC.height, Main.rand.NextBool(2) ? DustID.Blood : DustID.Sand, Scale: Main.rand.NextFloat(1.2f, 2f));
+		SpookyMummyNPC.SpookyMummyHitEffect(NPC, hit, 0.75f, 0.75f);
 
 		if (dead && !Main.dedServ)
 		{
