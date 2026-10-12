@@ -3817,3 +3817,8 @@ GloomyStatueItem: {
 	DisplayName: Gloomy Statue
 	Tooltip: ""
 }
+
+BoxOfSpareLimbs: {
+	DisplayName: Box Of Spare Limbs
+	Tooltip: ""
+}

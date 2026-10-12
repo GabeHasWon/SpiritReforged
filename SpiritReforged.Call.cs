@@ -8,7 +8,6 @@ using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
-using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Glyphs;

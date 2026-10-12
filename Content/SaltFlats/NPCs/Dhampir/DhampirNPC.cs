@@ -1,12 +1,11 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Dusts;
-using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.Runtime.CompilerServices;
