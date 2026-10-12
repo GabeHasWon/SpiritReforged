@@ -210,7 +210,7 @@ internal class ScarabMountItem : ModItem
 		}
 	}
 
-	private static readonly Asset<Texture2D> Saddle = DrawHelpers.RequestLocal(typeof(ScarabMount), "ScarabMount_Saddle", false);
+	private static readonly Asset<Texture2D> Saddle = Graphics.Request<Texture2D>("ScarabMount_Saddle");
 
 	public override void SetDefaults()
 	{

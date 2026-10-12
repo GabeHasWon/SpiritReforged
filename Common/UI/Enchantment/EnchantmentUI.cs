@@ -18,7 +18,7 @@ namespace SpiritReforged.Common.UI.Enchantment;
 
 public class EnchantmentUI : AutoUIState
 {
-	private static readonly Asset<Texture2D> Background = DrawHelpers.RequestLocal<EnchantmentUI>("EnchantmentUI_Background", false);
+	private static readonly Asset<Texture2D> Background = Graphics.Request<Texture2D>("EnchantmentUI_Background");
 	private static readonly Asset<Texture2D> CreativeParticle = Main.Assets.Request<Texture2D>("Images/UI/Creative/Research_Spark");
 
 	private static readonly Vector2[] FlameOrigin = [

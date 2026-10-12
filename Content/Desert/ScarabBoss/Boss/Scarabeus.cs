@@ -273,12 +273,12 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("Scarabeus_Sheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Sheen", false), [3, 6, 5, 13], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Wings", false));
-		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false), simulated: true);
-		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall_Sheen", false), [1]);
-		TakeoffProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Sheen", false), [25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Wings", false));
-		DeadProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
+		PhaseOneProfile = new(TextureAssets.Npc[Type], Graphics.Request<Texture2D>("Scarabeus_Sheen"), [9, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseTwoProfile = new(Graphics.Request<Texture2D>("ScarabeusPhaseTwo"), Graphics.Request<Texture2D>("ScarabeusPhaseTwo_Sheen"), [3, 6, 5, 13], Graphics.Request<Texture2D>("ScarabeusPhaseTwo_Glow"), Graphics.Request<Texture2D>("ScarabeusPhaseTwo_Wings"));
+		SimulatedProfile = new(Graphics.Request<Texture2D>("ScarabeusSimulated"), Graphics.Request<Texture2D>("ScarabeusSimulated_Sheen"), Enumerable.Repeat(4, 11).ToArray(), Graphics.Request<Texture2D>("ScarabeusSimulated_Glow"), simulated: true);
+		BallProfile = new(Graphics.Request<Texture2D>("ScarabeusBall"), Graphics.Request<Texture2D>("ScarabeusBall_Sheen"), [1]);
+		TakeoffProfile = new(Graphics.Request<Texture2D>("ScarabeusTakeoff"), Graphics.Request<Texture2D>("ScarabeusTakeoff_Sheen"), [25], Graphics.Request<Texture2D>("ScarabeusTakeoff_Glow"), Graphics.Request<Texture2D>("ScarabeusTakeoff_Wings"));
+		DeadProfile = new(Graphics.Request<Texture2D>("ScarabeusDead"), Graphics.Request<Texture2D>("ScarabeusDead_Sheen"), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/ScarabeusP2");

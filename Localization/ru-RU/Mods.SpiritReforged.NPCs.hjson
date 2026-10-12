@@ -580,8 +580,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: Маленькая личинка
 	Entry: Почти настолько же полна потенциала, насколько она отвратительна.
+	DisplayName: Маленькая личинка
 }
 
 CactusZombie: {
@@ -841,3 +841,4 @@ SpookyMummyLegs: {
 	// DisplayName: Mummiath Legs
 	// Entry: Every group has an honest, down-to-earth hard worker. Literally.
 }
+// PassiveGhost.DisplayName: Passive Ghost

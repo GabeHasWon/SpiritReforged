@@ -61,7 +61,7 @@ public class MahakalaMaskBlue : ModItem
 
 	private class MahakalaGlowLayer : PlayerDrawLayer
 	{
-		private static readonly Asset<Texture2D> Glow = DrawHelpers.RequestLocal(typeof(MahakalaMaskBlue), "MahakalaGlow", false);
+		private static readonly Asset<Texture2D> Glow = Graphics.Request<Texture2D>("MahakalaGlow");
 
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccFront);
 

@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 
-namespace SpiritReforged.Content.Forest.Safekeeper;
+namespace SpiritReforged.Content.Forest.Graveyard;
 
 public class HolyStar : Particle
 {
@@ -24,8 +24,8 @@ public class HolyStar : Particle
 
 		for (int i = 0; i < 3; i++)
 		{
-			var c = ((i == 0) ? (Color.Magenta * .5f) : ((i == 1) ? (Color.Blue * .5f) : Color)).Additive() * (1f - Progress);
-			var p = Position + randomOffset * ((i == 0) ? 1 : ((i == 1) ? -1 : 0)) - Main.screenPosition;
+			var c = (i == 0 ? Color.Magenta * .5f : i == 1 ? Color.Blue * .5f : Color).Additive() * (1f - Progress);
+			var p = Position + randomOffset * (i == 0 ? 1 : i == 1 ? -1 : 0) - Main.screenPosition;
 			float s = (1f - Progress) * Scale;
 
 			spriteBatch.Draw(basetexture, p, null, c * .5f, Rotation * 1.5f, basetexture.Size() / 2, s * 0.75f, SpriteEffects.None, 0);

@@ -58,7 +58,7 @@ public class RageGlyph : GlyphItem
 
 	public sealed class RagePlayer : ModPlayer
 	{
-		public static readonly Asset<Texture2D> RageIcon = DrawHelpers.RequestLocal<RagePlayer>("RageGlyph_Icon", false);
+		public static readonly Asset<Texture2D> RageIcon = Graphics.Request<Texture2D>("RageGlyph_Icon");
 
 		public const float OVERFLOW_DAMAGE_MULT = 2.25f;
 		public const float DAMAGE_TAKEN_MULT = 1.5f;

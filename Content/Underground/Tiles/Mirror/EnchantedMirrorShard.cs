@@ -44,7 +44,7 @@ public class EnchantedMirrorShard : Particle
 	{
 		Rectangle source = Texture.Frame(1, 4, 0, _variant);
 
-		DrawHelpers.DrawOutline(spriteBatch, default, default, default, (offset) =>
+		Graphics.DrawOutline(spriteBatch, default, default, default, (offset) =>
 			spriteBatch.Draw(Texture, Position - Main.screenPosition + offset, source, Color.Cyan.Additive() * Progress * 1.5f, Rotation, source.Size() / 2, Scale, 0, 0));
 
 		spriteBatch.Draw(Texture, Position - Main.screenPosition, source, Color, Rotation, source.Size() / 2, Scale, 0, 0);

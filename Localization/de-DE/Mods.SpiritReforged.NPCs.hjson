@@ -580,8 +580,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: Winzige Larve
 	Entry: Fast so voller Potenzial wie voller Ekligkeit.
+	DisplayName: Winzige Larve
 }
 
 CactusZombie: {
@@ -836,3 +836,4 @@ SpookyMummyLegs: {
 	// DisplayName: Mummiath Legs
 	// Entry: Every group has an honest, down-to-earth hard worker. Literally.
 }
+// PassiveGhost.DisplayName: Passive Ghost

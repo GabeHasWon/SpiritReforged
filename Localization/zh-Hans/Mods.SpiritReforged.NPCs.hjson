@@ -580,8 +580,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: 小幼虫
 	Entry: 其潜力跟恶心程度一样大。
+	DisplayName: 小幼虫
 }
 
 CactusZombie: {
@@ -836,3 +836,4 @@ SpookyMummyLegs: {
 	// DisplayName: Mummiath Legs
 	// Entry: Every group has an honest, down-to-earth hard worker. Literally.
 }
+// PassiveGhost.DisplayName: Passive Ghost

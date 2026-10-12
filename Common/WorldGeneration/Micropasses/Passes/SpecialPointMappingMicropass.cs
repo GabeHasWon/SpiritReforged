@@ -7,7 +7,7 @@ using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.DragonFossil;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
-using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;

@@ -122,7 +122,7 @@ public sealed class AdornedFlash : ModProjectile
 		Projectile.velocity = Projectile.rotation.ToRotationVector2();
 
 		if (Projectile.timeLeft > 40)
-			Lighting.AddLight(Projectile.Center, DrawHelpers.MulticolorLerp(Projectile.timeLeft / 50f, _primaryPalette.Colors).ToVector3() * (Projectile.timeLeft / 50f));
+			Lighting.AddLight(Projectile.Center, Graphics.MulticolorLerp(Projectile.timeLeft / 50f, _primaryPalette.Colors).ToVector3() * (Projectile.timeLeft / 50f));
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCs.Add(index);

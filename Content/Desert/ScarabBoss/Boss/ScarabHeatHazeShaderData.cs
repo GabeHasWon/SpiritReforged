@@ -46,7 +46,7 @@ public class ScarabHeatHazeShaderData : ScreenShaderData
 	{
 		myFilter = new Filter(
 			new ScarabHeatHazeShaderData(ModContent.Request<Effect>("SpiritReforged/Assets/Shaders/ScarabHeatHaze"), "ScarabHeatHazePass")
-			.UseImage(DrawHelpers.RequestLocal<Scarabeus>("TonemapGradient", false), 0, SamplerState.LinearClamp) //Gradient map texture that color maps the screen to be bluer
+			.UseImage(Graphics.Request<Texture2D>("TonemapGradient"), 0, SamplerState.LinearClamp) //Gradient map texture that color maps the screen to be bluer
 			.UseImage(ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/DisplaceNoise"), 1, SamplerState.LinearWrap) //Distortion map
 			, EffectPriority.High);
 

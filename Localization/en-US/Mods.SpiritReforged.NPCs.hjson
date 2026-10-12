@@ -580,8 +580,8 @@ Scarabeus: {
 }
 
 TinyGrub: {
-	DisplayName: Tiny Grub
 	Entry: Almost as full of potential as it is grossness.
+	DisplayName: Tiny Grub
 }
 
 CactusZombie: {
@@ -836,3 +836,4 @@ SpookyMummyLegs: {
 	DisplayName: Mummiath Legs
 	Entry: Every group has an honest, down-to-earth hard worker. Literally.
 }
+PassiveGhost.DisplayName: Passive Ghost

@@ -1,11 +1,10 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Vanilla.Food;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Vanity;
-using System.Diagnostics;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
@@ -160,7 +159,7 @@ internal class DecrepitMummy : ModNPC
 			target.AddBuff(BuffID.Slow, 60 * 15);
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Common() && ZigguratGlobalNPC.InBiome(spawnInfo) ? 0.005f : 0;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.EventSafe() && ZigguratGlobalNPC.InBiome(spawnInfo) ? 0.005f : 0;
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{

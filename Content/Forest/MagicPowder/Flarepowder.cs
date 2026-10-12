@@ -25,7 +25,7 @@ public class Flarepowder : ModItem
 		MaxInstances = 2
 	};
 
-	private static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal(typeof(Flarepowder), "PowderHeld", false);
+	private static readonly Asset<Texture2D> HeldTexture = Graphics.Request<Texture2D>("PowderHeld");
 	private static readonly Dictionary<int, int> PowderTypes = [];
 
 	public bool IsDerived => GetType() != typeof(Flarepowder);
@@ -132,7 +132,7 @@ internal class FlarepowderDust : ModProjectile
 	/// <summary> Must have 5 elements. Normally a gradient from light to dark. </summary>
 	public virtual Color[] Colors => [Color.LightGoldenrodYellow, Color.Yellow, Color.Orange, Color.OrangeRed, Color.DarkRed];
 
-	public override string Texture => DrawHelpers.RequestLocal(GetType(), nameof(FlarepowderDust));
+	public override string Texture => Graphics.RequestPath(nameof(FlarepowderDust));
 
 	public static readonly SoundStyle Impact = new("SpiritReforged/Assets/SFX/Projectile/Impact_Hard")
 	{

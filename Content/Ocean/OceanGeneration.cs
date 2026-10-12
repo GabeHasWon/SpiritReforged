@@ -103,7 +103,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[WorldBound]
 	public static Rectangle RightOcean;
 
-	PageInfo IGenerationPage.Info => new("Ocean", DrawHelpers.RequestLocal(GetType(), "OceanPage", false), DrawHelpers.RequestLocal(GetType(), "OceanPageButton", false))
+	PageInfo IGenerationPage.Info => new("Ocean", Graphics.Request<Texture2D>("OceanPage"), Graphics.Request<Texture2D>("OceanPageButton"))
 	{
 		Presets = 
 		[
@@ -426,7 +426,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 				.Enqueue(CreateStack, radius / 2)
 				.Enqueue(ModContent.TileType<GravelPile>(), radius / 2)
 				.Enqueue(ModContent.TileType<GravelStalagmite>(), radius / 3)
-				.Run();
+				.Run(out _);
 
 			return true;
 		}

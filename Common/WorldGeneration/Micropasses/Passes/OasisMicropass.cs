@@ -160,7 +160,7 @@ internal class OasisMicropass : Micropass, IGenerationPage
 	[GenConfigurable("0 0", "50 25")]
 	internal static GenRange RuinCount = new GenRange(0, 4);
 
-	PageInfo IGenerationPage.Info => new("Desert", DrawHelpers.RequestLocal(GetType(), "DesertPage", false), DrawHelpers.RequestLocal(GetType(), "DesertPageButton", false))
+	PageInfo IGenerationPage.Info => new("Desert", Graphics.Request<Texture2D>("DesertPage"), Graphics.Request<Texture2D>("DesertPageButton"))
 	{
 		Presets =
 		[
@@ -682,7 +682,7 @@ internal class OasisMicropass : Micropass, IGenerationPage
 			.Enqueue(ModContent.TileType<AncientBanner>(), WorldGen.genRand.Next(1, 4))
 			.Enqueue(ZigguratMicropass.PlaceDoor, 1)
 			.Enqueue(PlaceTorch, WorldGen.genRand.Next(1, 4))
-			.Run();
+			.Run(out _);
 
 		return result;
 
