@@ -3,9 +3,14 @@ using SpiritReforged.Common.PlayerCommon;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.Items;
 
-internal class MummyReward : ModItem, IFlagged
+internal class BoxOfSpareLimbs : ModItem, IFlagged
 {
-	public class MummyRewardPlayer : ModPlayer
+	public class SpareLeg : ModProjectile
+	{
+
+	}
+
+	public class SpareLimbPlayer : ModPlayer
 	{
 		public override void ModifyHurt(ref Player.HurtModifiers modifiers)
 		{
@@ -19,18 +24,9 @@ internal class MummyReward : ModItem, IFlagged
 			{
 				for (int i = 0; i < 6; ++i)
 					Dust.NewDust(Player.position, Player.width, Player.head, DustID.Sand, Player.velocity.X, Player.velocity.Y);
+
+
 			}
-		}
-
-		public override void PostUpdateRunSpeeds()
-		{
-			if (Player.CheckFlag("MummyReward") != true)
-				return;
-
-			float factor = Player.statLife / (float)Player.statLifeMax2;
-			Player.maxRunSpeed *= 1 + factor * 0.75f;
-			Player.accRunSpeed *= 1 + factor * 0.75f;
-			Player.runAcceleration *= 1 + factor * 0.75f;
 		}
 	}
 
