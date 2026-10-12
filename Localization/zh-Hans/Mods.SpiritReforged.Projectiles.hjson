@@ -101,8 +101,8 @@ ShockGlyphLightningBolt.DisplayName: 闪电矢
 MariglowSeed.DisplayName: 光盏种子
 RageHit.DisplayName: 愤怒一击
 MirrorReturnPortal.DisplayName: 返回之镜传送门
-// Columbat.DisplayName: Columbat
-// Columbald.DisplayName: Columbald
-// EyeballMinion.DisplayName: Eyeball
-// PumpkinEmberProjectile.DisplayName: Ember
-// ShovelClubBoneProjectile.DisplayName: Bone
+Columbat.DisplayName: 蝠伦布
+Columbald.DisplayName: 秃伦布
+EyeballMinion.DisplayName: 眼球
+PumpkinEmberProjectile.DisplayName: 余烬
+ShovelClubBoneProjectile.DisplayName: 骨头
