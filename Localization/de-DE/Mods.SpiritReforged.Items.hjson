@@ -5,6 +5,16 @@ CommonTooltips: {
 		Du musst ihn leeren, bevor du ihn ablegst
 		'''
 	Shimmerable: "{0} verwandelt sich im Shimmer"
+	/* Wrench:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries grants temporary buffs at the cost of scrap
+		''' */
+	/* Greatshield:
+		'''
+		<right> to block incoming damage
+		Gains increased damage with defense
+		''' */
 }
 
 Kelp: {
@@ -3529,4 +3539,152 @@ ChromaticWaxShaderDummy: {
 WaxPlatformItem: {
 	DisplayName: Wachs-Plattform
 	Tooltip: ""
+}
+
+ScrapPickup: {
+	// DisplayName: Scrap
+	/* Tooltip:
+		'''
+		Used by various wrenches on sentries
+		'Sharp! (ow)'
+		''' */
+}
+
+CopperSpanner: {
+	// DisplayName: Copper Spanner
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+TinSpanner: {
+	// DisplayName: Tin Spanner
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+MagnetiteWrench: {
+	// DisplayName: Magnetite Wrench
+	// Tooltip: "{$CommonTooltips.Wrench}"
+}
+
+LargeWrench: {
+	// DisplayName: Comically Large Wrench
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Wrench}
+		Charged strikes move sentries to the cursor position
+		''' */
+}
+
+Overloader: {
+	// DisplayName: Overloader
+	/* Tooltip:
+		'''
+		Allows scrap to be collected from enemies
+		Hitting sentries consumes all scrap to create an explosion
+		''' */
+}
+
+StoneGreatshield: {
+	// DisplayName: Stonemason Greatshield
+	// Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+SpikedScutumPurple: {
+	// DisplayName: Spiked Scutum
+	// Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+SpikedScutumRed: {
+	// DisplayName: "{$SpikedScutumPurple.DisplayName}"
+	// Tooltip: "{$SpikedScutumPurple.Tooltip}"
+}
+
+Firewall: {
+	// DisplayName: Firewall
+	// Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+KiteShield: {
+	// DisplayName: Kite Shield
+	// Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+RhosRydd: {
+	// DisplayName: Rhos Rydd
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Greatshield}
+		Hold to perform a short-ranged dash
+		''' */
+}
+
+Roromaraugi: {
+	// DisplayName: Roromaraugi
+	// Tooltip: "{$CommonTooltips.Greatshield}"
+}
+
+StaminaRing: {
+	// DisplayName: Ring of Stamina
+	/* Tooltip:
+		'''
+		Increases Greatshield guard by {0}
+		Increases Greatshield guard regeneration speed by {1}%
+		''' */
+}
+
+Vendetta: {
+	// DisplayName: Vendetta
+	/* Tooltip:
+		'''
+		Enemies that damage you are marked for a limited time
+		Marked enemies take {0}% more damage
+		''' */
+}
+
+Pepperbox: {
+	// DisplayName: Pepperbox
+	// Tooltip: ""
+}
+
+ShotgunAmmoType: {
+	// DisplayName: Shotgun Ammo Type
+	// Tooltip: ""
+}
+
+Shot: {
+	// DisplayName: Shot
+	// Tooltip: ""
+}
+
+ClockworkCane: {
+	// DisplayName: Clockwork Cane
+	/* Tooltip:
+		'''
+		Summons a spinning cog to dash at your enemies
+		Collects scrap from enemies while holding a wrench
+		''' */
+}
+
+ChokeTube: {
+	// DisplayName: Choke Tube
+	// Tooltip: Reduces the spread of shotgun weapons by 50%
+}
+
+LastWord: {
+	// DisplayName: Last Word
+	// Tooltip: The last bullet in your magazine deals 50% more damage
+}
+
+Buckshot: {
+	// DisplayName: Buckshot
+	// Tooltip: ""
+}
+
+SuperExtendoMags: {
+	// DisplayName: Super Extendo Mags
+	// Tooltip: ""
+}
+
+Lumberjack: {
+	// DisplayName: Lumberjack
+	// Tooltip: ""
 }

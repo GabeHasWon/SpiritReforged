@@ -172,3 +172,18 @@ RageGlyphBuff: {
 	DisplayName: Zorniger Schaden [{0}]
 	Description: Gespeicherter Schaden: {0}
 }
+
+StonemasonBuff: {
+	// DisplayName: Stonemason Block
+	// Description: Your next attack deals double knockback
+}
+
+Vendetta_Buff: {
+	// DisplayName: Vendetta_ Buff
+	// Description: Mods.SpiritReforged.Buffs.Vendetta_Buff.Description
+}
+
+ClockworkCog_Buff: {
+	// DisplayName: Clockwork Cog
+	// Description: The tiny cog fights for you!
+}

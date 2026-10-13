@@ -3683,3 +3683,8 @@ SuperExtendoMags: {
 	DisplayName: Super Extendo Mags
 	Tooltip: ""
 }
+
+Lumberjack: {
+	DisplayName: Lumberjack
+	Tooltip: ""
+}
