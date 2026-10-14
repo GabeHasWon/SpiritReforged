@@ -102,6 +102,9 @@ internal class SpookyMummyNPC : ModNPC
 	/// <param name="strength">the strength multiplier of loops (iterations) and velocity</param>
 	public static void SpookyMummyHitEffect(NPC NPC, NPC.HitInfo hit, float scale = 1f, float strength = 1f)
 	{
+		if (Main.dedServ)
+			return;
+
 		for (int i = 0; i < Math.Max(2 * strength, 1); i++)
 		{
 			Vector2 hitSpot = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 3, NPC.height / 3);
