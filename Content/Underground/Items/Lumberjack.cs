@@ -29,6 +29,7 @@ public class Lumberjack : ModItem
 			Projectile.Size = new Vector2(20);
 			Projectile.penetrate = -1;
 			Projectile.timeLeft = FALL_TIME + 50;
+			Projectile.extraUpdates = 1;
 			Projectile.hide = true;
 		}
 
@@ -51,6 +52,8 @@ public class Lumberjack : ModItem
 					Projectile.scale *= 0.9f;
 			}
 		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => Projectile.Bounce(Projectile.velocity);
 
 		public override bool OnTileCollide(Vector2 oldVelocity)
 		{
@@ -85,7 +88,7 @@ public class Lumberjack : ModItem
 
 		public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCsAndTiles.Add(index);
 
-		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => _trail?.Draw(TrailSystem.TrailShaders, Main.graphics.GraphicsDevice);
+		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => _trail?.Draw(TrailSystem.TrailShaders, Main.graphics.GraphicsDevice, Matrix.Identity);
 	}
 
 	public class LumberjackHeld : SwungProjectile, IDrawPixelated
