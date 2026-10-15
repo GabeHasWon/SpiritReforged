@@ -2,7 +2,6 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.NPCCommon.Interfaces;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
@@ -14,7 +13,6 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
-using Terraria.ModLoader;
 using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
@@ -533,7 +531,7 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 	}
 
 	private static void SpawnSmoke(Vector2 position, Vector2 velocity, float scale, int duration, Color color, Color tertiaryColor, EaseFunction ease) 
-		=> ParticleHandler.SpawnParticle(new SmokeCloud(position, velocity, color, scale, ease, duration)
+		=> ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, velocity, color, scale, ease, duration)
 	{
 		Pixellate = true,
 		PixelDivisor = 4,

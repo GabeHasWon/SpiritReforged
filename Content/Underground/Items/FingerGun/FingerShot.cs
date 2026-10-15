@@ -1,6 +1,6 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -57,13 +57,13 @@ public class FingerShot : ModProjectile
 			Color color = Color.DarkCyan * (Projectile.timeLeft / 60f);
 			float scale = Main.rand.NextFloat(0.3f, 0.7f) * Projectile.scale;
 
-			static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
-
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, color.Additive(), scale, 18, 3, DelegateAction));
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.White.Additive() * (Projectile.timeLeft / 60f), scale / 3, 18, 3, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, velocity, color.Additive(), scale, 18, 3, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, velocity, Color.White.Additive() * (Projectile.timeLeft / 60f), scale / 3, 18, 3, DelegateAction));
 		}
 
 		Lighting.AddLight(Projectile.Center, Color.LightCyan.ToVector3() / 3);
+
+		static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => DoFX();
@@ -80,12 +80,12 @@ public class FingerShot : ModProjectile
 			return;
 
 		Color particleColor = Color.Lerp(Color.LightCyan, Color.Cyan, 0.66f).Additive();
-		ParticleHandler.SpawnParticle(new LightBurst(Projectile.Center, Main.rand.NextFloatDirection(), particleColor, 0.33f * Projectile.scale, 14));
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center, Vector2.Zero, particleColor, new Vector2(0.5f, 1.25f) * Projectile.scale, 9, 0));
+		ParticleRenderers.UnderProjectiles.Add(new LightBurst(Projectile.Center, Main.rand.NextFloatDirection(), particleColor, 0.33f * Projectile.scale, 14));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(Projectile.Center, Vector2.Zero, particleColor, new Vector2(0.5f, 1.25f) * Projectile.scale, 9, 0));
 
 		for(int i = 0; i < 7; i++)
 		{
-			ParticleHandler.SpawnParticle(new StarParticle(Projectile.Center, Main.rand.NextVector2Circular(1.5f, 1.5f), Color.LightCyan.Additive(), Color.Cyan.Additive(), 0.1f, 14, 2));
+			ParticleRenderers.UnderProjectiles.Add(new StarParticle(Projectile.Center, Main.rand.NextVector2Circular(1.5f, 1.5f), Color.LightCyan.Additive(), Color.Cyan.Additive(), 0.1f, 14, 2));
 		}
 
 		SoundEngine.PlaySound(SoundID.Item158.WithPitchOffset(1).WithVolumeScale(0.5f), Projectile.Center);

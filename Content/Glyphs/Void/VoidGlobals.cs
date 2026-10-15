@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.NPCs;
 using Terraria.Audio;
@@ -71,18 +71,18 @@ public class VoidNPC : GlobalNPC
 				Vector2 velocity = Main.rand.NextVector2Circular(6f, 3f);
 				float rotation = Main.rand.NextFloat(6.28f);
 
-				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
+				ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(target.Center, velocity, Color.Purple.Additive(), 0.2f, 35, 0, DecelerateAction)
 				{ Rotation = rotation });
 
-				ParticleHandler.SpawnParticle(new SharpStarParticle(target.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction, false)
+				ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(target.Center, velocity, Color.LightPink.Additive(), 0.1f, 35, 0, DecelerateAction, false)
 				{ Rotation = rotation });
 
 				velocity = Main.rand.NextVector2Circular(4f, 4f);
 				float scale = Main.rand.NextFloat(0.1f, 0.3f);
 				bool rotDir = Main.rand.NextBool();
 
-				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
-				ParticleHandler.SpawnParticle(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(target.Center, velocity, Color.Purple.Additive(), scale, 90, 12, rotDir ? SpinAction : SpinAction_2));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(target.Center, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, rotDir ? SpinAction : SpinAction_2));
 			}
 		}
 
@@ -136,7 +136,7 @@ public class VoidNPC : GlobalNPC
 	public override void AI(NPC npc)
 	{
 		if (!Main.dedServ && defenseReductionTimer > 0 && Main.rand.NextBool(240))
-			ParticleHandler.SpawnParticle(new VoidParticle(npc.Center, Vector2.Zero, Color.Purple.Additive(), 0f, 0.3f, 60, npc));
+			ParticleRenderers.UnderProjectiles.Add(new VoidParticle(npc.Center, Vector2.Zero, Color.Purple.Additive(), 0f, 0.3f, 60, npc));
 	}
 
 	public override void DrawEffects(NPC npc, ref Color drawColor)

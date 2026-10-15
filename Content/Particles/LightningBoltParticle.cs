@@ -1,17 +1,15 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 namespace SpiritReforged.Content.Particles;
 
 public class LightningBoltParticle : Particle, IDrawPixelated
 {
 	private VertexTrail[] _trails;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
 	Color _startColor;
 	Color _endColor;
@@ -27,8 +25,10 @@ public class LightningBoltParticle : Particle, IDrawPixelated
 		Velocity = velocity;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (!Main.dedServ)
 		{
 			if (_trails == null)
@@ -78,10 +78,9 @@ public class LightningBoltParticle : Particle, IDrawPixelated
 		}
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var tex = ParticleHandler.GetTexture(Type);
-
+		var tex = Texture;
 		float progress = EaseBuilder.EaseCircularInOut.Ease(1f - Progress);
 
 		spriteBatch.Draw(tex, Position - Main.screenPosition, null, _startColor with { A = 0 } * 0.05f * progress, 0, tex.Size() / 2, Scale * 0.3f, SpriteEffects.None, 0);

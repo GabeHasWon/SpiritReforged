@@ -1,8 +1,9 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -58,7 +59,7 @@ public class SaltBlockDull : SaltBlock
 				TertiaryColor = Color.HotPink
 			};
 
-			ParticleHandler.SpawnParticle(smoke);
+			ParticleRenderers.OverSolids.Add(smoke);
 		}
 	}
 

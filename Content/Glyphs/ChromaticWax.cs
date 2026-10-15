@@ -7,7 +7,6 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.ModCompat.LocalizationTools;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
@@ -64,7 +63,7 @@ public class ChromaticWax : ModItem
 	public override void Update(ref float gravity, ref float maxFallSpeed)
 	{
 		if (Main.rand.NextBool(10))
-			ParticleHandler.SpawnParticle(new EmberParticle(Center + Main.rand.NextVector2Circular(10, 10), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), SpecialColor, 1, 30, 2));
+			ParticleRenderers.OverItems.Add(new EmberParticle(Center + Main.rand.NextVector2Circular(10, 10), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), SpecialColor, 1, 30, 2));
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)

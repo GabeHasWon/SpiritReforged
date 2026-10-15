@@ -1,12 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
-using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.DataStructures;
 using Terraria.Graphics;
@@ -88,13 +86,11 @@ public class SaltBlockReflective : SaltBlock
 				//Reflections.DrawBlack(Main.instance, true);
 				if (Reflections.Detail > 2)
 				{
-					Main.spriteBatch.End();
-					Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.BackgroundViewMatrix.TransformationMatrix);
+					spriteBatch.End();
+					spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.BackgroundViewMatrix.TransformationMatrix);
 
-					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowWall);
-					Main.spriteBatch.RestartToDefault();
-
-					SmokeTargetSystem.DrawCompositeSmoke(7, false);
+					ParticleRenderers.DrawParticles(spriteBatch, ParticleRenderers.UnderWalls);
+					spriteBatch.RestartToDefault();
 				}
 
 				spriteBatch.Draw(Main.instance.wallTarget, Main.sceneWallPos - Main.screenPosition, Color.White);
@@ -113,10 +109,7 @@ public class SaltBlockReflective : SaltBlock
 				spriteBatch.Draw(Main.instance.tile2Target, Main.sceneTile2Pos - Main.screenPosition, Color.White);
 
 				if (Reflections.Detail > 2)
-				{
-					SmokeTargetSystem.DrawCompositeSmoke(6, false);
-					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.BelowSolid);
-				}
+					ParticleRenderers.DrawParticles(spriteBatch, ParticleRenderers.UnderSolids);
 
 				DrawOrderSystem.DrawNonsolid();
 				spriteBatch.End();
@@ -149,12 +142,12 @@ public class SaltBlockReflective : SaltBlock
 				if (Reflections.Detail > 2)
 				{
 					spriteBatch.End();
-					Main.spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
-					ParticleHandler.DrawAllParticles(Main.spriteBatch, ParticleLayer.AboveSolid);
-					Main.spriteBatch.End();
+					spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
+					
+					ParticleRenderers.DrawParticles(spriteBatch, ParticleRenderers.OverSolids);
+					
+					spriteBatch.End();
 					spriteBatch.BeginDefault();
-
-					SmokeTargetSystem.DrawCompositeSmoke(5, false);
 				}
 
 				DrawOrderSystem.DrawSolid();
@@ -234,7 +227,7 @@ public class SaltBlockReflective : SaltBlock
 			Reflections.DrawingReflection = false;
 		}
 
-		public void DrawNPCsAndProjsBehindTiles(SpriteBatch spriteBatch)
+		public static void DrawNPCsAndProjsBehindTiles(SpriteBatch spriteBatch)
 		{
 			if (Reflections.Detail > 2)
 				Reflections.DrawCachedProjs(Main.instance, Main.instance.DrawCacheProjsBehindNPCsAndTiles);
@@ -244,7 +237,7 @@ public class SaltBlockReflective : SaltBlock
 			spriteBatch.End();
 		}
 
-	public void RenderNormalTarget(SpriteBatch spriteBatch)
+		public void RenderNormalTarget(SpriteBatch spriteBatch)
 		{
 			Vector2 scale = Vector2.One;
 			var gradient = CreateTilemap(16, 255 * 3);
@@ -369,7 +362,6 @@ public class SaltBlockReflective : SaltBlock
 	public override void AddItemRecipes(ModItem item)
 	{
 		base.AddItemRecipes(item);
-
 		item.CreateRecipe().AddIngredient(ModContent.GetInstance<SaltBlockDull>().AutoItemType()).AddCondition(Condition.NearWater).Register();
 	}
 

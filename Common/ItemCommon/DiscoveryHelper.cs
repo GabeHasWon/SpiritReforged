@@ -2,7 +2,7 @@
 using MonoMod.Cil;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Ocean.Items.Pearl;
@@ -81,8 +81,8 @@ internal class DiscoveryHelper : ModPlayer
 			var center = position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(pixelScale.Y / 3);
 			float pScale = Main.rand.NextFloat(.25f, .75f) * progress;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(center, vel, popup.color, pScale, 50));
-			ParticleHandler.SpawnParticle(new GlowParticle(center, vel, popup.color * 3, pScale * .5f, 50));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(center, vel, popup.color, pScale, 50));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(center, vel, popup.color * 3, pScale * 0.5f, 50));
 		}
 
 		if (popup.lifeTime <= 1)

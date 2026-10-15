@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.BigBombs;
 using System.Runtime.CompilerServices;
@@ -110,7 +110,7 @@ public class AfterimagePlayer : ModPlayer
 				var position = Main.rand.NextVector2FromRectangle(new((int)ImagePosition.X, (int)ImagePosition.Y, Player.width, Player.height));
 				var velocity = ImagePosition.DirectionTo(Player.position) * strength * 3;
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, strength).Additive(), MathHelper.Lerp(0.5f, 2, strength) * manaStrength, 20, 1) { emitLight = false });
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, strength).Additive(), MathHelper.Lerp(0.5f, 2, strength) * manaStrength, 20, 1) { emitLight = false });
 			}
 
 			_manaEase = MathHelper.Lerp(_manaEase, _manaCounter, 0.1f);
@@ -151,12 +151,12 @@ public class AfterimagePlayer : ModPlayer
 			var stretch = Vector2.One;
 			float angle = Main.rand.NextFloat(MathHelper.Pi);
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 180, 20, "Smoke", stretch, ease)
+			ParticleRenderers.OverPlayers.Add(new TexturedPulseCircle(glowPos, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 180, 20, "Smoke", stretch, ease)
 			{
 				Angle = angle
 			});
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 180, 20, "Smoke", stretch, ease)
+			ParticleRenderers.OverPlayers.Add(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 180, 20, "Smoke", stretch, ease)
 			{
 				Angle = angle
 			});
@@ -169,7 +169,7 @@ public class AfterimagePlayer : ModPlayer
 				Color color = ((i % 2 == 0) ? Color.Orange : Color.White).Additive();
 				float scale = (i % 2 == 0) ? 1 : 0.7f;
 
-				ParticleHandler.SpawnParticle(new ImpactLine(glowPos, velocity, color, lineScale * scale, 20));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(glowPos, velocity, color, lineScale * scale, 20));
 			}
 
 			for (int i = 0; i < 8; i++)
@@ -177,8 +177,8 @@ public class AfterimagePlayer : ModPlayer
 				Vector2 velocity = Main.rand.NextVector2Unit() * Main.rand.NextFloat(1, 3);
 				float scale = Main.rand.NextFloat(0.4f, 1);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.Goldenrod.Additive(), scale, 30, 3));
-				ParticleHandler.SpawnParticle(new GlowParticle(glowPos, velocity, Color.White.Additive(), scale * 0.7f, 30, 3));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(glowPos, velocity, Color.Goldenrod.Additive(), scale, 30, 3));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(glowPos, velocity, Color.White.Additive(), scale * 0.7f, 30, 3));
 			}
 		}
 

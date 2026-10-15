@@ -1,8 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
@@ -193,7 +191,7 @@ internal class FlarepowderDust : ModProjectile
 				var velocity = (Projectile.velocity * mag).RotatedByRandom(0.3f);
 
 				if (Main.rand.NextBool(3))
-					ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Colors[3], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
+					ParticleRenderers.UnderProjectiles.Add(new MagicParticle(Projectile.Center, velocity * 0.75f, Colors[3], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
 
 				Vector2 cloudPos = Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10;
 				var fireCloud = new SmokeCloud(cloudPos, velocity, Colors[1].Additive(80), Main.rand.NextFloat(0.05f, 0.075f), EaseFunction.EaseQuadOut, Main.rand.Next(20, 30), false)
@@ -205,7 +203,7 @@ internal class FlarepowderDust : ModProjectile
 					Pixellate = true
 				};
 
-				ParticleHandler.SpawnParticle(fireCloud);
+				ParticleRenderers.UnderProjectiles.Add(fireCloud);
 
 				var smokeCloud = new SmokeCloud(fireCloud.Position, velocity * 1.25f, Color.Gray, fireCloud.Scale * 1.5f, EaseFunction.EaseCubicOut, Main.rand.Next(40, 60))
 				{
@@ -213,10 +211,9 @@ internal class FlarepowderDust : ModProjectile
 					TertiaryColor = Color.Black,
 					ColorLerpExponent = 2,
 					Intensity = 0.33f,
-					Layer = ParticleLayer.BelowProjectile,
 					Pixellate = true
 				};
-				ParticleHandler.SpawnParticle(smokeCloud);
+				ParticleRenderers.UnderProjectiles.Add(smokeCloud);
 			}
 		}
 
@@ -272,11 +269,11 @@ internal class FlarepowderDust : ModProjectile
 
 		var circle = new TexturedPulseCircle(Projectile.Center, (Colors[3] * .5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 		circle.Angle = angle;
-		ParticleHandler.SpawnParticle(circle);
+		ParticleRenderers.UnderProjectiles.Add(circle);
 
 		var circle2 = new TexturedPulseCircle(Projectile.Center, (Colors[0] * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 		circle2.Angle = angle;
-		ParticleHandler.SpawnParticle(circle2);
+		ParticleRenderers.UnderProjectiles.Add(circle2);
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -286,7 +283,7 @@ internal class FlarepowderDust : ModProjectile
 			float scale = Main.rand.NextFloat(0.05f, 0.1f);
 			int maxTime = Main.rand.Next(20, 30);
 
-			ParticleHandler.SpawnParticle(new FireParticle(Projectile.Center, velocity, colors, 0.75f, scale, EaseFunction.EaseQuadIn, maxTime)
+			ParticleRenderers.UnderProjectiles.Add(new FireParticle(Projectile.Center, velocity, colors, 0.75f, scale, EaseFunction.EaseQuadIn, maxTime)
 			{
 				ColorLerpExponent = 3,
 				FinalScaleMod = 0.33f,
@@ -301,10 +298,9 @@ internal class FlarepowderDust : ModProjectile
 			TertiaryColor = Color.Black,
 			ColorLerpExponent = 2,
 			Intensity = 0.6f,
-			Layer = ParticleLayer.BelowProjectile,
 			Pixellate = true
 		};
-		ParticleHandler.SpawnParticle(smokeCloud);
+		ParticleRenderers.UnderProjectiles.Add(smokeCloud);
 	}
 
 	public override bool PreDraw(ref Color lightColor)

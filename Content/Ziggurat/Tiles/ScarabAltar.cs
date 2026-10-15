@@ -3,7 +3,6 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
@@ -76,7 +75,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, ILoadItem
 			} //Spawn effects
 
 			if (!Main.dedServ && Main.rand.NextBool(7))
-				ParticleHandler.SpawnParticle(new EmberParticle(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity * 0.1f, _sampleColors[_sampleColors.Length / 2], 0.5f, 30, 2));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity * 0.1f, _sampleColors[_sampleColors.Length / 2], 0.5f, 30, 2));
 
 			Projectile.scale = Math.Min(Projectile.scale + 0.05f, 1);
 
@@ -545,8 +544,8 @@ public class ScarabAltarEntity : ModTileEntity, IEntityUpdate
 		for (int i = 0; i < 15; i++)
 		{
 			Vector2 velocity = -Vector2.UnitY.RotatedByRandom(0.75f) * Main.rand.NextFloat(1, 9);
-			ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.White, Color.Orange, Main.rand.NextFloat(0.5f, 1), 60, 3).AddAction(DecelerateAction));
-			ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.White, 0.8f, 40, 3).AddAction(DecelerateAction));
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.White, Color.Orange, Main.rand.NextFloat(0.5f, 1), 60, 3).AddAction(DecelerateAction));
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.White, 0.8f, 40, 3).AddAction(DecelerateAction));
 		}
 
 		static void DecelerateAction(Particle p) => p.Velocity *= 0.94f;

@@ -1,17 +1,17 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Multiplayer;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.PrimitiveRendering.Trails;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.Projectiles;
 
@@ -207,7 +207,7 @@ public class UrchinBall : ModProjectile
 		int particleLifetime = 20;
 		float particleLength = 60 * velocityRatio;
 
-		ParticleHandler.SpawnParticle(new UrchinImpact(
+		ParticleRenderers.UnderProjectiles.Add(new UrchinImpact(
 			Projectile.Center - velocity * 0.8f,
 			Vector2.Normalize(velocity) * velocityRatio,
 			particleLength * 3.5f,
@@ -248,7 +248,7 @@ public class UrchinBall : ModProjectile
 			float zRotation = Main.rand.NextFloat(0.7f, 0.9f);
 			float xyRotation = angle + Main.rand.NextFloat(0.5f) * (i - 0.5f) * 2;
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
 				Projectile.Center + Main.rand.NextVec2CircularEven(5, 5),
 				OrangeVFXColor(100) * 0.75f,
 				OrangeVFXColor(100) * 0.25f,
@@ -270,7 +270,7 @@ public class UrchinBall : ModProjectile
 				float scale = Main.rand.NextFloat(0.5f, 1f);
 				int maxTime = Main.rand.Next(20, 30);
 
-				ParticleHandler.SpawnParticle(Main.rand.NextBool() ? new UrchinShard(pos, vel, scale, maxTime) : new UrchinShardAlt(pos, vel, scale, maxTime));
+				ParticleRenderers.UnderProjectiles.Add(Main.rand.NextBool() ? new UrchinShard(pos, vel, scale, maxTime) : new UrchinShardAlt(pos, vel, scale, maxTime));
 			}
 
 			for(int j = 0; j < Main.rand.Next(5, 8); j++)
@@ -280,11 +280,11 @@ public class UrchinBall : ModProjectile
 				float scale = Main.rand.NextFloat(0.5f, 0.75f);
 				int maxTime = Main.rand.Next(20, 40);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, vel.RotatedByRandom(0.2f) / 3, OrangeVFXColor(255), scale * 0.75f, maxTime, 1, delegate (Particle p) { p.Velocity *= 0.94f; }));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, vel.RotatedByRandom(0.2f) / 3, OrangeVFXColor(255), scale * 0.75f, maxTime, 1, delegate (Particle p) { p.Velocity *= 0.94f; }));
 			}
 		}
 
-		ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, OrangeVFXColor(70), 0f, 0.125f, Main.rand.NextFloat(0.1f, 0.2f), "Scorch", new(0.5f, 0.5f), new(4, 0.5f), 30) 
+		ParticleRenderers.UnderProjectiles.Add(new DissipatingImage(Projectile.Center, OrangeVFXColor(70), 0f, 0.125f, Main.rand.NextFloat(0.1f, 0.2f), "Scorch", new(0.5f, 0.5f), new(4, 0.5f), 30) 
 		{ 
 			DistortEasing = EaseFunction.EaseQuadInOut, 
 			Intensity = 1.5f

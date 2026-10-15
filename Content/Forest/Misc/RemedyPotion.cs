@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
@@ -72,7 +72,7 @@ public class RemedyPotion : ModItem
 
 			var ring = new TexturedPulseCircle(player.Bottom + Vector2.UnitY * i * -1.5f, startColor, Color.Green, 20, 80, 30, "supPerlin", new Vector2(1), EaseFunction.EaseCircularOut).WithSkew(.75f, -MathHelper.PiOver2);
 			ring.Velocity = Vector2.UnitY * -1.2f;
-			ParticleHandler.SpawnParticle(ring);
+			ParticleRenderers.OverPlayers.Add(ring);
 		}
 
 		var rect = new Rectangle((int)player.BottomLeft.X, (int)player.BottomLeft.Y, player.width, 2);
@@ -90,10 +90,10 @@ public class RemedyPotion : ModItem
 				if (l == 1)
 					scale *= .75f;
 
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, color, scale, (int)(scale * 120), 5, delegate (Particle p)
+				ParticleRenderers.OverPlayers.Add(new GlowParticle(pos, vel, color, scale, (int)(scale * 120), 5, delegate (Particle p)
 				{
-					p.Velocity *= .95f;
-				}).OverrideDrawLayer(ParticleLayer.AbovePlayer));
+					p.Velocity *= 0.95f;
+				}));
 			}
 		}
 	}
