@@ -3718,7 +3718,7 @@ MummyQuestItem: {
 
 BallOfBandages: {
 	DisplayName: 一团绷带
-	Tooltip: 
+	Tooltip:
 		'''
 		小眼可能会对这个感兴趣
 		“握起来很奇怪”
@@ -3727,7 +3727,7 @@ BallOfBandages: {
 
 DhampirCompletionItem: {
 	DisplayName: 半吸血鬼耳朵
-	Tooltip: 
+	Tooltip:
 		'''
 		小眼可能会对这个感兴趣
 		“哎哟！”
@@ -3741,7 +3741,7 @@ MummyBandageScrap: {
 
 LookerClub: {
 	DisplayName: 观看者
-	Tooltip: 
+	Tooltip:
 		'''
 		蓄力攻击会爆出短暂的眼球仆从
 		眼球仆从同时视为近战和召唤伤害

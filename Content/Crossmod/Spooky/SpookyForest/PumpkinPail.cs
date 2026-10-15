@@ -4,7 +4,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
 
-// [AutoloadEquip(EquipType.Back, EquipType.Front)]
+[AutoloadEquip(EquipType.HandsOn)]
 internal class PumpkinPailOrange : BackpackItem
 {
 	protected virtual int TileStyle => 0;
@@ -37,18 +37,17 @@ internal class PumpkinPailOrange : BackpackItem
 
 		player.GetModPlayer<BackpackPlayer>().backpack = Item.Clone();
 		Item.SetDefaults(oldPack.type);
-		Item.stack++;
 	}
 }
 
-// [AutoloadEquip(EquipType.Back, EquipType.Front)]
+[AutoloadEquip(EquipType.HandsOn)]
 internal class PumpkinPailPurple : PumpkinPailOrange
 {
 	protected override int TileStyle => 1;
 	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<PumpkinPailWhite>();
 }
 
-// [AutoloadEquip(EquipType.Back, EquipType.Front)]
+[AutoloadEquip(EquipType.HandsOn)]
 internal class PumpkinPailWhite : PumpkinPailOrange
 {
 	protected override int TileStyle => 2;
