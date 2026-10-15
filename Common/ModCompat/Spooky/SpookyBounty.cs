@@ -140,7 +140,7 @@ internal abstract class SpookyBounty : ILoadable, ILocalizedModType
 			var pairs = new (string, string)[RecoverDialogueLength];
 			
 			for (int i = 0; i < pairs.Length; i++)
-				pairs[i] = (LoadedEyeRecover[i].Value, LoadedEyeRecover[i].Value);
+				pairs[i] = (LoadedEyeRecover[i].Value, LoadedPlayerRecover[i].Value);
 
 			return pairs;
 		}
