@@ -32,48 +32,48 @@ Records: {
 
 	# Spooky cross mod pots
 	SpookyForest: {
-		// Name: Stuffed Pail
-		// Entry: The leading edge of flimsy candy carriers.
+		Name: 填充桶
+		Entry: 脆弱糖果载体的前沿。
 	}
 
 	SpiderGrotto: {
-		// Name: Webbed Cooking Pot
-		// Entry: ...who cooked all of these?
+		Name: 结网烹饪锅
+		Entry: ……这些都是谁做的？
 	}
 
 	NoseTemple: {
-		// Name: Porcelain Nose
-		// Entry: The fanciest porcelain for the haughtiest noses.
+		Name: 瓷鼻子
+		Entry: 最华丽的瓷器，适合最傲慢的鼻子。
 	}
 
 	FetidFarms: {
-		// Name: Groceries
-		// Entry: Fresh grown produce!
+		Name: 食品杂货
+		Entry: 新鲜种植的农产品！
 	}
 
 	RottenDepths: {
-		// Name: Loaded Skeletons
-		// Entry: Seems like these fish swallowed some goods.
+		Name: 满载骷髅
+		Entry: 看来这些鱼吞下了一些东西。
 	}
 
 	TarPits: {
-		// Name: Taramic Pot
-		// Entry: Ornate, slightly sticky, kinda cracked.
+		Name: 焦油瓷罐子
+		Entry: 华丽、微粘、有点开裂。
 	}
 
 	Krampus: {
-		// Name: Awesome Present
-		// Entry: The coolest gift boxes you've ever seen.
+		Name: 超棒礼品
+		Entry: 你见过的最酷的礼盒。
 	}
 
 	UpperCatacombs: {
-		// Name: Ancient Carved Pot
-		// Entry: The carvings on these are lovely, but hard to see.
+		Name: 远古雕刻罐子
+		Entry: 这些雕刻很可爱，但很难看到。
 	}
 
 	LowerCatacombs: {
-		// Name: Jeering Pot
-		// Entry: They sneer at you.
+		Name: 嘲弄罐子
+		Entry: 他们嘲笑着你。
 	}
 }
 
@@ -94,5 +94,5 @@ DustyTomb.MapEntry: 尘埃陵墓
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: 「气奥」苔藓
 RadonMoss.MapEntry: 氡苔藓
-// StarscareSapling.MapEntry: Starscare Sapling
-// StarscareSaplingGreen.MapEntry: Starscare Sapling Green
+StarscareSapling.MapEntry: 星惧树苗
+StarscareSaplingGreen.MapEntry: 绿色星惧树苗
