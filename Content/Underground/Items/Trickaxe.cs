@@ -187,14 +187,13 @@ public class Trickaxe : ModItem
 	public override void SetDefaults()
 	{
 		Item.CloneDefaults(ItemID.SilverPickaxe);
-		Item.useTime = Item.useAnimation;
 		Item.rare = ItemRarityID.Blue;
 		Item.Size = new Vector2(30);
 		Item.noUseGraphic = true;
 		Item.noMelee = true;
 	}
 
-	public override bool AltFunctionUse(Player player) => true;//_charges >= ChargesMax;
+	public override bool AltFunctionUse(Player player) => _charges >= ChargesMax;
 
 	public override bool? UseItem(Player player)
 	{
