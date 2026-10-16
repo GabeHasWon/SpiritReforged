@@ -3700,3 +3700,12 @@ Lumberjack: {
 	// DisplayName: Lumberjack
 	// Tooltip: ""
 }
+
+Trickaxe: {
+	// DisplayName: Trickaxe
+	/* Tooltip:
+		'''
+		Mining tiles grants charges
+		<right> to fire an explosive charge
+		''' */
+}
