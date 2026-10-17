@@ -122,6 +122,13 @@ EcotoneEdges: {
 	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
 }
 
-DamageClasses.HybridDamageClass.DisplayName: Hybrid-Schadensklasse
+DamageClasses: {
+	HybridDamageClass.DisplayName: Hybrid-Schadensklasse
+	// GreatshieldClass.DisplayName: "{$LegacyTooltip.2}"
+	// WrenchClass.DisplayName: "{$LegacyTooltip.53}"
+	// MagazineDamageClass.DisplayName: "{$LegacyTooltip.3}"
+	// ShotgunClass.DisplayName: "{$LegacyTooltip.3}"
+}
+
 // BackpackPickupEnabled: Direct pickup: Enabled
 // BackpackPickupDisabled: Direct pickup: Disabled

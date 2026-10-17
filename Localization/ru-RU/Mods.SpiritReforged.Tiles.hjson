@@ -47,3 +47,4 @@ DustyTomb.MapEntry: Запылившийся гроб
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: "{$Items.OganessonMossItem.DisplayName}"
 RadonMoss.MapEntry: "{$Items.RadonMossItem.DisplayName}"
+// C4.MapEntry: C4

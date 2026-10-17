@@ -3695,3 +3695,8 @@ SuperExtendoMags: {
 	// DisplayName: Super Extendo Mags
 	// Tooltip: ""
 }
+
+C4Item: {
+	// DisplayName: C4 Item
+	// Tooltip: ""
+}
