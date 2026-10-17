@@ -10,7 +10,7 @@ internal class SpookyMummyHeart : ModNPC
 {
 	public Player Target => Main.player[NPC.target];
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 6;
+	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 24;
 
 	public override void SetDefaults()
 	{
@@ -52,13 +52,13 @@ internal class SpookyMummyHeart : ModNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
-		for (int i = 0; i < 6; ++i)
+		for (int i = 0; i < 8; ++i)
 			Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), DustID.Blood, Main.rand.NextVector2Circular(2f, 2f), 70, default, Main.rand.NextFloat(2f)).noGravity = true;
 
 		// Dead
 		if (NPC.life <= 0)
 		{
-			for (int i = 0; i < 10; ++i)
+			for (int i = 0; i < 14; ++i)
 				Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), DustID.Blood, Main.rand.NextVector2CircularEdge(3f, 3f), 150, default, Main.rand.NextFloat(4f));
 
 			TexturedPulseCircle circle = new(NPC.Center, Color.DarkRed * 0.2f, 2, 90, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
@@ -70,7 +70,7 @@ internal class SpookyMummyHeart : ModNPC
 	public override void FindFrame(int frameHeight)
 	{
 		NPC.frameCounter++;
-		NPC.frame.Y = frameHeight * (int)(NPC.frameCounter * 0.15f % Main.npcFrameCount[Type]);
+		NPC.frame.Y = frameHeight * (int)(NPC.frameCounter * 0.85f % Main.npcFrameCount[Type]);
 
 		if (NPC.velocity.Y != 0)
 			NPC.frame.Y = Math.Sign(NPC.velocity.Y) == -1 ? 0 : frameHeight;
