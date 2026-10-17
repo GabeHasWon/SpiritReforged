@@ -3807,5 +3807,9 @@ GloomyStatueItem: {
 
 BoxOfSpareLimbs: {
 	// DisplayName: Box Of Spare Limbs
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Getting hit spawns a spare limb to fight for you
+		A leg will hop at nearby enemies, and a hand will grab for nearby enemies, and nothing else
+		''' */
 }

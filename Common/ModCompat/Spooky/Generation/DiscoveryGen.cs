@@ -1,17 +1,22 @@
 ﻿using SpiritReforged.Common.ItemCommon.Pins;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses;
+using SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
+using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Forest.Stargrass.Items;
 using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.IO;
 using Terraria.WorldBuilding;
 
-namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
+namespace SpiritReforged.Common.ModCompat.Spooky.Generation;
 
-internal class SpookyForestGen : Micropass
+internal class DiscoveryGen : Micropass
 {
 	public override string WorldGenName => "Spirit Halloween: Spooky Forest";
+
+	private static bool HasPlacedSmackOLantern = false;
 
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
@@ -21,6 +26,27 @@ internal class SpookyForestGen : Micropass
 		MethodInfo info = forestType.GetMethod("PostWorldGen", BindingFlags.Public | BindingFlags.Instance);
 
 		MonoModHooks.Add(info, DetourPostWorldGen);
+
+		Type gourdType = CrossMod.Spooky.Instance.Code.GetType("Spooky.Content.Generation.RottenGourd");
+		MethodInfo gourdInfo = gourdType.GetMethod("Place", BindingFlags.Public | BindingFlags.Static);
+
+		MonoModHooks.Add(gourdInfo, DetourGourd);
+	}
+
+	public static void DetourGourd(Action<Point16> orig, Point16 pos)
+	{
+		orig(pos);
+
+		if (!HasPlacedSmackOLantern || WorldGen.genRand.NextBool(3))
+		{
+			HasPlacedSmackOLantern = true;
+			Point off;
+
+			do
+			{
+				off = pos.ToPoint() + new Point(WorldGen.genRand.Next(-20, 20), WorldGen.genRand.Next(-20, 20));
+			} while (!Placer.Check(off.X, off.Y, ModContent.TileType<SmackOLanternTile>()).Place().success);
+		}
 	}
 
 	public static void DetourPostWorldGen(Action<object> orig, object self)
