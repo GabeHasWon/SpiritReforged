@@ -1,15 +1,21 @@
-﻿using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Forest.Graveyard;
+using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
+using SpiritReforged.Content.Underground.Tiles;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using Terraria;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.SaltFlats.NPCs.Dhampir;
@@ -38,7 +44,7 @@ internal class DhampirNPC : ModNPC
 		public void Update()
 		{
 			Position += Velocity;
-			Velocity *= 0.95f;
+			Velocity *= 0.85f;
 			Rotation += Velocity.X * 0.01f;
 		}
 
@@ -77,6 +83,7 @@ internal class DhampirNPC : ModNPC
 
 	private ref float TimeSinceHit => ref NPC.localAI[1];
 	private ref float TrackerTime => ref NPC.localAI[2];
+	private ref float EyeFlashTime => ref NPC.localAI[3];
 
 	private readonly List<MistParticle> _particles = [];
 	private readonly FadeTracker _tracker = new FadeTracker(8);
@@ -100,6 +107,8 @@ internal class DhampirNPC : ModNPC
 		NPC.knockBackResist = 0;
 		NPC.dontTakeDamage = true;
 		NPC.noGravity = true;
+		NPC.HitSound = SoundID.NPCHit1;
+		NPC.DeathSound = SoundID.NPCDeath6;
 
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}
@@ -119,6 +128,11 @@ internal class DhampirNPC : ModNPC
 
 	public override void OnHitPlayer(Player target, Player.HurtInfo hurtInfo)
 	{
+		TimeSinceHit = -20;
+
+		NPC.velocity *= -1f;
+		NPC.velocity -= Vector2.UnitX * hurtInfo.HitDirection * 5f;
+
 		if (Main.rand.NextBool(3))
 			target.AddBuff(BuffID.Bleeding, 3 * 60);
 
@@ -137,6 +151,9 @@ internal class DhampirNPC : ModNPC
 		NPC.velocity.Y += 0.035f + MathF.Max(0, NPC.velocity.Y * 0.025f);
 		TimeSinceHit++;
 		TrackerTime++;
+
+		if (EyeFlashTime > 0)
+			EyeFlashTime--;
 
 		Point tilePos = NPC.Bottom.ToTileCoordinates();
 		int dist = 0;
@@ -165,6 +182,9 @@ internal class DhampirNPC : ModNPC
 
 		if (State == DhampirState.Waiting)
 		{
+			if (Main.rand.NextBool(20))
+				EyeFlashTime += 10;
+
 			NPC.TargetClosest();
 
 			foreach (Player player in Main.ActivePlayers)
@@ -190,6 +210,10 @@ internal class DhampirNPC : ModNPC
 				NPC.velocity.Y = -6;
 
 			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, direction * (Main.expertMode ? 9 : 7), !NPC.collideY ? 0.033f : (Main.expertMode ? 0.15f : 0.1f));
+
+			if (TimeSinceHit < 0)
+				NPC.velocity.X *= Main.expertMode ? 0.75f : 0.5f;
+
 			Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width,	 NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 
 			if (Collision.SolidCollision(NPC.TopLeft - new Vector2(6, 0), 6, NPC.height - 4))
@@ -202,18 +226,44 @@ internal class DhampirNPC : ModNPC
 			if (Timer >= 100 - NPC.life / NPC.lifeMax * 60)
 				SetFly();
 
-			if (!LastCollideY && NPC.collideY)
+			if (!LastCollideY && NPC.collideY && NPC.velocity.Y > 1f)
 			{
+				SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = 0.15f, PitchVariance = 0.3f, Volume = 0.66f }, NPC.Top);
+
+				TimeSinceHit = Main.expertMode ? -10 : -20;
+				EyeFlashTime += ExpertQuickSlam ? 20 : 35;
+
 				tilePos = NPC.Bottom.ToTileCoordinates();
 				Tile tile = Main.tile[tilePos];
 				int count = ExpertQuickSlam ? 12 : 3;
 
+				var easeFunction = EaseBuilder.EaseCubicOut;
+				float ringWidth = 0.6f;
+				int lifetime = 40;
+				float zRotation = 0.9f;
+
+				ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+					NPC.Bottom,
+					Color.White,
+					Color.LightCyan * 0.33f,
+					ringWidth,
+					ExpertQuickSlam ? 350: 250,
+					lifetime,
+					"supPerlin",
+					new Vector2(2, 3),
+					easeFunction).WithSkew(zRotation, MathHelper.PiOver2).UsesLightColor());
+
 				for (int i = 0; i < count; ++i)
 				{
+					Vector2 pos = NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), Main.rand.NextFloat(-2, 2));
+
 					int dustIndex = WorldGen.KillTile_MakeTileDust(tilePos.X, tilePos.Y, tile);
 					Dust dust = Main.dust[dustIndex];
-					dust.position = NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), Main.rand.NextFloat(-2, 2));
+					dust.position = pos;
 					dust.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -1);
+					dust.noGravity = !Main.rand.NextBool(3);
+					dust.scale *= Main.rand.NextFloat(2f);
+					dust.alpha += Main.rand.Next(100);
 
 					if (i < 6 && ExpertQuickSlam)
 					{
@@ -225,7 +275,23 @@ internal class DhampirNPC : ModNPC
 
 						_particles.Add(particle);
 					}
+
+					var smokeColor = Color.Lerp(Color.LightGray, Color.LightCyan, Main.rand.NextFloat()) * 0.3f;
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(6f),
+						smokeColor, Main.rand.NextFloat(0.05f, 0.15f), EaseBuilder.EaseQuadOut, Main.rand.Next(30, 90))
+					{
+						Pixellate = true,
+						PixelDivisor = 2
+					});
+
+					ParticleHandler.SpawnParticle(new ImpactLine(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(5f, 12f), Color.LightCyan, new Vector2(1, 3) * 0.2f, Main.rand.Next(15, 35), 0.93f));
 				}
+
+				if (!Main.dedServ && Main.LocalPlayer.Distance(NPC.Center) < 600)
+					ScreenshakeHelper.Shake(NPC.Center, -Vector2.UnitY, 5, 7, 35);
+
+				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {Volume = ExpertQuickSlam ? 1.2f : 0.6f, PitchVariance = 0.2f}, NPC.Bottom);
 			}
 		}
 		else if (State == DhampirState.Fly)
@@ -235,6 +301,17 @@ internal class DhampirNPC : ModNPC
 			for (int i = 0; i < Main.rand.Next(3); ++i)
 				if (Main.rand.NextFloat() < NPC.life / (float)NPC.lifeMax)
 					SpawnMist();
+
+			if (Main.rand.NextBool())
+				ParticleHandler.SpawnParticle(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(0.5f, 0.5f), Color.LightCyan, Main.rand.Next(60) + 10, false, bloomOpacity: 0.04f)
+				{
+					Layer = ParticleLayer.BelowSolid
+				});
+
+			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(3.5f, 3.5f), Color.AntiqueWhite, Main.rand.Next(40) + 20, false, false, p => p.Velocity *= 0.9f)
+			{
+				Layer = ParticleLayer.BelowSolid
+			});
 
 			Vector2 targetPos = Target.Center + new Vector2(FlyTargetDirection, -250);
 			Timer++;
@@ -248,6 +325,7 @@ internal class DhampirNPC : ModNPC
 				NPC.noTileCollide = false;
 				NPC.damage = NPC.defDamage;
 				ExpertQuickSlam = false;
+				EyeFlashTime = ExpertQuickSlam ? 30 : 45;
 
 				if (Main.expertMode)
 				{
@@ -265,6 +343,16 @@ internal class DhampirNPC : ModNPC
 
 					_particles.Add(particle);
 				}
+
+				ParticleHandler.SpawnParticle(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.MediumVioletRed, Color.DarkRed, 0.5f, 40, 0)
+				{
+					Rotation = 0f
+				});
+
+				ParticleHandler.SpawnParticle(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.White, 0.2f, 40, 0)
+				{
+					Rotation = 0f
+				});
 			}
 		}
 
@@ -293,6 +381,8 @@ internal class DhampirNPC : ModNPC
 			Dust.NewDustPerfect(pos, ModContent.DustType<MistDust>(), vel, Main.rand.Next(120, 180), Scale: Main.rand.NextFloat(1, 1.5f)).customData = NPC;
 			SpawnMist();
 		}
+
+		SoundEngine.PlaySound(SoundID.Item8, NPC.Center);
 	}
 
 	private void SpawnMist() => _particles.Add(new MistParticle(NPC) { Timer = Main.rand.Next(15) });
@@ -318,6 +408,18 @@ internal class DhampirNPC : ModNPC
 				{
 					SpawnDust();
 					Gore.NewGore(NPC.GetSource_Death(), NPC.Center, Main.rand.NextVector2Circular(2, 2), 99);
+				}
+
+				for (int i = 0; i < 10; i++)
+				{
+					var smokeColor = Color.Lerp(Color.LightGray, Color.LightCyan, Main.rand.NextFloat()) * 0.3f;
+
+					ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center, Main.rand.NextVector2Circular(5f, 5f),
+						smokeColor, Main.rand.NextFloat(0.05f, 0.15f), EaseBuilder.EaseQuadOut, Main.rand.Next(30, 90))
+					{
+						Pixellate = true,
+						PixelDivisor = 2
+					});
 				}
 			}
 		}
@@ -382,7 +484,7 @@ internal class DhampirNPC : ModNPC
 		{
 			if (Reflections.DrawingReflection)
 			{
-				_tracker.Draw(TextureAssets.Npc[Type].Value, false, screenPos, Vector2.Zero, FadeTracker.TrailDrawMode.Fade, SpriteEffects.None, 0.5f);
+				_tracker.Draw(TextureAssets.Npc[Type].Value, true, screenPos, new(26, 26), FadeTracker.TrailDrawMode.Fade, SpriteEffects.None, 0.5f);
 
 				DrawSelf(spriteBatch, screenPos, drawColor, NPC.Opacity);
 				return false;
@@ -399,21 +501,49 @@ internal class DhampirNPC : ModNPC
 			return false;
 		}
 
-		_tracker.Draw(TextureAssets.Npc[Type].Value, false, screenPos, Vector2.Zero, FadeTracker.TrailDrawMode.Fade);
+		_tracker.Draw(TextureAssets.Npc[Type].Value, true, screenPos, new(26, 26), FadeTracker.TrailDrawMode.Fade);
 
 		DrawSelf(spriteBatch, screenPos, drawColor, NPC.Opacity);
 		return false;
+	}
+
+	public override void PostDraw(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor)
+	{
+		if (EyeFlashTime > 0)
+		{
+			const int FrameWidth = 156 / 3;
+			Texture2D star = AssetLoader.LoadedTextures["Star"].Value;
+
+			float eyeOpacity = EyeFlashTime / 45f;
+
+			Vector2 eyePosition = NPC.Center - screenPos;
+
+			switch (NPC.frame.X)
+			{
+				case 0 * FrameWidth:
+					eyePosition += new Vector2(6 * NPC.direction, -8); break;
+				case 1 * FrameWidth:
+					eyePosition += new Vector2(6 * NPC.direction, -8); break;
+				case 2 * FrameWidth:
+					eyePosition += new Vector2(-4 * NPC.direction, -10); break;
+			}
+
+			float scale = MathHelper.Lerp(0.08f, 0.2f, eyeOpacity);
+
+			spriteBatch.Draw(star, eyePosition, null, Color.Red.Additive() * eyeOpacity, 0f, star.Size() / 2f, new Vector2(scale * MathHelper.Lerp(1.2f, 5f, 1 - eyeOpacity), scale), 0f, 0f);
+			spriteBatch.Draw(star, eyePosition, null, Color.White.Additive() * eyeOpacity, 0f, star.Size() / 2f, new Vector2(scale * MathHelper.Lerp(1.2f, 5f, 1 - eyeOpacity), scale) * 0.5f, 0f, 0f);
+		}
 	}
 
 	private void DrawSelf(SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor, float opacity)
 	{
 		SpriteEffects flip = NPC.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
 		Texture2D tex = TextureAssets.Npc[Type].Value;
-
+		
 		if (NPC.IsABestiaryIconDummy)
 			screenPos += new Vector2(-4, 2);
 
-		spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor * opacity, NPC.rotation, NPC.frame.Size() / 2f, 1f, flip, 0);
+		spriteBatch.Draw(tex, NPC.Center - screenPos, NPC.frame, drawColor * opacity, NPC.rotation, NPC.frame.Size() / 2f, 1f, flip, 0);	
 	}
 
 	public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position) => false;

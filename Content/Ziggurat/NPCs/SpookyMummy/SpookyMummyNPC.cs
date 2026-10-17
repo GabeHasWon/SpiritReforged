@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
@@ -9,6 +10,7 @@ using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
+using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
 
@@ -37,9 +39,19 @@ internal class SpookyMummyNPC : ModNPC
 		bool IItemDropRuleCondition.CanShowItemDropInUI() => true;
 		string IProvideItemConditionDescription.GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.NPCs.SpookyMummyNPC.DropCondition");
 	}
+
+	public const int MAX_DEATH_TIMER = 180;
+
 	public Player Target => Main.player[NPC.target];
 
 	private ref float SoundTimer => ref NPC.ai[0];
+	private bool DoingDeathAnimation
+	{
+		get => NPC.ai[1] == 1;
+		set => NPC.ai[1] = value ? 1 : 0;
+	}
+	private ref float DeathTimer => ref NPC.ai[2];
+	private ref float FootstepTimer => ref NPC.ai[3];
 
 	internal static bool IsGrounded(NPC npc) => npc.collideY || Collision.SolidCollision(npc.BottomLeft, npc.width, 6, true);
 
@@ -56,6 +68,7 @@ internal class SpookyMummyNPC : ModNPC
 	{
 		NPC.lifeMax = 1200;
 		NPC.defense = 30;
+		NPC.damage = 75;
 		NPC.aiStyle = -1;
 		NPC.knockBackResist = 0f;
 		NPC.noTileCollide = false;
@@ -76,21 +89,83 @@ internal class SpookyMummyNPC : ModNPC
 
 	public override void AI()
 	{
+		if (FootstepTimer > 0)
+			FootstepTimer--;
+
 		SoundTimer++;
 
-		if (SoundTimer > 300 && Main.rand.NextBool(150))
+		if (NPC.frame.Y == 112 * 5 && FootstepTimer <= 0)
 		{
-			SoundEngine.PlaySound(SoundID.Mummy, NPC.Center);
-			SoundTimer = 0;
+			if (!Main.dedServ && Main.LocalPlayer.Distance(NPC.Center) < 250)
+				ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitX * NPC.direction, 2, 4, 20);
+
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2 pos = NPC.direction == -1 ? NPC.BottomRight : NPC.BottomLeft;
+
+				ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 6f), new Color(160, 155, 106) * 0.22f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+				{
+					Pixellate = true,
+					PixelDivisor = 2,
+					Layer = ParticleLayer.BelowNPC
+				});
+
+				Dust.NewDustPerfect(pos, DustID.Sand, -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 12f), 150, default, Main.rand.NextFloat(1f, 2.5f)).noGravity = !Main.rand.NextBool(4);
+			}		
+
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubImpact") with { Volume = 0.05f, Pitch = -0.5f}, NPC.Bottom);
+			FootstepTimer = 30;
 		}
 
-		NPC.TargetClosest();
-		
-		NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, MathF.Sign(Target.Center.X - NPC.Center.X) * MathHelper.Lerp(3.5f, 2, NPC.life / NPC.lifeMax), 0.02f);
+		if (DoingDeathAnimation)
+		{
+			DeathTimer--;
+			NPC.velocity.X *= 0.985f;
+
+			if (DeathTimer <= 0)
+			{
+				if (!Main.dedServ && Main.LocalPlayer.Distance(NPC.Center) < 1200)
+					ScreenshakeHelper.Shake(NPC.Center, Vector2.UnitX * NPC.direction, 5, 7, 35);
+
+				NPC.life = 0;
+				NPC.checkDead();
+				NPC.HitEffect();
+				NPC.active = false;
+			}
+		}
+		else
+		{
+			NPC.TargetClosest();
+			NPC.velocity.X = MathHelper.Lerp(NPC.velocity.X, MathF.Sign(Target.Center.X - NPC.Center.X) * MathHelper.Lerp(3.5f, 2, NPC.life / NPC.lifeMax), 0.02f);
+
+			if (SoundTimer > 300 && Main.rand.NextBool(150))
+			{
+				SoundEngine.PlaySound(SoundID.Mummy with { Volume = 0.5f, PitchVariance = 0.5f}, NPC.Center);
+				SoundTimer = 0;
+			}
+		}
+
 		NPC.direction = NPC.spriteDirection = -MathF.Sign(NPC.velocity.X);
 		Collision.StepUp(ref NPC.position, ref NPC.velocity, NPC.width, NPC.height, ref NPC.stepSpeed, ref NPC.gfxOffY);
 	}
-	
+
+	public override bool CanHitPlayer(Player target, ref int cooldownSlot) => !DoingDeathAnimation;
+
+	public override bool CheckDead()
+	{		
+		if (!DoingDeathAnimation)
+		{
+			NPC.life = 1;
+			DeathTimer = MAX_DEATH_TIMER;
+			NPC.dontTakeDamage = true;
+			DoingDeathAnimation = true;
+
+			return false;
+		}
+
+		return DoingDeathAnimation && DeathTimer <= 0;
+	}
+
 	// Used by the children (besides heart)
 
 	/// <summary>
@@ -161,18 +236,39 @@ internal class SpookyMummyNPC : ModNPC
 	{
 		SpookyMummyHitEffect(NPC, hit);
 
-		bool dead = NPC.life <= 0;
+		bool dead = NPC.life <= 0 && DoingDeathAnimation && DeathTimer <= 0;
 
 		if (dead && !Main.dedServ)
 		{
+			SoundEngine.PlaySound(SoundID.NPCDeath1, NPC.Center);
+
 			Rectangle hitbox = NPC.Hitbox;
 			hitbox.Inflate(-16, -16);
 
-			for (int i = 0; i < 12; ++i)
+			for (int i = 0; i < 6; ++i)
 			{
 				int type = ModContent.Find<ModGore>("SpiritReforged/Bandage" + Main.rand.Next(2)).Type;
 				Gore.NewGore(NPC.GetSource_Death(), Main.rand.NextVector2FromRectangle(hitbox), NPC.velocity, type);
+
+				type = ModContent.Find<ModGore>("SpiritReforged/Bandage" + Main.rand.Next(2)).Type;
+
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center + Main.rand.NextVector2Circular(30, 30), Main.rand.NextVector2CircularEdge(5f, 5f) - Vector2.UnitY * Main.rand.NextFloat(3f), type);
+
+				gore.sticky = true;
+				gore.alpha = 70;
+				gore.velocity -= Vector2.UnitY * 2f;
+				gore.timeLeft = 60;
 			}
+
+			for (int i = 0; i < 15; i++)
+			{
+
+				ParticleHandler.SpawnParticle(new StickyBloodParticle(NPC.Center + Main.rand.NextVector2Circular(30, 30), Main.rand.NextVector2CircularEdge(5f, 5f)
+					- Vector2.UnitY * Main.rand.NextFloat(3f), Main.rand.NextFloat(1.5f), 120 + Main.rand.Next(180), 0.2f));
+			}
+
+			hit.HitDirection = -NPC.direction;
+			SpookyMummyHitEffect(NPC, hit, 1.2f, 3f);
 		}
 	}
 
@@ -212,19 +308,31 @@ internal class SpookyMummyNPC : ModNPC
 	public override void OnKill()
 	{
 		Point center = NPC.Center.ToPoint();
-		NPC.NewNPC(NPC.GetSource_Death(), center.X - NPC.spriteDirection * 24, center.Y - 18, ModContent.NPCType<SpookyMummyHead>());
-		NPC.NewNPC(NPC.GetSource_Death(), center.X, center.Y, ModContent.NPCType<SpookyMummyHeart>());
+		var n = NPC.NewNPCDirect(NPC.GetSource_Death(), center.X - NPC.spriteDirection * 24, center.Y - 18, ModContent.NPCType<SpookyMummyHead>());
+
+		n.velocity = -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(2f, 5f);
+
+		n = NPC.NewNPCDirect(NPC.GetSource_Death(), center.X, center.Y, ModContent.NPCType<SpookyMummyHeart>());
+
+		n.velocity = -Vector2.UnitY.RotatedByRandom(1f) * 7f;
 
 		for (int i = 0; i < 2; ++i)
 		{
-			NPC.NewNPC(NPC.GetSource_Death(), center.X - NPC.spriteDirection * 12, center.Y + 6, ModContent.NPCType<SpookyMummyHand>());
-			NPC.NewNPC(NPC.GetSource_Death(), center.X - NPC.spriteDirection * (i == 0 ? 20 : 16), center.Y + 20 - i * 6, ModContent.NPCType<SpookyMummyLegs>());
+			n = NPC.NewNPCDirect(NPC.GetSource_Death(), center.X - NPC.spriteDirection * 12, center.Y + 6, ModContent.NPCType<SpookyMummyHand>());
+
+			n.velocity = -Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(3f);
+
+			n = NPC.NewNPCDirect(NPC.GetSource_Death(), center.X - NPC.spriteDirection * (i == 0 ? 20 : 16), center.Y + 20 - i * 6, ModContent.NPCType<SpookyMummyLegs>());
+
+			n.velocity = -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(3f);
+
 		}
 	}
 
 	public override void FindFrame(int frameHeight)
 	{
-		NPC.frameCounter++;
-		NPC.frame.Y = frameHeight * (int)(NPC.frameCounter * 0.10f % Main.npcFrameCount[Type]);
+		NPC.frameCounter += Math.Abs(NPC.velocity.X) * 0.7f;
+
+		NPC.frame.Y = frameHeight * (int)(NPC.frameCounter * 0.1f % Main.npcFrameCount[Type]);
 	}
 }

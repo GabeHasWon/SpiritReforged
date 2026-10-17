@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Content.Crossmod.Spooky.Items;
+using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.GameContent.Bestiary;
 
@@ -14,6 +15,7 @@ internal class SpookyMummyHand : ModNPC
 	{
 		NPC.lifeMax = 200;
 		NPC.defense = 4;
+		NPC.damage = 15;
 		NPC.aiStyle = -1;
 		NPC.knockBackResist = 0f;
 		NPC.noTileCollide = false;
@@ -52,6 +54,16 @@ internal class SpookyMummyHand : ModNPC
 
 			if (Collision.SolidCollision(NPC.TopLeft - new Vector2(6, 0), 6, 12))
 				NPC.velocity.Y = -6;
+		}
+
+		if (Main.rand.NextBool(7))
+		{
+			Vector2 pos = NPC.direction == 1 ? NPC.BottomLeft : NPC.BottomRight;
+
+			if (Main.rand.NextBool())
+				Dust.NewDustPerfect(pos, DustID.Smoke, -NPC.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(), 240, default, Main.rand.NextFloat(2f, 4f));
+
+			Dust.NewDustPerfect(pos, DustID.Sand, -NPC.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(), 200, default, Main.rand.NextFloat(1f, 2.5f)).noGravity = !Main.rand.NextBool(10);
 		}
 	}
 
