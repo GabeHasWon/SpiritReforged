@@ -81,6 +81,10 @@ internal class SpookyForestGen : Micropass
 			}
 		}
 
+		// Edge case in case of the Spooky Forest completely failing to exist lol
+		if (positions.Count == 0)
+			return;
+
 		int repeats = 0;
 
 		while (true)
