@@ -23,7 +23,7 @@ internal class OpenWoundsNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
 
-	private static Asset<Texture2D> icon;
+	private static readonly Asset<Texture2D> Icon = Graphics.Request<Texture2D>("Wound_Icon");
 	private short _bleedTime;
 
 	/// <summary> Causes <paramref name="npc"/> to take custom bleed damage for <paramref name="time"/> and consumes <see cref="OpenWounds"/>. </summary>
@@ -39,11 +39,11 @@ internal class OpenWoundsNPC : GlobalNPC
 
 			if (!Main.dedServ)
 			{
-				SoundEngine.PlaySound(SoundID.Item101 with { Pitch = .5f }, npc.Center);
-				SoundEngine.PlaySound(SoundID.NPCHit2 with { Pitch = .1f }, npc.Center);
+				SoundEngine.PlaySound(SoundID.Item101 with { Pitch = 0.5f }, npc.Center);
+				SoundEngine.PlaySound(SoundID.NPCHit2 with { Pitch = 0.1f }, npc.Center);
 
 				for (int i = 0; i < 8; i++)
-					ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(), Color.White, Color.Red, Main.rand.NextFloat(.3f, .75f), 30, 4));
+					ParticleHandler.SpawnParticle(new GlowParticle(npc.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(), Color.White, Color.Red, Main.rand.NextFloat(0.3f, 0.75f), 30, 4));
 			}
 
 			return true;
@@ -51,8 +51,6 @@ internal class OpenWoundsNPC : GlobalNPC
 
 		return false;
 	}
-
-	public override void Load() => icon = DrawHelpers.RequestLocal(GetType(), "Wound_Icon", false);
 
 	public override void UpdateLifeRegen(NPC npc, ref int damage)
 	{
@@ -64,7 +62,7 @@ internal class OpenWoundsNPC : GlobalNPC
 		_bleedTime = (short)Math.Max(_bleedTime - 1, 0);
 
 		if (!Main.dedServ && _bleedTime > 0 && Main.rand.NextBool(8))
-			ParticleHandler.SpawnParticle(new RedBubble(npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f), Color.White, Main.rand.NextFloat(.5f, 1f), 20));
+			ParticleHandler.SpawnParticle(new RedBubble(npc.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(20f), Color.White, Main.rand.NextFloat(0.5f, 1f), 20));
 	}
 
 	public override void PostDraw(NPC npc, SpriteBatch spriteBatch, Vector2 screenPos, Color drawColor) //Draw the mark icon
@@ -73,13 +71,13 @@ internal class OpenWoundsNPC : GlobalNPC
 
 		if (!npc.dontTakeDamage && npc.HasBuff<OpenWounds>())
 		{
-			var source = icon.Frame();
+			var source = Icon.Frame();
 
 			int index = npc.FindBuffIndex(ModContent.BuffType<OpenWounds>());
 			int time = (index == -1) ? 0 : npc.buffTime[index];
 			var color = (Color.White * .75f * Math.Min(time / (float)fadeout, 1)).Additive();
 
-			spriteBatch.Draw(icon.Value, npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY), source, color, MathHelper.Pi, source.Size() / 2, 1, default, 0);
+			spriteBatch.Draw(Icon.Value, npc.Center - Main.screenPosition + new Vector2(0, npc.gfxOffY), source, color, MathHelper.Pi, source.Size() / 2, 1, default, 0);
 		}
 	}
 }

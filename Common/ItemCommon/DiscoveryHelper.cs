@@ -3,7 +3,7 @@ using MonoMod.Cil;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.Particles;

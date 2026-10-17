@@ -293,7 +293,6 @@ public class UrchinBall : ModProjectile
 		SoundEngine.PlaySound(LiquidExplosion, Projectile.Center);
 		SoundEngine.PlaySound(GenericExplosion, Projectile.Center);
 		SoundEngine.PlaySound(BalloonExplosion, Projectile.Center);
-
 	}
 
 	public override bool PreDraw(ref Color lightColor)

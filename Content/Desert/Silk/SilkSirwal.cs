@@ -14,7 +14,7 @@ public class SilkSirwal : ModItem, IFlagged
 		if (!Main.dedServ)
 		{
 			const string name = "SilkSirwalAlt_Legs";
-			AltEquipSlot = EquipLoader.AddEquipTexture(Mod, DrawHelpers.RequestLocal(GetType(), name), EquipType.Legs, null, name);
+			AltEquipSlot = EquipLoader.AddEquipTexture(Mod, Graphics.RequestPath(name), EquipType.Legs, null, name);
 		}
 
 		PlayerEvents.OnPostUpdateRunSpeeds += static (p) =>

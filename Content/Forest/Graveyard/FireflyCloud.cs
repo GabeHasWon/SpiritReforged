@@ -1,0 +1,24 @@
+﻿using SpiritReforged.Common.TileCommon;
+
+namespace SpiritReforged.Content.Forest.Graveyard;
+
+/// <summary> Passively spawns fireflies around graveyard light sources. </summary>
+[Autoload(Side = ModSide.Client)]
+public sealed class FireflyCloud : ILoadable
+{
+	public void Load(Mod mod) => TileEvents.OnNearby += SpawnFirefly;
+	public void Unload() { }
+
+	private static void SpawnFirefly(int i, int j, int type, bool visual)
+	{
+		if (!visual || Main.dayTime || Main.gamePaused || !Main.LocalPlayer.ZoneGraveyard || Main.lightning > 0)
+			return; //Don't spawn fireflies during lightning
+
+		if (Main.rand.NextBool(25) && Main.tile[i, j].WallType == WallID.None && Lighting.Brightness(i, j) > 1)
+		{
+			Vector2 position = new Vector2(i, j).ToWorldCoordinates() + Main.rand.NextVector2Unit() * Main.rand.NextFloat(50f);
+			var dust = Dust.NewDustPerfect(position, DustID.Firefly, Scale: Main.rand.NextFloat() + 1);
+			dust.velocity *= 0.3f;
+		}
+	}
+}

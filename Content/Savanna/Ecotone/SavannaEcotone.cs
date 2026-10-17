@@ -61,7 +61,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	[Slider]
 	private static int TermiteChance = 45;
 
-	PageInfo IGenerationPage.Info => new("Savanna", DrawHelpers.RequestLocal(GetType(), "SavannaPage", false), DrawHelpers.RequestLocal(GetType(), "SavannaPageButton", false))
+	PageInfo IGenerationPage.Info => new("Savanna", Graphics.Request<Texture2D>("SavannaPage"), Graphics.Request<Texture2D>("SavannaPageButton"))
 	{
 		Presets = 
 		[

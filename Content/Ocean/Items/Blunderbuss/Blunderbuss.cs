@@ -94,7 +94,7 @@ public class BlunderbussProj : ModProjectile
 		Pitch = -0.5f
 	};
 
-	private static readonly Asset<Texture2D> FlashTexture = DrawHelpers.RequestLocal(typeof(Blunderbuss), "Blunderbuss_Flash", false);
+	private static readonly Asset<Texture2D> FlashTexture = Graphics.Request<Texture2D>("Blunderbuss_Flash");
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.Blunderbuss.DisplayName");
 	public override string Texture => base.Texture.Replace("Proj", string.Empty);

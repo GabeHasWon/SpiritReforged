@@ -11,7 +11,7 @@ public sealed class AutoloadedPotItem(string baseName, NamedStyles.StyleGroup gr
 
 	protected override bool CloneNewInstances => true;
 	public override string Name => _group.name + "Item";
-	public override string Texture => DrawHelpers.RequestLocal(GetType(), _group.name);
+	public override string Texture => Graphics.RequestPath(_group.name);
 
 	private string _baseName = baseName;
 	private NamedStyles.StyleGroup _group = group;

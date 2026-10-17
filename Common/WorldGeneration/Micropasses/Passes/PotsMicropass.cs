@@ -109,7 +109,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 
 	public override string WorldGenName => "Pots";
 
-	PageInfo IGenerationPage.Info => new("Pots", DrawHelpers.RequestLocal(GetType(), "PotsPage", false), DrawHelpers.RequestLocal(GetType(), "PotsPageButton", false))
+	PageInfo IGenerationPage.Info => new("Pots", Graphics.Request<Texture2D>("PotsPage"), Graphics.Request<Texture2D>("PotsPageButton"))
 	{
 		Presets =
 		[
@@ -147,7 +147,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
-	public override void Load(Mod mod)
+	public override void Load()
 	{
 		TileEvents.OnPlacePot += PotConversion;
 		On_WorldGen.PlaceTile += PotBoulderConversion;

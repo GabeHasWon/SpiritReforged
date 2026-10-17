@@ -17,7 +17,7 @@ public class JinxMark : ModBuff
 
 public class JinxMarkNPC : GlobalNPC
 {
-	private static readonly Asset<Texture2D> Icon = DrawHelpers.RequestLocal(typeof(JinxMarkNPC), "JinxMark", false);
+	private static readonly Asset<Texture2D> Icon = Graphics.Request<Texture2D>("JinxMark");
 
 	public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 	{

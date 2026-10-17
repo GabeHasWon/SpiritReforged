@@ -11,8 +11,8 @@ public class ToucaneMinion : BaseMinion
 {
 	private ref float AiTimer => ref Projectile.ai[0];
 
-	public static readonly Asset<Texture2D> Hand_A = DrawHelpers.RequestLocal(typeof(ToucaneMinion), "ToucaneHand1", false);
-	public static readonly Asset<Texture2D> Hand_B = DrawHelpers.RequestLocal(typeof(ToucaneMinion), "ToucaneHand2", false);
+	public static readonly Asset<Texture2D> Hand_A = Graphics.Request<Texture2D>("ToucaneHand1");
+	public static readonly Asset<Texture2D> Hand_B = Graphics.Request<Texture2D>("ToucaneHand2");
 
 	private Vector2 _handPosition_A;
 	private Vector2 _handPosition_B;

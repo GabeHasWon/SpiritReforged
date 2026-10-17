@@ -3530,3 +3530,295 @@ WaxPlatformItem: {
 	DisplayName: 蜡平台
 	Tooltip: ""
 }
+
+PinSpookyFarms: {
+	DisplayName: 腐臭农场图钉
+	Tooltip: ""
+}
+
+PinSpookyKrampus: {
+	DisplayName: 坎卜斯工坊图钉
+	Tooltip: ""
+}
+
+PinSpookyNose: {
+	DisplayName: 鼻涕魔虫神殿图钉
+	Tooltip: ""
+}
+
+PinSpookyRotten: {
+	DisplayName: 腐烂深海图钉
+	Tooltip: ""
+}
+
+StarGourdGreenCarvedItem: {
+	DisplayName: 雕刻的绿星星葫芦
+	Tooltip: ""
+}
+
+StarGourdLimeCarvedItem: {
+	DisplayName: 雕刻的绿黄星星葫芦
+	Tooltip: ""
+}
+
+StarGourdOrangeLimeCarvedItem: {
+	DisplayName: 雕刻的绿黄橙星星葫芦
+	Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	DisplayName: 雕刻的橙星星葫芦
+	Tooltip: ""
+}
+
+StarGourdRedCarvedItem: {
+	DisplayName: 雕刻的红星星葫芦
+	Tooltip: ""
+}
+
+StarGourdRottenCarvedItem: {
+	DisplayName: 雕刻的腐烂星星葫芦
+	Tooltip: ""
+}
+
+StarGourdWhiteCarvedItem: {
+	DisplayName: 雕刻的白星星葫芦
+	Tooltip: ""
+}
+
+StarGourdYellowCarvedItem: {
+	DisplayName: 雕刻的黄星星葫芦
+	Tooltip: ""
+}
+
+StarGourdYellowGreenCarvedItem: {
+	DisplayName: 雕刻的黄绿星星葫芦
+	Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	DisplayName: 南瓜桶
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“经典惊悚风”
+		'''
+}
+
+PumpkinPailPurple: {
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“直白惊悚风”
+		'''
+}
+
+PumpkinPailWhite: {
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		“真正惊悚风”
+		'''
+}
+
+TrellisOldBirchItem: {
+	DisplayName: 十字古老白桦藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisOldBirchTwoItem: {
+	DisplayName: 古老白桦藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodItem: {
+	DisplayName: 十字古老木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodTwoItem: {
+	DisplayName: 古老木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+DhampirQuestItem: {
+	DisplayName: 悲伤小蝙蝠
+	Tooltip:
+		'''
+		在物品栏中时会吸引盐滩中的某种生物
+		“你本能的需要照顾它”
+		'''
+}
+
+UncommonSpookyPotsLowerCatacombsItem: {
+	DisplayName: "{$Tiles.Records.LowerCatacombs.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsUpperCatacombsItem: {
+	DisplayName: "{$Tiles.Records.UpperCatacombs.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsKrampusItem: {
+	DisplayName: "{$Tiles.Records.Krampus.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsTarPitsItem: {
+	DisplayName: "{$Tiles.Records.TarPits.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsRottenDepthsItem: {
+	DisplayName: "{$Tiles.Records.RottenDepths.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsFetidFarmsItem: {
+	DisplayName: "{$Tiles.Records.FetidFarms.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsNoseTempleItem: {
+	DisplayName: "{$Tiles.Records.NoseTemple.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsSpiderGrottoItem: {
+	DisplayName: "{$Tiles.Records.SpiderGrotto.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsSpookyForestItem: {
+	DisplayName: "{$Tiles.Records.SpookyForest.Name}"
+	Tooltip: ""
+}
+
+FruitBrownie: {
+	DisplayName: 水果布朗尼
+	Tooltip: “这能吃，但根本不是布朗尼”
+}
+
+SandBrownie: {
+	DisplayName: 沙布朗尼
+	Tooltip: “至少它不是玻璃？”
+}
+
+MummyQuestItem: {
+	DisplayName: 古老皇冠
+	Tooltip:
+		'''
+		在物品栏中时会吸引庙塔顶部的某种生物
+		“这小的不成比例”
+		'''
+}
+
+BallOfBandages: {
+	DisplayName: 一团绷带
+	Tooltip:
+		'''
+		小眼可能会对这个感兴趣
+		“握起来很奇怪”
+		'''
+}
+
+DhampirCompletionItem: {
+	DisplayName: 半吸血鬼耳朵
+	Tooltip:
+		'''
+		小眼可能会对这个感兴趣
+		“哎哟！”
+		'''
+}
+
+MummyBandageScrap: {
+	DisplayName: 木乃伊绷带碎片
+	Tooltip: 小眼想要一团这个……出于某种原因
+}
+
+LookerClub: {
+	DisplayName: 观看者
+	Tooltip:
+		'''
+		蓄力攻击会爆出短暂的眼球仆从
+		眼球仆从同时视为近战和召唤伤害
+		'''
+}
+
+PumpkinClub: {
+	DisplayName: 拍击南瓜灯
+	Tooltip: 蓄力攻击会分裂成火焰团块
+}
+
+ShovelClub: {
+	DisplayName: 掘墓者铲子
+	Tooltip:
+		'''
+		蓄力攻击会掘出骷髅遗骸
+		用光标瞄准那些遗骸
+		'''
+}
+
+DhampirPaintingItem: {
+	DisplayName: 黄昏中的半吸血鬼
+	Tooltip: "'S. Pookie'"
+}
+
+MummyPaintingItem: {
+	DisplayName: 闪光葫芦
+	Tooltip: "'S. Pookie'"
+}
+
+DhampirCape: {
+	DisplayName: 风化斗蓬
+	Tooltip:
+		'''
+		降低重力并移除坠落伤害
+		降低仇恨值
+		当隐藏饰品时，隐藏玩家
+		“它看起来和穿起来的感觉一样好”
+		'''
+}
+
+MummyReward: {
+	DisplayName: 备用肢体盒（尚未完成）
+	Tooltip: ""
+}
+
+DhampirRelic: {
+	DisplayName: 半吸血鬼圣物
+	Tooltip: ""
+}
+
+MummyRelic: {
+	DisplayName: 木猛犸伊圣物
+	Tooltip: ""
+}
+
+GiantThornWallItem: {
+	DisplayName: 巨型荆棘墙
+	Tooltip: ""
+}
+
+StonePillarItem: {
+	DisplayName: 石柱
+	Tooltip: ""
+}
+
+HerosMemorialStatueMossyItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.Tooltip}"
+}
+
+GloomyStatueItem: {
+	DisplayName: 阴郁雕像
+	Tooltip: ""
+}
+
+BoxOfSpareLimbs: {
+	DisplayName: 备用肢体盒
+	Tooltip: ""
+}

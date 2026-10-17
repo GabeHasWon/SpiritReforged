@@ -8,8 +8,8 @@ public class GoldChainLoop : ChainLoop
 {
 	public class GoldChainObject(Point16 anchor, byte segments) : ChainObject(anchor, segments)
 	{
-		public static readonly Asset<Texture2D> CenserObject = DrawHelpers.RequestLocal(typeof(ChainLoop), "Censer", false);
-		public static readonly Asset<Texture2D> Chain = DrawHelpers.RequestLocal(typeof(ChainLoop), "GoldChain", true);
+		public static readonly Asset<Texture2D> CenserObject = Graphics.Request<Texture2D>("Censer");
+		public static readonly Asset<Texture2D> Chain = Graphics.Request<Texture2D>("GoldChain", AssetRequestMode.ImmediateLoad);
 
 		public override Texture2D Texture => Chain.Value;
 

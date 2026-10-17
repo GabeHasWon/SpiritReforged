@@ -7,7 +7,7 @@ public class SlapperHit : Particle
 {
 	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
-	public static readonly Asset<Texture2D> CritTexture = DrawHelpers.RequestLocal(typeof(SlapperHit), "SlapperHit2", false);
+	public static readonly Asset<Texture2D> CritTexture = Graphics.Request<Texture2D>("SlapperHit2");
 	private readonly bool _crit;
 
 	public SlapperHit(Vector2 position, float scale, bool crit = false)

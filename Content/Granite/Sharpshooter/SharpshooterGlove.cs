@@ -32,7 +32,7 @@ public class SharpshooterGlove : ModItem, IFlagged
 internal class SharpshooterPlayer : ModPlayer
 {
 	private static readonly Dictionary<int, float> CooldownByNPC = [];
-	private static readonly Asset<Texture2D> Reticle = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(SharpshooterPlayer), "Reticle"));
+	private static readonly Asset<Texture2D> Reticle = Graphics.Request<Texture2D>("Reticle");
 
 	public float Stacks { get; private set; }
 
@@ -107,7 +107,7 @@ internal class SharpshooterPlayer : ModPlayer
 			float rotation = ((float)(Main.timeForVisualEffects / 40f % MathHelper.Pi) + MathHelper.PiOver2 * i) * (1f - frame);
 			var position = npc.Center + (new Vector2(-1) * distance).RotatedBy(rotation) + new Vector2(0, npc.gfxOffY);
 
-			DrawHelpers.DrawChromaticAberration(new Vector2(1), 1, delegate(Vector2 offset, Color color)
+			Graphics.DrawChromaticAberration(new Vector2(1), 1, delegate(Vector2 offset, Color color)
 			{
 				spriteBatch.Draw(texture, position - Main.screenPosition + offset, source, (color * opacity).Additive(), rotation, source.Size() / 2, scale, default, 0);
 			});

@@ -10,20 +10,14 @@ namespace SpiritReforged.Content.Savanna.Items.HuntingRifle;
 
 public class HuntingRifle : ModItem
 {
-	public static Asset<Texture2D> CursorTexture { get; private set; }
+	public static readonly Asset<Texture2D> CursorTexture = Graphics.Request<Texture2D>("Cursor_Reticle");
 	public static readonly SoundStyle Gunshot = new("SpiritReforged/Assets/SFX/Item/Gunshot");
 
 	/// <summary> The item type of <see cref="HuntingRifle"/> cached for detour efficiency. </summary>
 	private static int StaticType;
 	private static float CursorOpacity;
 
-	public override void Load()
-	{
-		if (!Main.dedServ)
-			CursorTexture = DrawHelpers.RequestLocal(GetType(), "Cursor_Reticle", false);
-
-		CustomCursor.DrawCustomCursor += DrawCustomCursor;
-	}
+	public override void Load() => CustomCursor.DrawCustomCursor += DrawCustomCursor;
 
 	private static void DrawCustomCursor(bool thick)
 	{
@@ -33,14 +27,14 @@ public class HuntingRifle : ModItem
 			return;
 		}
 
-		float scale = Main.cursorScale * .6f * (thick ? 1.1f : 1f);
+		float scale = Main.cursorScale * 0.6f * (thick ? 1.1f : 1f);
 		float distance = MathHelper.Clamp(Main.LocalPlayer.Distance(Main.MouseWorld) / HunterGlobalProjectile.maxRange, 0, 1);
 		float offsetLength = 5f + (1f - distance) * 5f
 			+ (float)Main.LocalPlayer.itemAnimation / Main.LocalPlayer.itemAnimationMax * 3f
 			+ MathHelper.Min(Main.LocalPlayer.velocity.Length(), 2);
 		//Distance, item animation, and player velocity adjustments
 
-		CursorOpacity = MathHelper.Min(CursorOpacity + .05f, 1f);
+		CursorOpacity = MathHelper.Min(CursorOpacity + 0.05f, 1f);
 		Color color = Main.cursorColor;
 
 		if (thick) //Border cursor color

@@ -47,7 +47,7 @@ public sealed class ScarabRadio : ModItem
 	}
 
 	public static int MusicSlot { get; private set; }
-	private static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<ScarabRadio>("ScarabRadioHeld", false);
+	private static readonly Asset<Texture2D> HeldTexture = Graphics.Request<Texture2D>("ScarabRadioHeld");
 
 	public override void Load() => On_PlayerDrawLayers.DrawPlayer_27_HeldItem += DrawHeldItem;
 
