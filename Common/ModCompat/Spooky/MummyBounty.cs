@@ -1,5 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
+using SpiritReforged.Content.Crossmod.Spooky.Items.BoxOfLimbs;
 using SpiritReforged.Content.Crossmod.Spooky.Items.Pets;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using Terraria.DataStructures;
@@ -41,7 +42,7 @@ internal class MummyBounty : SpookyBounty
 	{
 		NPC entity = Main.npc[GetLittleEyeIndex()];
 		Main.LocalPlayer.ConsumeItem(ModContent.ItemType<BallOfBandages>());
-		QuickItem(entity, ItemID.Zenith);
+		QuickItem(entity, ModContent.ItemType<BoxOfSpareLimbs>());
 		QuickItem(entity, AutoContent.ItemType<MummyPainting>());
 
 		if (Main.rand.NextBool(20))

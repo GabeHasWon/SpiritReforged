@@ -33,7 +33,7 @@ public class SmackOLanternTile : ModTile, IAutoloadRubble
 
 public class ShovelTile : ModTile, IAutoloadRubble
 {
-	public IAutoloadRubble.RubbleData Data => new(ModContent.ItemType<ShovelClub>(), IAutoloadRubble.RubbleSize.Small);
+	public IAutoloadRubble.RubbleData Data => new(ModContent.ItemType<ShovelClub>(), IAutoloadRubble.RubbleSize.Medium);
 
 	public override void SetStaticDefaults()
 	{
@@ -51,7 +51,7 @@ public class ShovelTile : ModTile, IAutoloadRubble
 		TileObjectData.addTile(Type);
 
 		RegisterItemDrop(ModContent.ItemType<ShovelClub>());
-		AddMapEntry(new Color(191, 138, 67));
+		AddMapEntry(new Color(112, 38, 38));
 		DustType = DustID.Gold;
 	}
 }
