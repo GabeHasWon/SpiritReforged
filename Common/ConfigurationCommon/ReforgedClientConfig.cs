@@ -1,4 +1,3 @@
-using SpiritReforged.Content.Ocean.Boids;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.ComponentModel;
 using Terraria.ModLoader.Config;

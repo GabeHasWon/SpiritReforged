@@ -1396,12 +1396,12 @@ SandBombSticky: {
 }
 
 CoarseBomb: {
-	DisplayName: Грубая земляная бомба
+	DisplayName: Бомба грубой земли
 	Tooltip: Вызывает небольшой взрыв, разбрасывающий грубую землю
 }
 
 CoarseBombSticky: {
-	DisplayName: Липкая грубая земляная бомба
+	DisplayName: Липкая бомба грубой земли
 	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
 }
 
@@ -1653,37 +1653,37 @@ WheezerStatueItem: {
 }
 
 FlaskArgon: {
-	DisplayName: Флакон с аргоновым мхом
+	DisplayName: Колба с аргоновым мхом
 	Tooltip: Распространяет светящийся мох при столкновении
 }
 
 FlaskHelium: {
-	DisplayName: Флакон с гелиевым мхом
+	DisplayName: Колба с гелиевым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskKrypton: {
-	DisplayName: Флакон с криптоновым мхом
+	DisplayName: Колба с криптоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskNeon: {
-	DisplayName: Флакон с неоновым мхом
+	DisplayName: Колба с неоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskOganesson: {
-	DisplayName: Флакон с оганесоновым мхом
+	DisplayName: Колба с оганесоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskRadon: {
-	DisplayName: Флакон с радоновым мхом
+	DisplayName: Колба с радоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskXenon: {
-	DisplayName: Флакон с ксеноновым мхом
+	DisplayName: Колба с ксеноновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
@@ -1814,32 +1814,32 @@ SavannaTorchItem: {
 }
 
 FlaskBlue: {
-	DisplayName: Флакон с синим мхом
+	DisplayName: Колба с синим мхом
 	Tooltip: Распространяет мох при столкновении
 }
 
 FlaskBrown: {
-	DisplayName: Флакон с коричневым мхом
+	DisplayName: Колба с коричневым мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskGreen: {
-	DisplayName: Флакон с зелёным мхом
+	DisplayName: Колба с зелёным мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskLava: {
-	DisplayName: Флакон с лавовым мхом
+	DisplayName: Колба с лавовым мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskPurple: {
-	DisplayName: Флакон с пурпурным мхом
+	DisplayName: Колба с пурпурным мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskRed: {
-	DisplayName: Флакон с красным мхом
+	DisplayName: Колба с красным мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
@@ -1849,7 +1849,7 @@ TitleMusicBoxItem: {
 }
 
 Drypowder: {
-	DisplayName: Сухой порошок
+	DisplayName: Осушающий порошок
 	Tooltip: Распространяет саванну
 }
 
@@ -2585,17 +2585,17 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: Стена из бронзовой решётки
+	DisplayName: Бронзовая решётчатая стена
 	Tooltip: ""
 }
 
 BronzePlatingItem: {
-	DisplayName: Бронзовое покрытие
+	DisplayName: Бронзовая обшивка
 	Tooltip: ""
 }
 
 BronzePlatingWallItem: {
-	DisplayName: Стена с бронзовым покрытием
+	DisplayName: Стена с бронзовой обшивкой
 	Tooltip: ""
 }
 
@@ -2754,12 +2754,12 @@ SaltPanelWallItem: {
 }
 
 SaltPlateWallItem: {
-	DisplayName: Стена из соляной пластины
+	DisplayName: Стена из соляной плиты
 	Tooltip: ""
 }
 
 SaltFireplaceItem: {
-	DisplayName: Солончаковый камин
+	DisplayName: Соляной камин
 	Tooltip: ""
 }
 
@@ -2774,7 +2774,7 @@ SaltPanelItem: {
 }
 
 SaltPlateItem: {
-	DisplayName: Соляная пластина
+	DisplayName: Соляная плита
 	Tooltip: ""
 }
 
@@ -3828,5 +3828,9 @@ GloomyStatueItem: {
 
 BoxOfSpareLimbs: {
 	// DisplayName: Box Of Spare Limbs
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Getting hit spawns a spare limb to fight for you
+		A leg will hop at nearby enemies, and a hand will grab for nearby enemies, and nothing else
+		''' */
 }

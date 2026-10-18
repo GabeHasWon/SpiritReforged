@@ -5,7 +5,6 @@ using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
-using Terraria.GameInput;
 using Terraria.ModLoader.IO;
 using TileHelper.Common;
 

@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.ConfigurationCommon;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
@@ -568,7 +567,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 		return false;
 	}
 
-	/// <summary>Gets the slope of the ocean. Reference: <seealso cref="https://www.desmos.com/calculator/xfnsmar79x"/></summary>
+	/// <summary>Gets the slope of the ocean. Reference: https://www.desmos.com/calculator/xfnsmar79x </summary>
 	/// <param name="tilesFromInnerEdge"></param>
 	private static float GetOceanSlope(int tilesFromInnerEdge)
 	{

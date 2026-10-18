@@ -3,16 +3,15 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.SpookyForest.PumpkinClub;
 
-// TODO: obtainment, balance
 [AutoloadGlowmask("255,255,255")]
 public class PumpkinClub : ClubItem
 {
-	internal override float DamageScaling => 1.95f;
+	internal override float DamageScaling => 2f;
 	internal override float KnockbackScaling => 2f;
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 35;
+		Item.damage = 8;
 		Item.knockBack = 5f;
 		ChargeTime = 60;
 		SwingTime = 35;

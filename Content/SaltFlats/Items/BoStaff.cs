@@ -1,6 +1,5 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
@@ -8,7 +7,6 @@ using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Stand;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles;
-using SpiritReforged.Content.Savanna.Items.WrithingSticks;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -336,7 +334,7 @@ public class BoStaffSwing : ModProjectile
 
 			if (UseStyle is Style.Jab)
 			{
-				ParticleHandler.SpawnParticle(new BoNoiseCone(Projectile, Projectile.Center + Projectile.velocity * 50f, Projectile.velocity * 5, 120, 100, Projectile.rotation, (int)(SwingTime * 0.8f), 0.8f));
+				ParticleRenderers.OverPlayers.Add(new BoNoiseCone(Projectile, Projectile.Center + Projectile.velocity * 50f, Projectile.velocity * 5, 120, 100, Projectile.rotation, (int)(SwingTime * 0.8f), 0.8f));
 				SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing, Projectile.Center);
 			}
 		}
@@ -372,14 +370,14 @@ public class BoStaffSwing : ModProjectile
 		{
 			var velocity = (Projectile.DirectionTo(position) * Main.rand.NextFloat(5f, 10f)).RotatedByRandom(1.5f);
 
-			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, color * 2, new Vector2(0.5f, 1f) * Main.rand.NextFloat(0.1f, 1.5f),
+			ParticleRenderers.OverPlayers.Add(new ImpactLine(position, velocity, color * 2, new Vector2(0.5f, 1f) * Main.rand.NextFloat(0.1f, 1.5f),
 				Main.rand.Next(15, 20), 0.8f)
 			{ UseLightColor = true, NoLight = true });
 		}
 
 		if (UseStyle is Style.Jab)
 		{
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.Gray, 0.7f, 140, 20, "supPerlin", Vector2.One, EaseFunction.EaseCubicOut).WithSkew(0.8f, Projectile.rotation).UsesLightColor());
+			ParticleRenderers.OverPlayers.Add(new TexturedPulseCircle(position, Color.Gray, 0.7f, 140, 20, "supPerlin", Vector2.One, EaseFunction.EaseCubicOut).WithSkew(0.8f, Projectile.rotation).UsesLightColor());
 
 			SoundEngine.PlaySound(SoundID.DrumCymbal1 with { Pitch = 0.9f, Volume = 0.2f }, position);
 			SoundEngine.PlaySound(SoundID.DrumTamaSnare, position);
@@ -391,7 +389,7 @@ public class BoStaffSwing : ModProjectile
 			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Pitch = 0.9f }, position);
 
 			Vector2 velocity = Projectile.velocity.RotatedBy(MathHelper.PiOver2 * (Math.Sign(SwingArc) * Projectile.direction));
-			ParticleHandler.SpawnParticle(new BoNoiseCone(null, position, velocity * 5f, 200, 100, velocity.ToRotation(), 20, 0.8f));
+			ParticleRenderers.OverPlayers.Add(new BoNoiseCone(null, position, velocity * 5f, 200, 100, velocity.ToRotation(), 20, 0.8f));
 		}
 	}
 

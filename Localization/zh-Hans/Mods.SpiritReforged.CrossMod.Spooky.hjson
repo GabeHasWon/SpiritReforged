@@ -2,41 +2,41 @@ DhampirBounty: {
 	Dialogue: {
 		# For continuity's sake, these dialogue entries are read sequentially, one eye, one player - so it'd be Eye.0, then Player.0, then Eye.1, etc
 		Eye: {
-			// 0: You know, I once knew someone like you! Someone spry, strong, and easy to use! But oh me oh my, they could only get so far, before the light of the sun left them scarred...so with a little bit of magic, I inverted their condition! A perfect specimen for daytime missions!
-			// 1: Uh...yeah, I mean, I had a more elaborate rhyme but, yeah that's about what I want. Do keep in mind that they are invisible, but just looove seeing their own reflection. Here, I have a malnourished bat I poke with a stick every night in a dinky cage that you can use to lure them out of hiding.
-			// 2: They probably just think they are too cool to hang around with little old me now. How ungrateful!
+			0: 你知道吗，我曾经认识一个像你这样的人！机敏、强壮，而且用起来很顺手！但是哎呀哎呀，他们也只能走到那么远，在被太阳的光芒灼伤之前……于是我用了一点点魔法，反转了他们的体质！一个适用于白天任务的完美标本！
+			1: 呃……对，我是说，我本来准备了一段更精致的押韵，不过，差不多就是我想说的。请记住，他们是隐形的，但就是特别爱看自己的倒影。来，我这儿有只营养不良的蝙蝠，我每天晚上拿棍子戳它，就关在这个破笼子里，你可以用它把他们从隐藏中引出来。
+			2: 他们大概只是觉得自己太酷了，不屑于跟我这个老家伙混在一起了吧。多么忘恩负义！
 		}
 
 		Player: {
-			// 0: And then they left right?
-			// 1: ...yeah, I wonder why they would ever leave!
-			// 2: Yeah, no other reason, got it.
+			0: 然后他们就离开了，对吧？
+			1: ……对，我真想知道他们到底为什么会离开！
+			2: 是啊，没别的原因，明白了。
 		}
 	}
 
 	RecoveryDialogue: {
 		Eye: {
-			// 0: You are back! Have you assassinated the deserter yet?
-			// 1: Oh don't worry, I have a big pile of malnourished bats I poke with a stick every night in dinky cages. I keep them around to remind myself of how much better I am than that stupid Dhampir. Grr...stupid dumb Dhampir...
-			// 2: ...oh me oh my, many things, but yet you help me so, we aren't so different...are we?
+			0: 你回来了！你刺杀掉那个逃亡者了吗？
+			1: 哦别担心，我有一大堆营养不良的蝙蝠，我每天晚上拿棍子戳它们，就关在那些破笼子里。我留着它们，是为了提醒自己，我比那个愚蠢的半吸血鬼强多了。呃……愚蠢的笨蛋半吸血鬼……
+			2: ……哎呀哎呀，这么多事情，但你还这么帮我，我们其实也没那么不同……对吧？
 		}
 
 		Player: {
-			// 0: No, Little Eye, no. I'm here because I lost the bat.
-			// 1: What's wrong with you?!
-			// 2: Ahuh. Just give me the bat already.
+			0: 不，小眼，不是的。我来是因为我把蝙蝠弄丢了。
+			1: 你到底有什么毛病？！
+			2: 啊哈。把蝙蝠给我就行了。
 		}
 	}
 
 	CompletionDialogue: {
 		Eye: {
-			// 0: Has the deserter been left in the salts?
-			// 1: Congratulations are in order! Here, take this old cape. I tried it on the stupid Dhampir but it wasn't "cool enough"...dumb Dhampir...
+			0: 逃亡者留在盐里了吗？
+			1: 该庆祝了！来，拿着这个旧斗篷。我曾在愚蠢的半吸血鬼身上试过，但它不“够酷”……笨蛋半吸血鬼……
 		}
 
 		Player: {
-			// 0: You're so unsettling, but yes.
-			// 1: If you say so.
+			0: 你真让人不安，不过没错。
+			1: 既然你这么说的话。
 		}
 	}
 }
@@ -44,41 +44,41 @@ DhampirBounty: {
 MummyBounty: {
 	Dialogue: {
 		Eye: {
-			// 0: Oh me oh my! You've returned. Speaking of returned, have you heard of the mummy? I had a little pet project for a while, but they were a bit of a dummy!
-			// 1: Well...no. They fell apart, and they seemed to leave to depart...er...something. They didn't want to stick together, and moaned about how they must "return to their tomb".
-			// 2: It's your joy to corral them! Here, take this...thing. I think the dummy- er, mummy, liked it.
+			0: 哎呀呀！你归来了。说到归来，你听说过那具木乃伊吗？我有个小宠物项目搞了一阵子，不过他们有点太蠢了！
+			1: 嗯……没有。他们散架了，而且好像还打算离开……呃……反正就是那意思。他们不想待在一起，还哼哼唧唧地说必须“回到他们的坟墓”。
+			2: 把它们关起来是你的荣幸！来，拿着这个……东西。我觉得那个蠢蛋——呃，木乃伊，喜欢它。
 		}
 
 		Player: {
-			// 0: They ran away at the earliest opportunity, didn't they.
-			// 1: And it's my job to corral them?
-			// 2: ...okay.
+			0: 它们一有机会就跑了，对吧。
+			1: 而把它们关起来是我的工作？
+			2: ……好吧。
 		}
 	}
 
 	RecoveryDialogue: {
 		Eye: {
-			// 0: Aha! Have you gotten the spoils of the mummy?
-			// 1: Good thing I had already cloned them! Great way to lord over your wretched creation sometimes, right?
-			// 2: I'm sure you'll figure it out someday. Here you go!
+			0: 啊哈！你拿到木乃伊的战利品了吗？
+			1: 还好我早就把它们克隆好了！有时候这样居高临下地俯视你那可悲的造物，感觉真不错，对吧？
+			2: 我相信你总有一天会搞明白的。给你！
 		}
 
 		Player: {
-			// 0: No, I lost that crown thing.
-			// 1: That's so far removed from what I relate to that it's baffling.
-			// 2: I hope I don't have to talk to you again.
+			0: 没有，我把那个王冠一样的东西弄丢了。
+			1: 这跟我能理解的东西差得太远了，简直让人莫名其妙。
+			2: 我希望我不用再跟你说话了。
 		}
 	}
 
 	CompletionDialogue: {
 		Eye: {
-			// 0: Is that an inconspicuous bundle of weathered bandages I see? I'd be so happy for you and me.
-			// 1: Don't be so glum! Here, this was in a pile way in the back. Hopefully it doesn't have too much extra flesh on it!
+			0: 我看到的那一捆不起眼的破旧绷带，是吗？我会为你和我感到高兴的。
+			1: 别那么闷闷不乐！来，这是从后面一堆东西里翻出来的。希望上面没沾太多肉！
 		}
 
 		Player: {
-			// 0: ...yes.
-			// 1: Gross!
+			0: ……是的。
+			1: 好恶心！
 		}
 	}
 }

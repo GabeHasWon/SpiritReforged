@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Particles;
@@ -70,7 +70,7 @@ public class GreenSpookyStargrass : GrassTile
 			Vector2 velocity = new Vector2(0, -1).RotatedByRandom(MathHelper.PiOver2) * Main.rand.NextFloat(0.9f, 1.5f);
 			bool left = true;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(player.Bottom + new Vector2(Main.rand.Next(player.width), 0), velocity,
+			ParticleRenderers.OverNPCs.Add(new GlowParticle(player.Bottom + new Vector2(Main.rand.Next(player.width), 0), velocity,
 				ParticleColor, Main.rand.NextFloat(0.35f, 0.5f), 60, 10, p =>
 				{
 					p.Velocity = p.Velocity.RotatedBy(left ? 0.1f : -0.1f);

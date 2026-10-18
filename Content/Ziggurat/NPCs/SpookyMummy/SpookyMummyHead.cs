@@ -1,10 +1,11 @@
-﻿using SpiritReforged.Common.Visuals.Glowmasks;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
-using SpiritReforged.Content.Crossmod.Spooky.Tiles;
+using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ziggurat.Biome;
+using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
-using Terraria.GameContent.ItemDropRules;
-using Terraria.Map;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
 
@@ -24,6 +25,7 @@ internal class SpookyMummyHead : ModNPC
 	{
 		NPC.lifeMax = 300;
 		NPC.defense = 30;
+		NPC.damage = 50;
 		NPC.aiStyle = -1;
 		NPC.knockBackResist = 0f;
 		NPC.noTileCollide = false;
@@ -63,6 +65,39 @@ internal class SpookyMummyHead : ModNPC
 
 		if (Timer >= MaxTime)
 		{
+			for (int i = 0; i < 3; i++)
+			{
+				Vector2 pos = NPC.Bottom;
+
+				Vector2 velocity = Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 6f) - Vector2.UnitY;
+
+				ParticleRenderers.UnderSolids.Add(new SmokeCloud(pos, velocity, new Color(160, 155, 106) * 0.22f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+				{
+					Pixellate = true,
+					PixelDivisor = 2,
+				});
+
+				Dust.NewDustPerfect(pos, DustID.Sand, velocity, 150, default, Main.rand.NextFloat(1f, 2.5f)).noGravity = !Main.rand.NextBool(10);
+			}
+
+			var easeFunction = EaseBuilder.EaseCubicOut;
+			float ringWidth = 0.6f;
+			int lifetime = 40;
+			float zRotation = 0.9f;
+
+			ParticleRenderers.OverNPCs.Add(new TexturedPulseCircle(
+				NPC.Bottom,
+				Color.Gray * 0.66f,
+				new Color(160, 155, 106) * 0.66f,
+				ringWidth,
+				150,
+				lifetime,
+				"supPerlin",
+				new Vector2(2, 3),
+				easeFunction).WithSkew(zRotation, MathHelper.PiOver2).UsesLightColor());
+
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.15f, Pitch = -0.5f }, NPC.Bottom);
+
 			NPC.velocity.X = MathF.Sign(Target.Center.X - NPC.Center.X) * strength;
 			NPC.velocity.Y = -8 * JumpStrength;
 			Timer = 0;

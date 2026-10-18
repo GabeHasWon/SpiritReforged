@@ -1,8 +1,6 @@
-using Microsoft.CodeAnalysis;
-using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
-using Terraria.DataStructures;
+using SpiritReforged.Common.Visuals;
 using Terraria.GameContent.Drawing;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -37,7 +35,7 @@ public class TileChunkParticle : Particle
 
 		Position = worldPosition;
 		Velocity = velocity;
-		Scale = 1;
+		Scale = 1f;
 		_angularMomentum = Velocity.Length() * Main.rand.NextFloat(0.015f, 0.022f) * (velocity.X < 0 ? -1 : 1);
 
 		//Pick the frame coordinates of the 1x1 tile chunks
@@ -63,17 +61,12 @@ public class TileChunkParticle : Particle
 		MaxTime = lifetime;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
-		if (_noGravity)
-		{
-			Velocity *= 0.97f;
-			Rotation += Velocity.Length() * 0.05f;
-		}
-		else
-		{
-			Rotation += _angularMomentum;
-			_angularMomentum *= 0.98f;
+		base.Update(ref settings);
+
+		Rotation += _angularMomentum;
+		_angularMomentum *= 0.98f;
 
 			float velocityMultiplier = Utils.GetLerpValue(10, 30, TimeActive, true);
 			Velocity.Y += 0.54f * velocityMultiplier;
@@ -81,16 +74,11 @@ public class TileChunkParticle : Particle
 			if (_bigMode)
 				Velocity.Y += 0.07f * velocityMultiplier;
 
-			if (killMe)
-				Kill();
-		}	
+		if (killMe)
+			ShouldBeRemovedFromRenderer = true;
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.BelowSolid;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Texture2D texture = TextureAssets.Tile[_tileCache.TileType].Value;
 		if (_tileCache.TileColor != PaintID.None)
@@ -101,7 +89,7 @@ public class TileChunkParticle : Particle
 
 		var frame = new Rectangle(_xFrame, _yFrame, 16, 16);
 		Vector2 position = Position;
-		Color color = Lighting.GetColor(Position.ToTileCoordinates());
+		Color color = Lighting.GetColor(position.ToTileCoordinates());
 		if (_tileCache.IsTileFullbright)
 			color = Color.White;
 		if (!TileDrawing.IsVisible(_tileCache))
@@ -111,7 +99,7 @@ public class TileChunkParticle : Particle
 
 		if (!_bigMode)
 		{
-			spriteBatch.Draw(texture, position - Main.screenPosition, frame, color, Rotation, Vector2.One * 8, Scale, SpriteEffects.None, 0);
+			spriteBatch.Draw(texture, position + settings.AnchorPosition, frame, color, Rotation, Vector2.One * 8, Scale, SpriteEffects.None, 0);
 		}
 		else
 		{
@@ -120,7 +108,7 @@ public class TileChunkParticle : Particle
 
 			//Draw a chunky 2x2 cube of tiles
 			for (int i = 0; i < 4; i++)
-				_bigModeSegments[i].Draw(spriteBatch, texture, position - Main.screenPosition, color, Rotation, Scale, unitX, unitY);
+				_bigModeSegments[i].Draw(spriteBatch, texture, position + settings.AnchorPosition, color, Rotation, Scale, unitX, unitY);
 		}
 	}
 

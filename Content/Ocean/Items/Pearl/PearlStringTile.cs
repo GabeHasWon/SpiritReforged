@@ -1,7 +1,6 @@
 using RubbleAutoloader;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
-using Terraria;
+using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using TileHelper.Common;
@@ -101,7 +100,7 @@ public class PearlStringTile : ModTile, IAutoloadRubble
 				dust.velocity = Vector2.Zero;
 				dust.noLightEmittence = true;
 
-				ParticleHandler.SpawnParticle(new Particles.GlowParticle(dustPos, Vector2.Zero, Main.DiscoColor * 0.8f, Color.Black, 0.75f, 50));
+				ParticleRenderers.UnderProjectiles.Add(new Particles.GlowParticle(dustPos, Vector2.Zero, Main.DiscoColor * 0.8f, Color.Black, 0.75f, 50));
 			}
 		}
 	}

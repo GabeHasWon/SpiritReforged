@@ -1,17 +1,13 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
-using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Content.Crossmod.Spooky.SpookyForest.PumpkinClub;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
-using SpiritReforged.Common.MathHelpers;
-using SpiritReforged.Common.TileCommon;
-using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.Items.ShovelClub;
 class ShovelClubProj : BaseClubProj
@@ -115,7 +111,7 @@ class ShovelClubProj : BaseClubProj
 
 				bool big = Main.rand.NextBool(4);
 
-				ParticleHandler.SpawnParticle(new TileChunkParticle(pos.ToTileCoordinates(), pos, particleVel, Main.rand.Next(30, 70), big, !big && Main.rand.NextBool()));
+				ParticleRenderers.OverNPCs.Add(new TileChunkParticle(pos.ToTileCoordinates(), pos, particleVel, Main.rand.Next(30, 70), big, !big && Main.rand.NextBool()));
 			}
 
 			for (int i = 0; i < 4; i++)
@@ -149,7 +145,7 @@ class ShovelClubProj : BaseClubProj
 			if (FullCharge)
 				Dust.NewDustPerfect(particlePos, DustID.Bone, particleVel * 0.65f, 200, default, Main.rand.NextFloat(2f));
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.06f, 0.1f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
+			ParticleRenderers.UnderSolids.Add(new SmokeCloud(particlePos, particleVel, colors[0], Main.rand.NextFloat(0.06f, 0.1f), EaseFunction.EaseCircularOut, Main.rand.Next(30, 40))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -159,7 +155,6 @@ class ShovelClubProj : BaseClubProj
 				PixelDivisor = 3,
 				Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
 				ColorLerpExponent = 0.5f,
-				Layer = ParticleLayer.BelowSolid
 			});
 		}
 
@@ -186,7 +181,7 @@ class ShovelClubProj : BaseClubProj
 			if (FullCharge)
 				Dust.NewDustPerfect(particlePos, DustID.Bone, particleVel * 1.5f, 150, default, Main.rand.NextFloat(3f)).noGravity = true;
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(particlePos, particleVel, colors[0] * 0.2f, Main.rand.NextFloat(0.1f, 0.2f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 90))
+			ParticleRenderers.UnderSolids.Add(new SmokeCloud(particlePos, particleVel, colors[0] * 0.2f, Main.rand.NextFloat(0.1f, 0.2f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 90))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -196,18 +191,17 @@ class ShovelClubProj : BaseClubProj
 				PixelDivisor = 3,
 				Rotation = Main.rand.NextFloat(MathHelper.TwoPi),
 				ColorLerpExponent = 0.5f,
-				Layer = ParticleLayer.BelowSolid
 			});
 
 			particleVel = Vector2.UnitX.RotatedByRandom(0.5f) * Projectile.direction * Main.rand.NextFloat(20f, 40f) * strength - Vector2.UnitY * 5f * strength;
 			var p = new ImpactLine(Projectile.Center, particleVel, Color.White * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(20, 30), 0.8f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.OverNPCs.Add(p);
 
 			particleVel = Vector2.UnitX.RotatedByRandom(0.5f) * Projectile.direction * Main.rand.NextFloat(20f, 40f) * strength - Vector2.UnitY * 5f * strength;
 			p = new ImpactLine(Projectile.Center, particleVel, colors[1] * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(20, 30), 0.8f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.OverNPCs.Add(p);
 		}
 
 		if (!Main.dedServ)
@@ -242,11 +236,11 @@ class ShovelClubProj : BaseClubProj
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
 			var p = new ImpactLine(position, particleVel, Color.White * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.OverNPCs.Add(p);
 		}
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
+		ParticleRenderers.OverNPCs.Add(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
+		ParticleRenderers.OverNPCs.Add(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
 	}
 
 	static Color[] GetTilePalette(Vector2 input)
@@ -317,7 +311,7 @@ class ShovelClubBoneProjectile : ModProjectile
 			Vector2 particleVel = Main.rand.NextVector2CircularEdge(5, 5);
 			var p = new ImpactLine(Projectile.Center, particleVel, Color.DarkOliveGreen, new Vector2(0.1f, 0.5f), Main.rand.Next(10, 20), 0.95f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.OverNPCs.Add(p);
 
 			Dust.NewDustPerfect(Projectile.Center, DustID.Bone, Main.rand.NextVector2Circular(5, 5), 50, default, Main.rand.NextFloat(1f, 2f)).noGravity = true;
 		}

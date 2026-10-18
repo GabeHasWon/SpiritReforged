@@ -1,4 +1,3 @@
-using SpiritReforged.Common;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;

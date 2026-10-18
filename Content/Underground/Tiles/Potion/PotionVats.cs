@@ -1,8 +1,8 @@
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Underground.Pottery;
 using System.Linq;
@@ -220,7 +220,7 @@ public class PotionVats : PotTile, ICutAttempt
 				float magnitude = Main.rand.NextFloat();
 				var velocity = Main.rand.NextVector2Unit() * magnitude * 3f;
 
-				ParticleHandler.SpawnParticle(new VaporParticle(new Vector2(i, j).ToWorldCoordinates(24, 40), velocity, color.Additive(110), 1f - magnitude + 1.5f, Main.rand.Next(300, 500))
+				ParticleRenderers.UnderProjectiles.Add(new VaporParticle(new Vector2(i, j).ToWorldCoordinates(24, 40), velocity, color.Additive(110), 1f - magnitude + 1.5f, Main.rand.Next(300, 500))
 				{
 					Rotation = Main.rand.NextFloat()
 				});

@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -158,14 +157,14 @@ public partial class ShockGlyph : GlyphItem
 			for (int i = 0; i < 5; i++)
 			{
 				Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-				ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
+				ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
 			}
 		}
 
 		if (Main.rand.NextBool(50))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-			ParticleHandler.SpawnParticle(new ShockBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
+			ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(pos, Main.rand.NextVector2CircularEdge(4f, 4f) * Main.rand.NextFloat(0.5f, 1.1f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.9f), 20 + Main.rand.Next(20, 50)));
 		}
 	}
 
@@ -182,7 +181,7 @@ public partial class ShockGlyph : GlyphItem
 	public override void UpdateGlyphProjectile(Projectile projectile)
 	{
 		if (Main.rand.NextBool(25 + 20 * projectile.extraUpdates))
-			ParticleHandler.SpawnParticle(new ShockBoltParticle(projectile.Center, projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.1f) * Main.rand.NextFloat(15f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.7f), 20 + Main.rand.Next(10, 30)));
+			ParticleRenderers.UnderProjectiles.Add(new ShockBoltParticle(projectile.Center, projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.1f) * Main.rand.NextFloat(15f), Color.Yellow, Color.Cyan, 0f, Main.rand.NextFloat(0.4f, 0.7f), 20 + Main.rand.Next(10, 30)));
 
 		if (Main.rand.NextBool(12 + 10 * projectile.extraUpdates))
 			Dust.NewDustPerfect(projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2), Main.rand.NextBool() ? DustID.Electric : ModContent.DustType<YellowElectricDust>(), -projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.2f) * Main.rand.NextFloat(12f), 0, default, Main.rand.NextFloat(0.4f, 0.6f)).noGravity = true;
@@ -190,7 +189,9 @@ public partial class ShockGlyph : GlyphItem
 
 	public class ShockGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
 	{
-		private Effect GetEffect => shader.Value;
+		private Effect GetEffect => _shader.Value;
+
+		private readonly Asset<Effect> _shader = shader;
 
 		public override void Apply(Entity entity, DrawData? drawData = null)
 		{

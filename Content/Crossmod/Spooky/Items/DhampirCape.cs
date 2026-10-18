@@ -6,6 +6,7 @@ using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.Items;
 
+[AutoloadEquip(EquipType.Back, EquipType.Front)]
 internal class DhampirCape : ModItem, IFlagged
 {
 	internal class DhampirCapePlayer : ModPlayer
@@ -18,17 +19,18 @@ internal class DhampirCape : ModItem, IFlagged
 		{
 			bool hasCape = drawPlayer.CheckFlag("DhampirCape") == true && drawPlayer.GetModPlayer<DhampirCapePlayer>().reflectionOnly;
 
-			if (!hasCape || Reflections.DrawingReflection || (drawPlayer.immuneTime > 0 && !drawPlayer.immuneNoBlink))
+			if (!hasCape || Reflections.DrawingReflection || drawPlayer.immuneTime > 0 && !drawPlayer.immuneNoBlink)
 				orig(self, camera, drawPlayer);
 		}
 	}
 
 	public override void SetDefaults()
 	{
-		Item.CloneDefaults(ItemID.Aglet);
 		Item.rare = ItemRarityID.Green;
 		Item.maxStack = 1;
 		Item.value = Item.buyPrice(0, 1, 0, 0);
+		Item.accessory = true;
+		Item.Size = new Vector2(20, 20);
 	}
 
 	public override void UpdateAccessory(Player player, bool hideVisual) 

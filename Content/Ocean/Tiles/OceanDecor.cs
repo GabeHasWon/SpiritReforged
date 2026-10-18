@@ -1,7 +1,5 @@
 ﻿using RubbleAutoloader;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals;
-using System.Diagnostics;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using TileHelper.Common;

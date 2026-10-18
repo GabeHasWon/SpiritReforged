@@ -1,5 +1,4 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.NPCCommon;

@@ -1,10 +1,10 @@
 ﻿using SpiritReforged.Common.ItemCommon.Abstract;
-using SpiritReforged.Content.Crossmod.Spooky.SpookyForest.PumpkinClub;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.Items.ShovelClub;
+
 public class ShovelClub : ClubItem
 {
-	internal override float DamageScaling => 1f;
+	internal override float DamageScaling => 2f;
 	internal override float KnockbackScaling => 1f;
 
 	public override void SafeSetDefaults()

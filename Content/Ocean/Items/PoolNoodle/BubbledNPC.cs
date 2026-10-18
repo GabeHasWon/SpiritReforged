@@ -1,4 +1,4 @@
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using Terraria.Audio;
 
@@ -19,7 +19,7 @@ internal class BubbledGlobalNPC : GlobalNPC
 		public override void Update(NPC npc, ref int buffIndex)
 		{
 			if (!Main.dedServ && Main.rand.NextBool(35))
-				ParticleHandler.SpawnParticle(new BubbleParticle(npc.Center, new Vector2(0, Main.rand.NextFloat(-1.5f, 0.5f)), Main.rand.NextFloat(0.1f, 0.3f), 40));
+				ParticleRenderers.OverNPCs.Add(new BubbleParticle(npc.Center, new Vector2(0, Main.rand.NextFloat(-1.5f, 0.5f)), Main.rand.NextFloat(0.1f, 0.3f), 40));
 		}
 	}
 
@@ -46,7 +46,7 @@ internal class BubbledGlobalNPC : GlobalNPC
 
 		if (projectile.IsMinionOrSentryRelated && npc.HasBuff<Bubbled>() && Main.rand.NextBool(5))
 		{
-			ParticleHandler.SpawnParticle(new BubblePop(npc.Center, 0.6f, 0.9f, 35, Main.rand.NextFloat(-5f, 5f)));
+			ParticleRenderers.OverNPCs.Add(new BubblePop(npc.Center, 0.6f, 0.9f, 35, Main.rand.NextFloat(-5f, 5f)));
 
 			SoundEngine.PlaySound(SoundID.Item54, npc.Center);
 			SoundEngine.PlaySound(SoundID.Item86, npc.Center);
