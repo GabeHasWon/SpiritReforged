@@ -35,8 +35,12 @@ internal class PumpkinPailOrange : BackpackItem
 
 		var oldPack = player.GetModPlayer<BackpackPlayer>().backpack;
 
-		player.GetModPlayer<BackpackPlayer>().backpack = Item.Clone();
+		ref Item backpack = ref player.GetModPlayer<BackpackPlayer>().backpack;
+		backpack = Item.Clone();
 		Item.SetDefaults(oldPack.type);
+
+		if (oldPack.ModItem is PumpkinPailOrange)
+			Item.stack++;
 	}
 }
 

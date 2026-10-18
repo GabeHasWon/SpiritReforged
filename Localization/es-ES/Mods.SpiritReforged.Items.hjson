@@ -3755,7 +3755,7 @@ PumpkinClub: {
 }
 
 ShovelClub: {
-	// DisplayName: Gravedigger's Shovel
+	// DisplayName: Gravemaker
 	/* Tooltip:
 		'''
 		Charged strikes unearth skeletal remains
