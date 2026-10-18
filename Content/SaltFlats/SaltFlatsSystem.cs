@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Graphics.PackedVector;
-using SpiritReforged.Common.Misc;
+﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.SaltFlats.Biome;

@@ -4,7 +4,6 @@ using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
-using Terraria;
 using Terraria.Audio;
 using static Microsoft.Xna.Framework.MathHelper;
 using static SpiritReforged.Common.Easing.EaseFunction;

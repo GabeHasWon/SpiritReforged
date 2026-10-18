@@ -1,9 +1,7 @@
-using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using Terraria.Graphics.CameraModifiers;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Boss;
 
@@ -53,7 +51,7 @@ public class SandShockwavePillar : ModProjectile
 			//Scrapped cuz it looks ugly
 			//Color[] colors = GetTilePalette(Projectile.Bottom + Vector2.UnitY * 10);
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(2, 6) * ParticleVerticalSpeedMult, new Color(253, 239, 167) * 0.7f, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
+			ParticleRenderers.UnderSolids.Add(new SmokeCloud(Projectile.Bottom, -Vector2.UnitY * Main.rand.NextFloat(2, 6) * ParticleVerticalSpeedMult, new Color(253, 239, 167) * 0.7f, Main.rand.NextFloat(0.05f, 0.25f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 60))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -61,7 +59,6 @@ public class SandShockwavePillar : ModProjectile
 				TertiaryColor = new Color(118, 116, 66) * 0.7f,
 				PixelDivisor = 3,
 				ColorLerpExponent = 0.25f,
-				Layer = ParticleLayer.BelowSolid
 			});
 
 			if (Main.rand.NextBool(4))
@@ -109,7 +106,7 @@ public class SandShockwavePillar : ModProjectile
 		int smokeCount = Math.Clamp(HitboxHeight / 40, 1, 6);
 		for (int i = 0; i < smokeCount; i++)
 		{
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Bottom + Main.rand.NextFloat(-64, 64) * Vector2.UnitX, -Vector2.UnitY * Main.rand.NextFloat(1, 11) * ySpeedMult + Projectile.velocity * 0.4f, new Color(243, 239, 187), Main.rand.NextFloat(0.1f, 0.2f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 90))
+			ParticleRenderers.UnderSolids.Add(new SmokeCloud(Projectile.Bottom + Main.rand.NextFloat(-64, 64) * Vector2.UnitX, -Vector2.UnitY * Main.rand.NextFloat(1, 11) * ySpeedMult + Projectile.velocity * 0.4f, new Color(243, 239, 187), Main.rand.NextFloat(0.1f, 0.2f), EaseFunction.EaseCircularOut, Main.rand.Next(50, 90))
 			{
 				Pixellate = true,
 				DissolveAmount = 1,
@@ -117,7 +114,6 @@ public class SandShockwavePillar : ModProjectile
 				TertiaryColor = new Color(118, 116, 66),
 				PixelDivisor = 3,
 				ColorLerpExponent = 0.25f,
-				Layer = ParticleLayer.BelowSolid
 			});
 		}
 
@@ -125,7 +121,7 @@ public class SandShockwavePillar : ModProjectile
 		for (int i = 0; i < chunkCount; i++)
 		{
 			float verticalVelocity = Main.rand.NextFloat(3f, 8f) * ySpeedMult;
-			ParticleHandler.SpawnParticle(new TileChunkParticle(tilePosition, Projectile.Bottom + Main.rand.NextFloat(-14, 14) * Vector2.UnitX, -Vector2.UnitY * verticalVelocity + Projectile.velocity * Main.rand.NextFloat(1f, 3f), Main.rand.Next(40, 80), Main.rand.NextBool(4)));
+			ParticleRenderers.UnderSolids.Add(new TileChunkParticle(tilePosition, Projectile.Bottom + Main.rand.NextFloat(-14, 14) * Vector2.UnitX, -Vector2.UnitY * verticalVelocity + Projectile.velocity * Main.rand.NextFloat(1f, 3f), Main.rand.Next(40, 80), Main.rand.NextBool(4)));
 		}
 	}
 

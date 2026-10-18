@@ -4,7 +4,6 @@ using SpiritReforged.Common.TileCommon.PostDrawTreeHookSystem;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using Terraria.DataStructures;
-using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass;
 

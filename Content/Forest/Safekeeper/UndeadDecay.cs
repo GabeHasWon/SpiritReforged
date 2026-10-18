@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 
@@ -98,11 +99,11 @@ internal class UndeadDecay : ModProjectile
 		for (int i = 0; i < 3; i++)
 			ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.AshTreeShake, new ParticleOrchestraSettings() with { PositionInWorld = pos });
 
-		ParticleHandler.SpawnParticle(new Particles.LightBurst(Projectile.Center, 0, Color.Goldenrod, Projectile.scale * .8f, 10));
+		ParticleRenderers.UnderProjectiles.Add(new LightBurst(Projectile.Center, 0, Color.Goldenrod, Projectile.scale * 0.8f, 10));
 
 		for (int i = 0; i < 15; i++)
 		{
-			ParticleHandler.SpawnParticle(new Particles.GlowParticle(Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f),
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f),
 				Color.White, Color.Lerp(Color.Goldenrod, Color.Orange, Main.rand.NextFloat()), 1, Main.rand.Next(10, 20), 8));
 		}
 	}
@@ -110,7 +111,7 @@ internal class UndeadDecay : ModProjectile
 	public override bool PreDraw(ref Color lightColor) => ToDraw.Add(Projectile);
 	private static void DrawQueue(On_Main.orig_DrawNPCs orig, Main self, bool behindTiles)
 	{
-		const float spotScale = .5f;
+		const float spotScale = 0.5f;
 
 		orig(self, behindTiles);
 

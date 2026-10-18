@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.ProjectileCommon;
 using System.IO;

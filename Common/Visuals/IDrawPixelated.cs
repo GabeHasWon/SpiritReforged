@@ -1,5 +1,5 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Common.Visuals;
 
@@ -35,14 +35,12 @@ public interface IDrawPixelated
 					pixelQueue.Add(iDrawPixelated);
 			}
 
-			foreach (Particle.Particle particle in ParticleHandler.Particles)
+			foreach (ParticleRenderer renderer in ParticleRenderers.Renderers)
 			{
-				if (particle is null || particle.TimeActive > particle.MaxTime)
-					continue;
-
-				if (particle is IDrawPixelated iDrawPixelated)
+				foreach (IParticle particle in renderer.Particles)
 				{
-					pixelQueue.Add(iDrawPixelated);
+					if (particle is IDrawPixelated iDrawPixelated)
+						pixelQueue.Add(iDrawPixelated);
 				}
 			}
 

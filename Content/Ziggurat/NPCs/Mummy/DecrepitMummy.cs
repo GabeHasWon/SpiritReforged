@@ -5,7 +5,6 @@ using SpiritReforged.Content.Forest.Safekeeper;
 using SpiritReforged.Content.Vanilla.Food;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Vanity;
-using System.Diagnostics;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;

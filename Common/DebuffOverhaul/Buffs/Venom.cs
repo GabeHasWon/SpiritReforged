@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles.Basic;
 
 namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
@@ -27,7 +27,7 @@ public class Venom : DoTExtension
         spriteBatch.Draw(bubble, endPosition, source, color * lightness, 0, source.Size() / 2, options.Scale, default, 0);
 
         if ((int)Main.timeForVisualEffects % 12 == 0 && fadeout == 1)
-            TerrariaParticles.OverHealthBars.Add(new BubbleParticle(30, color * lightness, npc)
+			ParticleRenderers.OverHealthBars.Add(new BubbleParticle(30, color * lightness, npc)
             {
                 LocalPosition = Vector2.Lerp(options.Position + new Vector2(0, front.Height / 2), endPosition, Main.rand.NextFloat()) + Main.screenPosition - npc.Center,
                 Scale = new Vector2(0.8f) * options.Scale,

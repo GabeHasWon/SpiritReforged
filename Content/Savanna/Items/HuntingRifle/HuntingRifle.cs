@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -102,7 +101,7 @@ public class HuntingRifle : ModItem
 		float fxDistance = 45;
 
 		SoundEngine.PlaySound(SoundID.Item100 with { Volume = .6f, PitchVariance = .2f, Pitch = 1f }, position);
-		ParticleHandler.SpawnParticle(new StarParticle(position + unit * (fxDistance - 8), Vector2.Zero, Color.Goldenrod, .5f, 2, 0));
+		ParticleRenderers.UnderProjectiles.Add(new StarParticle(position + unit * (fxDistance - 8), Vector2.Zero, Color.Goldenrod, .5f, 2, 0));
 
 		for (int i = 0; i < 10; i++)
             Dust.NewDustPerfect(position + unit * fxDistance + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f), 
@@ -114,7 +113,7 @@ public class HuntingRifle : ModItem
 		float mult = 1f;
 		if (player.velocity == Vector2.Zero)
 		{
-			ParticleHandler.SpawnParticle(new SmokeCircleParticle(position + unit * fxDistance, unit * -.2f, 
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCircleParticle(position + unit * fxDistance, unit * -.2f, 
 				Lighting.GetColor(position.ToTileCoordinates(), Color.LightSlateGray), .5f, unit.ToRotation(), 30));
 
 			//Grant a damage bonus (+25%) when standing still. Additional bonuses are applied in HunterGlobalProjectile

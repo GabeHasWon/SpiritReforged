@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.ConfigurationCommon;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;

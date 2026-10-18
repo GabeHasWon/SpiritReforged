@@ -1,9 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Granite.ShockClub;
@@ -70,7 +70,7 @@ public class EnergizedShockwave : ModProjectile
 		if (Main.rand.NextFloat() < EaseFunction.EaseQuadOut.Ease(Projectile.timeLeft / (float)TimeLeftMax))
 		{
 			Vector2 spawnPos = basePos + Vector2.UnitX * Main.rand.NextFloat(-1, 1) * Projectile.width;
-			ParticleHandler.SpawnParticle(new GlowParticle(spawnPos, -Vector2.UnitY * Main.rand.NextFloat(6), new Color(140, 200, 255), Color.Cyan, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 30), 6, p => p.Velocity *= 0.8f));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(spawnPos, -Vector2.UnitY * Main.rand.NextFloat(6), new Color(140, 200, 255), Color.Cyan, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 30), 6, p => p.Velocity *= 0.8f));
 		}
 
 		Lighting.AddLight(basePos, Color.LightCyan.ToVector3() * Projectile.Opacity);

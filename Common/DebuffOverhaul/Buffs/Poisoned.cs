@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles.Basic;
 
 namespace SpiritReforged.Common.DebuffOverhaul.Buffs;
@@ -27,7 +27,7 @@ public class Poisoned : DoTExtension
         spriteBatch.Draw(bubble, endPosition, source, color * lightness, 0, source.Size() / 2, options.Scale, default, 0);
 
         if ((int)Main.timeForVisualEffects % 18 == 0 && fadeout == 1)
-			TerrariaParticles.OverHealthBars.Add(new BubbleParticle(40, color * lightness, npc)
+			ParticleRenderers.OverHealthBars.Add(new BubbleParticle(40, color * lightness, npc)
 			{
 				LocalPosition = endPosition + Main.screenPosition - npc.Center,
 				Scale = new Vector2(0.8f) * options.Scale,

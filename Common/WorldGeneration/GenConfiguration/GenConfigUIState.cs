@@ -1,6 +1,5 @@
 ﻿using ReLogic.Graphics;
 using SpiritReforged.Common.MathHelpers;
-using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.UI.Elements;
 using SpiritReforged.Common.Visuals;
 using System.IO;
