@@ -271,6 +271,9 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, ILoadItem
 				if (result.type != FablesStormlionBucketType && --result.stack <= 0)
 					result.TurnToAir(); //Consume an item
 
+				if (Main.LocalPlayer.selectedItem == 58)
+					Main.mouseItem = result.Clone();
+
 				return true;
 			}
 		}

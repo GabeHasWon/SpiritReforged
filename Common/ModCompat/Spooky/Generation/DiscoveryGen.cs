@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Common.ItemCommon.Pins;
-using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.WorldGeneration.Micropasses;
 using SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
