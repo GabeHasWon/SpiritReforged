@@ -17,7 +17,7 @@ public class ShovelClub : ClubItem
 		Item.height = 60;
 		Item.crit = 4;
 		Item.value = Item.sellPrice(gold: 1);
-		Item.rare = ItemRarityID.Blue;
+		Item.rare = ItemRarityID.Green;
 		Item.shoot = ModContent.ProjectileType<ShovelClubProj>();
 	}
 }

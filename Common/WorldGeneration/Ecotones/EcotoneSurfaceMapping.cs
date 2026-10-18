@@ -2,6 +2,7 @@
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
 using SpiritReforged.Common.ModCompat.EcotoneMapper;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -132,6 +133,25 @@ public class EcotoneSurfaceMapping : ModSystem
 				SpawnedBases.Add(ecotone);
 			else
 				UnloadedBases.Add(name);
+		}
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		int count = SpawnedBases.Count;
+		writer.Write((byte)count);
+
+		foreach (EcotoneBase ecotone in SpawnedBases)
+			writer.Write((byte)ecotone.Id);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		byte count = reader.ReadByte();
+
+		for (int i = 0; i < count; ++i)
+		{
+
 		}
 	}
 

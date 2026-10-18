@@ -225,7 +225,8 @@ internal class DhampirNPC : ModNPC
 
 			if (!LastCollideY && NPC.collideY && NPC.velocity.Y > 1f)
 			{
-				SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = 0.15f, PitchVariance = 0.3f, Volume = 0.66f }, NPC.Top);
+				if (!Main.dedServ)
+					SoundEngine.PlaySound(SoundID.Zombie7 with { Pitch = 0.15f, PitchVariance = 0.3f, Volume = 0.66f }, NPC.Top);
 
 				TimeSinceHit = Main.expertMode ? -10 : -20;
 				EyeFlashTime += ExpertQuickSlam ? 20 : 35;
@@ -239,54 +240,58 @@ internal class DhampirNPC : ModNPC
 				int lifetime = 40;
 				float zRotation = 0.9f;
 
-				ParticleRenderers.OverNPCs.Add(new TexturedPulseCircle(
-					NPC.Bottom,
-					Color.White,
-					Color.LightCyan * 0.33f,
-					ringWidth,
-					ExpertQuickSlam ? 350: 250,
-					lifetime,
-					"supPerlin",
-					new Vector2(2, 3),
-					easeFunction).WithSkew(zRotation, MathHelper.PiOver2).UsesLightColor());
-
-				for (int i = 0; i < count; ++i)
+				if (!Main.dedServ)
 				{
-					Vector2 pos = NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), Main.rand.NextFloat(-2, 2));
+					ParticleRenderers.OverNPCs.Add(new TexturedPulseCircle(
+						NPC.Bottom,
+						Color.White,
+						Color.LightCyan * 0.33f,
+						ringWidth,
+						ExpertQuickSlam ? 350 : 250,
+						lifetime,
+						"supPerlin",
+						new Vector2(2, 3),
+						easeFunction).WithSkew(zRotation, MathHelper.PiOver2).UsesLightColor());
 
-					int dustIndex = WorldGen.KillTile_MakeTileDust(tilePos.X, tilePos.Y, tile);
-					Dust dust = Main.dust[dustIndex];
-					dust.position = pos;
-					dust.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -1);
-					dust.noGravity = !Main.rand.NextBool(3);
-					dust.scale *= Main.rand.NextFloat(2f);
-					dust.alpha += Main.rand.Next(100);
-
-					if (i < 6 && ExpertQuickSlam)
+					for (int i = 0; i < count; ++i)
 					{
-						var particle = new MistParticle(NPC) { Timer = Main.rand.Next(10) + 10 };
-						particle.Velocity = Main.rand.NextVector2Circular(6, 6);
+						Vector2 pos = NPC.BottomLeft + new Vector2(Main.rand.NextFloat(NPC.width), Main.rand.NextFloat(-2, 2));
 
-						if (ExpertQuickSlam)
-							particle.Velocity.Y -= 6;
+						int dustIndex = WorldGen.KillTile_MakeTileDust(tilePos.X, tilePos.Y, tile);
+						Dust dust = Main.dust[dustIndex];
+						dust.position = pos;
+						dust.velocity = new Vector2(Main.rand.NextFloat(-2, 2), -1);
+						dust.noGravity = !Main.rand.NextBool(3);
+						dust.scale *= Main.rand.NextFloat(2f);
+						dust.alpha += Main.rand.Next(100);
 
-						_particles.Add(particle);
+						if (i < 6 && ExpertQuickSlam)
+						{
+							var particle = new MistParticle(NPC) { Timer = Main.rand.Next(10) + 10 };
+							particle.Velocity = Main.rand.NextVector2Circular(6, 6);
+
+							if (ExpertQuickSlam)
+								particle.Velocity.Y -= 6;
+
+							_particles.Add(particle);
+						}
+
+						var smokeColor = Color.Lerp(Color.LightGray, Color.LightCyan, Main.rand.NextFloat()) * 0.3f;
+
+						ParticleRenderers.OverNPCs.Add(new SmokeCloud(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(6f),
+							smokeColor, Main.rand.NextFloat(0.05f, 0.15f), EaseBuilder.EaseQuadOut, Main.rand.Next(30, 90))
+						{
+							Pixellate = true,
+							PixelDivisor = 2
+						});
+
+						Vector2 velocity = -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(5f, 12f);
+						ParticleRenderers.OverNPCs.Add(new ImpactLine(pos, velocity, Color.LightCyan, new Vector2(1, 3) * 0.2f, Main.rand.Next(15, 35), 0.93f));
 					}
 
-					var smokeColor = Color.Lerp(Color.LightGray, Color.LightCyan, Main.rand.NextFloat()) * 0.3f;
-
-					ParticleRenderers.OverNPCs.Add(new SmokeCloud(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(6f),
-						smokeColor, Main.rand.NextFloat(0.05f, 0.15f), EaseBuilder.EaseQuadOut, Main.rand.Next(30, 90))
-					{
-						Pixellate = true,
-						PixelDivisor = 2
-					});
-
-					ParticleRenderers.OverNPCs.Add(new ImpactLine(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(5f, 12f), Color.LightCyan, new Vector2(1, 3) * 0.2f, Main.rand.Next(15, 35), 0.93f));
+					if (Main.LocalPlayer.Distance(NPC.Center) < 600)
+						ScreenshakeHelper.Shake(NPC.Center, -Vector2.UnitY, 5, 7, 35);
 				}
-
-				if (!Main.dedServ && Main.LocalPlayer.Distance(NPC.Center) < 600)
-					ScreenshakeHelper.Shake(NPC.Center, -Vector2.UnitY, 5, 7, 35);
 
 				SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with {Volume = ExpertQuickSlam ? 1.2f : 0.6f, PitchVariance = 0.2f}, NPC.Bottom);
 			}
@@ -295,17 +300,20 @@ internal class DhampirNPC : ModNPC
 		{
 			NPC.Opacity = MathHelper.Lerp(NPC.Opacity, !Main.masterMode && NPC.life < NPC.lifeMax * 0.05f ? 1 - NPC.life / (NPC.lifeMax * 0.05f) * 0.5f : 0, 0.15f);
 
-			for (int i = 0; i < Main.rand.Next(3); ++i)
-				if (Main.rand.NextFloat() < NPC.life / (float)NPC.lifeMax)
-					SpawnMist();
-
-			if (Main.rand.NextBool())
-				ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(0.5f, 0.5f), Color.LightCyan, Main.rand.Next(60) + 10, false, bloomOpacity: 0.04f));
-
-			ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(3.5f, 3.5f), Color.AntiqueWhite, Main.rand.Next(40) + 20, false, false, p => p.Velocity *= 0.9f)
+			if (!Main.dedServ)
 			{
-				Scale = 0.5f,
-			});
+				for (int i = 0; i < Main.rand.Next(3); ++i)
+					if (Main.rand.NextFloat() < NPC.life / (float)NPC.lifeMax)
+						SpawnMist();
+
+				if (Main.rand.NextBool())
+					ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(0.5f, 0.5f), Color.LightCyan, Main.rand.Next(60) + 10, false, bloomOpacity: 0.04f));
+
+				ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(3.5f, 3.5f), Color.AntiqueWhite, Main.rand.Next(40) + 20, false, false, p => p.Velocity *= 0.9f)
+				{
+					Scale = 0.5f,
+				});
+			}
 
 			Vector2 targetPos = Target.Center + new Vector2(FlyTargetDirection, -250);
 			Timer++;
@@ -338,15 +346,18 @@ internal class DhampirNPC : ModNPC
 					_particles.Add(particle);
 				}
 
-				ParticleRenderers.OverNPCs.Add(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.MediumVioletRed, Color.DarkRed, 0.5f, 40, 0)
+				if (!Main.dedServ)
 				{
-					Rotation = 0f
-				});
+					ParticleRenderers.OverNPCs.Add(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.MediumVioletRed, Color.DarkRed, 0.5f, 40, 0)
+					{
+						Rotation = 0f
+					});
 
-				ParticleRenderers.OverNPCs.Add(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.White, 0.2f, 40, 0)
-				{
-					Rotation = 0f
-				});
+					ParticleRenderers.OverNPCs.Add(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.White, 0.2f, 40, 0)
+					{
+						Rotation = 0f
+					});
+				}
 			}
 		}
 
@@ -368,15 +379,18 @@ internal class DhampirNPC : ModNPC
 		if (!Main.getGoodWorld)
 			NPC.damage = 0;
 
-		for (int i = 0; i < 12; ++i)
+		if (!Main.dedServ)
 		{
-			Vector2 pos = Main.rand.NextVector2FromRectangle(NPC.Hitbox);
-			Vector2 vel = Main.rand.NextVector2Circular(2, 2) - new Vector2(0, 2);
-			Dust.NewDustPerfect(pos, ModContent.DustType<MistDust>(), vel, Main.rand.Next(120, 180), Scale: Main.rand.NextFloat(1, 1.5f)).customData = NPC;
-			SpawnMist();
-		}
+			for (int i = 0; i < 12; ++i)
+			{
+				Vector2 pos = Main.rand.NextVector2FromRectangle(NPC.Hitbox);
+				Vector2 vel = Main.rand.NextVector2Circular(2, 2) - new Vector2(0, 2);
+				Dust.NewDustPerfect(pos, ModContent.DustType<MistDust>(), vel, Main.rand.Next(120, 180), Scale: Main.rand.NextFloat(1, 1.5f)).customData = NPC;
+				SpawnMist();
+			}
 
-		SoundEngine.PlaySound(SoundID.Item8, NPC.Center);
+			SoundEngine.PlaySound(SoundID.Item8, NPC.Center);
+		}
 	}
 
 	private void SpawnMist() => _particles.Add(new MistParticle(NPC) { Timer = Main.rand.Next(15) });

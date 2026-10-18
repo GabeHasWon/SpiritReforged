@@ -60,6 +60,11 @@ internal class CatacombsGeneration : SpookyMicropass
 				if (overallTries > 100_000)
 					return;
 
+				Tile tile = Main.tile[pos];
+
+				if (tile.HasTile && tile.TileType == ModContent.TileType<ShovelTile>())
+					continue;
+
 				if (Placer.Check(pos.X, pos.Y, ModContent.TileType<ShovelTile>()).Place().success)
 					break;
 			}

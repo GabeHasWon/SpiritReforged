@@ -19,7 +19,7 @@ public class PumpkinClub : ClubItem
 		Item.height = 60;
 		Item.crit = 4;
 		Item.value = Item.sellPrice(gold: 5);
-		Item.rare = ItemRarityID.Orange;
+		Item.rare = ItemRarityID.Green;
 		Item.shoot = ModContent.ProjectileType<PumpkinClubProj>();
 	}
 }

@@ -52,6 +52,9 @@ internal class SpookyMummyHeart : ModNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
+		if (!Main.dedServ)
+			return;
+
 		for (int i = 0; i < 8; ++i)
 			Dust.NewDustPerfect(NPC.Center + Main.rand.NextVector2Circular(25, 25), DustID.Blood, Main.rand.NextVector2Circular(2f, 2f), 70, default, Main.rand.NextFloat(2f)).noGravity = true;
 
