@@ -174,11 +174,11 @@ RageGlyphBuff: {
 }
 
 ColumbatBuff: {
-	// DisplayName: Columbat
-	// Description: The being of bat
+	DisplayName: Комышь
+	Description: Существо летучей мыши
 }
 
 ColumbaldBuff: {
-	// DisplayName: Columbald
-	// Description: The being of bald
+	DisplayName: Колысик
+	Description: Существо лысого
 }

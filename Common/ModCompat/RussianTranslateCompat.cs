@@ -31,6 +31,9 @@ internal class RussianTranslateCompat : ModSystem
 			"ClawCannon",
 			"BombCannon",
 			"Bowlder",
+			"JellyfishJamJar",
+			"ShovelClub",
+			"LookerClub",
 			//Accessories
 			"Ledger",
 			"ScryingLens",

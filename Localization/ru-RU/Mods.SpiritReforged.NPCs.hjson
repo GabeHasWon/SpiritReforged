@@ -812,34 +812,34 @@ Enchanter: {
 SealedKnight.DisplayName: Опечатанный рыцарь
 
 DhampirNPC: {
-	// DisplayName: Dhampir
-	// Entry: Cast away for being too cool for Little Eye, the Dhampir wander the world. Somewhere seasoned, they found the coolest place to be.
+	DisplayName: Дампир
+	Entry: Будучи изгнанным Глазиком за чрезмерную крутость, дампир теперь просто бродит по миру. Успев повидать всякого, он всё же отыскал для себя крутейшее место.
 }
 
 SpookyMummyNPC: {
-	// DisplayName: Mummiath
-	// Entry: A giant mummy who's been revived well enough to walk, but not well enough to stay together. According to Little Eye, that's definitely not his fault.
-	// DropCondition: (Only if no other Mummiath limbs are remaining)
+	DisplayName: Мумиаф
+	Entry: Воскресили эту гигантскую мумию не очень удачно: ходить-то она ходит, правда никто не подумал о том, что при ходьбе она не должна разваливаться. Глазик говорит, что он тут точно ни при чём.
+	DropCondition: Выпадает только с последней выжившей части
 }
 
 SpookyMummyHand: {
-	// DisplayName: Mummiath Hand
-	// Entry: It's fast at running for sure, but you should see this guy's skill with a pencil. Deeply talented artist.
+	DisplayName: Рука мумиафа
+	Entry: Бегает она, конечно, быстро. Но вы бы видели, как она обращается с карандашом! Настоящий талант.
 }
 
 SpookyMummyHead: {
-	// DisplayName: Mummiath Head
-	// Entry: Head honcho. Leader of the group. The brains behind the operation. Well, if they still had a brain.
+	DisplayName: Голова мумиафа
+	Entry: Голова — всему голова, если, конечно, он не забыл её дома.
 }
 
 SpookyMummyHeart: {
-	// DisplayName: Mummiath Heart
-	// Entry: Yipes! I gotta get out of here!
+	DisplayName: Сердце мумиафа
+	Entry: Ой-ой! Надо бы валить, пока не застукали!
 }
 
 SpookyMummyLegs: {
-	// DisplayName: Mummiath Legs
-	// Entry: Every group has an honest, down-to-earth hard worker. Literally.
+	DisplayName: Нога мумиафа
+	Entry: В каждой группе есть работник, девиз которого — «одна нога здесь, другая там». Иногда он следует ему буквально.
 }
 
-// PassiveGhost.DisplayName: Passive Ghost
+PassiveGhost.DisplayName: Приведение
