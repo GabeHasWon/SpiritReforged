@@ -1,5 +1,4 @@
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
@@ -11,7 +10,7 @@ public sealed class AutoloadedPotItem(string baseName, NamedStyles.StyleGroup gr
 
 	protected override bool CloneNewInstances => true;
 	public override string Name => _group.name + "Item";
-	public override string Texture => Graphics.RequestPath(_group.name);
+	public override string Texture => "SpiritReforged/Content/Underground/Pottery/" + _group.name;
 
 	private string _baseName = baseName;
 	private NamedStyles.StyleGroup _group = group;

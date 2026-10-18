@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.Particles.Basic;
 
 public class EmberParticle(int lifeTime) : ABasicParticle
 {
-    public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("EmberParticle");
+    public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Particles/Basic/EmberParticle");
 
     private int _timeLeft = lifeTime;
     private readonly int _totalTimeLeft = lifeTime;

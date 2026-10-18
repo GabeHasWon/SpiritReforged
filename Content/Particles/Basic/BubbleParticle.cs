@@ -5,7 +5,7 @@ namespace SpiritReforged.Content.Particles.Basic;
 
 public class BubbleParticle(int lifeTime, Color color, Entity anchor = default) : ABasicParticle
 {
-	public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("BubbleParticle");
+	public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Particles/Basic/BubbleParticle");
 
 	private int _timeLeft = lifeTime;
     private readonly int _timeLeftMax = lifeTime;

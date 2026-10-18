@@ -60,7 +60,7 @@ public class MahakalaMaskBlue : ModItem
 
 	private class MahakalaGlowLayer : PlayerDrawLayer
 	{
-		private static readonly Asset<Texture2D> Glow = Graphics.Request<Texture2D>("MahakalaGlow");
+		private static readonly Asset<Texture2D> Glow = Graphics.Tex("SpiritReforged/Content/SaltFlats/Items/MahakalaGlow");
 
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccFront);
 

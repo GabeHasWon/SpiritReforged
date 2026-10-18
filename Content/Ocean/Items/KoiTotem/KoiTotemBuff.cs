@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.Ocean.Items.KoiTotem;
 public class KoiTotemBuff : ModBuff
 {
 	public static float CursorOpacity { get; private set; }
-	private static readonly Asset<Texture2D> CursorTexture = Graphics.Request<Texture2D>("Cursor_Plus");
+	private static readonly Asset<Texture2D> CursorTexture = Graphics.Tex("SpiritReforged/Content/Ocean/Items/KoiTotem/Cursor_Plus");
 
 	#region detours
 	public override void Load()

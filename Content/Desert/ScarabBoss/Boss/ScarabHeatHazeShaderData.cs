@@ -39,7 +39,7 @@ public class ScarabHeatHazeShaderData(Asset<Effect> shader, string passName) : S
 	{
 		_myFilter = new Filter(
 			new ScarabHeatHazeShaderData(ModContent.Request<Effect>("SpiritReforged/Assets/Shaders/ScarabHeatHaze"), "ScarabHeatHazePass")
-			.UseImage(Graphics.Request<Texture2D>("TonemapGradient"), 0, SamplerState.LinearClamp) //Gradient map texture that color maps the screen to be bluer
+			.UseImage(Graphics.Tex("SpiritReforged/Content/Desert/ScarabBoss/Boss/TonemapGradient"), 0, SamplerState.LinearClamp) //Gradient map texture that color maps the screen to be bluer
 			.UseImage(ModContent.Request<Texture2D>("SpiritReforged/Assets/Textures/DisplaceNoise"), 1, SamplerState.LinearWrap) //Distortion map
 			, EffectPriority.High);
 

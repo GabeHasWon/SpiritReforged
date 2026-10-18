@@ -15,7 +15,7 @@ public class ScarabMusicBox : ModItem
 {
 	private sealed class PhaseButton : ISlotButton
 	{
-		public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("ScarabMusicBoxToggle");
+		public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Desert/ScarabBoss/Items/ScarabMusicBoxToggle");
 
 		public void Draw(SpriteBatch spriteBatch, Vector2 center, Item item, bool hoveredOver)
 		{

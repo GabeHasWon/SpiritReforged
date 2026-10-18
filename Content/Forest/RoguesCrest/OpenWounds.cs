@@ -22,7 +22,7 @@ internal class OpenWoundsNPC : GlobalNPC
 {
 	public override bool InstancePerEntity => true;
 
-	private static readonly Asset<Texture2D> Icon = Graphics.Request<Texture2D>("Wound_Icon");
+	private static readonly Asset<Texture2D> Icon = Graphics.Tex("SpiritReforged/Content/Forest/RoguesCrest/Wound_Icon");
 	private short _bleedTime;
 
 	/// <summary> Causes <paramref name="npc"/> to take custom bleed damage for <paramref name="time"/> and consumes <see cref="OpenWounds"/>. </summary>

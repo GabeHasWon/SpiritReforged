@@ -17,8 +17,8 @@ public class BeetleTownPet : ModNPC, IForceTownNPCSpawnCheck
 
 		public ScarabTownPetProfile AddVariant(string identifier)
 		{
-			Asset<Texture2D> texture = Graphics.Request<Texture2D>(identifier);
-			int headIndex = NPCHeadLoader.GetHeadSlot(Graphics.RequestPath(identifier + "_Head"));
+			Asset<Texture2D> texture = Graphics.Tex("SpiritReforged/Content/Desert/NPCs/TownBeetle/" + identifier);
+			int headIndex = NPCHeadLoader.GetHeadSlot("SpiritReforged/Content/Desert/NPCs/TownBeetle/" + identifier + "_Head");
 
 			_profileInfo.Add(new(identifier, headIndex, texture));
 			return this;
@@ -46,12 +46,12 @@ public class BeetleTownPet : ModNPC, IForceTownNPCSpawnCheck
 
 	public override void Load()
 	{
-		Mod.AddNPCHeadTexture(Type, Graphics.RequestPath("RoyalScarab_Head"));
-		Mod.AddNPCHeadTexture(Type, Graphics.RequestPath("DungBeetle_Head"));
-		Mod.AddNPCHeadTexture(Type, Graphics.RequestPath("JewelBeetle_Head"));
-		Mod.AddNPCHeadTexture(Type, Graphics.RequestPath("Ladybug_Head"));
-		Mod.AddNPCHeadTexture(Type, Graphics.RequestPath("Weevil_Head"));
-		Mod.AddNPCHeadTexture(Type, Graphics.RequestPath("Maybug_Head"));
+		Mod.AddNPCHeadTexture(Type, "SpiritReforged/Content/Desert/NPCs/TownBeetle/RoyalScarab_Head");
+		Mod.AddNPCHeadTexture(Type, "SpiritReforged/Content/Desert/NPCs/TownBeetle/DungBeetle_Head");
+		Mod.AddNPCHeadTexture(Type, "SpiritReforged/Content/Desert/NPCs/TownBeetle/JewelBeetle_Head");
+		Mod.AddNPCHeadTexture(Type, "SpiritReforged/Content/Desert/NPCs/TownBeetle/Ladybug_Head");
+		Mod.AddNPCHeadTexture(Type, "SpiritReforged/Content/Desert/NPCs/TownBeetle/Weevil_Head");
+		Mod.AddNPCHeadTexture(Type, "SpiritReforged/Content/Desert/NPCs/TownBeetle/Maybug_Head");
 	}
 
 	public override void SetStaticDefaults()

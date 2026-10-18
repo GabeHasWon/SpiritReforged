@@ -272,12 +272,14 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], Graphics.Request<Texture2D>("Scarabeus_Sheen"), [9, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(Graphics.Request<Texture2D>("ScarabeusPhaseTwo"), Graphics.Request<Texture2D>("ScarabeusPhaseTwo_Sheen"), [3, 6, 5, 13], Graphics.Request<Texture2D>("ScarabeusPhaseTwo_Glow"), Graphics.Request<Texture2D>("ScarabeusPhaseTwo_Wings"));
-		SimulatedProfile = new(Graphics.Request<Texture2D>("ScarabeusSimulated"), Graphics.Request<Texture2D>("ScarabeusSimulated_Sheen"), Enumerable.Repeat(4, 11).ToArray(), Graphics.Request<Texture2D>("ScarabeusSimulated_Glow"), simulated: true);
-		BallProfile = new(Graphics.Request<Texture2D>("ScarabeusBall"), Graphics.Request<Texture2D>("ScarabeusBall_Sheen"), [1]);
-		TakeoffProfile = new(Graphics.Request<Texture2D>("ScarabeusTakeoff"), Graphics.Request<Texture2D>("ScarabeusTakeoff_Sheen"), [25], Graphics.Request<Texture2D>("ScarabeusTakeoff_Glow"), Graphics.Request<Texture2D>("ScarabeusTakeoff_Wings"));
-		DeadProfile = new(Graphics.Request<Texture2D>("ScarabeusDead"), Graphics.Request<Texture2D>("ScarabeusDead_Sheen"), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
+		const string Path = "SpiritReforged/Content/Desert/ScarabBoss/Boss/Scarabeus";
+
+		PhaseOneProfile = new(TextureAssets.Npc[Type], Graphics.Tex(Path + "_Sheen"), [9, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseTwoProfile = new(Graphics.Tex(Path + "PhaseTwo"), Graphics.Tex(Path + "PhaseTwo_Sheen"), [3, 6, 5, 13], Graphics.Tex(Path + "PhaseTwo_Glow"), Graphics.Tex(Path + "PhaseTwo_Wings"));
+		SimulatedProfile = new(Graphics.Tex(Path + "Simulated"), Graphics.Tex(Path + "Simulated_Sheen"), Enumerable.Repeat(4, 11).ToArray(), Graphics.Tex(Path + "Simulated_Glow"), simulated: true);
+		BallProfile = new(Graphics.Tex(Path + "Ball"), Graphics.Tex(Path + "Ball_Sheen"), [1]);
+		TakeoffProfile = new(Graphics.Tex(Path + "Takeoff"), Graphics.Tex(Path + "Takeoff_Sheen"), [25], Graphics.Tex(Path + "Takeoff_Glow"), Graphics.Tex(Path + "Takeoff_Wings"));
+		DeadProfile = new(Graphics.Tex(Path + "Dead"), Graphics.Tex(Path + "Dead_Sheen"), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/ScarabeusP2");

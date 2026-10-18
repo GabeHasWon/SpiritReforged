@@ -14,7 +14,7 @@ namespace SpiritReforged.Content.Glyphs.Radiant;
 
 public class RadiantPlayer : ModPlayer
 {
-	public static readonly Asset<Texture2D> Aura2 = Graphics.Request<Texture2D>("RadiantGlyph_Aura2");
+	public static readonly Asset<Texture2D> Aura2 = Graphics.Tex("SpiritReforged/Content/Glyphs/Radiant/RadiantGlyph_Aura2");
 	private const int EASE_MAX = 30;
 
 	public bool DivineStrike => radiantCounter >= ChargeTime;

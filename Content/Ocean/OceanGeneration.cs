@@ -25,6 +25,8 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 		Piecewise_V, //My heavily modified piecewise with variable height
 	}
 
+	public const string Path = "SpiritReforged/Content/Ocean/";
+
 	private static float PiecewiseVScale = 1f;
 	private static float PiecewiseVMountFactor = 1f;
 
@@ -42,14 +44,6 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[GenConfigurable(0, 20)]
 	[Slider]
 	private static int SunkenTreasureCount = 3;
-
-	//[GenConfigurable(2, 50)]
-	//[Slider]
-	//private static int SandDepth = 20;
-
-	//[GenConfigurable(0, 25)]
-	//[Slider]
-	//private static int SandRange = 8;
 
 	[GenConfigurable("2 0", "50 25")]
 	private static GenRange SandRange = new GenRange(20, 8);
@@ -102,7 +96,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[WorldBound]
 	public static Rectangle RightOcean;
 
-	PageInfo IGenerationPage.Info => new("Ocean", Graphics.Request<Texture2D>("OceanPage"), Graphics.Request<Texture2D>("OceanPageButton"))
+	PageInfo IGenerationPage.Info => new("Ocean", Graphics.Tex(Path + "OceanPage"), Graphics.Tex(Path + "OceanPageButton"))
 	{
 		Presets = 
 		[

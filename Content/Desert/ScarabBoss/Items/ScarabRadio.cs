@@ -47,7 +47,7 @@ public sealed class ScarabRadio : ModItem
 	}
 
 	public static int MusicSlot { get; private set; }
-	private static readonly Asset<Texture2D> HeldTexture = Graphics.Request<Texture2D>("ScarabRadioHeld");
+	private static readonly Asset<Texture2D> HeldTexture = Graphics.Tex("SpiritReforged/Content/Desert/ScarabBoss/Items/ScarabRadioHeld");
 
 	public override void Load() => On_PlayerDrawLayers.DrawPlayer_27_HeldItem += DrawHeldItem;
 

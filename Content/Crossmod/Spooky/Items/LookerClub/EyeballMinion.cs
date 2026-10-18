@@ -6,9 +6,10 @@ using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.Items.LookerClub;
+
 public class EyeballMinion : BaseMinion
 {
-	public static readonly Asset<Texture2D> EyeballTexture = Graphics.Request<Texture2D>("EyeballMinion_Eye");
+	public static readonly Asset<Texture2D> EyeballTexture = Graphics.Tex("SpiritReforged/Content/CrossMod/Spooky/Items/LookerClub/EyeballMinion_Eye");
 
 	public EyeballMinion() : base(400, 600, new(12)) { }
 

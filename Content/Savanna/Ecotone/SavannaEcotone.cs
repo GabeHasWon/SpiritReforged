@@ -28,6 +28,8 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 {
 	private delegate bool OnAttempt(int i, int j);
 
+	private const string Path = "SpiritReforged/Content/Savanna/Ecotone/";
+
 	/// <summary> The tile area that the Savanna encompasses <b>ONLY</b> during world generation. </summary>
 	[WorldBound]
 	public static List<Rectangle> SavannaAreas = [];
@@ -61,7 +63,7 @@ internal class SavannaEcotone : EcotoneBase, IGenerationPage
 	[Slider]
 	private static int TermiteChance = 45;
 
-	PageInfo IGenerationPage.Info => new("Savanna", Graphics.Request<Texture2D>("SavannaPage"), Graphics.Request<Texture2D>("SavannaPageButton"))
+	PageInfo IGenerationPage.Info => new("Savanna", Graphics.Tex(Path + "SavannaPage"), Graphics.Tex(Path + "SavannaPageButton"))
 	{
 		Presets = 
 		[

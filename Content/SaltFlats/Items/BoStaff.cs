@@ -18,7 +18,7 @@ public class BoStaff : ModItem, SwordStand.ISwordStandTexture
 	/// <summary> Hit combo counter used by Bo for the owning client only. </summary>
 	internal static int HitCombo;
 
-	public Asset<Texture2D> StandTexture => Graphics.Request<Texture2D>("BoStaffSwing");
+	public Asset<Texture2D> StandTexture => Graphics.Tex("SpiritReforged/Content/SaltFlats/Items/BoStaffSwing");
 
 	public override void SetStaticDefaults()
 	{

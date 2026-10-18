@@ -5,7 +5,7 @@ namespace SpiritReforged.Content.Particles.Basic;
 
 public class DropParticle(int lifeTime, Color color, Entity anchor = default) : ABasicParticle
 {
-    public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("DropParticle");
+    public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Particles/Basic/DropParticle");
 
 	private int _timeLeft = lifeTime;
     private readonly int _timeLeftMax = lifeTime;

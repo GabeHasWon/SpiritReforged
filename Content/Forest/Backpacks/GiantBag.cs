@@ -10,7 +10,7 @@ public class GiantBag : BackpackItem
 {
 	public sealed class GiantBagLayerFront : PlayerDrawLayer
 	{
-		public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("GiantBag_Front");
+		public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Forest/Backpacks/GiantBag_Front");
 
 		public override Position GetDefaultPosition() => new BeforeParent(PlayerDrawLayers.Head);
 		protected override void Draw(ref PlayerDrawSet drawInfo)
@@ -22,7 +22,7 @@ public class GiantBag : BackpackItem
 
 	public sealed class GiantBagLayerBack : PlayerDrawLayer
 	{
-		public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("GiantBag_Back");
+		public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Forest/Backpacks/GiantBag_Back");
 
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.Backpacks);
 		protected override void Draw(ref PlayerDrawSet drawInfo)

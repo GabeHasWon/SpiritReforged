@@ -84,6 +84,8 @@ internal class OasisMicropass : Micropass, IGenerationPage
 		#endregion
 	}
 
+	private const string Path = "SpiritReforged/Common/WorldGeneration/Micropasses/Passes/";
+
 	public override string WorldGenName => "Underground Oasis";
 	private static WeightedRandom<int> MainWaterItem = null!;
 	private static WeightedRandom<(int type, Range stackRange, Func<bool>? canPlace)> RandomItem = null!;
@@ -160,7 +162,7 @@ internal class OasisMicropass : Micropass, IGenerationPage
 	[GenConfigurable("0 0", "50 25")]
 	internal static GenRange RuinCount = new GenRange(0, 4);
 
-	PageInfo IGenerationPage.Info => new("Desert", Graphics.Request<Texture2D>("DesertPage"), Graphics.Request<Texture2D>("DesertPageButton"))
+	PageInfo IGenerationPage.Info => new("Desert", Graphics.Tex(Path + "DesertPage"), Graphics.Tex(Path + "DesertPageButton"))
 	{
 		Presets =
 		[

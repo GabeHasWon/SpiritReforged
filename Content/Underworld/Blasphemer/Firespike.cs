@@ -17,7 +17,7 @@ public class Firespike : ModProjectile, IDrawOverTiles
 	public const int GeyserTime = 16;
 	public const int LingerTime = 300;
 
-	public static readonly Asset<Texture2D> Cracks = Graphics.Request<Texture2D>("TileCracks");
+	public static readonly Asset<Texture2D> Cracks = Graphics.Tex("SpiritReforged/Content/Underworld/Blasphemer/TileCracks");
 
 	public bool Lingering => Projectile.timeLeft <= LingerTime;
 	public bool CanSplit => Projectile.ai[0] > 0;

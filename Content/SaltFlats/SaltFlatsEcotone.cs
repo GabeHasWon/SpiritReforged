@@ -55,6 +55,8 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		}
 	}
 
+	private const string Path = "SpiritReforged/Content/SaltFlats/";
+
 	[WorldBound]
 	public static List<Rectangle> SaltFlatsAreas = new();
 
@@ -90,7 +92,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static FastNoiseLite Noise;
 
-	PageInfo IGenerationPage.Info => new("SaltFlats", Graphics.Request<Texture2D>("SaltFlatsPage"), Graphics.Request<Texture2D>("SaltFlatsPageButton"))
+	PageInfo IGenerationPage.Info => new("SaltFlats", Graphics.Tex(Path + "SaltFlatsPage"), Graphics.Tex(Path + "SaltFlatsPageButton"))
 	{
 		Presets = 
 		[

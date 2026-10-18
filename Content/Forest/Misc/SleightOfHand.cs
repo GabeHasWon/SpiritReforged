@@ -26,7 +26,7 @@ public class SleightOfHand : ModItem
 		private int _timeLeft;
 
 		#region handling
-		private static readonly Asset<Texture2D> PopupTexture = Graphics.Request<Texture2D>("SleightOfHand_Popup");
+		private static readonly Asset<Texture2D> PopupTexture = Graphics.Tex("SpiritReforged/Content/Forest/Misc/SleightOfHand_Popup");
 		public static readonly List<Indicator> Indicators = [];
 
 		public void Load(Mod mod) => On_Main.DrawInterface_14_EntityHealthBars += static (orig, self) =>

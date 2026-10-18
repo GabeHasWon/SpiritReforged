@@ -8,8 +8,8 @@ public class GoldChainLoop : ChainLoop
 {
 	public class GoldChainObject(Point16 anchor, byte segments) : ChainObject(anchor, segments)
 	{
-		public static readonly Asset<Texture2D> CenserObject = Graphics.Request<Texture2D>("Censer");
-		public static readonly Asset<Texture2D> Chain = Graphics.Request<Texture2D>("GoldChain", AssetRequestMode.ImmediateLoad);
+		public static readonly Asset<Texture2D> CenserObject = Graphics.Tex("SpiritReforged/Content/Ziggurat/Tiles/Censer");
+		public static readonly Asset<Texture2D> Chain = Graphics.Tex("SpiritReforged/Content/Ziggurat/Tiles/Chains/GoldChain", AssetRequestMode.ImmediateLoad);
 
 		public override Texture2D Texture => Chain.Value;
 

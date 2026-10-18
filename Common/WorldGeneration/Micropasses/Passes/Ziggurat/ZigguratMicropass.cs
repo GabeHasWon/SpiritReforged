@@ -60,6 +60,8 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 		}
 	}
 
+	private const string Path = "SpiritReforged/Common/WorldGeneration/Micropasses/Passes/Ziggurat/";
+
 	public override string WorldGenName => "Ziggurat";
 
 	[GenConfigurable(0, 12)]
@@ -126,7 +128,7 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 	[Slider]
 	private static int AbovegroundPillarChance = 3;
 
-	PageInfo IGenerationPage.Info => new("Ziggurat", Graphics.Request<Texture2D>("ZigguratPage"), Graphics.Request<Texture2D>("ZigguratPageButton"))
+	PageInfo IGenerationPage.Info => new("Ziggurat", Graphics.Tex(Path + "ZigguratPage"), Graphics.Tex(Path + "ZigguratPageButton"))
 	{
 		Presets =
 		[

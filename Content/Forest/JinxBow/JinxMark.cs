@@ -17,7 +17,7 @@ public class JinxMark : ModBuff
 
 public class JinxMarkNPC : GlobalNPC
 {
-	private static readonly Asset<Texture2D> Icon = Graphics.Request<Texture2D>("JinxMark");
+	private static readonly Asset<Texture2D> Icon = Graphics.Tex("SpiritReforged/Content/Forest/JinxBow/JinxMark");
 
 	public override void OnHitByProjectile(NPC npc, Projectile projectile, NPC.HitInfo hit, int damageDone)
 	{

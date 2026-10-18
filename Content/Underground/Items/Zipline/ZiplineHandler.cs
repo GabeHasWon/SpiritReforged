@@ -10,8 +10,8 @@ namespace SpiritReforged.Content.Underground.Items.Zipline;
 
 internal class ZiplineHandler : ILoadable
 {
-	internal static readonly Asset<Texture2D> HookTexture = Graphics.Request<Texture2D>("Zipline_Hook");
-	internal static readonly Asset<Texture2D> WireTexture = Graphics.Request<Texture2D>("Zipline_Wire");
+	internal static readonly Asset<Texture2D> HookTexture = Graphics.Tex("SpiritReforged/Content/Underground/Items/Zipline/Zipline_Hook");
+	internal static readonly Asset<Texture2D> WireTexture = Graphics.Tex("SpiritReforged/Content/Underground/Items/Zipline/Zipline_Wire");
 
 	/// <summary> <see cref="Zipline"/>s belonging to all players.<para/>
 	/// Use <see cref="Add"/> and <see cref="Zipline.RemovePoint"/> instead of directly adding and removing points from this set. </summary>

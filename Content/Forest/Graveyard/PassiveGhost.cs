@@ -27,7 +27,7 @@ public class PassiveGhost : ModNPC
 		}
 	}
 
-	public static readonly Asset<Texture2D> ChatTexture = Graphics.Request<Texture2D>("EmptyChat");
+	public static readonly Asset<Texture2D> ChatTexture = Graphics.Tex("SpiritReforged/Content/Forest/Graveyard/EmptyChat");
 
 	public static NPCTracker GhostNPCTracker { get; private set; }
 	private static readonly HashSet<NPC> NPCBatch = [];

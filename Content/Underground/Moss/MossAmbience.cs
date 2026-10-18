@@ -347,7 +347,7 @@ public sealed class MossAmbience : GlobalTile
 public class FloatingMoss(int style) : ABasicParticle
 {
 	public const int FRAME_COUNT = 7;
-	public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("FloatingMoss");
+	public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Underground/Moss/FloatingMoss");
 
 	public Rectangle Hitbox => new((int)LocalPosition.X - 2, (int)LocalPosition.Y - 2, 4, 4);
 

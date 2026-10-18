@@ -12,7 +12,7 @@ public class Relics : ModTile
 	public const int FrameHeight = 18 * 4;
 	public const int NumRelics = 3;
 
-	public static readonly Asset<Texture2D> PropTexture = Graphics.Request<Texture2D>("RelicProp");
+	public static readonly Asset<Texture2D> PropTexture = Graphics.Tex("SpiritReforged/Content/Forest/Relics/RelicProp");
 
 	public override void SetStaticDefaults()
 	{

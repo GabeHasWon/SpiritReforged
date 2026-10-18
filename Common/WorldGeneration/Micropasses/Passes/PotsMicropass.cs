@@ -14,6 +14,7 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 internal class PotsMicropass : Micropass, IGenerationPage
 {
 	public const float MaxPots = 1001;
+	public const string Path = "SpiritReforged/Common/WorldGeneration/Micropasses/Passes/";
 
 	private static readonly int[] CommonBlacklist = [TileID.LihzahrdBrick, TileID.BlueDungeonBrick, TileID.GreenDungeonBrick, TileID.PinkDungeonBrick,
 		TileID.Spikes, TileID.WoodenSpikes, TileID.CrackedBlueDungeonBrick, TileID.CrackedGreenDungeonBrick, TileID.CrackedPinkDungeonBrick];
@@ -109,7 +110,7 @@ internal class PotsMicropass : Micropass, IGenerationPage
 
 	public override string WorldGenName => "Pots";
 
-	PageInfo IGenerationPage.Info => new("Pots", Graphics.Request<Texture2D>("PotsPage"), Graphics.Request<Texture2D>("PotsPageButton"))
+	PageInfo IGenerationPage.Info => new("Pots", Graphics.Tex(Path + "PotsPage"), Graphics.Tex(Path + "PotsPageButton"))
 	{
 		Presets =
 		[

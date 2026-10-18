@@ -9,7 +9,7 @@ namespace SpiritReforged.Content.Savanna.Items.HuntingRifle;
 
 public class HuntingRifle : ModItem
 {
-	public static readonly Asset<Texture2D> CursorTexture = Graphics.Request<Texture2D>("Cursor_Reticle");
+	public static readonly Asset<Texture2D> CursorTexture = Graphics.Tex("SpiritReforged/Content/Savanna/Items/HuntingRifle/Cursor_Reticle");
 	public static readonly SoundStyle Gunshot = new("SpiritReforged/Assets/SFX/Item/Gunshot");
 
 	/// <summary> The item type of <see cref="HuntingRifle"/> cached for detour efficiency. </summary>

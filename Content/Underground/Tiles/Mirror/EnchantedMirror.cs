@@ -20,7 +20,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 {
 	public sealed class MirrorReturnPortal : ModProjectile, IInteractable
 	{
-		public static readonly Asset<Texture2D> Highlight = Graphics.Request<Texture2D>("EnchantedMirrorItem_Highlight");
+		public static readonly Asset<Texture2D> Highlight = Graphics.Tex("SpiritReforged/Content/Underground/Tiles/Mirror/EnchantedMirrorItem_Highlight");
 
 		public override string Texture => ModContent.GetInstance<EnchantedMirror>().AutoModItem().Texture;
 

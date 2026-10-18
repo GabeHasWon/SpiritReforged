@@ -210,7 +210,7 @@ internal class ScarabMountItem : ModItem
 		}
 	}
 
-	private static readonly Asset<Texture2D> Saddle = Graphics.Request<Texture2D>("ScarabMount_Saddle");
+	private static readonly Asset<Texture2D> Saddle = Graphics.Tex("SpiritReforged/Content/Desert/ScarabBoss/Items/ScarabMount_Saddle");
 
 	public override void SetDefaults()
 	{

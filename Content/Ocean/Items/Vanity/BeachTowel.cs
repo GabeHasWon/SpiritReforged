@@ -12,7 +12,7 @@ public class BeachTowel : ModItem
 {
 	private sealed class ShirtButton : ISlotButton
 	{
-		public static readonly Asset<Texture2D> Texture = Graphics.Request<Texture2D>("BeachTowelToggle");
+		public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Coean/Items/Vanity/BeachTowelToggle");
 
 		public void Draw(SpriteBatch spriteBatch, Vector2 center, Item item, bool hoveredOver)
 		{

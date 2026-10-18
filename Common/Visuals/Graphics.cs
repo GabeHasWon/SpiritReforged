@@ -68,42 +68,9 @@ public static class Graphics
 
 	public static void DrawOutline(Action<Vector2> action) => DrawOutline(default, default, default, default, action);
 
-	/// <summary>Requests the asset path of <paramref name="name"/> inside of the <b>local</b> namespace.<para/>
-	/// Should only be used to initialize static fields or one-time asset caching. Prefer <see cref="Path"/> if the required path is inside a namespace other than the one calling this method. </summary>
-	public static string RequestPath(string name)
-	{
-		const int stack_index = 2;
-		StackTrace trace = new();
-
-		if (trace.GetFrame(stack_index) is StackFrame frame)
-		{
-			string space = frame.GetMethod().DeclaringType.Namespace;
-			return (space + '.').Path() + name;
-		}
-		else
-		{
-			throw new InvalidOperationException($"StackFrame at index {stack_index} is null: " + trace.ToString());
-		}
-	}
-
-	/// <summary>Requests the asset of <paramref name="name"/> inside of the <b>local</b> namespace.<para/>
-	/// Should only be used to initialize static fields or one-time asset caching. Prefer <see cref="Path"/> if the required path is inside a namespace other than the one calling this method. </summary>
-	public static Asset<T> Request<T>(string name, AssetRequestMode requestMode = AssetRequestMode.AsyncLoad) where T : class
-	{
-		const int stack_index = 2;
-		StackTrace trace = new();
-
-		if (trace.GetFrame(stack_index) is StackFrame frame)
-		{
-			string space = frame.GetMethod().DeclaringType.Namespace;
-			return ModContent.Request<T>((space + '.').Path() + name, requestMode);
-		}
-		else
-		{
-			throw new InvalidOperationException($"StackFrame at index {stack_index} is null: " + trace.ToString());
-		}
-	}
-
 	/// <summary>Converts the provided namespace to file path syntax.</summary>
 	public static string Path(this string value) => value.Replace('.', '/');
+
+	/// <summary>Simply calls <see cref="ModContent.Request{T}(string, AssetRequestMode)"/> for a texture on the given path.</summary>
+	public static Asset<Texture2D> Tex(string path, AssetRequestMode mode = AssetRequestMode.AsyncLoad) => ModContent.Request<Texture2D>(path, mode);
 }

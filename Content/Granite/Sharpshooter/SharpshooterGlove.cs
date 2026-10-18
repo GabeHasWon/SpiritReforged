@@ -31,7 +31,7 @@ public class SharpshooterGlove : ModItem, IFlagged
 internal class SharpshooterPlayer : ModPlayer
 {
 	private static readonly Dictionary<int, float> CooldownByNPC = [];
-	private static readonly Asset<Texture2D> Reticle = Graphics.Request<Texture2D>("Reticle");
+	private static readonly Asset<Texture2D> Reticle = Graphics.Tex("SpiritReforged/Content/Granite/Sharpshooter/Reticle");
 
 	public float Stacks { get; private set; }
 

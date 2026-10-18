@@ -21,7 +21,7 @@ public class EnchanterUI : AutoUIState
 		public const int COLUMNS = 3;
 		public const int ROWS = 2;
 
-		public static readonly Asset<Texture2D> IconTexture = Graphics.Request<Texture2D>(nameof(EnchanterButton));
+		public static readonly Asset<Texture2D> IconTexture = Graphics.Tex("SpiritReforged/Common/UI/Enchantment/" + nameof(EnchanterButton));
 
 		public readonly int style = style;
 		public readonly LocalizedText hoverText = hoverText;
@@ -49,7 +49,7 @@ public class EnchanterUI : AutoUIState
 	}
 
 	public static readonly SoundStyle RemoveEnchantment = new("SpiritReforged/Assets/SFX/Item/Shatter2");
-	public static readonly Asset<Texture2D> LowerPanel = Graphics.Request<Texture2D>("GlyphBubble");
+	public static readonly Asset<Texture2D> LowerPanel = Graphics.Tex("SpiritReforged/Common/UI/Enchantment/GlyphBubble");
 
 	private static GlyphItem _hovered;
 

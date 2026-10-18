@@ -80,8 +80,8 @@ public class JellyfishMinion : BaseMinion
 
 	public static int SHOOT_RANGE { get; set; } = 400; //Static because it's used by the bolt class
 
-	public static readonly Asset<Texture2D> OutlineTexture = Graphics.Request<Texture2D>("JellyfishMinion_Outline");
-	public static readonly Asset<Texture2D> AttackAura = Graphics.Request<Texture2D>("JellyfishMinion_AttackAura");
+	public static readonly Asset<Texture2D> OutlineTexture = Graphics.Tex("SpiritReforged/Content/Ocean/Items/JellyMinion/JellyfishMinion_Outline");
+	public static readonly Asset<Texture2D> AttackAura = Graphics.Tex("SpiritReforged/Content/Ocean/Items/JellyMinion/JellyfishMinion_AttackAura");
 
 	public JellyfishMinion() : base(600, 800, new Vector2(28, 28)) { }
 

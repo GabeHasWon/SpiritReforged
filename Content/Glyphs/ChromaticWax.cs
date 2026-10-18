@@ -39,7 +39,7 @@ public class ChromaticWax : ModItem
 	/// <summary> The item origin used for visual effects. </summary>
 	private Vector2 Center => Item.Center - Vector2.UnitY * EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 90f) * 3;
 
-	public static readonly Asset<Texture2D> WorldTexture = Graphics.Request<Texture2D>("ChromaticWax_World");
+	public static readonly Asset<Texture2D> WorldTexture = Graphics.Tex("SpiritReforged/Content/Glyphs/ChromaticWax_World");
 
 	public override void SetStaticDefaults()
 	{

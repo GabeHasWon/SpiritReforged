@@ -9,7 +9,7 @@ public class CandlewickCoil : ModItem
 {
 	public sealed class CandlewickCoilThrown : ModProjectile
 	{
-		public static readonly Asset<Texture2D> ChainTexture = Graphics.Request<Texture2D>(nameof(CandlewickCoil) + "_Chain");
+		public static readonly Asset<Texture2D> ChainTexture = Graphics.Tex("SpiritReforged/Content/Underground/Items/" + nameof(CandlewickCoil) + "_Chain");
 
 		public override LocalizedText DisplayName => ModContent.GetInstance<CandlewickCoil>().DisplayName;
 
