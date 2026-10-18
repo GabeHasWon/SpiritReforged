@@ -106,6 +106,6 @@ Columbald.DisplayName: Колысик
 EyeballMinion.DisplayName: Глаз-миньон
 PumpkinEmberProjectile.DisplayName: Тлеющий огонёк
 ShovelClubBoneProjectile.DisplayName: Кость
-// SpareLeg.DisplayName: Spare Leg
-// SpareHand.DisplayName: Spare Hand
-// SpareHeart.DisplayName: Spare Heart
+SpareLeg.DisplayName: Запасная нога
+SpareHand.DisplayName: Запасная рука
+SpareHeart.DisplayName: Запасное сердце
