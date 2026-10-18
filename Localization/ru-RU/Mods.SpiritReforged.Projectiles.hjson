@@ -101,11 +101,11 @@ ShockGlyphLightningBolt.DisplayName: Электрический удар
 MariglowSeed.DisplayName: Семена бархатца
 RageHit.DisplayName: Яростный удар
 MirrorReturnPortal.DisplayName: Портал зеркала возвращения
-// Columbat.DisplayName: Columbat
-// Columbald.DisplayName: Columbald
-// EyeballMinion.DisplayName: Eyeball
-// PumpkinEmberProjectile.DisplayName: Ember
-// ShovelClubBoneProjectile.DisplayName: Bone
+Columbat.DisplayName: Комышь
+Columbald.DisplayName: Колысик
+EyeballMinion.DisplayName: Глаз-миньон
+PumpkinEmberProjectile.DisplayName: Тлеющий огонёк
+ShovelClubBoneProjectile.DisplayName: Кость
 // SpareLeg.DisplayName: Spare Leg
 // SpareHand.DisplayName: Spare Hand
 // SpareHeart.DisplayName: Spare Heart

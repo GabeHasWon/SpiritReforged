@@ -44,41 +44,41 @@ DhampirBounty: {
 MummyBounty: {
 	Dialogue: {
 		Eye: {
-			// 0: Oh me oh my! You've returned. Speaking of returned, have you heard of the mummy? I had a little pet project for a while, but they were a bit of a dummy!
-			// 1: Well...no. They fell apart, and they seemed to leave to depart...er...something. They didn't want to stick together, and moaned about how they must "return to their tomb".
-			// 2: It's your joy to corral them! Here, take this...thing. I think the dummy- er, mummy, liked it.
+			0: Ой-ой-ой! Да кто это к нам вернулся! К слову о возвращении: слыхал уже историю про мумию? Я воскресил её для одного своего проекта, но...
+			1: Ну... не совсем. Она развалилась на части, а потом ушла, чтобы отойти... эм... или как там. Короче, никак не хотела держаться вместе и без умолку говорила про «возвращение в могилу».
+			2: И, к счастью, ловить её опять тебе! Вот, держи эту... штуку. Насколько я знаю, этой муд-, кхм, мумии она нравится.
 		}
 
 		Player: {
-			// 0: They ran away at the earliest opportunity, didn't they.
-			// 1: And it's my job to corral them?
-			// 2: ...okay.
+			0: ...она сбежала при первой же возможности?
+			1: И, к сожалению, ловить её опять мне.
+			2: ...так уж и быть.
 		}
 	}
-
+	
 	RecoveryDialogue: {
 		Eye: {
-			// 0: Aha! Have you gotten the spoils of the mummy?
-			// 1: Good thing I had already cloned them! Great way to lord over your wretched creation sometimes, right?
-			// 2: I'm sure you'll figure it out someday. Here you go!
+			0: Аха! Ну что, уже раздобыл трофей с той мумии?
+			1: Повезло, что я всегда всё клонирую! Копии - отличная вещь, чтобы поиздеваться над жалкими творениями, не думаешь?
+			2: Уверен, однажды ты поймёшь. Вот, держи!
 		}
 
 		Player: {
-			// 0: No, I lost that crown thing.
-			// 1: That's so far removed from what I relate to that it's baffling.
-			// 2: I hope I don't have to talk to you again.
+			0: Нет, я потерял эту штуку-приманку.
+			1: Я даже не знаю, что на это ответить.
+			2: Надеюсь, мне больше не придётся с тобой разговаривать.
 		}
 	}
 
 	CompletionDialogue: {
 		Eye: {
-			// 0: Is that an inconspicuous bundle of weathered bandages I see? I'd be so happy for you and me.
-			// 1: Don't be so glum! Here, this was in a pile way in the back. Hopefully it doesn't have too much extra flesh on it!
+			0: Что это я вижу? Тот самый невзрачный клубок рваных бинтов? Это было бы лучшее для нас, что могло бы произойти.
+			1: Да не кисни ты! Вот, это валялось у меня в углу. Надеюсь, на нём не слишком много лишней плоти!
 		}
 
 		Player: {
-			// 0: ...yes.
-			// 1: Gross!
+			0: ...ага.
+			1: Фу!
 		}
 	}
 }

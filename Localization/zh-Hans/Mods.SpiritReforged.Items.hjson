@@ -3754,7 +3754,7 @@ PumpkinClub: {
 }
 
 ShovelClub: {
-	DisplayName: 掘墓者铲子
+	DisplayName: 掘墓者
 	Tooltip:
 		'''
 		蓄力攻击会掘出骷髅遗骸
@@ -3794,7 +3794,7 @@ DhampirRelic: {
 }
 
 MummyRelic: {
-	DisplayName: 木猛犸伊圣物
+	DisplayName: 猛犸伊圣物
 	Tooltip: ""
 }
 
@@ -3820,5 +3820,9 @@ GloomyStatueItem: {
 
 BoxOfSpareLimbs: {
 	DisplayName: 备用肢体盒
-	Tooltip: ""
+	Tooltip:
+		'''
+		受到攻击时会生成一个备用肢体为你而战
+		一条腿会跳向附近的敌人，一只手会抓住附近的敌人，然后没别的了
+		'''
 }

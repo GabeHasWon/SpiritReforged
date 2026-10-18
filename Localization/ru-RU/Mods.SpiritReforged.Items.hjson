@@ -1756,12 +1756,12 @@ BassSlapper: {
 
 Shockhammer: {
 	DisplayName: Ударный молот
-	Tooltip: При полном заряде создаёт ударную волну, протягивающуюся по земле
+	Tooltip: Полностью заряженные удары создают ударную волну, протягивающуюся по земле
 }
 
 Bowlder: {
 	DisplayName: Глыба
-	Tooltip: При полном заряде запускает смертоносную катящуюся глыбу
+	Tooltip: Полностью заряженные удары запускают смертоносную катящуюся глыбу
 }
 
 BoStaff: {
@@ -3544,255 +3544,251 @@ WaxPlatformItem: {
 }
 
 PinSpookyFarms: {
-	// DisplayName: Fetid Farms Pin
-	// Tooltip: ""
+	DisplayName: Смрадная булавка
+	Tooltip: ""
 }
 
 PinSpookyKrampus: {
-	// DisplayName: Krampus' Workshop Pin
-	// Tooltip: ""
+	DisplayName: Булавка Крампуса
+	Tooltip: ""
 }
 
 PinSpookyNose: {
-	// DisplayName: Temple of Moco Pin
-	// Tooltip: ""
+	DisplayName: Булавка Храма Шмыга
+	Tooltip: ""
 }
 
 PinSpookyRotten: {
-	// DisplayName: Rotten Depths Pin
-	// Tooltip: ""
+	DisplayName: Прогнившая булавка
+	Tooltip: ""
 }
 
 StarGourdGreenCarvedItem: {
-	// DisplayName: Carved Green Stargourd
-	// Tooltip: ""
+	DisplayName: Зелёная резная звездотыква
+	Tooltip: ""
 }
 
 StarGourdLimeCarvedItem: {
-	// DisplayName: Carved Lime Stargourd
-	// Tooltip: ""
+	DisplayName: Лаймовая резная звездотыква
+	Tooltip: ""
 }
 
 StarGourdOrangeLimeCarvedItem: {
-	// DisplayName: Carved Orange-Lime Stargourd
-	// Tooltip: ""
+	DisplayName: Лаймово-оранжевая резная звездотыква
+	Tooltip: ""
 }
 
 StarGourdOrangeCarvedItem: {
-	// DisplayName: Carved Orange Stargourd
-	// Tooltip: ""
+	DisplayName: Оранжевая резная звездотыква
+	Tooltip: ""
 }
 
 StarGourdRedCarvedItem: {
-	// DisplayName: Carved Red Stargourd
-	// Tooltip: ""
+	DisplayName: Красная резная звездотыква
+	Tooltip: ""
 }
 
 StarGourdRottenCarvedItem: {
-	// DisplayName: Carved Rotten Stargourd
-	// Tooltip: ""
+	DisplayName: Гнилая резная звездотыква
+	Tooltip: ""
 }
 
 StarGourdWhiteCarvedItem: {
-	// DisplayName: Carved White Stargourd
-	// Tooltip: ""
+	DisplayName: Белая резная звездотыква
+	Tooltip: ""
 }
 
 StarGourdYellowCarvedItem: {
-	// DisplayName: Carved Yellow Stargourd
-	// Tooltip: ""
+	DisplayName: Жёлтая резная звездотыква
+	Tooltip: ""
 }
 
 StarGourdYellowGreenCarvedItem: {
-	// DisplayName: Carved Yellow-Green Stargourd
-	// Tooltip: ""
+	DisplayName: Жёлто-зелёная резная звездотыва
+	Tooltip: ""
 }
 
 PumpkinPailOrange: {
-	// DisplayName: Pumpkin Pail
-	/* Tooltip:
+	DisplayName: Тыква-корзинка
+	Tooltip:
 		'''
 		{$CommonTooltips.Backpack}
-		'Classically spooky'
-		''' */
+		'Классическая жуть'
+		'''
 }
 
 PumpkinPailPurple: {
-	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
-	/* Tooltip:
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
 		'''
 		{$CommonTooltips.Backpack}
-		'Unabashedly spooky'
-		''' */
+		«Непоколебимая жуть»
+		'''
 }
 
 PumpkinPailWhite: {
-	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
-	/* Tooltip:
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
 		'''
 		{$CommonTooltips.Backpack}
-		'Actually spooky'
-		''' */
+		«Настоящая жуть»
+		'''
 }
 
 TrellisOldBirchItem: {
-	// DisplayName: Crossed Old Birch Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из старой берёзы
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisOldBirchTwoItem: {
-	// DisplayName: Old Birch Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из старой берёзы
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisSpookyWoodItem: {
-	// DisplayName: Crossed Old Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из старого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisSpookyWoodTwoItem: {
-	// DisplayName: Old Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из старого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 DhampirQuestItem: {
-	// DisplayName: Sad Little Bat
-	/* Tooltip:
+	DisplayName: Маленькая грустная мышь
+	Tooltip:
 		'''
-		Attracts a certain creature in the salt flats while in your inventory
-		'You feel an instinctual need to care for it'
-		''' */
+		Вы испытываете к ней материнский инстинкт
+		Привлекает существо в солончаковых равнинах, пока находится в вашем инвентаре
+		'''
 }
 
 UncommonSpookyPotsLowerCatacombsItem: {
-	// DisplayName: "{$Tiles.Records.LowerCatacombs.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.LowerCatacombs.Name}"
+	Tooltip: ""
 }
 
 UncommonSpookyPotsUpperCatacombsItem: {
-	// DisplayName: "{$Tiles.Records.UpperCatacombs.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.UpperCatacombs.Name}"
+	Tooltip: ""
 }
 
 UncommonSpookyPotsKrampusItem: {
-	// DisplayName: "{$Tiles.Records.Krampus.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.Krampus.Name}"
+	Tooltip: ""
 }
 
 UncommonSpookyPotsTarPitsItem: {
-	// DisplayName: "{$Tiles.Records.TarPits.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.TarPits.Name}"
+	Tooltip: ""
 }
 
 UncommonSpookyPotsRottenDepthsItem: {
-	// DisplayName: "{$Tiles.Records.RottenDepths.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.RottenDepths.Name}"
+	Tooltip: ""
 }
 
 UncommonSpookyPotsFetidFarmsItem: {
-	// DisplayName: "{$Tiles.Records.FetidFarms.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.FetidFarms.Name}"
+	Tooltip: ""
 }
 
 UncommonSpookyPotsNoseTempleItem: {
-	// DisplayName: "{$Tiles.Records.NoseTemple.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.NoseTemple.Name}"
+	Tooltip: ""
 }
 
 UncommonSpookyPotsSpiderGrottoItem: {
-	// DisplayName: "{$Tiles.Records.SpiderGrotto.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.SpiderGrotto.Name}"
+	Tooltip: ""
 }
 
 UncommonSpookyPotsSpookyForestItem: {
-	// DisplayName: "{$Tiles.Records.SpookyForest.Name}"
-	// Tooltip: ""
+	DisplayName: "{$Tiles.Records.SpookyForest.Name}"
+	Tooltip: ""
 }
 
 FruitBrownie: {
-	// DisplayName: Fruit Brownie
-	// Tooltip: "'This is edible, but just not a brownie'"
+	DisplayName: Фруктовый брауни
+	Tooltip: «Он съедобный. Просто это не брауни»
 }
 
 SandBrownie: {
-	// DisplayName: Sand Brownie
-	// Tooltip: "'At least it's not glass?'"
+	DisplayName: Песчаный брауни
+	Tooltip: «Спасибо, что хоть не стеклянный?»
 }
 
 MummyQuestItem: {
-	// DisplayName: Ancient Crown
-	/* Tooltip:
+	DisplayName: Древняя корона
+	Tooltip:
 		'''
-		Attracts a certain creature on top of the ziggurat while in your inventory
-		'This is disproportionally small'
-		''' */
+		Неестественно маленькая
+		Привлекает существо над Зиккуратом, пока находится в вашем инвентаре
+		'''
 }
 
 BallOfBandages: {
-	// DisplayName: Ball Of Bandages
-	/* Tooltip:
+	DisplayName: Клубок бинтов
+	Tooltip:
 		'''
-		Little Eye may be interested in this
-		'Uniquely odd to hold'
-		''' */
+		Глазик может заинтересоваться этим
+		«Ощущается в руках очень странно»
+		'''
 }
 
 DhampirCompletionItem: {
-	// DisplayName: Dhampir Ear
-	/* Tooltip:
+	DisplayName: Ухо дампира
+	Tooltip:
 		'''
-		Little Eye may be interested in this
-		'Yeowch!'
-		''' */
+		Глазик может заинтересоваться этим
+		«Ай!»
+		'''
 }
 
 MummyBandageScrap: {
-	// DisplayName: Mummy Bandage Scrap
-	// Tooltip: Little Eye wants a ball of these...for some reason
+	DisplayName: Обрывок бинта
+	Tooltip: Глазику, зачем-то, нужен именно клубок из бинтов...
 }
 
 LookerClub: {
-	// DisplayName: Looker
-	/* Tooltip:
+	DisplayName: Гляделка
+	Tooltip:
 		'''
-		Charged strikes burst into temporary eyeball minions
-		These minions count as both melee and summon damage
-		''' */
+		Полностью заряженные удары призывают временные глаза-миньонов
+		Урон этих глаз считается и за урон ближнего боя, и урон призывателя
+		'''
 }
 
 PumpkinClub: {
-	// DisplayName: Smack-o-Lantern
-	// Tooltip: Charged strikes split into flaming chunks
+	DisplayName: Светильник-молотильник
+	Tooltip: Полностью заряженные удары разбрасывают пылающие ошмётки
 }
 
 ShovelClub: {
-	// DisplayName: Gravemaker
-	/* Tooltip:
-		'''
-		Charged strikes unearth skeletal remains
-		Aim those remains with the cursor
-		''' */
+	DisplayName: Лопата гробокопателя
+	Tooltip: Полностью заряженные удары бросают кости в сторону курсора
 }
 
 DhampirPaintingItem: {
-	// DisplayName: Dhampir at Dusk
-	// Tooltip: "'S. Pookie'"
+	DisplayName: Картина «Дампир на закате»
+	Tooltip: «С. Пуки»
 }
 
 MummyPaintingItem: {
-	// DisplayName: Sparkling Gourds
-	// Tooltip: "'S. Pookie'"
+	DisplayName: Картина «Мерцающие тыквы»
+	Tooltip: «С. Пуки»
 }
 
 DhampirCape: {
-	// DisplayName: Weathereed Cape
-	/* Tooltip:
+	DisplayName: Обветренный плащ
+	Tooltip:
 		'''
-		Reduces gravity and removes fall damage
-		Reduces aggro
-		Hides the player when the accessory is hidden
-		'It looks about as good as it feels to wear'
-		''' */
+		Уменьшает силу гравитации и убирает урон от падения
+		Враги будут реже выбирать вас в качестве цели
+		Вы становитесь невидимыми, если отображение аксессуара отключено
+		«Выглядит так же классно, как ощущается его носить»
+		'''
 }
 
 MummyReward: {
@@ -3801,33 +3797,33 @@ MummyReward: {
 }
 
 DhampirRelic: {
-	// DisplayName: Dhampir Relic
-	// Tooltip: ""
+	DisplayName: Реликвия дампира
+	Tooltip: ""
 }
 
 MummyRelic: {
-	// DisplayName: Mummiath Relic
-	// Tooltip: ""
+	DisplayName: Реликвия мумиафа
+	Tooltip: ""
 }
 
 GiantThornWallItem: {
-	// DisplayName: Giant Thorn Wall
-	// Tooltip: ""
+	DisplayName: Стена из большой колючки
+	Tooltip: ""
 }
 
 StonePillarItem: {
-	// DisplayName: Stone Pillar
-	// Tooltip: ""
+	DisplayName: Каменная колонна
+	Tooltip: ""
 }
 
 HerosMemorialStatueMossyItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.Tooltip}"
+	DisplayName: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.Tooltip}"
 }
 
 GloomyStatueItem: {
-	// DisplayName: Gloomy Statue
-	// Tooltip: ""
+	DisplayName: Мрачная статуя
+	Tooltip: ""
 }
 
 BoxOfSpareLimbs: {

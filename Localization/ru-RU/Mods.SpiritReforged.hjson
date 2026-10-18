@@ -49,10 +49,10 @@ Misc: {
 	}
 
 	TombText: {
-		// 0: Here rests {0}.
-		// 1: Here lies {0}, loved by many.
-		// 2: Here lies {0} AND {1}.
-		// 3: The grave is empty.
+		0: Здесь покоится {0}.
+		1: Здесь лежит {0}. Ты всегда в нашей памяти
+		2: Здесь лежат {0} и {1}.
+		3: Эта могила пуста.
 	}
 
 	NoStock: Нет в наличии

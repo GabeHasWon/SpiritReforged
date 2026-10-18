@@ -812,28 +812,28 @@ DhampirNPC: {
 }
 
 SpookyMummyNPC: {
-	DisplayName: 木猛犸伊
+	DisplayName: 猛犸伊
 	Entry: 一具巨大的木乃伊，复活的程度刚好够它走路，但还不够让它保持完整。按照小眼的说法，这绝对不是他的错。
-	DropCondition: （仅当没有其他木猛犸伊肢体剩余时）
+	DropCondition: （仅当没有其他猛犸伊肢体剩余时）
 }
 
 SpookyMummyHand: {
-	DisplayName: 木猛犸伊之手
+	DisplayName: 猛犸伊之手
 	Entry: 它跑起来确实很快，但你该看看这家伙用铅笔的本事。一位极具天赋的艺术家。
 }
 
 SpookyMummyHead: {
-	DisplayName: 木猛犸伊之头
+	DisplayName: 猛犸伊之头
 	Entry: 头号人物。团队的首领。行动背后的智脑。好吧，前提是它们还有脑子的话。
 }
 
 SpookyMummyHeart: {
-	DisplayName: 木猛犸伊之心
+	DisplayName: 猛犸伊之心
 	Entry: 妈呀！我得赶紧离开这儿！
 }
 
 SpookyMummyLegs: {
-	DisplayName: 木猛犸伊之腿
+	DisplayName: 猛犸伊之腿
 	Entry: 每个团队都有一个诚实、脚踏实地、勤奋干活的成员。字面意义上的。
 }
 
