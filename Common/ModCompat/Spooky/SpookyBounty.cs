@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Content.Crossmod.Spooky.Items.LookerClub;
 using System.Diagnostics;
 using System.IO;
 using Terraria.DataStructures;
@@ -208,5 +209,8 @@ internal abstract class SpookyBounty : ILoadable, ILocalizedModType
 		}
 
 		QuickItem(entity, ItemID.GoldCoin, 10);
+
+		if (Main.rand.NextBool(2))
+			QuickItem(entity, ModContent.ItemType<LookerClub>());
 	}
 }

@@ -6,6 +6,82 @@ namespace SpiritReforged.Content.Crossmod.Spooky.Items.BoxOfLimbs;
 
 internal class BoxOfSpareLimbs : ModItem, IFlagged
 {
+	public class SpareHeart : ModProjectile
+	{
+		private ref float WalkTime => ref Projectile.ai[0];
+		private ref float IdleTime => ref Projectile.ai[1];
+		private ref float Timer => ref Projectile.ai[2];
+
+		private ref float WalkDir => ref Projectile.localAI[0];
+
+		public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
+
+		public override void SetDefaults()
+		{
+			Projectile.timeLeft = 1800;
+			Projectile.DamageType = DamageClass.Summon;
+			Projectile.Size = new Vector2(26);
+			Projectile.friendly = true;
+			Projectile.penetrate = -1;
+			Projectile.localNPCHitCooldown = 30;
+			Projectile.usesLocalNPCImmunity = true;
+		}
+
+		public override bool OnTileCollide(Vector2 oldVelocity) => false;
+		public override bool? CanCutTiles() => false;
+
+		public override void AI()
+		{
+			if (IdleTime < 30)
+			{
+				Projectile.velocity.Y += 0.3f;
+				IdleTime++;
+				return;
+			}
+
+			Projectile.velocity.Y += 0.3f;
+
+			if (Math.Abs(Projectile.velocity.X) > 0.1f)
+				Projectile.direction = Projectile.spriteDirection = MathF.Sign(Projectile.velocity.X);
+
+			if (WalkTime == 0)
+				WalkTime = Main.rand.NextFloat(120, 180);
+
+			Timer++;
+
+			if (Timer > WalkTime)
+			{
+				if (WalkDir == 0 && Main.myPlayer == Projectile.owner)
+				{
+					WalkDir = Main.rand.NextBool() ? -1 : 1;
+					Projectile.netUpdate = true;
+				}
+
+				if (Timer > WalkTime + 60)
+				{
+					Timer = 0;
+					WalkTime = Main.rand.NextFloat(120, 180);
+					Projectile.netUpdate = true;
+				}
+
+				if (Projectile.velocity.X == 0 && WalkDir == 1 && Collision.SolidCollision(Projectile.BottomRight - new Vector2(0, 20), 6, 18))
+					WalkDir *= -1;
+
+				if (Projectile.velocity.X == 0 && WalkDir == -1 && Collision.SolidCollision(Projectile.BottomLeft - new Vector2(6, 20), 6, 18))
+					WalkDir *= -1;
+
+				Projectile.velocity.X = WalkDir;
+				Projectile.frameCounter += 1;
+				Projectile.frame = (int)(Projectile.frameCounter / 4f) % 4;
+			}
+			else
+			{
+				Projectile.velocity.X *= 0.9f;
+				Projectile.frame = 4;
+			}
+		}
+	}
+
 	public class SpareHand : ModProjectile
 	{
 		private int AttachedNpc
@@ -34,6 +110,8 @@ internal class BoxOfSpareLimbs : ModItem, IFlagged
 
 		private ref float AnimTimer => ref Projectile.localAI[2];
 
+		private float IdleTime = 0;
+
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
 
 		public override void SetDefaults()
@@ -48,6 +126,7 @@ internal class BoxOfSpareLimbs : ModItem, IFlagged
 		}
 
 		public override bool? CanCutTiles() => false;
+		public override bool? CanDamage() => IdleTime >= 30;
 
 		public override void AI()
 		{
@@ -55,6 +134,13 @@ internal class BoxOfSpareLimbs : ModItem, IFlagged
 			{
 				Initialized = true;
 				AttachedNpc = -1;
+			}
+
+			if (IdleTime < 30)
+			{
+				IdleTime++;
+				Projectile.velocity.Y += 0.3f;
+				return;
 			}
 
 			if (AttachedNpc != -1)
@@ -92,9 +178,25 @@ internal class BoxOfSpareLimbs : ModItem, IFlagged
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc.CanBeChasedBy() && (Target == -1 && npc.DistanceSQ(Projectile.Center) < 800 * 800 
-					|| Projectile.DistanceSQ(Main.npc[Target].Center) > npc.DistanceSQ(Projectile.Center)))
+				if (!npc.CanBeChasedBy())
+					continue;
+
+				if (Target == -1)
+				{
+					if (npc.DistanceSQ(Projectile.Center) < 800 * 800)
+					{
+						Target = npc.whoAmI;
+						break;
+					}
+					else
+						continue;
+				}
+
+				if (Projectile.DistanceSQ(Main.npc[Target].Center) > npc.DistanceSQ(Projectile.Center))
+				{
 					Target = npc.whoAmI;
+					break;
+				}
 			}
 
 			Collision.StepUp(ref Projectile.position, ref Projectile.velocity, Projectile.width, Projectile.height, ref Projectile.stepSpeed, ref Projectile.gfxOffY);
@@ -192,6 +294,8 @@ internal class BoxOfSpareLimbs : ModItem, IFlagged
 			set => Projectile.ai[1] = value;
 		}
 
+		private ref float IdleTime => ref Projectile.ai[2];
+
 		public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
 
 		public override void SetDefaults()
@@ -204,19 +308,46 @@ internal class BoxOfSpareLimbs : ModItem, IFlagged
 		}
 
 		public override bool? CanCutTiles() => false;
+		public override bool? CanDamage() => IdleTime >= 30;
 
 		public override void AI()
 		{
+			if (IdleTime < 30)
+			{
+				Projectile.velocity.Y += 0.3f;
+				IdleTime++;
+				return;
+			}
+
 			Target = -1;
+
+			if (Math.Abs(Projectile.velocity.X) > 0.1f)
+				Projectile.direction = Projectile.spriteDirection = MathF.Sign(Projectile.velocity.X);
 
 			Projectile.velocity.Y += 0.3f;
 			Projectile.rotation = Projectile.velocity.X * 0.04f;
 
 			foreach (NPC npc in Main.ActiveNPCs)
 			{
-				if (npc.CanBeChasedBy() && (Target == -1 && npc.DistanceSQ(Projectile.Center) < 800 * 800 
-					|| Projectile.DistanceSQ(Main.npc[Target].Center) > npc.DistanceSQ(Projectile.Center)))
+				if (!npc.CanBeChasedBy())
+					continue;
+
+				if (Target == -1)
+				{
+					if (npc.DistanceSQ(Projectile.Center) < 800 * 800)
+					{
+						Target = npc.whoAmI;
+						break;
+					}
+					else
+						continue;
+				}
+
+				if (Projectile.DistanceSQ(Main.npc[Target].Center) > npc.DistanceSQ(Projectile.Center))
+				{
 					Target = npc.whoAmI;
+					break;
+				}
 			}
 
 			if (Collision.SolidCollision(Projectile.BottomLeft, Projectile.width, 6, true))
@@ -300,8 +431,13 @@ internal class BoxOfSpareLimbs : ModItem, IFlagged
 					Dust.NewDust(Player.position, Player.width, Player.head, DustID.Sand, Player.velocity.X, Player.velocity.Y);
 
 				int damage = (int)Player.GetTotalDamage(DamageClass.Summon).ApplyTo(40);
-				int type = ModContent.ProjectileType<SpareLeg>();
-				Projectile.NewProjectile(Player.GetSource_OnHurt(info.DamageSource), Player.Center, Player.velocity * 0.8f, type, damage, 0, Player.whoAmI);
+				int type = Main.rand.NextBool() ? ModContent.ProjectileType<SpareLeg>() : ModContent.ProjectileType<SpareHand>();
+				Vector2 velocity = Player.velocity * 0.2f + new Vector2(Main.rand.NextFloat(-2, 2), -6);
+				Terraria.DataStructures.IEntitySource src = Player.GetSource_OnHurt(info.DamageSource);
+				Projectile.NewProjectile(src, Player.Center, velocity, type, damage, 0, Player.whoAmI);
+
+				if (Main.rand.NextBool(5))
+					Projectile.NewProjectile(src, Player.Center, velocity, ModContent.ProjectileType<SpareHeart>(), 0, 0, Player.whoAmI);
 			}
 		}
 	}
