@@ -2,41 +2,41 @@ DhampirBounty: {
 	Dialogue: {
 		# For continuity's sake, these dialogue entries are read sequentially, one eye, one player - so it'd be Eye.0, then Player.0, then Eye.1, etc
 		Eye: {
-			// 0: You know, I once knew someone like you! Someone spry, strong, and easy to use! But oh me oh my, they could only get so far, before the light of the sun left them scarred...so with a little bit of magic, I inverted their condition! A perfect specimen for daytime missions!
-			// 1: Uh...yeah, I mean, I had a more elaborate rhyme but, yeah that's about what I want. Do keep in mind that they are invisible, but just looove seeing their own reflection. Here, I have a malnourished bat I poke with a stick every night in a dinky cage that you can use to lure them out of hiding.
-			// 2: They probably just think they are too cool to hang around with little old me now. How ungrateful!
+			0: А ведь раньше знал парня, прямо как ты! Проворного, управляемого, хоть в бой веди! Но, увы и ах, далеко ему было не уйти: солнце жгло его, оставляя ожоги... Так что я поколдовал, его недуг отразил! И для дневных заданий он вполне подходил!
+			1: Ну... типа да. Вообще-то, у меня была рифма получше, но суть та же. Учти, он невидимка, но обожает любоваться своим отражением. Возьми мою истощённую летучую мышь, которую я каждую ночь тыкаю палкой в тесной клетке. Она поможет тебе его выманить.
+			2: Он, наверное, теперь считает себя слишком крутым, чтобы водиться со старым добрым Глазиком. Что за неблагодарность!
 		}
 
 		Player: {
-			// 0: And then they left right?
-			// 1: ...yeah, I wonder why they would ever leave!
-			// 2: Yeah, no other reason, got it.
+			0: И потом он сбежал, да?
+			1: Даже не знаю, с чего бы ему от тебя уходить!
+			2: Ну да, других причин и быть не могло.
 		}
 	}
 
 	RecoveryDialogue: {
 		Eye: {
-			// 0: You are back! Have you assassinated the deserter yet?
-			// 1: Oh don't worry, I have a big pile of malnourished bats I poke with a stick every night in dinky cages. I keep them around to remind myself of how much better I am than that stupid Dhampir. Grr...stupid dumb Dhampir...
-			// 2: ...oh me oh my, many things, but yet you help me so, we aren't so different...are we?
+			0: С возвращением! Ну что, дезертир уже прикончен?
+			1: О, не переживай! У меня целая куча истощённых летучих мышей в тесных клетках, которых я каждую ночь тыкаю палкой. Держу их, чтобы не забывать, насколько я лучше этого тупого дампира. Гр-р... тупой, глупый дампир...
+			2: ...Ох, может, у меня и много недостатков, но ты всё равно мне помогаешь... Видимо, мы не так уж и отличаемся, да?
 		}
 
 		Player: {
-			// 0: No, Little Eye, no. I'm here because I lost the bat.
-			// 1: What's wrong with you?!
-			// 2: Ahuh. Just give me the bat already.
+			0: Нет, Глазик, ещё нет. Летучая мышь, что ты дал, потерялась.
+			1: Да что с тобой не так?!
+			2: Ага, конечно. Отдай мне уже эту мышь.
 		}
 	}
 
 	CompletionDialogue: {
 		Eye: {
-			// 0: Has the deserter been left in the salts?
-			// 1: Congratulations are in order! Here, take this old cape. I tried it on the stupid Dhampir but it wasn't "cool enough"...dumb Dhampir...
+			0: Ну что, дезертир уже оставлен гнить в соли?
+			1: Мои поздравления! Вот, забирай этот старый плащ. Я предлагал его тому тупому дампиру, но он решил, что плащ «недостаточно крутой»... Тупой дампир...
 		}
 
 		Player: {
-			// 0: You're so unsettling, but yes.
-			// 1: If you say so.
+			0: Твой энтузиазм пугает, но вообще да.
+			1: Ну, раз ты так говоришь.
 		}
 	}
 }
@@ -52,19 +52,19 @@ MummyBounty: {
 		Player: {
 			0: ...она сбежала при первой же возможности?
 			1: И, к сожалению, ловить её опять мне.
-			2: ...так уж и быть.
+			2: ...Так уж и быть.
 		}
 	}
 
 	RecoveryDialogue: {
 		Eye: {
-			0: Аха! Ну что, уже раздобыл трофей с той мумии?
-			1: Повезло, что я всегда всё клонирую! Копии - отличная вещь, чтобы поиздеваться над жалкими творениями, не думаешь?
+			0: Аха! Ну что, мумия уже повержена?
+			1: Как же хорошо, что я всегда всё клонирую! Копии - отличная вещь, чтобы поиздеваться над жалкими творениями, не думаешь?
 			2: Уверен, однажды ты поймёшь. Вот, держи!
 		}
 
 		Player: {
-			0: Нет, я потерял эту штуку-приманку.
+			0: Нет, эта штуку-приманка выпала у меня из кармана.
 			1: Я даже не знаю, что на это ответить.
 			2: Надеюсь, мне больше не придётся с тобой разговаривать.
 		}
@@ -77,8 +77,8 @@ MummyBounty: {
 		}
 
 		Player: {
-			0: ...ага.
-			1: Фу!
+			0: ...Ага.
+			1: Какой ужас!
 		}
 	}
 }

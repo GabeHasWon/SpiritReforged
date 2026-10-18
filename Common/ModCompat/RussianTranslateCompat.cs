@@ -32,12 +32,12 @@ internal class RussianTranslateCompat : ModSystem
 			"BombCannon",
 			"Bowlder",
 			"JellyfishJamJar",
-			"ShovelClub",
 			"LookerClub",
 			//Accessories
 			"Ledger",
 			"ScryingLens",
-			"SleightOfHand"
+			"SleightOfHand",
+			"BoxOfSpareLimbs"
 		});
 
 		tru.Call("AddNeuterItems", spiritR, new[]

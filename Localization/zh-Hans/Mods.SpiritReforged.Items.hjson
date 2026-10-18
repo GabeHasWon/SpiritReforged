@@ -3783,11 +3783,6 @@ DhampirCape: {
 		'''
 }
 
-MummyReward: {
-	DisplayName: 备用肢体盒（尚未完成）
-	Tooltip: ""
-}
-
 DhampirRelic: {
 	DisplayName: 半吸血鬼圣物
 	Tooltip: ""

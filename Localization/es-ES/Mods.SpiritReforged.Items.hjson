@@ -3784,11 +3784,6 @@ DhampirCape: {
 		''' */
 }
 
-MummyReward: {
-	// DisplayName: Box of Spare Limbs (WIP)
-	// Tooltip: ""
-}
-
 DhampirRelic: {
 	// DisplayName: Dhampir Relic
 	// Tooltip: ""
