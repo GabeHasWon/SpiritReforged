@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Linq;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Particle;
@@ -49,9 +48,12 @@ public class C4 : ModTile, ILoadItem
 				Projectile.rotation = EaseFunction.EaseSine.Ease(Projectile.timeLeft / 5f) * progress;
 			}
 
-			const int scale_time = 10;
+			const int scale_time = 5;
 			if (Projectile.timeLeft <= scale_time)
 				Projectile.scale += 1f / scale_time;
+
+			if (Projectile.timeLeft % 20 == 0)
+				SoundEngine.PlaySound(SoundID.Mech with { Pitch = 0.2f }, Projectile.Center);
 
 			if (Projectile.timeLeft <= 2)
 				Projectile.PrepareBombToBlow();
@@ -83,9 +85,13 @@ public class C4 : ModTile, ILoadItem
 				}
 
 				for (int i = 0; i < 10; i++)
-					ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(4, 4), Color.OrangeRed, Color.Red, 0.5f, 30, 3));
+					ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(5, 5), Color.OrangeRed, Color.Red, 1, 10, 10));
+
+				for (int i = 0; i < 10; i++)
+					Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(2, 2));
 
 				SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
+				SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
 			}
 
 			Projectile.Damage();

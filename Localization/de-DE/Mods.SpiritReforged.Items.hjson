@@ -3685,6 +3685,6 @@ SuperExtendoMags: {
 }
 
 C4Item: {
-	// DisplayName: C4 Item
-	// Tooltip: ""
+	// DisplayName: C4
+	// Tooltip: Destroys walls in a radius when interacted with
 }
