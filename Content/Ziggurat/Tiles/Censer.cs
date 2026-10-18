@@ -1,4 +1,4 @@
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 using TileHelper.Common;
@@ -39,12 +39,10 @@ public class Censer : ModTile, ILoadItem
 		if (Main.rand.NextBool(3))
 		{
 			var spawn = Main.rand.NextVector2FromRectangle(hitbox);
-			float scale = Main.rand.NextFloat(0.5f, 1.5f);
-			float posHash = (hitbox.X * hitbox.Y) * 67.67f;
+			float posHash = hitbox.X * hitbox.Y * 67.67f;
+			Vector2 velocity = (Vector2.UnitY * -1f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f + posHash) / (3 + (posHash % 1f - 0.5f)));
 
-			var velocity = (Vector2.UnitY * -1f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f + posHash) / (3 + (posHash % 1f - 0.5f)));
-
-			ParticleHandler.SpawnParticle(new SteamParticle(spawn, velocity, scale, 60, ParticleLayer.AbovePlayer) { Color = Color.White * 0.2f });
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(spawn, velocity, Color.White * 0.2f, 60));
 		}
 	}
 }

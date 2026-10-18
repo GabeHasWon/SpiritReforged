@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
-namespace SpiritReforged.Common.Easing;
+﻿namespace SpiritReforged.Common.Easing;
 
 public abstract class EaseFunction
 {

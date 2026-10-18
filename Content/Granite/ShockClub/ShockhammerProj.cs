@@ -1,9 +1,9 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -84,8 +84,8 @@ class ShockhammerProj : BaseClubProj
 			static Color easedCyan(float lerpAmount = 0.5f) => Color.Lerp(Color.LightCyan, Color.Cyan, lerpAmount);
 			var particlePos = Vector2.Lerp(Projectile.Center, Owner.Center, 0.25f);
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(particlePos, easedCyan(0.33f), 1f, 220, 25, "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseQuarticOut, endRingWidth: 0.3f).WithSkew(0.85f, particleRot));
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(particlePos, easedCyan(0.33f), 1f, 280, 20, "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseQuarticOut, endRingWidth: 0.3f).WithSkew(0.85f + Main.rand.NextFloat(-0.1f, 0.05f), particleRot + Main.rand.NextFloat(-0.1f, 0.1f)));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(particlePos, easedCyan(0.33f), 1f, 220, 25, "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseQuarticOut, endRingWidth: 0.3f).WithSkew(0.85f, particleRot));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(particlePos, easedCyan(0.33f), 1f, 280, 20, "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseQuarticOut, endRingWidth: 0.3f).WithSkew(0.85f + Main.rand.NextFloat(-0.1f, 0.05f), particleRot + Main.rand.NextFloat(-0.1f, 0.1f)));
 
 			if (Main.myPlayer == Projectile.owner)
 			{
@@ -121,16 +121,14 @@ class ShockhammerProj : BaseClubProj
 		float particleRot = Projectile.position.DirectionFrom(Projectile.oldPosition).RotatedByRandom(0.3f).ToRotation() + float.Pi / 3 * Projectile.direction;
 		static Color easedCyan(float lerpAmount = 0.5f) => Color.Lerp(Color.LightCyan, Color.Cyan, lerpAmount);
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(basePosition, easedCyan(0.4f), 0.8f, 120, 25 + Main.rand.Next(-5, 6), "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseCircularOut, endRingWidth: 0.4f).WithSkew(0.6f, particleRot));
+		ParticleRenderers.OverNPCs.Add(new TexturedPulseCircle(basePosition, easedCyan(0.4f), 0.8f, 120, 25 + Main.rand.Next(-5, 6), "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseCircularOut, endRingWidth: 0.4f).WithSkew(0.6f, particleRot));
 
 		for(int i = 0; i < 3; i++)
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, easedCyan(0.15f), 0, 0.075f, Main.rand.NextFloat(-0.3f, 0.3f), "ElectricScorch", new(0.2f, 0.2f), new(4, 1.5f), 25) { SecondaryColor = easedCyan(0.4f), TertiaryColor = easedCyan(0.7f), ColorLerpExponent = 4});
+			ParticleRenderers.OverNPCs.Add(new DissipatingImage(basePosition, easedCyan(0.15f), 0, 0.075f, Main.rand.NextFloat(-0.3f, 0.3f), "ElectricScorch", new(0.2f, 0.2f), new(4, 1.5f), 25) { SecondaryColor = easedCyan(0.4f), TertiaryColor = easedCyan(0.7f), ColorLerpExponent = 4});
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(basePosition, easedCyan(0.4f), 0.8f, 120, 25 + Main.rand.Next(-5, 6), "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseCircularOut, endRingWidth: 0.4f).WithSkew(0.6f, particleRot + float.Pi / 2));
+		ParticleRenderers.OverNPCs.Add(new TexturedPulseCircle(basePosition, easedCyan(0.4f), 0.8f, 120, 25 + Main.rand.Next(-5, 6), "EnergyTrail", new Vector2(2, 0.5f), EaseFunction.EaseCircularOut, endRingWidth: 0.4f).WithSkew(0.6f, particleRot + float.Pi / 2));
 
 		for(int i = 0; i < 16; i++)
-		{
 			Dust.NewDustPerfect(basePosition, DustID.Granite, Main.rand.NextVector2Circular(3, 3), Scale: Main.rand.NextFloat(0.7f, 1.5f)).noGravity = true;
-		}
 	}
 }

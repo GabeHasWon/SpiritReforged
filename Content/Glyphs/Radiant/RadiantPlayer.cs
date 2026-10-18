@@ -2,7 +2,6 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.Silk;
@@ -120,16 +119,14 @@ public class RadiantPlayer : ModPlayer
 							Vector2 pos = Player.Center + new Vector2(-7 * Player.direction, 0f) + Main.rand.NextVector2Circular(Player.width, Player.height);
 							Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(1f);
 
-							ParticleHandler.SpawnParticle(new SharpStarParticle(pos, velocity, Color.Goldenrod.Additive(), 0.2f, 35, 0)
+							ParticleRenderers.OverPlayers.Add(new SharpStarParticle(pos, velocity, Color.Goldenrod.Additive(), 0.2f, 35, 0)
 							{
-								Rotation = 0f,
-								Layer = ParticleLayer.AbovePlayer
+								Rotation = 0f
 							});
 
-							ParticleHandler.SpawnParticle(new SharpStarParticle(pos, velocity, Color.LightGoldenrodYellow.Additive(), 0.15f, 30, 0)
+							ParticleRenderers.OverPlayers.Add(new SharpStarParticle(pos, velocity, Color.LightGoldenrodYellow.Additive(), 0.15f, 30, 0)
 							{
-								Rotation = 0f,
-								Layer = ParticleLayer.AbovePlayer
+								Rotation = 0f
 							});
 						}
 					}
@@ -137,16 +134,14 @@ public class RadiantPlayer : ModPlayer
 					if (Main.rand.NextBool(60))
 					{
 						Vector2 top = Player.Top + Main.rand.NextVector2Circular(50, 10);
-						ParticleHandler.SpawnParticle(new SharpStarParticle(top, Vector2.Zero, Color.Goldenrod.Additive(), 0.2f, 35, 0, AddLight: false)
+						ParticleRenderers.OverPlayers.Add(new SharpStarParticle(top, Vector2.Zero, Color.Goldenrod.Additive(), 0.2f, 35, 0, AddLight: false)
 						{
-							Rotation = 0f,
-							Layer = ParticleLayer.AbovePlayer,
+							Rotation = 0f
 						});
 
-						ParticleHandler.SpawnParticle(new SharpStarParticle(top, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), 0.15f, 30, 0, AddLight: false)
+						ParticleRenderers.OverPlayers.Add(new SharpStarParticle(top, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), 0.15f, 30, 0, AddLight: false)
 						{
-							Rotation = 0f,
-							Layer = ParticleLayer.AbovePlayer
+							Rotation = 0f
 						});
 					}
 
@@ -156,15 +151,13 @@ public class RadiantPlayer : ModPlayer
 
 						float rot = Main.rand.NextFloat(6.28f);
 						int dir = Main.rand.NextBool() ? -1 : 1;
-						ParticleHandler.SpawnParticle(new LightFlash(Player, pos, Color.LightGoldenrodYellow, new Color(255, 212, 87), new Vector2(0.6f, 0.75f) * Main.rand.NextFloat(0.5f, 1f), 60 + Main.rand.Next(10, 30), rot, dir)
+						ParticleRenderers.UnderSolids.Add(new LightFlash(Player, pos, Color.LightGoldenrodYellow, new Color(255, 212, 87), new Vector2(0.6f, 0.75f) * Main.rand.NextFloat(0.5f, 1f), 60 + Main.rand.Next(10, 30), rot, dir)
 						{
-							Layer = ParticleLayer.BelowSolid,
 							fromRadiant = true
 						});
 
-						ParticleHandler.SpawnParticle(new LightFlash(Player, pos, Color.LightYellow, Color.Goldenrod, new Vector2(0.65f, 0.75f) * Main.rand.NextFloat(0.7f, 1.15f), 30 + Main.rand.Next(10, 30), rot, dir)
+						ParticleRenderers.UnderSolids.Add(new LightFlash(Player, pos, Color.LightYellow, Color.Goldenrod, new Vector2(0.65f, 0.75f) * Main.rand.NextFloat(0.7f, 1.15f), 30 + Main.rand.Next(10, 30), rot, dir)
 						{
-							Layer = ParticleLayer.BelowSolid,
 							fromRadiant = true
 						});
 					}
@@ -229,14 +222,14 @@ public class RadiantPlayer : ModPlayer
 		Vector2 stretch = Vector2.One;
 		float angle = Main.rand.NextFloat(MathHelper.Pi);
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.LightGoldenrodYellow.Additive(), Color.DarkGoldenrod.Additive(), 0.6f, 120 * scaleModifier, 20, "Smoke", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(glowPos, Color.LightGoldenrodYellow.Additive(), Color.DarkGoldenrod.Additive(), 0.6f, 120 * scaleModifier, 20, "Smoke", stretch, ease)
 		{ Angle = angle });
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.DarkGoldenrod.Additive(), 0.3f, 120 * scaleModifier, 20, "Smoke", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(glowPos, Color.White.Additive(), Color.DarkGoldenrod.Additive(), 0.3f, 120 * scaleModifier, 20, "Smoke", stretch, ease)
 		{ Angle = angle });
 
-		ParticleHandler.SpawnParticle(new LightBurst(glowPos, angle, Color.Goldenrod.Additive() * 0.3f, 0.9f * scaleModifier, 60));
-		ParticleHandler.SpawnParticle(new LightBurst(glowPos, angle, Color.LightYellow.Additive() * 0.2f, 0.6f * scaleModifier, 45));
+		ParticleRenderers.UnderProjectiles.Add(new LightBurst(glowPos, angle, Color.Goldenrod.Additive() * 0.3f, 0.9f * scaleModifier, 60));
+		ParticleRenderers.UnderProjectiles.Add(new LightBurst(glowPos, angle, Color.LightYellow.Additive() * 0.2f, 0.6f * scaleModifier, 45));
 
 		for (int i = 0; i < 2 + 5 * scaleModifier / 2; i++)
 		{
@@ -248,10 +241,10 @@ public class RadiantPlayer : ModPlayer
 			int timeLeft = Main.rand.Next(20, 40);
 			float rot = Main.rand.NextFloat(6.28f);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(glowPos, velocity, Color.DarkOrange.Additive(), scale, timeLeft, 0, DecelerateAction)
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(glowPos, velocity, Color.DarkOrange.Additive(), scale, timeLeft, 0, DecelerateAction)
 			{ Rotation = rot });
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(glowPos, velocity, Color.LightGoldenrodYellow.Additive() * 0.5f, scale, timeLeft, 0, DecelerateAction)
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(glowPos, velocity, Color.LightGoldenrodYellow.Additive() * 0.5f, scale, timeLeft, 0, DecelerateAction)
 			{ Rotation = rot });
 		}
 
@@ -261,15 +254,13 @@ public class RadiantPlayer : ModPlayer
 
 			float rot = Main.rand.NextFloat(6.28f);
 			int dir = Main.rand.NextBool() ? -1 : 1;
-			ParticleHandler.SpawnParticle(new LightFlash(target, pos, Color.LightGoldenrodYellow, new Color(255, 212, 87), new Vector2(0.6f, 0.75f) * Main.rand.NextFloat(0.75f, 1.25f) * (scaleModifier * 0.7f), 20 + Main.rand.Next(5, 40), rot, dir)
+			ParticleRenderers.UnderSolids.Add(new LightFlash(target, pos, Color.LightGoldenrodYellow, new Color(255, 212, 87), new Vector2(0.6f, 0.75f) * Main.rand.NextFloat(0.75f, 1.25f) * (scaleModifier * 0.7f), 20 + Main.rand.Next(5, 40), rot, dir)
 			{
-				Layer = ParticleLayer.BelowSolid,
 				fromRadiant = true
 			});
 
-			ParticleHandler.SpawnParticle(new LightFlash(target, pos, Color.LightYellow, Color.Goldenrod, new Vector2(0.65f, 0.75f) * Main.rand.NextFloat(1f, 1.5f) * (scaleModifier * 0.7f), 10 + Main.rand.Next(5, 40), rot, dir)
+			ParticleRenderers.UnderSolids.Add(new LightFlash(target, pos, Color.LightYellow, Color.Goldenrod, new Vector2(0.65f, 0.75f) * Main.rand.NextFloat(1f, 1.5f) * (scaleModifier * 0.7f), 10 + Main.rand.Next(5, 40), rot, dir)
 			{
-				Layer = ParticleLayer.BelowSolid,
 				fromRadiant = true
 			});
 		}

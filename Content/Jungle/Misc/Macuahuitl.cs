@@ -2,10 +2,10 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using static SpiritReforged.Common.Easing.EaseFunction;
@@ -190,14 +190,14 @@ class MacuahuitlProj : BaseClubProj
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
 			var p = new ImpactLine(position, particleVel, Color.White * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.OverPlayers.Add(p);
 
 			if (!Main.rand.NextBool(3))
 				Dust.NewDustPerfect(position, DustID.t_LivingWood, particleVel / 3, Scale: 0.5f);
 		}
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseCubicOut, 30));
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseCubicOut, 30));
+		ParticleRenderers.OverPlayers.Add(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseCubicOut, 30));
+		ParticleRenderers.OverPlayers.Add(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseCubicOut, 30));
 
 		if (ChargeStrike)
 		{
@@ -206,8 +206,8 @@ class MacuahuitlProj : BaseClubProj
 
 			float dirUnit = target.AngleFrom(Owner.Center);
 
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, Color.DarkRed, 0, 0.3f, Main.rand.NextFloat(-0.3f, 0.3f), "Fire2", new(0.6f, 0.6f), new(3, 1.5f), 25) { UseLightColor = true });
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, Color.Red, 0, 0.15f, Main.rand.NextFloat(-0.3f, 0.3f), "Fire2", new(0.6f, 0.6f), new(3, 1.5f), 25) { UseLightColor = true });
+			ParticleRenderers.OverPlayers.Add(new DissipatingImage(basePosition, Color.DarkRed, 0, 0.3f, Main.rand.NextFloat(-0.3f, 0.3f), "Fire2", new(0.6f, 0.6f), new(3, 1.5f), 25) { UseLightColor = true });
+			ParticleRenderers.OverPlayers.Add(new DissipatingImage(basePosition, Color.Red, 0, 0.15f, Main.rand.NextFloat(-0.3f, 0.3f), "Fire2", new(0.6f, 0.6f), new(3, 1.5f), 25) { UseLightColor = true });
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -219,7 +219,7 @@ class MacuahuitlProj : BaseClubProj
 				p.UseLightColor = true;
 				p.WithSkew(Main.rand.NextFloat(0.8f, 0.9f), newRotation + MathHelper.PiOver2);
 
-				ParticleHandler.SpawnParticle(p);
+				ParticleRenderers.OverPlayers.Add(p);
 			}
 		}
 		else

@@ -1,5 +1,6 @@
 ﻿using RubbleAutoloader;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using TileHelper.Common;
@@ -65,19 +66,13 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 			Rectangle source = new(tile.TileFrameX, tile.TileFrameY, objectData.CoordinateWidth, objectData.CoordinateFullHeight);
 			Vector2 position = new Vector2(i, j) * 16 - new Vector2((source.Width - 16) / 2, source.Height - 16 - 4);
 
+		if (!Main.gamePaused && mult > 0.15f && Main.rand.NextBool(5))
+		{
 			int style = TileObjectData.GetTileStyle(Main.tile[i, j]);
 			var dustPos = position + glowPoints[style].ToVector2() + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f);
 
-			ParticleHandler.SpawnParticle(new Particles.GlowParticle(dustPos,
+			ParticleRenderers.UnderProjectiles.Add(new Particles.GlowParticle(dustPos,
 				Vector2.UnitY * -Main.rand.NextFloat(0.5f), Color.White, Color.Orange, 0.15f, 30, 5));
 		}
-	}
-
-	public override void MouseOver(int i, int j)
-	{
-		Player player = Main.LocalPlayer;
-		player.noThrow = 2;
-		player.cursorItemIconEnabled = true;
-		player.cursorItemIconID = ModContent.ItemType<SafekeeperRing>();
 	}
 }

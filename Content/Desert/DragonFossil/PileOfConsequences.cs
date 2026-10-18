@@ -83,7 +83,7 @@ public class PileOfConsequencesPet : ModProjectile
 
 	private void DrawBones(ref Color lightColor, SpriteEffects effects)
 	{
-		Texture2D texture = DragonBoneParticle.Texture.Value;
+		Texture2D texture = Particle.GetTexture<DragonBoneParticle>();
 		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
 		SpriteEffects reverse = (effects == SpriteEffects.FlipHorizontally) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 		float sine = EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 80f);

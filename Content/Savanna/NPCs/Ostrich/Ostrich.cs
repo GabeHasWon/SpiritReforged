@@ -1,9 +1,9 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Items.Food;
@@ -225,7 +225,7 @@ public class Ostrich : ModNPC
 				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = .5f, PitchVariance = .5f }, NPC.Center);
 
 			if (Counter % 15 == 0)
-				ParticleHandler.SpawnParticle(new OstrichImpact(NPC, NPC.Center, Vector2.Zero, 270, 100f, Math.Sign(NPC.velocity.X) == 1 ? 0 : MathHelper.Pi, 30, .6f));
+				ParticleRenderers.OverNPCs.Add(new OstrichImpact(NPC, NPC.Center, Vector2.Zero, 270, 100f, Math.Sign(NPC.velocity.X) == 1 ? 0 : MathHelper.Pi, 30, .6f));
 		}
 
 		if (NPC.velocity.X < 0) //Set direction

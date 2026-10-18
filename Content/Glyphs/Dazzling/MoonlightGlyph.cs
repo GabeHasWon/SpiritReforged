@@ -4,7 +4,6 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.MagicPowder;
@@ -83,17 +82,17 @@ public class MoonlightGlyph : GlyphItem
 
 			TexturedPulseCircle circle = new(position, (c1 * 0.5f).Additive(), 2, 250 * strength, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 			circle.Angle = angle;
-			ParticleHandler.SpawnParticle(circle);
+			ParticleRenderers.UnderProjectiles.Add(circle);
 
 			TexturedPulseCircle circle2 = new(position, (Color.White * 0.5f).Additive(), 1, 230 * strength, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 			circle2.Angle = angle;
-			ParticleHandler.SpawnParticle(circle2);
+			ParticleRenderers.UnderProjectiles.Add(circle2);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, c2.Additive() * 0.5f, c1.Additive() * 0.5f, 4f * strength, 15, 0.1f));
-			ParticleHandler.SpawnParticle(new SharpStarParticle(position, Vector2.Zero, Color.White.Additive() * 0.5f, c1.Additive() * 0.5f, 2f * strength, 15));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(position, Vector2.Zero, c2.Additive() * 0.5f, c1.Additive() * 0.5f, 4f * strength, 15, 0.1f));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(position, Vector2.Zero, Color.White.Additive() * 0.5f, c1.Additive() * 0.5f, 2f * strength, 15));
 
 			for (int i = 0; i < 50 * strength; i++)
-				ParticleHandler.SpawnParticle(new MagicParticle(position, Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextBool() ? c1 : c2, Main.rand.NextFloat(0.5f, 1f), Main.rand.Next(10, 30)));
+				ParticleRenderers.UnderProjectiles.Add(new MagicParticle(position, Main.rand.NextVector2Circular(2f, 2f), Main.rand.NextBool() ? c1 : c2, Main.rand.NextFloat(0.5f, 1f), Main.rand.Next(10, 30)));
 
 			if (owner.statMana < owner.statManaMax2)
 			{
@@ -104,10 +103,10 @@ public class MoonlightGlyph : GlyphItem
 				owner.statMana = Math.Min(owner.statMana + manaIncrease, owner.statManaMax2);
 				owner.ManaEffect(manaIncrease); //Leeching
 
-				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(owner.Center) * 20, Vector2.Zero, Color.RoyalBlue.Additive(), new Vector2(0.5f, 1.5f), 20, 0)
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position + position.DirectionTo(owner.Center) * 20, Vector2.Zero, Color.RoyalBlue.Additive(), new Vector2(0.5f, 1.5f), 20, 0)
 				{ Rotation = position.DirectionTo(owner.Center).ToRotation() + MathHelper.PiOver2 });
 
-				ParticleHandler.SpawnParticle(new ImpactLine(position + position.DirectionTo(owner.Center) * 20, Vector2.Zero, Color.White.Additive(), new Vector2(0.5f, 1.5f) * 0.7f, 20, 0)
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position + position.DirectionTo(owner.Center) * 20, Vector2.Zero, Color.White.Additive(), new Vector2(0.5f, 1.5f) * 0.7f, 20, 0)
 				{ Rotation = position.DirectionTo(owner.Center).ToRotation() + MathHelper.PiOver2 });
 
 				for (int i = 0; i < 3; i++)
@@ -117,10 +116,10 @@ public class MoonlightGlyph : GlyphItem
 					float scale = Main.rand.NextFloat(0.3f, 1f);
 					int lifeTime = Main.rand.Next(20, 60);
 
-					ParticleHandler.SpawnParticle(new SharpStarParticle(position, velocity, c2.Additive() * 0.5f, c1.Additive() * 0.5f, scale * strength, lifeTime, 0, DecelerateAction)
+					ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(position, velocity, c2.Additive() * 0.5f, c1.Additive() * 0.5f, scale * strength, lifeTime, 0, DecelerateAction)
 					{ Rotation = 0 });
 
-					ParticleHandler.SpawnParticle(new SharpStarParticle(position, velocity, Color.White.Additive() * 0.5f, c1.Additive() * 0.5f, scale * 0.9f * strength, lifeTime - 5, 0, DecelerateAction)
+					ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(position, velocity, Color.White.Additive() * 0.5f, c1.Additive() * 0.5f, scale * 0.9f * strength, lifeTime - 5, 0, DecelerateAction)
 					{ Rotation = 0 });
 				}
 			}
@@ -239,16 +238,14 @@ public class MoonlightGlyph : GlyphItem
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.DarkBlue.Additive(), 0.2f, 35, 0)
+			ParticleRenderers.OverItems.Add(new SharpStarParticle(pos, Vector2.Zero, Color.DarkBlue.Additive(), 0.2f, 35, 0)
 			{
 				Rotation = 0f,
-				Layer = ParticleLayer.AboveItem
 			});
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.LightCyan.Additive(), 0.15f, 30, 0, AddLight: false)
+			ParticleRenderers.OverItems.Add(new SharpStarParticle(pos, Vector2.Zero, Color.LightCyan.Additive(), 0.15f, 30, 0, AddLight: false)
 			{
 				Rotation = 0f,
-				Layer = ParticleLayer.AboveItem
 			});
 		}
 	}
@@ -265,8 +262,8 @@ public class MoonlightGlyph : GlyphItem
 			Vector2 pos = position + normalized * item.width;
 			Vector2 vel = normalized.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 5f);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.1f, 45, 0, UpdateAction));
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.LightCyan.Additive(), 0.05f, 40, 0, UpdateAction, false));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.1f, 45, 0, UpdateAction));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(pos, vel, Color.LightCyan.Additive(), 0.05f, 40, 0, UpdateAction, false));
 
 			static void UpdateAction(Particle p)
 			{
@@ -283,8 +280,8 @@ public class MoonlightGlyph : GlyphItem
 			Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(projectile.width / 2, projectile.height / 2);
 			Vector2 vel = projectile.velocity.SafeNormalize(Main.rand.NextVector2Circular(1f, 1f)).RotatedByRandom(0.5f) * Main.rand.NextFloat(1f, 4f) + Main.rand.NextVector2Circular(2f, 2f);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.12f, 45, 0.5f, UpdateAction, true, 0.02f));
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, vel, Color.LightCyan.Additive(), 0.07f, 40, 0.5f, UpdateAction, false, 0.02f));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(pos, vel, Color.DarkBlue.Additive(), 0.12f, 45, 0.5f, UpdateAction, true, 0.02f));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(pos, vel, Color.LightCyan.Additive(), 0.07f, 40, 0.5f, UpdateAction, false, 0.02f));
 		}
 
 		static void UpdateAction(Particle p)
@@ -297,7 +294,9 @@ public class MoonlightGlyph : GlyphItem
 
 public class MoonlightGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
 {
-	private Effect GetEffect => shader.Value;
+	private Effect GetEffect => _shader.Value;
+
+	private readonly Asset<Effect> _shader = shader;
 
 	public override void Apply(Entity entity, DrawData? drawData = null)
 	{
