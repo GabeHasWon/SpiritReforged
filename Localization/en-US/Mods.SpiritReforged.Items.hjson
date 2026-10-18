@@ -3773,7 +3773,7 @@ MummyPaintingItem: {
 }
 
 DhampirCape: {
-	DisplayName: Weathereed Cape
+	DisplayName: Weathered Cape
 	Tooltip:
 		'''
 		Reduces gravity and removes fall damage
