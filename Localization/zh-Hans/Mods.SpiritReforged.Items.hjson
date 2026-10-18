@@ -3754,7 +3754,7 @@ PumpkinClub: {
 }
 
 ShovelClub: {
-	DisplayName: 掘墓者铲子
+	DisplayName: 掘墓者
 	Tooltip:
 		'''
 		蓄力攻击会掘出骷髅遗骸
