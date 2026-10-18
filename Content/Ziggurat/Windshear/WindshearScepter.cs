@@ -67,7 +67,7 @@ public class WindshearScepter : ModItem
 
 	public class CloudParticle(int style) : ABasicParticle
 	{
-		public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal(typeof(CloudParticle), "CloudParticle", false);
+		public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Ziggurat/Windshear/CloudParticle");
 
 		public float Opacity;
 		public int TimeToLive = 60;

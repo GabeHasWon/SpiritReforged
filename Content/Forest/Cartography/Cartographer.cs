@@ -108,7 +108,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 	{
 		button = Language.GetTextValue("LegacyInterface.28");
 
-		if (PointOfInterestSystem.AnyInterests && _hasPin)
+		if (PointOfInterestSystem.AnyInterests)// && _hasPin)
 			button2 = Language.GetTextValue("Mods.SpiritReforged.NPCs.Cartographer.Buttons.Map");
 		else if (LastPosition != Point16.Zero)
 			button2 = Language.GetTextValue("LegacyInterface.108"); //Open map
@@ -122,7 +122,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 		}
 		else
 		{
-			if (PointOfInterestSystem.AnyInterests && _hasPin)
+			if (PointOfInterestSystem.AnyInterests)// && _hasPin)
 			{
 				PointOfInterestSystem.Interest interest;
 				Point16 position;
@@ -188,6 +188,20 @@ public class Cartographer : WorldNPC, ITravelNPC
 			return ModContent.ItemType<PinBlood>();
 		else if (interest is InterestType.WulfrumBunker && CrossMod.Fables.Enabled)
 			return ModContent.ItemType<PinWulfrum>();
+		else if (CrossMod.Spooky.Enabled)
+		{
+			int spookyType = interest switch
+			{
+				InterestType.Spooky_NoseCult => ModContent.ItemType<PinSpookyNose>(),
+				InterestType.Spooky_FetidFarms => ModContent.ItemType<PinSpookyFarms>(),
+				InterestType.Spooky_KrampusWorkshop => ModContent.ItemType<PinSpookyKrampus>(),
+				InterestType.Spooky_RottenDepths => ModContent.ItemType<PinSpookyRotten>(),
+				_ => -1,
+			};
+
+			if (spookyType != -1)
+				return spookyType;
+		}
 
 		int type = interest switch
 		{

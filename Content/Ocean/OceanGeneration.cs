@@ -25,6 +25,8 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 		Piecewise_V, //My heavily modified piecewise with variable height
 	}
 
+	public const string Path = "SpiritReforged/Content/Ocean/";
+
 	private static float PiecewiseVScale = 1f;
 	private static float PiecewiseVMountFactor = 1f;
 
@@ -42,14 +44,6 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[GenConfigurable(0, 20)]
 	[Slider]
 	private static int SunkenTreasureCount = 3;
-
-	//[GenConfigurable(2, 50)]
-	//[Slider]
-	//private static int SandDepth = 20;
-
-	//[GenConfigurable(0, 25)]
-	//[Slider]
-	//private static int SandRange = 8;
 
 	[GenConfigurable("2 0", "50 25")]
 	private static GenRange SandRange = new GenRange(20, 8);
@@ -102,7 +96,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 	[WorldBound]
 	public static Rectangle RightOcean;
 
-	PageInfo IGenerationPage.Info => new("Ocean", DrawHelpers.RequestLocal(GetType(), "OceanPage", false), DrawHelpers.RequestLocal(GetType(), "OceanPageButton", false))
+	PageInfo IGenerationPage.Info => new("Ocean", Graphics.Tex(Path + "OceanPage"), Graphics.Tex(Path + "OceanPageButton"))
 	{
 		Presets = 
 		[
@@ -425,7 +419,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 				.Enqueue(CreateStack, radius / 2)
 				.Enqueue(ModContent.TileType<GravelPile>(), radius / 2)
 				.Enqueue(ModContent.TileType<GravelStalagmite>(), radius / 3)
-				.Run();
+				.Run(out _);
 
 			return true;
 		}
@@ -567,7 +561,7 @@ public partial class OceanGeneration : ModSystem, IGenerationPage
 		return false;
 	}
 
-	/// <summary>Gets the slope of the ocean. Reference: <seealso cref="https://www.desmos.com/calculator/xfnsmar79x"/></summary>
+	/// <summary>Gets the slope of the ocean. Reference: https://www.desmos.com/calculator/xfnsmar79x </summary>
 	/// <param name="tilesFromInnerEdge"></param>
 	private static float GetOceanSlope(int tilesFromInnerEdge)
 	{

@@ -114,7 +114,7 @@ public class ScarabAltar : EntityTile<ScarabAltarEntity>, ILoadItem
 			Texture2D texture = GetItemTexture();
 			Vector2 center = Projectile.Center - Main.screenPosition;
 
-			DrawHelpers.DrawOutline(Main.spriteBatch, texture, center, default, 
+			Graphics.DrawOutline(Main.spriteBatch, texture, center, default, 
 				(offset) => Main.EntitySpriteDraw(texture, center + offset, null, Color.White.Additive(), Projectile.rotation, texture.Size() / 2, Projectile.scale, default));
 
 			Main.EntitySpriteDraw(texture, center, null, Lighting.GetColor(Projectile.Center.ToTileCoordinates()), Projectile.rotation, texture.Size() / 2, Projectile.scale, default);

@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Content.Forest.Safekeeper;
+using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Vanilla.Food;
 using SpiritReforged.Content.Ziggurat.Biome;
 using SpiritReforged.Content.Ziggurat.Vanity;
@@ -22,17 +22,19 @@ internal class DecrepitMummy : ModNPC
 		public string GetConditionDescription() => string.Empty;
 	}
 
-	public static readonly SoundStyle[] MummyMoan = [
-	SoundID.Zombie3 with
-	{
-		Pitch = 0.5f,
-		PitchVariance = 0.25f
-	},
-	SoundID.Zombie4 with
-	{
-		Pitch = 0.5f,
-		PitchVariance = 0.25f
-	}];
+	public static readonly SoundStyle[] MummyMoan = 
+	[
+		SoundID.Zombie3 with
+		{
+			Pitch = 0.5f,
+			PitchVariance = 0.25f
+		},
+		SoundID.Zombie4 with
+		{
+			Pitch = 0.5f,
+			PitchVariance = 0.25f
+		}
+	];
 
 	public float LifeProgress => 1f - NPC.life / (float)NPC.lifeMax;
 	public ref float Style => ref NPC.ai[0];
@@ -69,6 +71,9 @@ internal class DecrepitMummy : ModNPC
 	{
 		Style = Main.rand.Next(3);
 		NPC.netUpdate = true;
+
+		if ((CrossMod.Spooky.Enabled || Main.halloween) && Main.rand.NextBool(4))
+			Style = 3;
 	}
 
 	public override void AI()
@@ -154,7 +159,7 @@ internal class DecrepitMummy : ModNPC
 			target.AddBuff(BuffID.Slow, 60 * 15);
 	}
 
-	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.Common() && ZigguratGlobalNPC.InBiome(spawnInfo) ? 0.005f : 0;
+	public override float SpawnChance(NPCSpawnInfo spawnInfo) => spawnInfo.EventSafe() && ZigguratGlobalNPC.InBiome(spawnInfo) ? 0.005f : 0;
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{

@@ -14,7 +14,7 @@ Spirit Reforged is the latest and main project developed by Team Spirit, also re
 
 Spirit Reforged is a standalone project and does not have to be played with Spirit Classic. However, Reforged has extra cross-compatibility with Spirit Classic. You can explore Spirit Reforged while sticking with the vast amount of content Spirit Classic provides. 
 
-Our brand new update, Spellbound (v0.2.2), introduces a new weapon enchantment system called Glyphs to the game! 
+Our brand new update, Spirit Halloween (v0.2.3), is a Halloween update introducing many new, unique crossmod features with the Spooky Mod. Play with both enabled for lots of special content!
 
 -- Additions --
 At a glance, Spirit Reforged adds:

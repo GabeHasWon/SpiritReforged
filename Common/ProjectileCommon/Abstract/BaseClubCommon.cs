@@ -178,6 +178,9 @@ public abstract partial class BaseClubProj : ModProjectile
 	/// <param name="maxClouds"></param>
 	internal void DustClouds(int maxClouds, Vector2? positionOverride = null)
 	{
+		if (Main.dedServ)
+			return;
+
 		float chargeFactor = Clamp(EaseQuadIn.Ease(Charge), 0.33f, 1f);
 		float chargeFactorLerped = Lerp(chargeFactor, 1, 0.5f);
 

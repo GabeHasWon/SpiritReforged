@@ -338,7 +338,7 @@ public class SingularCollapse : ModProjectile
 			if (Projectile.timeLeft < PULSE_TIME - PULSE_TIME / 4)
 				progressTillHit = 1f;
 
-			Color multicolorLerp = DrawHelpers.MulticolorLerp(cos, voidColors);
+			Color multicolorLerp = Graphics.MulticolorLerp(cos, voidColors);
 
 			if (dying)
 				multicolorLerp = Color.Lerp(multicolorLerp, new Color(60, 0, 65, 0), progressTillHit);

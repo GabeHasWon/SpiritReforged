@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.UI.BackpackInterface;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Content.Aether.Items;
+using SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
 using System.IO;
 using System.Linq;
 using Terraria.ModLoader.IO;
@@ -109,6 +110,9 @@ public abstract class BackpackItem : ModItem
 
 		player.GetModPlayer<BackpackPlayer>().backpack = Item.Clone();
 		Item.SetDefaults(oldPack.type);
+
+		if (oldPack.ModItem is PumpkinPailOrange) // Hardcoded exception as the pails need to be consumable in order to place properly
+			Item.stack++;
 	}
 
 	public override void NetSend(BinaryWriter writer)

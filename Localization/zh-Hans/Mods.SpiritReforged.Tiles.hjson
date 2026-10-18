@@ -1,4 +1,5 @@
 Records: {
+	# Reforged pots
 	CoinPortal:
 		'''
 		永远包含一个金币传送门。
@@ -28,6 +29,52 @@ Records: {
 	Biome: 比常见的罐子包含更多种类的战利品。
 	Boulder: 受到扰动时会沿着地面滚动。
 	Wax: 注入了强效魔法能量。
+
+	# Spooky cross mod pots
+	SpookyForest: {
+		Name: 填充桶
+		Entry: 脆弱糖果载体的前沿。
+	}
+
+	SpiderGrotto: {
+		Name: 结网烹饪锅
+		Entry: ……这些都是谁做的？
+	}
+
+	NoseTemple: {
+		Name: 瓷鼻子
+		Entry: 最华丽的瓷器，适合最傲慢的鼻子。
+	}
+
+	FetidFarms: {
+		Name: 食品杂货
+		Entry: 新鲜种植的农产品！
+	}
+
+	RottenDepths: {
+		Name: 满载骷髅
+		Entry: 看来这些鱼吞下了一些东西。
+	}
+
+	TarPits: {
+		Name: 焦油瓷罐子
+		Entry: 华丽、微粘、有点开裂。
+	}
+
+	Krampus: {
+		Name: 超棒礼品
+		Entry: 你见过的最酷的礼盒。
+	}
+
+	UpperCatacombs: {
+		Name: 远古雕刻罐子
+		Entry: 这些雕刻很可爱，但很难看到。
+	}
+
+	LowerCatacombs: {
+		Name: 嘲弄罐子
+		Entry: 他们嘲笑着你。
+	}
 }
 
 FablesGraves: {
@@ -47,3 +94,5 @@ DustyTomb.MapEntry: 尘埃陵墓
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: 「气奥」苔藓
 RadonMoss.MapEntry: 氡苔藓
+StarscareSapling.MapEntry: 星惧树苗
+StarscareSaplingGreen.MapEntry: 绿色星惧树苗

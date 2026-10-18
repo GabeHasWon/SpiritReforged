@@ -20,7 +20,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 {
 	public sealed class MirrorReturnPortal : ModProjectile, IInteractable
 	{
-		public static readonly Asset<Texture2D> Highlight = DrawHelpers.RequestLocal<EnchantedMirror>("EnchantedMirrorItem_Highlight", false);
+		public static readonly Asset<Texture2D> Highlight = Graphics.Tex("SpiritReforged/Content/Underground/Tiles/Mirror/EnchantedMirrorItem_Highlight");
 
 		public override string Texture => ModContent.GetInstance<EnchantedMirror>().AutoModItem().Texture;
 
@@ -100,7 +100,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			Texture2D outline = TextureColorCache.ColorSolid(texture, Color.White);
 			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, sine * 5 + Projectile.gfxOffY);
 
-			DrawHelpers.DrawOutline(Main.spriteBatch, outline, position, Color.White, (offset) =>
+			Graphics.DrawOutline(Main.spriteBatch, outline, position, Color.White, (offset) =>
 			{
 				Main.EntitySpriteDraw(texture, position + offset * 2, null, Projectile.GetAlpha(Color.Cyan.Additive()) * 0.5f * mult, rotation, texture.Size() / 2, Projectile.scale, 0);
 				Main.EntitySpriteDraw(texture, position + offset, null, Projectile.GetAlpha(Color.Cyan.Additive()) * mult, rotation, texture.Size() / 2, Projectile.scale, 0);

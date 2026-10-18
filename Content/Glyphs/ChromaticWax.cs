@@ -24,9 +24,7 @@ using static SpiritReforged.Content.Glyphs.CelestialStamp;
 
 namespace SpiritReforged.Content.Glyphs;
 
-/// <summary>
-/// Empty item used solely to register the appropriate shader.
-/// </summary>
+/// <summary> Empty item used solely to register the appropriate shader. </summary>
 public class ChromaticWaxShaderDummy : ModItem
 {
 	public override string Texture => base.Texture.Replace("ShaderDummy", "");
@@ -41,7 +39,7 @@ public class ChromaticWax : ModItem
 	/// <summary> The item origin used for visual effects. </summary>
 	private Vector2 Center => Item.Center - Vector2.UnitY * EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 90f) * 3;
 
-	public static readonly Asset<Texture2D> WorldTexture = DrawHelpers.RequestLocal<ChromaticWax>("ChromaticWax_World", false);
+	public static readonly Asset<Texture2D> WorldTexture = Graphics.Tex("SpiritReforged/Content/Glyphs/ChromaticWax_World");
 
 	public override void SetStaticDefaults()
 	{
@@ -111,7 +109,7 @@ public class ChromaticWax : ModItem
 		float itemScale = scale;
 		float itemRotation = rotation;
 
-		DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+		Graphics.DrawOutline(default, default, default, default, (offset) =>
 			spriteBatch.Draw(texture, Center - Main.screenPosition + offset, null, Item.GetAlpha(SpecialColor.Additive()), itemRotation, texture.Size() / 2, itemScale, 0, 0));
 
 		Texture2D star = AssetLoader.LoadedTextures["StarChromatic"].Value;
@@ -429,7 +427,7 @@ public abstract class GlyphItem : ModItem
 				float iconScale = Main.inventoryScale;
 				Vector2 iconPosition = position + (new Vector2(slotDimensions / 2, slotDimensions / 2) - texture.Size() / 2 - new Vector2(4)) * iconScale;
 
-				DrawHelpers.DrawOutline(spriteBatch, texture, iconPosition, Color.White, (offset) =>
+				Graphics.DrawOutline(spriteBatch, texture, iconPosition, Color.White, (offset) =>
 					spriteBatch.Draw(texture, iconPosition + offset, null, Color.White.Additive() * ((1f + (float)Math.Sin(Main.timeForVisualEffects / 30f)) * 0.1f), 0, texture.Size() / 2, iconScale, 0, 0));
 
 				float progress = (float)_animationTime / AnimationTimeMax;
@@ -440,7 +438,7 @@ public abstract class GlyphItem : ModItem
 					Texture2D splashTexture = TextureAssets.Item[Glyph.ItemType].Value;
 					float splashScale = (Math.Max((progress - 0.7f) * 4, 0) + 1) * Main.UIScale;
 
-					DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+					Graphics.DrawOutline(default, default, default, default, (offset) =>
 						spriteBatch.Draw(splashTexture, position + offset, null, glyphItem.settings.Color.Additive(), 0, splashTexture.Size() / 2, EaseFunction.EaseQuinticOut.Ease(progress), 0, 0));
 
 					Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"].Value;

@@ -14,9 +14,10 @@ public class TileChunkParticle : Particle
 	private float _angularMomentum;
 
 	private readonly bool _bigMode;
+	private readonly bool _noGravity;
 	private readonly TileChunkSegment[] _bigModeSegments;
 
-	public TileChunkParticle(Point tilePosition, Vector2 worldPosition, Vector2 velocity, int lifetime, bool bigMode = false) : base()
+	public TileChunkParticle(Point tilePosition, Vector2 worldPosition, Vector2 velocity, int lifetime, bool bigMode = false, bool noGravity = false) : base()
 	{
 		tilePosition.X = Math.Clamp(tilePosition.X, 0, Main.maxTilesX - 1);
 		tilePosition.Y = Math.Clamp(tilePosition.Y, 0, Main.maxTilesY - 1);
@@ -41,6 +42,7 @@ public class TileChunkParticle : Particle
 		_xFrame = (short)(162 + Main.rand.Next(3) * 18);
 		_yFrame = 54;
 		_bigMode = bigMode;
+		_noGravity = noGravity;
 
 		Main.instance.TilesRenderer.GetTileDrawData(tilePosition.X, tilePosition.Y, _tileCache, _tileCache.TileType, ref _xFrame, ref _yFrame, out _, out _, out _, out _, out int frameXExtra, out int frameYExtra, out _, out _, out _, out _);
 		_xFrame += (short)frameXExtra;
@@ -66,10 +68,11 @@ public class TileChunkParticle : Particle
 		Rotation += _angularMomentum;
 		_angularMomentum *= 0.98f;
 
-		float velocityMultiplier = Utils.GetLerpValue(10, 30, TimeActive, true);
-		Velocity.Y += 0.54f * velocityMultiplier;
-		if (_bigMode)
-			Velocity.Y += 0.07f * velocityMultiplier;
+			float velocityMultiplier = Utils.GetLerpValue(10, 30, TimeActive, true);
+			Velocity.Y += 0.54f * velocityMultiplier;
+
+			if (_bigMode)
+				Velocity.Y += 0.07f * velocityMultiplier;
 
 		if (killMe)
 			ShouldBeRemovedFromRenderer = true;

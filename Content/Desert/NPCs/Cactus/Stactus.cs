@@ -124,7 +124,7 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() { Position = new Vector2(0, 12) };
 		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
 
-		Faces.Add(Type, DrawHelpers.RequestLocal(GetType(), Name + "Faces", false));
+		Faces.Add(Type, Graphics.Tex("SpiritReforged/Content/Desert/NPCs/Cactus/" + Name + "Faces"));
 
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Plantlike);
 	}

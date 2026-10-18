@@ -35,7 +35,7 @@ public class Shatter : Particle
 		Texture2D gradient = AssetLoader.LoadedTextures["Bloom"].Value;
 		spriteBatch.Draw(gradient, Position + settings.AnchorPosition, null, _baseColor.MultiplyRGB(lightColor).Additive() * EaseCubicIn.Ease(1 - Progress) * 0.75f, 0, gradient.Size() / 2, Scale, SpriteEffects.None, 0);
 
-		DrawHelpers.DrawChromaticAberration(Vector2.UnitX, 1, delegate (Vector2 offset, Color colorMod)
+		Graphics.DrawChromaticAberration(Vector2.UnitX, 1, delegate (Vector2 offset, Color colorMod)
 		{
 			spriteBatch.Draw(Texture, Position - Main.screenPosition + offset, null, lightColor.MultiplyRGB(colorMod).Additive(), Rotation, Texture.Size() / 2, Scale, SpriteEffects.None, 0);
 

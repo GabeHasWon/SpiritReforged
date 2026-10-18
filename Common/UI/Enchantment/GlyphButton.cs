@@ -53,7 +53,7 @@ public class GlyphButton : UIElement
 			spriteBatch.Draw(texture, GetDimensions().Center() + new Vector2(0, 2), null, Color.Black * 0.5f, 0, texture.Size() / 2, 1, 0, 0);
 			Color outlineColor = ItemLoader.GetItem(itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
 
-			DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
+			Graphics.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
 				spriteBatch.Draw(outlineTexture, center + offset, null, outlineColor.Additive() * 0.5f, 0, texture.Size() / 2, 1, 0, 0));
 
 			if ((int)Main.timeForVisualEffects % 80 == 0 || Main.rand.NextBool(120))
@@ -73,7 +73,7 @@ public class GlyphButton : UIElement
 		}
 		else
 		{
-			DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
+			Graphics.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
 				spriteBatch.Draw(outlineTexture, center + offset, null, Color.Black * 0.3f * opacity, 0, texture.Size() / 2, 1, 0, 0));
 		}
 

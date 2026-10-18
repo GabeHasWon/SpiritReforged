@@ -356,7 +356,7 @@ public class SaltBlockReflective : SaltBlock
 		}
 	}
 
-	public static readonly Asset<Texture2D> TileReflectiveMask = DrawHelpers.RequestLocal(typeof(SaltBlockReflective), "SaltBlockReflectiveMap", false);
+	public static readonly Asset<Texture2D> TileReflectiveMask = Graphics.Tex("SpiritReforged/Content/SaltFlats/Tiles/Salt/SaltBlockReflectiveMap");
 	private static SaltGridOverlay Overlay;
 
 	public override void AddItemRecipes(ModItem item)
