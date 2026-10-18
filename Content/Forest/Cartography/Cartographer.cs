@@ -122,7 +122,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 		}
 		else
 		{
-			if (PointOfInterestSystem.AnyInterests)// && _hasPin)
+			if (PointOfInterestSystem.AnyInterests && _hasPin)
 			{
 				PointOfInterestSystem.Interest interest;
 				Point16 position;
