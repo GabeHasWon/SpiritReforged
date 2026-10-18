@@ -149,9 +149,12 @@ public class EcotoneSurfaceMapping : ModSystem
 	{
 		byte count = reader.ReadByte();
 
+		SpawnedBases.Clear();
+
 		for (int i = 0; i < count; ++i)
 		{
-
+			byte id = reader.ReadByte();
+			SpawnedBases.Add(EcotoneBase.Ecotones[id]);
 		}
 	}
 

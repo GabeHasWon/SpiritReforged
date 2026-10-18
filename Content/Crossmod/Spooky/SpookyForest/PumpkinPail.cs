@@ -65,6 +65,8 @@ public class PumpkinPailTile : ModTile
 		Main.tileSolid[Type] = false;
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoFail[Type] = true;
+		Main.tileSpelunker[Type] = true;
+		Main.tileOreFinderPriority[Type] = 280;
 
 		TileID.Sets.HasOutlines[Type] = true;
 		TileID.Sets.CanDropFromRightClick[Type] = true;

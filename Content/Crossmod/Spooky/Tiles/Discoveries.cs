@@ -1,6 +1,5 @@
 using RubbleAutoloader;
 using SpiritReforged.Content.Crossmod.Spooky.Items.ShovelClub;
-using SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
 using SpiritReforged.Content.Crossmod.Spooky.SpookyForest.PumpkinClub;
 using TileHelper.Common;
 
@@ -17,6 +16,7 @@ public class SmackOLanternTile : ModTile, IAutoloadRubble
 		Main.tileLavaDeath[Type] = true;
 		Main.tileNoFail[Type] = true;
 		Main.tileSpelunker[Type] = true;
+		Main.tileOreFinderPriority[Type] = 285;
 
 		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
@@ -54,6 +54,7 @@ public class ShovelTile : ModTile, IAutoloadRubble
 		Main.tileLavaDeath[Type] = true;
 		Main.tileNoFail[Type] = true;
 		Main.tileSpelunker[Type] = true;
+		Main.tileOreFinderPriority[Type] = 285;
 
 		TileID.Sets.DoesntGetReplacedWithTileReplacement[Type] = false;
 		TileID.Sets.CanDropFromRightClick[Type] = true;
