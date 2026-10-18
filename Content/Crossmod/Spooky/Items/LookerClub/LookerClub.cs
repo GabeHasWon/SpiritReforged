@@ -2,7 +2,6 @@
 
 namespace SpiritReforged.Content.Crossmod.Spooky.Items.LookerClub;
 
-// TODO: obtainment
 public class LookerClub : ClubItem
 {
 	internal override float DamageScaling => 2.5f;
