@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.GameContent.Bestiary;
@@ -63,7 +63,7 @@ internal class SpookyMummyHeart : ModNPC
 
 			TexturedPulseCircle circle = new(NPC.Center, Color.DarkRed * 0.2f, 2, 90, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 			circle.Angle = Main.rand.NextFloat(MathHelper.TwoPi);
-			ParticleHandler.SpawnParticle(circle);
+			ParticleRenderers.OverNPCs.Add(circle);
 		}
 	}
 

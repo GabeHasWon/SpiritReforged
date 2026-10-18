@@ -1,5 +1,5 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
+﻿using SpiritReforged.Common.PlayerCommon;
+using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
 
@@ -20,7 +20,8 @@ public class UndeadNPC : GlobalNPC
 		public float Progress => (float)Projectile.timeLeft / TimeLeftMax;
 
 		/// <summary> The sample NPC instance corresponding to <see cref="NPCWhoAmI"/>. Should <b>NOT</b> be modified. </summary>
-		public NPC NPC { get; private set; }
+		public NPC NPC { get; private set; } = null!;
+
 		public int NPCWhoAmI
 		{
 			get => (int)Projectile.ai[0];
@@ -101,10 +102,10 @@ public class UndeadNPC : GlobalNPC
 			for (int i = 0; i < 3; i++)
 				ParticleOrchestrator.SpawnParticlesDirect(ParticleOrchestraType.AshTreeShake, new ParticleOrchestraSettings() with { PositionInWorld = pos });
 
-			ParticleHandler.SpawnParticle(new Particles.LightBurst(Projectile.Center, 0, Color.Goldenrod, Projectile.scale * .8f, 10));
+			ParticleRenderers.OverNPCs.Add(new Particles.LightBurst(Projectile.Center, 0, Color.Goldenrod, Projectile.scale * .8f, 10));
 
 			for (int i = 0; i < 15; i++)
-				ParticleHandler.SpawnParticle(new Particles.GlowParticle(Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f),
+				ParticleRenderers.OverNPCs.Add(new Particles.GlowParticle(Projectile.Center, Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f),
 					Color.White, Color.Lerp(Color.Goldenrod, Color.Orange, Main.rand.NextFloat()), 1, Main.rand.Next(10, 20), 8));
 		}
 

@@ -2,7 +2,6 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
@@ -11,10 +10,8 @@ using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using SpiritReforged.Content.Underground.Tiles;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using Terraria;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 
@@ -242,7 +239,7 @@ internal class DhampirNPC : ModNPC
 				int lifetime = 40;
 				float zRotation = 0.9f;
 
-				ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+				ParticleRenderers.OverNPCs.Add(new TexturedPulseCircle(
 					NPC.Bottom,
 					Color.White,
 					Color.LightCyan * 0.33f,
@@ -278,14 +275,14 @@ internal class DhampirNPC : ModNPC
 
 					var smokeColor = Color.Lerp(Color.LightGray, Color.LightCyan, Main.rand.NextFloat()) * 0.3f;
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(6f),
+					ParticleRenderers.OverNPCs.Add(new SmokeCloud(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(6f),
 						smokeColor, Main.rand.NextFloat(0.05f, 0.15f), EaseBuilder.EaseQuadOut, Main.rand.Next(30, 90))
 					{
 						Pixellate = true,
 						PixelDivisor = 2
 					});
 
-					ParticleHandler.SpawnParticle(new ImpactLine(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(5f, 12f), Color.LightCyan, new Vector2(1, 3) * 0.2f, Main.rand.Next(15, 35), 0.93f));
+					ParticleRenderers.OverNPCs.Add(new ImpactLine(pos, -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(5f, 12f), Color.LightCyan, new Vector2(1, 3) * 0.2f, Main.rand.Next(15, 35), 0.93f));
 				}
 
 				if (!Main.dedServ && Main.LocalPlayer.Distance(NPC.Center) < 600)
@@ -303,14 +300,11 @@ internal class DhampirNPC : ModNPC
 					SpawnMist();
 
 			if (Main.rand.NextBool())
-				ParticleHandler.SpawnParticle(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(0.5f, 0.5f), Color.LightCyan, Main.rand.Next(60) + 10, false, bloomOpacity: 0.04f)
-				{
-					Layer = ParticleLayer.BelowSolid
-				});
+				ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(0.5f, 0.5f), Color.LightCyan, Main.rand.Next(60) + 10, false, bloomOpacity: 0.04f));
 
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(3.5f, 3.5f), Color.AntiqueWhite, Main.rand.Next(40) + 20, false, false, p => p.Velocity *= 0.9f)
+			ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(3.5f, 3.5f), Color.AntiqueWhite, Main.rand.Next(40) + 20, false, false, p => p.Velocity *= 0.9f)
 			{
-				Layer = ParticleLayer.BelowSolid
+				Scale = 0.5f,
 			});
 
 			Vector2 targetPos = Target.Center + new Vector2(FlyTargetDirection, -250);
@@ -344,12 +338,12 @@ internal class DhampirNPC : ModNPC
 					_particles.Add(particle);
 				}
 
-				ParticleHandler.SpawnParticle(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.MediumVioletRed, Color.DarkRed, 0.5f, 40, 0)
+				ParticleRenderers.OverNPCs.Add(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.MediumVioletRed, Color.DarkRed, 0.5f, 40, 0)
 				{
 					Rotation = 0f
 				});
 
-				ParticleHandler.SpawnParticle(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.White, 0.2f, 40, 0)
+				ParticleRenderers.OverNPCs.Add(new SharpStarParticle(NPC.Center, Vector2.Zero, Color.White, 0.2f, 40, 0)
 				{
 					Rotation = 0f
 				});
@@ -414,7 +408,7 @@ internal class DhampirNPC : ModNPC
 				{
 					var smokeColor = Color.Lerp(Color.LightGray, Color.LightCyan, Main.rand.NextFloat()) * 0.3f;
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Center, Main.rand.NextVector2Circular(5f, 5f),
+					ParticleRenderers.OverNPCs.Add(new SmokeCloud(NPC.Center, Main.rand.NextVector2Circular(5f, 5f),
 						smokeColor, Main.rand.NextFloat(0.05f, 0.15f), EaseBuilder.EaseQuadOut, Main.rand.Next(30, 90))
 					{
 						Pixellate = true,

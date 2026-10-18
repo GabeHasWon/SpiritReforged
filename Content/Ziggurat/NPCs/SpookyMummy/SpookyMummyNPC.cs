@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Crossmod.Spooky.Tiles;
@@ -10,7 +10,6 @@ using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
 using Terraria.GameContent.ItemDropRules;
-using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
 
@@ -103,11 +102,10 @@ internal class SpookyMummyNPC : ModNPC
 			{
 				Vector2 pos = NPC.direction == -1 ? NPC.BottomRight : NPC.BottomLeft;
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(pos, -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 6f), new Color(160, 155, 106) * 0.22f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+				ParticleRenderers.UnderNPCs.Add(new SmokeCloud(pos, -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 6f), new Color(160, 155, 106) * 0.22f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
 				{
 					Pixellate = true,
 					PixelDivisor = 2,
-					Layer = ParticleLayer.BelowNPC
 				});
 
 				Dust.NewDustPerfect(pos, DustID.Sand, -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 12f), 150, default, Main.rand.NextFloat(1f, 2.5f)).noGravity = !Main.rand.NextBool(4);
@@ -218,14 +216,12 @@ internal class SpookyMummyNPC : ModNPC
 						gore.timeLeft = 60;
 					}
 
-					Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(15, 15), DustID.Smoke, hitVelocity,
-										235, default, Main.rand.NextFloat(5f) * scale);
+					Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(15, 15), DustID.Smoke, hitVelocity, 235, default, Main.rand.NextFloat(5f) * scale);
 
-					ParticleHandler.SpawnParticle(new SmokeCloud(hitSpot + Main.rand.NextVector2Circular(5, 5), hitVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 0.75f), new Color(160, 155, 106) * 0.12f, Main.rand.NextFloat(0.05f, 0.2f) * scale, EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+					ParticleRenderers.UnderNPCs.Add(new SmokeCloud(hitSpot + Main.rand.NextVector2Circular(5, 5), hitVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 0.75f), new Color(160, 155, 106) * 0.12f, Main.rand.NextFloat(0.05f, 0.2f) * scale, EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
 					{
 						Pixellate = true,
 						PixelDivisor = 2,
-						Layer = ParticleLayer.BelowNPC
 					});
 				}
 			}
@@ -262,8 +258,7 @@ internal class SpookyMummyNPC : ModNPC
 
 			for (int i = 0; i < 15; i++)
 			{
-
-				ParticleHandler.SpawnParticle(new StickyBloodParticle(NPC.Center + Main.rand.NextVector2Circular(30, 30), Main.rand.NextVector2CircularEdge(5f, 5f)
+				ParticleRenderers.OverNPCs.Add(new StickyBloodParticle(NPC.Center + Main.rand.NextVector2Circular(30, 30), Main.rand.NextVector2CircularEdge(5f, 5f)
 					- Vector2.UnitY * Main.rand.NextFloat(3f), Main.rand.NextFloat(1.5f), 120 + Main.rand.Next(180), 0.2f));
 			}
 

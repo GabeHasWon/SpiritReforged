@@ -1,11 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using Terraria;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.Items.LookerClub;
@@ -162,7 +159,7 @@ public class EyeballMinion : BaseMinion
 		int lifetime = 40;
 		float zRotation = 0.9f;
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+		ParticleRenderers.OverNPCs.Add(new TexturedPulseCircle(
 			Projectile.Bottom,
 			new Color(206, 206, 206) * 0.66f,
 			Color.White * 0.66f,
@@ -173,7 +170,7 @@ public class EyeballMinion : BaseMinion
 			new Vector2(2, 3),
 			easeFunction).WithSkew(zRotation, -1.33f * Math.Sign(Projectile.velocity.X)).UsesLightColor());
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(15, 15), -Vector2.UnitY.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 1.25f), Color.LightGray * 0.65f, Main.rand.NextFloat(0.03f, 0.075f), EaseFunction.EaseQuadOut, 40 + Main.rand.Next(20))
+		ParticleRenderers.OverNPCs.Add(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(15, 15), -Vector2.UnitY.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 1.25f), Color.LightGray * 0.65f, Main.rand.NextFloat(0.03f, 0.075f), EaseFunction.EaseQuadOut, 40 + Main.rand.Next(20))
 		{
 			Pixellate = true,
 			PixelDivisor = 2

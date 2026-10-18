@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -72,7 +72,7 @@ class LookerClubProj : BaseClubProj
 
 			Dust.NewDustPerfect(position + Main.rand.NextVector2Circular(10, 10), DustID.Blood, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(2f, 6f) * strength, 100, default, 2.25f);
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(position + Main.rand.NextVector2Circular(25, 25), -Vector2.UnitY.RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 4f) * strength, Color.DarkRed * 0.25f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 60 + Main.rand.Next(30))
+			ParticleRenderers.OverNPCs.Add(new SmokeCloud(position + Main.rand.NextVector2Circular(25, 25), -Vector2.UnitY.RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 4f) * strength, Color.DarkRed * 0.25f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 60 + Main.rand.Next(30))
 			{
 				Pixellate = true,
 				PixelDivisor = 2
@@ -120,7 +120,7 @@ class LookerClubProj : BaseClubProj
 		int lifetime = 55;
 		float zRotation = 0.9f;
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+		ParticleRenderers.OverNPCs.Add(new TexturedPulseCircle(
 			pos,
 			main * opacity,
 			secondary * opacity,
@@ -153,13 +153,13 @@ class LookerClubProj : BaseClubProj
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
 			var p = new ImpactLine(position, particleVel, Color.Gray * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.OverNPCs.Add(p);
 
 			if (Main.rand.NextBool())
 				Dust.NewDustPerfect(position, DustID.Blood, particleVel / 3, Alpha: 150, Scale: 2.5f).noGravity = true;
 		}
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
+		ParticleRenderers.OverNPCs.Add(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
+		ParticleRenderers.OverNPCs.Add(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
 	}
 }

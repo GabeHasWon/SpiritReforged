@@ -10,7 +10,7 @@ public class LookerClub : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 30;
+		Item.damage = 24;
 		Item.knockBack = 5;
 		ChargeTime = 70;
 		SwingTime = 27;

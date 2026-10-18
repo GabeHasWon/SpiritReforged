@@ -33,16 +33,16 @@ public class SafekeeperRing : ModItem, IFlagged
 					points[i] = Main.rand.NextVector2FromRectangle(target.getRect());
 
 				for (int i = 0; i < points.Length; i++)
-					ParticleHandler.SpawnParticle(new HolyStar(points[i], Color.White, .5f, particleTime) { Scale = MathHelper.Lerp(1f, .5f, i / (points.Length - 1f)) });
+					ParticleRenderers.OverNPCs.Add(new HolyStar(points[i], Color.White, .5f, particleTime) { Scale = MathHelper.Lerp(1f, .5f, i / (points.Length - 1f)) });
 
 				float rand = Main.rand.NextFloat();
 				var pos = points[0];
 
 				var circle = new TexturedPulseCircle(pos, (Color.Goldenrod * .5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
-				ParticleHandler.SpawnParticle(circle);
+				ParticleRenderers.OverNPCs.Add(circle);
 
 				var circle2 = new TexturedPulseCircle(pos, (Color.White * .5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut);
-				ParticleHandler.SpawnParticle(circle2);
+				ParticleRenderers.OverNPCs.Add(circle2);
 
 				SoundEngine.PlaySound(SoundID.DD2_LightningBugZap with { Pitch = .5f }, target.Center);
 			}

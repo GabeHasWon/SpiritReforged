@@ -66,13 +66,14 @@ public class SkeletonHand : ModTile, IAutoloadRubble
 			Rectangle source = new(tile.TileFrameX, tile.TileFrameY, objectData.CoordinateWidth, objectData.CoordinateFullHeight);
 			Vector2 position = new Vector2(i, j) * 16 - new Vector2((source.Width - 16) / 2, source.Height - 16 - 4);
 
-		if (!Main.gamePaused && mult > 0.15f && Main.rand.NextBool(5))
-		{
-			int style = TileObjectData.GetTileStyle(Main.tile[i, j]);
-			var dustPos = position + glowPoints[style].ToVector2() + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f);
+			if (!Main.gamePaused && mult > 0.15f && Main.rand.NextBool(5))
+			{
+				int style = TileObjectData.GetTileStyle(Main.tile[i, j]);
+				var dustPos = position + glowPoints[style].ToVector2() + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f);
 
-			ParticleRenderers.UnderProjectiles.Add(new Particles.GlowParticle(dustPos,
-				Vector2.UnitY * -Main.rand.NextFloat(0.5f), Color.White, Color.Orange, 0.15f, 30, 5));
+				ParticleRenderers.UnderProjectiles.Add(new Particles.GlowParticle(dustPos,
+					Vector2.UnitY * -Main.rand.NextFloat(0.5f), Color.White, Color.Orange, 0.15f, 30, 5));
+			}
 		}
 	}
 }

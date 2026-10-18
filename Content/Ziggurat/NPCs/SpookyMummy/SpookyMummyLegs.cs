@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ziggurat.Biome;
@@ -69,11 +69,10 @@ internal class SpookyMummyLegs : ModNPC
 
 				Vector2 velocity = Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 6f) - Vector2.UnitY;
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity, new Color(160, 155, 106) * 0.22f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+				ParticleRenderers.UnderNPCs.Add(new SmokeCloud(pos, velocity, new Color(160, 155, 106) * 0.22f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
 				{
 					Pixellate = true,
 					PixelDivisor = 2,
-					Layer = ParticleLayer.BelowNPC
 				});
 
 				Dust.NewDustPerfect(pos, DustID.Sand, velocity, 150, default, Main.rand.NextFloat(1f, 2.5f)).noGravity = !Main.rand.NextBool(10);
