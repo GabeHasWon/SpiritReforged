@@ -3766,7 +3766,7 @@ PumpkinClub: {
 }
 
 ShovelClub: {
-	DisplayName: Лопата гробокопателя
+	DisplayName: Гробокопатель
 	Tooltip: Полностью заряженные удары бросают кости в сторону курсора
 }
 
@@ -3789,11 +3789,6 @@ DhampirCape: {
 		Вы становитесь невидимыми, если отображение аксессуара отключено
 		«Выглядит так же классно, как ощущается его носить»
 		'''
-}
-
-MummyReward: {
-	// DisplayName: Box of Spare Limbs (WIP)
-	// Tooltip: ""
 }
 
 DhampirRelic: {
@@ -3827,10 +3822,10 @@ GloomyStatueItem: {
 }
 
 BoxOfSpareLimbs: {
-	// DisplayName: Box Of Spare Limbs
-	/* Tooltip:
+	DisplayName: Коробка с запасными частями тела
+	Tooltip:
 		'''
-		Getting hit spawns a spare limb to fight for you
-		A leg will hop at nearby enemies, and a hand will grab for nearby enemies, and nothing else
-		''' */
+		При получении вами урона призывает запасные части тела сражаются за вас
+		Нога будет топтать врагов, рука — хватать их, и больше ничего
+		'''
 }
