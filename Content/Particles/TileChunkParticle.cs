@@ -68,11 +68,11 @@ public class TileChunkParticle : Particle
 		Rotation += _angularMomentum;
 		_angularMomentum *= 0.98f;
 
-			float velocityMultiplier = Utils.GetLerpValue(10, 30, TimeActive, true);
-			Velocity.Y += 0.54f * velocityMultiplier;
+		float velocityMultiplier = Utils.GetLerpValue(10, 30, TimeActive, true);
+		Velocity.Y += 0.54f * velocityMultiplier;
 
-			if (_bigMode)
-				Velocity.Y += 0.07f * velocityMultiplier;
+		if (_bigMode)
+			Velocity.Y += 0.07f * velocityMultiplier;
 
 		if (killMe)
 			ShouldBeRemovedFromRenderer = true;

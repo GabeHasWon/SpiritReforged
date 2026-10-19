@@ -194,9 +194,7 @@ public sealed class ParticleRenderers : ModSystem
 	private static void PreDrawSolid(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 	{
 		orig(self);
-
-		UnderSolids.Draw(Main.spriteBatch);
-		OnDrawParticles?.Invoke(UnderSolids);
+		DrawParticles(Main.spriteBatch, UnderSolids);
 	}
 
 	private static void PostDrawSolid(On_Main.orig_DoDraw_Tiles_Solid orig, Main self)
