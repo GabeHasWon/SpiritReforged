@@ -1,7 +1,8 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Desert;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -61,7 +62,7 @@ public class C4 : ModTile, ILoadItem
 
 		public override void OnKill(int timeLeft)
 		{
-			Projectile.Resize(80, 80);
+			Projectile.Resize(120, 120);
 			Rectangle region = Projectile.Hitbox;
 
 			if (Main.myPlayer == Projectile.owner)
@@ -75,17 +76,17 @@ public class C4 : ModTile, ILoadItem
 				for (int i = 0; i < 5; i++)
 				{
 					FindMomentum(out Vector2 center, out Vector2 upwardVelocity);
-					ParticleHandler.SpawnParticle(new CompositeSmoke(center, upwardVelocity, Color.LightGray, Main.rand.Next(50, 70), false, false));
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(center, upwardVelocity, Color.LightGray * 0.7f, Main.rand.Next(50, 70), new(false, true, 0)));
 				}
 
 				for (int i = 0; i < 5; i++)
 				{
 					FindMomentum(out Vector2 center, out Vector2 upwardVelocity);
-					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(center, upwardVelocity, Color.DarkGray, 50, false, false));
+					ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(center, upwardVelocity, new Color(100, 100, 100) * 0.7f, 50, new(false, true, 0)) { Variant = Main.rand.Next(3, 6) });
 				}
 
 				for (int i = 0; i < 10; i++)
-					ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(5, 5), Color.OrangeRed, Color.Red, 1, 10, 10));
+					ParticleRenderers.UnderProjectiles.Add(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(5, 5), Color.OrangeRed, Color.Red, 1, 10, 10));
 
 				for (int i = 0; i < 10; i++)
 					Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(2, 2));
@@ -142,6 +143,11 @@ public class C4 : ModTile, ILoadItem
 		}
 	}
 
+	void ILoadItem.SetItemStaticDefaults(ModItem modItem) => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(
+		static (shop) => shop.NpcType == NPCID.Demolitionist, new NPCShop.Entry(AutoContent.ItemType<C4>(), Condition.DownedEyeOfCthulhu)));
+
+	void ILoadItem.SetItemDefaults(ModItem modItem) => modItem.Item.SetShopValues(ItemRarityColor.Green2, Item.buyPrice(silver: 2));
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileFrameImportant[Type] = true;
@@ -183,13 +189,18 @@ public class C4 : ModTile, ILoadItem
 		player.cursorItemIconID = this.AutoItemType();
 	}
 
-	public override bool RightClick(int i, int j)
+	public override void HitWire(int i, int j)
 	{
 		Vector2 center = new Vector2(i, j).ToWorldCoordinates();
 		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), center, Vector2.Zero, ModContent.ProjectileType<ArmedC4>(), 100, 10, -1, Main.tile[i, j].TileFrameX / 18);
 		WorldGen.KillTile(i, j, noItem: true);
 
 		SoundEngine.PlaySound(SoundID.Mech, center);
+	}
+
+	public override bool RightClick(int i, int j)
+	{
+		HitWire(i, j);
 		return true;
 	}
 
