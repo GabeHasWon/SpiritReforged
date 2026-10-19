@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
@@ -136,17 +135,17 @@ public class Trickaxe : ModItem
 				for (int i = 0; i < 5; i++)
 				{
 					FindMomentum(out Vector2 center, out Vector2 upwardVelocity);
-					ParticleHandler.SpawnParticle(new CompositeSmoke(center, upwardVelocity, Color.LightGray, Main.rand.Next(50, 70), false, false));
+					ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(center, upwardVelocity, Color.LightGray * 0.8f, Main.rand.Next(50, 70)));
 				}
 
 				for (int i = 0; i < 5; i++)
 				{
 					FindMomentum(out Vector2 center, out Vector2 upwardVelocity);
-					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(center, upwardVelocity, Color.DarkGray, 50, false, false));
+					ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(center, upwardVelocity, Color.DarkGray * 0.8f, 50) { Variant = CompositeSmoke.SmallVariant });
 				}
 
 				for (int i = 0; i < 8; i++)
-					ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(4, 4), Color.OrangeRed, Color.Red, 1, 40, 3));
+					ParticleRenderers.UnderProjectiles.Add(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(4, 4), Color.OrangeRed, Color.Red, 1, 40, 3));
 
 				SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
 			}
