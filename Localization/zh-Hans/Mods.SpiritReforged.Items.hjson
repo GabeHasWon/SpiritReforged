@@ -76,17 +76,17 @@ TubewormItem: {
 }
 
 CascadeChestplate: {
-	DisplayName: 暗礁猎人护胸
+	DisplayName: 海礁猎人护胸
 	Tooltip: 50%击退抗性
 }
 
 CascadeHelmet: {
-	DisplayName: 暗礁猎人头盔
+	DisplayName: 海礁猎人头盔
 	Tooltip: 使你获得水下呼吸能力
 }
 
 CascadeLeggings: {
-	DisplayName: 暗礁猎人护胫
+	DisplayName: 海礁猎人护胫
 	Tooltip: 在水中时增加15%移动速度
 }
 
@@ -120,7 +120,7 @@ OceanPendant: {
 }
 
 ReefSpear: {
-	DisplayName: 珊瑚穿刺者
+	DisplayName: 海礁穿刺者
 	Tooltip: 右键投掷三叉戟，增加主攻击造成的伤害
 }
 
