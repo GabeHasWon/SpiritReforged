@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering;
+﻿using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.TileCommon;
@@ -47,12 +46,9 @@ public class Drillbolt : ModItem
 				_trail ??= new VertexTrail(new LightColorTrail(Color.LightGray * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
 				_trail.Update();
 
-				_noiseCone ??= (BasicNoiseCone)new BasicNoiseCone(Projectile.Center, Projectile.velocity * 3, 40, new(50, 50)).SetColors(Color.White, Color.DarkGray).SetIntensity(2).AttachTo(Projectile);
+				_noiseCone ??= (BasicNoiseCone)new BasicNoiseCone(Projectile.Center, Projectile.velocity, 40, new(50, 50)).SetColors(Color.White, Color.DarkGray).SetIntensity(2).AttachTo(Projectile);
 				_noiseCone.Rotation = Projectile.velocity.ToRotation();
-				_noiseCone.Update();
-
-				if (++_noiseCone.TimeActive > _noiseCone.MaxTime)
-					_noiseCone.Kill();
+				_noiseCone.Update(ref ParticleRenderers.OverPlayers.Settings);
 			}
 
 			if (Projectile.ai[0] > 120)
@@ -73,9 +69,9 @@ public class Drillbolt : ModItem
 
 				if (Framing.GetTileSafely(Projectile.Center + Projectile.velocity) is Tile tile && WorldGen.SolidOrSlopedTile(tile))
 				{
-					ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center, -Vector2.UnitY, Color.Lerp(TileMaterial.FindMaterial(tile.TileType).Color, Color.Black, 0.2f), 30, false, false));
-					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, -Vector2.UnitY, TileMaterial.FindMaterial(tile.TileType).Color, 30, false, false));
-					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, Vector2.UnitY * -Main.rand.NextFloat(1.2f), TileMaterial.FindMaterial(tile.TileType).Color, 40, false, false));
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY, Color.Lerp(TileMaterial.FindMaterial(tile.TileType).Color, Color.Black, 0.2f), 30));
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY, TileMaterial.FindMaterial(tile.TileType).Color, 30) { Variant = CompositeSmoke.SmallVariant });
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, Vector2.UnitY * -Main.rand.NextFloat(1.2f), TileMaterial.FindMaterial(tile.TileType).Color, 40) { Variant = CompositeSmoke.SmallVariant });
 				}
 
 				SoundEngine.PlaySound(SoundID.WormDig, Projectile.Center);
@@ -98,7 +94,7 @@ public class Drillbolt : ModItem
 		{
 			_hitBuffer = 10;
 			for (int i = 0; i < 5; i++)
-				ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, (Projectile.velocity * Main.rand.NextFloat(0.01f, 0.5f)).RotatedByRandom(0.1f), Color.Yellow, 0.3f, 20, 3));
+				ParticleRenderers.OverNPCs.Add(new EmberParticle(Projectile.Center, (Projectile.velocity * Main.rand.NextFloat(0.01f, 0.5f)).RotatedByRandom(0.1f), Color.Yellow, 0.3f, 20, 3));
 		}
 
 		public override bool PreDraw(ref Color lightColor)
@@ -114,7 +110,7 @@ public class Drillbolt : ModItem
 		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
 		{
 			_trail?.Draw(TrailSystem.TrailShaders, Main.spriteBatch.GraphicsDevice, Matrix.Identity);
-			_noiseCone?.CustomDraw(spriteBatch);
+			_noiseCone?.Draw(ref ParticleRenderers.OverPlayers.Settings, spriteBatch);
 		}
 	}
 

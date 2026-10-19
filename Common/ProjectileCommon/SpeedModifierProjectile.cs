@@ -38,7 +38,7 @@ internal class SpeedModifierProjectile : GlobalProjectile
 		}
 	}
 
-	/// <summary> Method used to run AI again, with recursion checks & respecting <see cref="ModProjectile.AIType"/>. </summary>
+	/// <summary> Method used to run AI again, with recursion checks and respecting <see cref="ModProjectile.AIType"/>. </summary>
 	public static void RepeatAI(Projectile projectile, int repeats)
 	{
 		if (Recursion)

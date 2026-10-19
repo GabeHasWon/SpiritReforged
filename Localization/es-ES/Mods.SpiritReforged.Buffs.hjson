@@ -182,3 +182,18 @@ ColumbaldBuff: {
 	// DisplayName: Columbald
 	// Description: The being of bald
 }
+
+StonemasonBuff: {
+	// DisplayName: Stonemason Block
+	// Description: Your next attack deals double knockback
+}
+
+Vendetta_Buff: {
+	// DisplayName: Vendetta_ Buff
+	// Description: Mods.SpiritReforged.Buffs.Vendetta_Buff.Description
+}
+
+ClockworkCog_Buff: {
+	// DisplayName: Clockwork Cog
+	// Description: The tiny cog fights for you!
+}

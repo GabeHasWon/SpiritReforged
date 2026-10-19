@@ -41,9 +41,9 @@ public class BloodHit : Particle
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Texture2D texture = Texture;
-		Rectangle source = texture.Frame(3, 4, variant, (int)MathHelper.Lerp(1, 4, EaseFunction.EaseQuadOut.Ease(Progress)), -2, -2);
+		Rectangle source = texture.Frame(3, 4, variant, (int)MathHelper.Lerp(0, 3, EaseFunction.EaseQuadOut.Ease(Progress)), -2, -2);
 		float rotation = Rotation;
 
-		spriteBatch.Draw(texture, Position - Main.screenPosition, source, Color.White * (1f - Progress), rotation, source.Size() / 2, Scale, 0f, 0);
+		spriteBatch.Draw(texture, Position + settings.AnchorPosition, source, Lighting.GetColor(Position.ToTileCoordinates()) * (1f - Progress), rotation, source.Size() / 2, Scale, 0f, 0);
 	}
 }

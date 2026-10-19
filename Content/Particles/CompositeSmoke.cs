@@ -103,6 +103,7 @@ public class CompositeRenderer : ModSystem
 public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 {
 	public readonly record struct RenderSettings(bool AddLight, bool UseLightColor, float BloomStrength);
+	public static int SmallVariant => Main.rand.Next(3, 6);
 
 	public readonly Action<Particle> Action;
 
@@ -112,7 +113,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 	private readonly RenderSettings _settings;
 	private Vector2 _offset; //Offset only when attached
 
-	public CompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, RenderSettings settings, Action<Particle> extraUpdateAction = null)
+	public CompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, RenderSettings settings = default, Action<Particle> extraUpdateAction = null)
 	{
 		Position = position;
 		Velocity = velocity;

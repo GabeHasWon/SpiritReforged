@@ -1,9 +1,26 @@
-﻿using SpiritReforged.Common.PrimitiveRendering;
+﻿using SpiritReforged.Common;
+using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Forest.Crossbows;
+
+[ReinitializeDuringResizeArrays]
+public class BoltCache : ModSystem
+{
+	public static readonly bool[] IsCrossbowBolt = SpiritSets.ProjectileFactory.CreateBoolSet();
+
+	public override void PostSetupContent()
+	{
+		foreach (int type in ContentSamples.ItemsByType.Keys) //Automatically populate crossbow bolt types by association of ammo and Item.shoot
+		{
+			Item item = ContentSamples.ItemsByType[type];
+			if (item.ammo == ModContent.ItemType<Bolt>())
+				IsCrossbowBolt[item.shoot] = true;
+		}
+	}
+}
 
 public class Bolt : ModItem
 {
@@ -24,12 +41,6 @@ public class Bolt : ModItem
 
 		public override void AI()
 		{
-			if (!Main.dedServ)
-			{
-				_trail ??= new VertexTrail(new LightColorTrail(Color.White * 0.5f, Color.Transparent), new TriangleCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
-				_trail.Update();
-			}
-
 			if (Projectile.ai[0] > 60)
 				Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.4f, 10);
 
@@ -38,6 +49,15 @@ public class Bolt : ModItem
 
 			Projectile.ai[0]++;
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+		}
+
+		public override void PostAI() //Update trails regardless of what PreAI returns
+		{
+			if (!Main.dedServ)
+			{
+				_trail ??= new VertexTrail(new LightColorTrail(Color.White * 0.5f, Color.Transparent), new TriangleCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
+				_trail.Update();
+			}
 		}
 
 		public override void OnKill(int timeLeft)

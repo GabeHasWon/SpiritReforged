@@ -9,6 +9,7 @@ public class SpiritSets : ModSystem
 	internal static SetFactory TileFactory = new(TileLoader.TileCount, "SpiritTiles");
 	internal static SetFactory WallFactory = new(WallLoader.WallCount, "SpiritWalls");
 
+	#region item sets
 	/// <summary> Whether this item is considered a sword and should be compatible with the sword stand.<para/>
 	/// Added in <see cref="Content.Forest.Stand.SwordStand.RegisterIsSword"/>. </summary>
 	public static readonly bool[] IsSword = ItemFactory.CreateNamedSet(nameof(IsSword)).Description("Whether this item is considered a sword").RegisterBoolSet(ItemID.Zenith, ItemID.TerraBlade,
@@ -24,14 +25,18 @@ public class SpiritSets : ModSystem
 
 	/// <summary> The type that this item will transform into when Shimmered, according to <see cref="Content.Aether.Items.ScryingLens"/>. </summary>
 	public static readonly int[] ShimmerDisplayResult = ItemFactory.CreateNamedSet(nameof(ShimmerDisplayResult)).Description("The Shimmer item type that Scrying Lens will display").RegisterIntSet();
+	#endregion
 
+	#region npc sets
 	/// <summary> Whether this NPC is associated with the Corruption or Crimson biomes. </summary>
 	public static readonly bool[] IsCorrupt = NPCFactory.CreateNamedSet(nameof(IsCorrupt)).Description("Whether this NPC is associated with the Corruption or Crimson biomes")
 		.RegisterBoolSet(NPCID.CorruptBunny, NPCID.CorruptGoldfish, NPCID.Corruptor, NPCID.CorruptPenguin, NPCID.CorruptSlime, NPCID.BigMimicCorruption, NPCID.DesertGhoulCorruption, 
 		NPCID.PigronCorruption, NPCID.SandsharkCorrupt, NPCID.Crimera, NPCID.Crimslime, NPCID.CrimsonAxe, NPCID.CursedHammer, NPCID.CrimsonBunny, NPCID.CrimsonGoldfish, 
 		NPCID.CrimsonPenguin, NPCID.BigMimicCrimson, NPCID.DesertGhoulCrimson, NPCID.PigronCrimson, NPCID.SandsharkCrimson, NPCID.EaterofSouls, NPCID.VileSpit,
 		NPCID.VileSpitEaterOfWorlds, NPCID.DevourerBody, NPCID.DevourerHead, NPCID.DevourerTail, NPCID.FaceMonster);
+	#endregion
 
+	#region tile sets
 	/// <summary> Whether this type converts into the provided type when mowed with a lawnmower. </summary>
 	public static readonly int[] Mowable = TileFactory.CreateIntSet();
 
@@ -56,4 +61,5 @@ public class SpiritSets : ModSystem
 
 	/// <summary> The rules on which solid tiles this foreground wall can merge with, if any. </summary>
 	public static readonly Func<int, int, bool>[] ForegroundMergeFunc = WallFactory.CreateCustomSet<Func<int, int, bool>>(null);
+	#endregion
 }
