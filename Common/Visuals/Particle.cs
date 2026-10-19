@@ -4,8 +4,11 @@ using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Common.Visuals;
 
-/// <summary> Provides alternative utilities over <see cref="ABasicParticle"/>.<para/>
-/// See <see cref="ParticleRenderers"/> for more info. </summary>
+/// <summary>Provides alternative utilities over <see cref="ABasicParticle"/> such as:<list type="bullet">
+/// <item>Automatic texture registration</item>
+/// <item><see cref="TimeActive"/>, <see cref="MaxTime"/>, and more fields</item>
+/// <item>Default drawing and update behaviour</item></list>
+/// See <see cref="ParticleRenderers"/> for more info.</summary>
 public abstract class Particle : IPooledParticle, IParticle
 {
 	private static readonly Dictionary<string, Asset<Texture2D>> _textureByName = [];
@@ -35,8 +38,10 @@ public abstract class Particle : IPooledParticle, IParticle
 		}
 	}
 
+	/// <summary>The path of this particle's associated texture. Defaults to the full name of this particle file.</summary>
 	public virtual string TexturePath => DrawHelpers.RequestLocal(GetType(), GetType().Name);
 
+	/// <summary>The texture associated with this projectile, determined by <see cref="TexturePath"/>.</summary>
 	public Texture2D Texture
 	{
 		get
@@ -56,6 +61,7 @@ public abstract class Particle : IPooledParticle, IParticle
 		}
 	}
 
+	/// <summary>For how long this particle has been active, in a range from 0-1.</summary>
 	public float Progress => (float)TimeActive / MaxTime;
 
 	public bool IsRestingInPool { get; protected set; }
@@ -92,6 +98,8 @@ public abstract class Particle : IPooledParticle, IParticle
 	public void FetchFromPool() => IsRestingInPool = false; //Reset
 }
 
+/// <summary>Handles a selection of particle renderers that draw at different points in the rendering pipeline.<para/>
+/// IParticle instances can be added to any renderer using <see cref="ParticleRenderer.Add(IParticle)"/>.</summary>
 public sealed class ParticleRenderers : ModSystem
 {
 	private record class ParticleQueue(ParticleRenderer Renderer, int Time)
@@ -100,6 +108,7 @@ public sealed class ParticleRenderers : ModSystem
 		public int Time = Time;
 	}
 
+	/// <summary>An array of all registered particle renderers contained in this class.</summary>
 	public static ParticleRenderer[] Renderers { get; private set; }
 	public static event Action<ParticleRenderer> OnDrawParticles;
 
