@@ -1,10 +1,7 @@
 ﻿using Terraria.Audio;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Easing;
-using Terraria.Graphics.CameraModifiers;
 using SpiritReforged.Common.Visuals;
 using System.IO;
 using SpiritReforged.Common.ProjectileCommon;
@@ -84,13 +81,13 @@ public class RoyalKhopeshHeld : ModProjectile
 			{
 				var velocity = Projectile.Center.DirectionTo(target.Center).RotatedByRandom(0.5f) * Main.rand.NextFloat(4f);
 
-				ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.MediumVioletRed.Additive(), new Vector2(0.2f, 0.4f), 15));
-				ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, new Color(255, 255, 255, 0).Additive(), new Vector2(0.2f, 0.4f), 15));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, velocity, Color.MediumVioletRed.Additive(), new Vector2(0.2f, 0.4f), 15));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, velocity, new Color(255, 255, 255, 0).Additive(), new Vector2(0.2f, 0.4f), 15));
 			}
 
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(position, Vector2.Zero, Color.MediumVioletRed.Additive(), new(0.66f, 2.25f), 10, 1));
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(position, Vector2.Zero, Color.White.Additive(), new(0.66f, 2.25f), 10, 1));
-			ParticleHandler.SpawnParticle(new LightBurst(position, Main.rand.NextFloatDirection(), Color.MediumVioletRed.Additive(), 0.66f, 25));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(position, Vector2.Zero, Color.MediumVioletRed.Additive(), new(0.66f, 2.25f), 10, 1));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(position, Vector2.Zero, Color.White.Additive(), new(0.66f, 2.25f), 10, 1));
+			ParticleRenderers.UnderProjectiles.Add(new LightBurst(position, Main.rand.NextFloatDirection(), Color.MediumVioletRed.Additive(), 0.66f, 25));
 		}
 	}
 
@@ -293,14 +290,14 @@ public class RoyalKhopeshHeld : ModProjectile
 			Color smokeColor = new Color(223, 219, 147) * 0.25f * progress;
 			float scale = Main.rand.NextFloat(0.1f, 0.15f);
 			var velSmoke = Vector2.UnitX * OriginalDirection * 1.5f;
-			ParticleHandler.SpawnParticle(new SmokeCloud(tipPosition + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(tipPosition + Main.rand.NextVector2Circular(5f, 5f), velSmoke, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 			static void DecelerateAction(Particle p) => p.Velocity *= 0.925f;
 
 			var velocity = Main.rand.NextVector2Circular(2f, 2f);
 
-			ParticleHandler.SpawnParticle(new GlowParticle(tipPosition, velocity, Color.MediumVioletRed.Additive(), 1f * progress, 20, 1, DecelerateAction));
-			ParticleHandler.SpawnParticle(new GlowParticle(tipPosition, velocity, Color.White, 0.5f * progress, 20, 1, DecelerateAction));
+			ParticleRenderers.OverPlayers.Add(new GlowParticle(tipPosition, velocity, Color.MediumVioletRed.Additive(), 1f * progress, 20, 1, DecelerateAction));
+			ParticleRenderers.OverPlayers.Add(new GlowParticle(tipPosition, velocity, Color.White, 0.5f * progress, 20, 1, DecelerateAction));
 		}
 	}
 

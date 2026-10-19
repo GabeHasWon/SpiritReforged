@@ -1,8 +1,8 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using Terraria.DataStructures;
@@ -72,7 +72,7 @@ public class AfterimageProjectile : GlobalProjectile
 				var position = Main.rand.NextVector2FromRectangle(projectile.Hitbox);
 				var velocity = projectile.velocity * MathHelper.Lerp(0.3f, 0.9f, strength);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, strength).Additive(), scale, 25, 1) { emitLight = false });
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, strength).Additive(), scale, 25, 1) { emitLight = false });
 			}
 
 			if (Main.rand.NextBool(8))

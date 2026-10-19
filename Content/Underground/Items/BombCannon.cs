@@ -4,7 +4,6 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
@@ -151,10 +150,10 @@ internal class BombCannonHeld : ModProjectile
 				SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = Progress * .5f }, Projectile.Center);
 				var start = Projectile.Center + new Vector2(8, 10 * Projectile.direction).RotatedBy(Projectile.rotation);
 
-				ParticleHandler.SpawnParticle(new ImpactLine(start, Vector2.Zero, Red.Additive(), new Vector2(1, 2), 10, Projectile));
-				ParticleHandler.SpawnParticle(new ImpactLine(start, Vector2.Zero, (White * .3f).Additive(), new Vector2(1, 2) * .7f, 10, Projectile));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(start, Vector2.Zero, Red.Additive(), new Vector2(1, 2), 10, Projectile));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(start, Vector2.Zero, (White * .3f).Additive(), new Vector2(1, 2) * .7f, 10, Projectile));
 
-				ParticleHandler.SpawnParticle(new PulseCircle(start, Red, 0.1f, 50, 15, EaseQuadOut).Attach(Projectile));
+				ParticleRenderers.UnderProjectiles.Add(new PulseCircle(start, Red, 0.1f, 50, 15, EaseQuadOut).Attach(Projectile));
 			}
 
 			Charge = Math.Min(Charge + 1, ChargeTimeMax);
@@ -221,8 +220,8 @@ internal class BombCannonHeld : ModProjectile
 				float scale = Main.rand.NextFloat(.5f, 1f);
 				var velocity = (unit * Main.rand.NextFloat(3f)).RotatedByRandom(.5f);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(muzzle, velocity, Red, scale, 20, 5));
-				ParticleHandler.SpawnParticle(new GlowParticle(muzzle, velocity, White, scale * .5f, 20, 5));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzle, velocity, Red, scale, 20, 5));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzle, velocity, White, scale * .5f, 20, 5));
 			}
 		}
 
@@ -373,12 +372,12 @@ internal class CannonBomb : BombProjectile
 		var ease = new PolynomialEase(x => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
 		var stretch = new Vector2(2, 1);
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.25f).Additive(150), Red, 1f, 30 * area, 20, "Star2", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.25f).Additive(150), Red, 1f, 30 * area, 20, "Star2", stretch, ease)
 		{
 			Angle = Main.rand.NextFloatDirection()
 		});
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.5f).Additive(150), Red, .5f, 40 * area, 20, "Star2", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.5f).Additive(150), Red, .5f, 40 * area, 20, "Star2", stretch, ease)
 		{
 			Angle = Main.rand.NextFloatDirection()
 		});
@@ -386,11 +385,11 @@ internal class CannonBomb : BombProjectile
 		//Burst of light in the center
 		float lightburstRotation = Main.rand.NextFloatDirection();
 		for(int i = 0; i < 3; i++)
-			ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, Lerp(Pink, Red, 0.5f).Additive(), Main.rand.NextFloatDirection(), 0.02f * area, 0, "GodrayCircle", 15));
+			ParticleRenderers.UnderProjectiles.Add(new DissipatingImage(Projectile.Center, Lerp(Pink, Red, 0.5f).Additive(), Main.rand.NextFloatDirection(), 0.02f * area, 0, "GodrayCircle", 15));
 
 		const int time = 5;
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center, Vector2.Zero, Red.Additive(), new Vector2(0.2f, 1f) * area, time, 1));
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center, Vector2.Zero, Pink.Additive(), new Vector2(0.1f, 1f) * area, time, 1));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(Projectile.Center, Vector2.Zero, Red.Additive(), new Vector2(0.2f, 1f) * area, time, 1));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(Projectile.Center, Vector2.Zero, Pink.Additive(), new Vector2(0.1f, 1f) * area, time, 1));
 
 		//Glowy particles coming from the center
 		for (int i = 0; i < area * 2; i++)
@@ -404,8 +403,8 @@ internal class CannonBomb : BombProjectile
 
 			static void DelegateAction(Particle p) => p.Velocity *= 0.97f;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 30, 3, DelegateAction));
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, White.Additive(), scale * .5f, lifeTime, 3, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 30, 3, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + velocity * 10, velocity, White.Additive(), scale * .5f, lifeTime, 3, DelegateAction));
 
 			var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(16f * area), DustID.GemRuby, Scale: Main.rand.NextFloat() + .5f);
 			d.noGravity = true;

@@ -11,6 +11,8 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 
 internal class CanyonEntrance : CaveEntrance, IGenerationPage
 {
+	public const string Path = "SpiritReforged/Common/WorldGeneration/Micropasses/CaveEntrances/";
+
 	private static bool LateGeneration = false;
 
 	[GenConfigurable(5, 200, 5)]
@@ -24,7 +26,7 @@ internal class CanyonEntrance : CaveEntrance, IGenerationPage
 
 	public override CaveEntranceType Type => CaveEntranceType.Canyon;
 
-	PageInfo IGenerationPage.Info => new("Surface", DrawHelpers.RequestLocal(GetType(), "SurfacePage", false), DrawHelpers.RequestLocal(GetType(), "SurfacePageButton", false))
+	PageInfo IGenerationPage.Info => new("Surface", Graphics.Tex(Path + "SurfacePage"), Graphics.Tex(Path + "SurfacePageButton"))
 	{
 		Presets =
 		[

@@ -1,7 +1,6 @@
 using Humanizer;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Savanna.Items.Vanity;
 using System.IO;
 using System.Reflection;
 using Terraria.GameContent.UI;
@@ -45,7 +44,7 @@ public class PrefixVoucher : ModItem
 			{
 				Texture2D texture = TextureAssets.Item[item.type].Value;
 
-				DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+				Graphics.DrawOutline(default, default, default, default, (offset) =>
 					spriteBatch.Draw(TextureColorCache.ColorSolid(texture, Color.White), position + offset * scale, frame, voucher._info.Color.Additive() * 0.25f, 0, frame.Size() / 2, scale, 0, 0));
 			}
 

@@ -1,6 +1,6 @@
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Forest.FairyWhistle;
@@ -52,15 +52,15 @@ public class FairyProj : ModProjectile
 			velnormal *= 2;
 
 			for (int i = 0; i < 3; i++) //weak burst of particles in direction of movement
-				ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velnormal.RotatedByRandom(MathHelper.Pi / 8) * Main.rand.NextFloat(1f, 2f),
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, velnormal.RotatedByRandom(MathHelper.Pi / 8) * Main.rand.NextFloat(1f, 2f),
 					FairyMinion.StyleColor(ColorStyle), Main.rand.NextFloat(0.5f, 0.6f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.12f, 0.95f)));
 
 			for (int i = 0; i < 4; i++) //wide burst of slower moving particles in opposite direction
-				ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, -velnormal.RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(0.25f, 1.5f),
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, -velnormal.RotatedByRandom(MathHelper.Pi / 3) * Main.rand.NextFloat(0.25f, 1.5f),
 					FairyMinion.StyleColor(ColorStyle), Main.rand.NextFloat(0.5f, 0.6f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.12f, 0.95f)));
 
 			for (int i = 0; i < 3; i++) //narrow burst of faster, bigger particles
-				ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velnormal.RotatedByRandom(MathHelper.Pi / 12) * Main.rand.NextFloat(1.5f, 3f),
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, velnormal.RotatedByRandom(MathHelper.Pi / 12) * Main.rand.NextFloat(1.5f, 3f),
 					FairyMinion.StyleColor(ColorStyle), Main.rand.NextFloat(0.4f, 0.5f), 40, 7, p => FairyMinion.RandomCurveParticleMovement(p, 0.15f, 0.97f)));
 		}
 	}

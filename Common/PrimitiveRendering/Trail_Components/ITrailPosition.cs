@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+﻿using SpiritReforged.Common.Visuals;
+
+namespace SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 
 public interface ITrailPosition
 {
@@ -25,13 +27,7 @@ public readonly struct RandomizedTrailPosition(Entity entity, float strength) : 
 	public Vector2 GetNextTrailPosition() => entity.Center + Main.rand.NextVector2Circular(strength, strength);
 }
 
-// for lightning particle
-public readonly struct ParticleRandomizedTrailPosition(Particle.Particle particle, float strength) : ITrailPosition
-{
-	public Vector2 GetNextTrailPosition() => particle.Position + Main.rand.NextVector2Circular(strength, strength);
-}
-
-public readonly struct ParticleTrailPosition(Particle.Particle particle) : ITrailPosition
+public readonly struct ParticleTrailPosition(Particle particle) : ITrailPosition
 {
 	public Vector2 GetNextTrailPosition() => particle.Position;
 }

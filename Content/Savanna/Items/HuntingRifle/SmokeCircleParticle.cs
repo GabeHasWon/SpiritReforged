@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Savanna.Items.HuntingRifle;
 
@@ -12,8 +13,6 @@ public class SmokeCircleParticle : Particle
 
 	private readonly Vector2 _scrollOffset;
 	private readonly Vector2 _noiseScale;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
 	public SmokeCircleParticle(Vector2 position, Vector2 velocity, Color color, float scale, float rotation, int maxTime)
 	{
@@ -29,15 +28,15 @@ public class SmokeCircleParticle : Particle
 		_noiseScale = new(Main.rand.NextFloat(0.2f, 0.3f), Main.rand.NextFloat(0.2f, 0.3f));
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
-		Scale += 1f / _maxTime * .3f;
+		Scale += 1f / _maxTime * 0.3f;
 
 		if (TimeActive > _maxTime)
-			Kill();
+			ShouldBeRemovedFromRenderer = true;
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		var tex = TextureAssets.GlowMask[239].Value;
 		float progress = TimeActive / (float)_maxTime;

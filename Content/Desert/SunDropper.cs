@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
@@ -57,7 +57,7 @@ public class LightShaft : ModTile
 			for (int x = 0; x < 8; x++)
 			{
 				var center = new Vector2(i, j).ToWorldCoordinates();
-				ParticleHandler.SpawnParticle(new GlowParticle(center - new Vector2(0, 8), Main.rand.NextVector2Unit() * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.8f), 30));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(center - new Vector2(0, 8), Main.rand.NextVector2Unit() * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.8f), 30));
 			}
 		}
 	}
@@ -70,7 +70,7 @@ public class LightShaft : ModTile
 		if (closer && !Main.gamePaused && Main.rand.NextBool(30))
 		{
 			var center = new Vector2(i, j).ToWorldCoordinates();
-			ParticleHandler.SpawnParticle(new GlowParticle(new Vector2(center.X + Main.rand.Next(-size, size), center.Y), Vector2.UnitY * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.8f), 180));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(new Vector2(center.X + Main.rand.Next(-size, size), center.Y), Vector2.UnitY * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.8f), 180));
 		}
 	}
 

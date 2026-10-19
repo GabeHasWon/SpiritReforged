@@ -1,4 +1,3 @@
-using Microsoft.Xna.Framework.Graphics;
 using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Ocean.Boids;

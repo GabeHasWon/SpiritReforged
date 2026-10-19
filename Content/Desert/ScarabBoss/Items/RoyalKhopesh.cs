@@ -1,4 +1,3 @@
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;

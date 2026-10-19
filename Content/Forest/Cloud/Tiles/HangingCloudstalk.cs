@@ -28,6 +28,7 @@ public class HangingCloudstalk : ModTile, ILoadItem
 		TileObjectData.newTile.Direction = TileObjectDirection.PlaceLeft;
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.AnchorTop = new AnchorData(TileObjectData.newTile.AnchorTop.type, 2, 0);
+
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
 		TileObjectData.addAlternate(1);

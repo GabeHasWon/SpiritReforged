@@ -1,9 +1,9 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
@@ -66,8 +66,8 @@ public class AetherShipment : PotTile, WindTileRenderer.IDrawInWind, ILootable, 
 			var velocity = -Vector2.UnitY * Main.rand.NextFloat();
 			float rotation = Main.rand.NextFloat();
 
-			ParticleHandler.SpawnParticle(new ShimmerStar(spawn, GlowColor * (1f - strength), scale, 60, velocity) { Rotation = rotation });
-			ParticleHandler.SpawnParticle(new ShimmerStar(spawn, Color.White * (1f - strength), scale * .8f, 60, velocity) { Rotation = rotation });
+			ParticleRenderers.UnderProjectiles.Add(new ShimmerStar(spawn, GlowColor * (1f - strength), scale, 60, velocity) { Rotation = rotation });
+			ParticleRenderers.UnderProjectiles.Add(new ShimmerStar(spawn, Color.White * (1f - strength), scale * 0.8f, 60, velocity) { Rotation = rotation });
 		}
 	}
 
