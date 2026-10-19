@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Jungle.Misc;
@@ -41,7 +41,7 @@ public class Shockwave : ModProjectile
 
 			var p = new ImpactLine(Projectile.Center, velocity, Color.White * 0.5f, new Vector2(1, mag * 2) * Projectile.scale * 2, Main.rand.Next(10, 15), 0.85f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 		}
 
 		for (int i = 0; i < 12; i++)
@@ -64,8 +64,8 @@ public class Shockwave : ModProjectile
 			int lifeTime = Main.rand.Next(20, 30);
 			var velocity = (Vector2.Normalize(Projectile.velocity) * speed).RotatedByRandom(1) - new Vector2(0, 1);
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(smokePos, velocity, Color.DarkGray * 0.5f, scale * 1.5f, Common.Easing.EaseFunction.EaseCubicOut, lifeTime));
-			ParticleHandler.SpawnParticle(new SmokeCloud(smokePos, velocity, Color.LightGray, scale, Common.Easing.EaseFunction.EaseCubicOut, lifeTime));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(smokePos, velocity, Color.DarkGray * 0.5f, scale * 1.5f, Common.Easing.EaseFunction.EaseCubicOut, lifeTime));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(smokePos, velocity, Color.LightGray, scale, Common.Easing.EaseFunction.EaseCubicOut, lifeTime));
 		}
 	}
 }

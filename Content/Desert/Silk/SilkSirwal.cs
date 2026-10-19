@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.Visuals;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.Silk;
@@ -9,12 +8,13 @@ namespace SpiritReforged.Content.Desert.Silk;
 public class SilkSirwal : ModItem, IFlagged
 {
 	public static int AltEquipSlot { get; private set; }
+
 	public override void Load()
 	{
 		if (!Main.dedServ)
 		{
 			const string name = "SilkSirwalAlt_Legs";
-			AltEquipSlot = EquipLoader.AddEquipTexture(Mod, DrawHelpers.RequestLocal(GetType(), name), EquipType.Legs, null, name);
+			AltEquipSlot = EquipLoader.AddEquipTexture(Mod, Texture + "Alt_Legs", EquipType.Legs, null, name);
 		}
 
 		PlayerEvents.OnPostUpdateRunSpeeds += static (p) =>

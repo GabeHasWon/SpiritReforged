@@ -9,6 +9,8 @@ public class StargrassFlowers : ModTile
 	public const int StyleRange = 27;
 	public const int TileHeight = 24;
 
+	protected virtual bool HasGlowmask => true;
+
 	public override void SetStaticDefaults()
 	{
 		Main.tileSolid[Type] = false;
@@ -19,15 +21,19 @@ public class StargrassFlowers : ModTile
 
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
-		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, static (i, j) =>
+
+		if (HasGlowmask)
 		{
-			const float max_distance = 140;
+			TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, static (i, j) =>
+			{
+				const float max_distance = 140;
 
-			Point coords = new(i, j);
-			float distance = Main.player[Player.FindClosest(coords.ToWorldCoordinates(0, 0), 16, 16)].DistanceSQ(coords.ToWorldCoordinates());
+				Point coords = new(i, j);
+				float distance = Main.player[Player.FindClosest(coords.ToWorldCoordinates(0, 0), 16, 16)].DistanceSQ(coords.ToWorldCoordinates());
 
-			return StargrassTile.GetGlowColor(coords.X, coords.Y) * MathHelper.Clamp(1f - distance / (max_distance * max_distance), 0.4f, 1f);
-		});
+				return StargrassTile.GetGlowColor(coords.X, coords.Y) * MathHelper.Clamp(1f - distance / (max_distance * max_distance), 0.4f, 1f);
+			});
+		}
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.LavaDeath = true;
@@ -40,6 +46,8 @@ public class StargrassFlowers : ModTile
 		TileObjectData.newTile.RandomStyleRange = StyleRange;
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
 		TileObjectData.newTile.AnchorAlternateTiles = [TileID.ClayPot, TileID.PlanterBox];
+
+		ModifyObjectData(TileObjectData.newTile);
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(20, 190, 130));
@@ -47,10 +55,13 @@ public class StargrassFlowers : ModTile
 		HitSound = SoundID.Grass;
 	}
 
+	protected virtual void ModifyObjectData(TileObjectData newTile) { }
+
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		int frame = Main.tile[i, j].TileFrameX / 18;
+
 		if (frame >= 6)
 			(r, g, b) = (0.025f, 0.1f, 0.25f);
 	}

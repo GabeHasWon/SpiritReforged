@@ -25,7 +25,7 @@ public class BlunderbussTile : ModTile
 		AddMapEntry(new Color(100, 100, 50));
 		RegisterItemDrop(ModContent.ItemType<Blunderbuss>());
 
-		DustType = DustID.Sand; //No dust
+		DustType = DustID.Sand;
 	}
 
 	public override void MouseOver(int i, int j)

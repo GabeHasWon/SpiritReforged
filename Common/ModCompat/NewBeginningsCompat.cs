@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Backpacks;
+﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -21,7 +20,6 @@ using SpiritReforged.Content.Savanna.Items.HuntingRifle;
 using SpiritReforged.Content.Savanna.Items.Vanity;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Leather.HideTunic;
-using SpiritReforged.Content.Ziggurat.Walls;
 using SpiritReforged.Content.Ziggurat.Windshear;
 using System.Linq;
 using Terraria.DataStructures;

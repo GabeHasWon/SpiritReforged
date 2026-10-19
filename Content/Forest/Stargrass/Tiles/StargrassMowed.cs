@@ -7,14 +7,14 @@ namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
 public class StargrassMowed : StargrassTile
 {
-	public override ConversionHandler.Set ConversionSet => new()
-	{
-		{ BiomeConversionID.Corruption, TileID.CorruptGrass },
-		{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
-		{ BiomeConversionID.Hallow, TileID.GolfGrassHallowed },
-		{ BiomeConversionID.PurificationPowder, TileID.GolfGrass },
-		{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
-	};
+	//public override ConversionHandler.Set ConversionSet => new()
+	//{
+	//	{ BiomeConversionID.Corruption, TileID.CorruptGrass },
+	//	{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
+	//	{ BiomeConversionID.Hallow, TileID.GolfGrassHallowed },
+	//	{ BiomeConversionID.PurificationPowder, TileID.GolfGrass },
+	//	{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
+	//};
 
 	public override void SetStaticDefaults()
 	{

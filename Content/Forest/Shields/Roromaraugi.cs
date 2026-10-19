@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Greatshields;
@@ -46,7 +45,7 @@ public class Roromaraugi : GreatshieldItem
 						for (int i = 0; i < 3; i++)
 						{
 							Vector2 velocity = (Vector2.UnitY * -(Math.Clamp(npc.velocity.Y, 1.5f, 3) + Main.rand.NextFloat(-1f, 1f))).RotatedByRandom(1.5f);
-							ParticleHandler.SpawnParticle(new CartoonHit(npc.Bottom, 20, 1, velocity.ToRotation() - MathHelper.PiOver2 - MathHelper.PiOver4, velocity));
+							ParticleRenderers.UnderProjectiles.Add(new CartoonHit(npc.Bottom, 20, 1, velocity.ToRotation() - MathHelper.PiOver2 - MathHelper.PiOver4, velocity));
 						}
 
 						SoundEngine.PlaySound(SoundID.DD2_MonkStaffGroundImpact with { Pitch = 0.5f }, npc.Center);

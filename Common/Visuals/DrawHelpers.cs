@@ -64,6 +64,8 @@ public static class DrawHelpers
 		}
 	}
 
+	public static void DrawOutline(Action<Vector2> action) => DrawOutline(Main.spriteBatch, default, default, default, action);
+
 	public static void DrawGodrays(SpriteBatch spriteBatch, Vector2 position, Color rayColor, float baseLength, float width, int numRays)
 	{
 		for (int i = 0; i < numRays; i++)

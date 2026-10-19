@@ -1,8 +1,8 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
 using TileHelper.Common;
@@ -96,7 +96,7 @@ public class PolishedAmber : ModTile, ILoadItem
 			Vector2 position = Main.rand.NextVector2FromRectangle(new((int)coords.X, (int)coords.Y, 16, 16));
 
 			float scale = Main.rand.NextFloat(0.2f, 0.5f);
-			ParticleHandler.SpawnParticle(new GlowParticle(position, Vector2.UnitY * -0.3f, Color.Goldenrod * 0.5f, scale, 200));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, Vector2.UnitY * -0.3f, Color.Goldenrod * 0.5f, scale, 200));
 		}
 	}
 

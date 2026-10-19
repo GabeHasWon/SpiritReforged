@@ -44,6 +44,13 @@ Misc: {
 		Random: Verzauberung zufällig auswählen
 	}
 
+	TombText: {
+		// 0: Here rests {0}.
+		// 1: Here lies {0}, loved by many.
+		// 2: Here lies {0} AND {1}.
+		// 3: The grave is empty.
+	}
+
 	NoStock: Ausverkauft
 	GraveText: <wavy>Der Text ist alt und verblasst; du kannst nicht ganz erkennen, was dort steht.
 	MenuButton: Menü-Stil verwenden
