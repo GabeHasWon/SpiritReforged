@@ -1,15 +1,8 @@
-v0.2.3
-Alongside Spooky Mod's 1.4.4 update, we have added new, exclusive cross-mod content for players to enjoy while playing Spirit Reforged and Spooky together.
-Note: Most new content is only accessible while playing both Spirit Reforged and Spooky Mod at the same time. 
-
-
-- Added two new quest minibosses for Spooky's Little Eye Bounties: The Mummiath and Dhampir
-- Added new clubs based on Spooky content
-- Added Cartographer Map Pins, Uncommon Pots to many Spooky biomes!
-- Added Scaregrass, a spooky alternative to Stargrass found in the Spooky Forest! Scaregrass comes with its own foliage and tree types!
-- Added Trellises for Spooky Mod Woods: Spooky Forest Wood, Old Birch
-... and much more!
-
-**Spooky Mod**
-- Added the Boggy Shipyard, a new **Crossmod Ecotone**.
-...and much more!
+v0.2.3.1
+- Fixed Cartographer giving infinite pins, whoops!
+- Fixed gems on the mouse not being consumed on Ancient Altar use
+- Fixed missing texture issue with Cracked Red Sandstone Bricks
+- Fixed some smoke particles being improperly affected by lighting
+- Fixed major issue with the particle renderers being any combination of offset, on the wrong layer or zoomed incorrectly
+- Corrected the texture of hanging Censers
+- Updated Russian and Chinese localization
