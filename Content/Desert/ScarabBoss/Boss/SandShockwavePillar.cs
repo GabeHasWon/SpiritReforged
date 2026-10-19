@@ -15,8 +15,6 @@ public class SandShockwavePillar : ModProjectile
 
 	private float ParticleVerticalSpeedMult => HitboxHeight / 120f;
 
-	private float Progress => EaseFunction.EaseCircularOut.Ease((AITimer - SpawnDelay) / MAX_TIMELEFT);
-
 	public override string Texture => AssetLoader.EmptyTexture;
 
 	public override void SetStaticDefaults() => base.SetStaticDefaults();

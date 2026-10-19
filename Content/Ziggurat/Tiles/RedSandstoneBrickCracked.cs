@@ -10,6 +10,8 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 {
 	private class DustStream : Particle
 	{
+		public override string TexturePath => AssetLoader.EmptyTexture;
+
 		public DustStream(Vector2 position)
 		{
 			Position = position;
