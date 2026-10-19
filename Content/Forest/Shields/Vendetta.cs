@@ -2,7 +2,6 @@ using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -45,8 +44,7 @@ public class Vendetta : ModItem, IFlagged
 			spriteBatch.Draw(texture, worldPosition - screenPos, null, color.Additive() * EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 30f) * 0.3f, 0, texture.Size() / 2, 1, 0, 0);
 
 			if (time > 40 && Main.rand.NextBool())
-				ParticleHandler.SpawnParticle(new AttachedCompositeSmoke(npc, worldPosition - npc.Center, (Vector2.UnitY * -Main.rand.NextFloat()).RotatedByRandom(0.5f), Color.Black, 50, false, false)
-				{ Layer = ParticleLayer.BelowNPC, Scale = 0.5f });
+				ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(worldPosition, (Vector2.UnitY * -Main.rand.NextFloat()).RotatedByRandom(0.5f), Color.Black, 50, new(false, false, 0)) { Scale = 0.5f }.AttachTo(npc));
 		}
 	}
 

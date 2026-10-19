@@ -1,8 +1,7 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Ocean.Items.Rum;
@@ -58,7 +57,7 @@ public class RumFire : ModProjectile
 			var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f);
 			var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.25f);
 
-			ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 5));
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 5));
 		}
 		 
 		if (Main.rand.NextBool(6))
@@ -70,7 +69,8 @@ public class RumFire : ModProjectile
 			float intensity = 1.5f * Projectile.Opacity;
 			float scale = Main.rand.NextFloat(0.05f, 0.1f);
 			int maxTime = Main.rand.Next(20, 60);
-			ParticleHandler.SpawnParticle(new FireParticle(position, velocity, fireColors, intensity, scale, EaseFunction.EaseCircularOut, maxTime)
+
+			ParticleRenderers.UnderProjectiles.Add(new FireParticle(position, velocity, fireColors, intensity, scale, EaseFunction.EaseCircularOut, maxTime)
 			{
 				ColorLerpExponent = 2.5f,
 				PixelDivisor = 2
@@ -137,8 +137,8 @@ public class RumExplosion : ModProjectile
 				var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f);
 				var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.25f);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 2));
-				ParticleHandler.SpawnParticle(new SmokeCloud(position, velocity, Color.DarkGray * .3f, Main.rand.NextFloat(.25f), Common.Easing.EaseFunction.EaseCircularOut, 60));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 2));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, velocity, Color.DarkGray * .3f, Main.rand.NextFloat(.25f), Common.Easing.EaseFunction.EaseCircularOut, 60));
 			}
 		}
 	}

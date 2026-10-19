@@ -1,6 +1,6 @@
 using SpiritReforged.Common.ItemCommon.FloatingItem;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.GameContent.Drawing;
@@ -71,13 +71,13 @@ public class KoiTotemTile : ModTile
 				var color = Color.Lerp(Color.LightBlue, Color.Cyan, Main.rand.NextFloat());
 				float magnitude = Main.rand.NextFloat();
 
-				ParticleHandler.SpawnParticle(new GlowParticle(position + new Vector2(Main.rand.NextFloat(32), 0), Vector2.UnitY * -magnitude, color, (1f - magnitude) * .25f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position + new Vector2(Main.rand.NextFloat(32), 0), Vector2.UnitY * -magnitude, color, (1f - magnitude) * .25f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
 					{ p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f)); }));
 			}
 
 			if (KoiTotemBuff.CursorOpacity > 0.9f)
 			{
-				ParticleHandler.SpawnParticle(new DissipatingImage(position + new Vector2(18, 0), Color.Cyan * 0.15f, 0, 0.25f, 1f, "Bloom", 120));
+				ParticleRenderers.UnderProjectiles.Add(new DissipatingImage(position + new Vector2(18, 0), Color.Cyan * 0.15f, 0, 0.25f, 1f, "Bloom", 120));
 
 				SoundEngine.PlaySound(Feedback with { Volume = 0.3f, PitchRange = (-1, -0.75f) }, position);
 				SoundEngine.PlaySound(Feedback with { Volume = 0.4f, PitchRange = (-0.65f, -0.35f) }, position);

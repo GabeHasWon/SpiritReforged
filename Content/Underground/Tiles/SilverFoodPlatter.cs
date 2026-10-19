@@ -18,6 +18,8 @@ public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, ILoadItem
 		Main.tileBlockLight[Type] = false;
 		Main.tileFrameImportant[Type] = true;
 
+		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = false; // This causes a stack overflow since this can be placed on multitiles
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.newTile.RandomStyleRange = 3;

@@ -1,10 +1,12 @@
-﻿--- Spirit Reforged ---
+--- Spirit Reforged ---
 by Team Spirit
 
 English (by Team Spirit)
-Português Brasileiro (by Lucas Rotulo and Hari)
+Deustch (by BardSmard)
+Español (by MrBurrito7w7)
 Русский (by Nana Team and RUnion)
 简体中文 (by Lacewing, Fox Radish, and Lin)
+Português Brasileiro (by Lucas Rotulo and Hari)
 
 Spirit Reforged is a general content mod which aims to create a fleshed out, high-quality experience for players at all points of progression. We want to make your world come to life by creating memorable environments, encounters, and high-quality items. 
 
@@ -12,7 +14,7 @@ Spirit Reforged is the latest and main project developed by Team Spirit, also re
 
 Spirit Reforged is a standalone project and does not have to be played with Spirit Classic. However, Reforged has extra cross-compatibility with Spirit Classic. You can explore Spirit Reforged while sticking with the vast amount of content Spirit Classic provides. 
 
-Our brand new update, Spellbound (v0.2.2), introduces a new weapon enchantment system called Glyphs to the game! 
+Our brand new update, Spirit Halloween (v0.2.3), is a Halloween update introducing many new, unique crossmod features with the Spooky Mod. Play with both enabled for lots of special content!
 
 -- Additions --
 At a glance, Spirit Reforged adds:

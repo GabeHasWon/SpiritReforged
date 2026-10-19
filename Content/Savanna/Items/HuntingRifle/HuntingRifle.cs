@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -10,20 +9,14 @@ namespace SpiritReforged.Content.Savanna.Items.HuntingRifle;
 
 public class HuntingRifle : ModItem
 {
-	public static Asset<Texture2D> CursorTexture { get; private set; }
+	public static readonly Asset<Texture2D> CursorTexture = Graphics.Tex("SpiritReforged/Content/Savanna/Items/HuntingRifle/Cursor_Reticle");
 	public static readonly SoundStyle Gunshot = new("SpiritReforged/Assets/SFX/Item/Gunshot");
 
 	/// <summary> The item type of <see cref="HuntingRifle"/> cached for detour efficiency. </summary>
 	private static int StaticType;
 	private static float CursorOpacity;
 
-	public override void Load()
-	{
-		if (!Main.dedServ)
-			CursorTexture = DrawHelpers.RequestLocal(GetType(), "Cursor_Reticle", false);
-
-		CustomCursor.DrawCustomCursor += DrawCustomCursor;
-	}
+	public override void Load() => CustomCursor.DrawCustomCursor += DrawCustomCursor;
 
 	private static void DrawCustomCursor(bool thick)
 	{
@@ -33,14 +26,14 @@ public class HuntingRifle : ModItem
 			return;
 		}
 
-		float scale = Main.cursorScale * .6f * (thick ? 1.1f : 1f);
+		float scale = Main.cursorScale * 0.6f * (thick ? 1.1f : 1f);
 		float distance = MathHelper.Clamp(Main.LocalPlayer.Distance(Main.MouseWorld) / HunterGlobalProjectile.maxRange, 0, 1);
 		float offsetLength = 5f + (1f - distance) * 5f
 			+ (float)Main.LocalPlayer.itemAnimation / Main.LocalPlayer.itemAnimationMax * 3f
 			+ MathHelper.Min(Main.LocalPlayer.velocity.Length(), 2);
 		//Distance, item animation, and player velocity adjustments
 
-		CursorOpacity = MathHelper.Min(CursorOpacity + .05f, 1f);
+		CursorOpacity = MathHelper.Min(CursorOpacity + 0.05f, 1f);
 		Color color = Main.cursorColor;
 
 		if (thick) //Border cursor color
@@ -102,7 +95,7 @@ public class HuntingRifle : ModItem
 		float fxDistance = 45;
 
 		SoundEngine.PlaySound(SoundID.Item100 with { Volume = .6f, PitchVariance = .2f, Pitch = 1f }, position);
-		ParticleHandler.SpawnParticle(new StarParticle(position + unit * (fxDistance - 8), Vector2.Zero, Color.Goldenrod, .5f, 2, 0));
+		ParticleRenderers.UnderProjectiles.Add(new StarParticle(position + unit * (fxDistance - 8), Vector2.Zero, Color.Goldenrod, .5f, 2, 0));
 
 		for (int i = 0; i < 10; i++)
             Dust.NewDustPerfect(position + unit * fxDistance + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f), 
@@ -114,7 +107,7 @@ public class HuntingRifle : ModItem
 		float mult = 1f;
 		if (player.velocity == Vector2.Zero)
 		{
-			ParticleHandler.SpawnParticle(new SmokeCircleParticle(position + unit * fxDistance, unit * -.2f, 
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCircleParticle(position + unit * fxDistance, unit * -.2f, 
 				Lighting.GetColor(position.ToTileCoordinates(), Color.LightSlateGray), .5f, unit.ToRotation(), 30));
 
 			//Grant a damage bonus (+25%) when standing still. Additional bonuses are applied in HunterGlobalProjectile

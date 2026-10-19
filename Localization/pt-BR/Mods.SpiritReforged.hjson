@@ -44,6 +44,13 @@ Misc: {
 		Random: Randomizar encantamento
 	}
 
+	TombText: {
+		// 0: Here rests {0}.
+		// 1: Here lies {0}, loved by many.
+		// 2: Here lies {0} AND {1}.
+		// 3: The grave is empty.
+	}
+
 	NoStock: Fora de estoque
 	GraveText: <wavy>O texto é antigo e desbotado; você não consegue distinguir o que está escrito.
 	MenuButton: Usar estilo de menu
@@ -129,3 +136,6 @@ DamageClasses: {
 	// MagazineDamageClass.DisplayName: "{$LegacyTooltip.3}"
 	// ShotgunClass.DisplayName: "{$LegacyTooltip.3}"
 }
+
+// BackpackPickupEnabled: Direct pickup: Enabled
+// BackpackPickupDisabled: Direct pickup: Disabled

@@ -21,8 +21,11 @@ public abstract class EcotoneBase : ModType
 
 	public static readonly List<EcotoneBase> Ecotones = [];
 
+	private static int _globalId = 0;
+
 	public EcotoneIcon Icon { get; private set; }
 	public LocalizedText DisplayName { get; private set; }
+	public int Id { get; protected set; }
 
 	/// <summary>
 	/// Disables the ecotone from being selected in the manual ecotone selector.<br/>
@@ -39,6 +42,7 @@ public abstract class EcotoneBase : ModType
 	{
 		Ecotones.Add(this);
 
+		Id = _globalId++;
 		Icon = GetIcon();
 		DisplayName = Language.GetOrRegister($"Mods.{Mod.Name}.Ecotones.{GetType().Name}", () => GetType().Name);
 		ModTypeLookup<EcotoneBase>.Register(this);

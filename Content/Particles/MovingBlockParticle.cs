@@ -1,6 +1,7 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using Terraria.GameContent.Drawing;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -34,17 +35,15 @@ public class MovingBlockParticle : Particle
 		MaxTime = bounceTime;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (Main.tile[_tilePosition] != _tile)
-			Kill();
+			ShouldBeRemovedFromRenderer = true;
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.AboveSolid;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		if (!Collision.SolidTiles(Position, 1, 1, false))
 			return;

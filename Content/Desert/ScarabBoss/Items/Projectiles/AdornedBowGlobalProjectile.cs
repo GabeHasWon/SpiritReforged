@@ -1,6 +1,5 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
@@ -53,7 +52,7 @@ public class AdornedArrowDeathTrail : ModProjectile
 			var scale = new Vector2(.5f * lerp, 1) * Projectile.scale;
 
 			float fadeOut = Projectile.timeLeft / 20f;
-			Color fadeColor = DrawHelpers.MulticolorLerp(fadeOut, prismaticColors) * fadeOut;
+			Color fadeColor = Graphics.MulticolorLerp(fadeOut, prismaticColors) * fadeOut;
 
 			var drawPos = Vector2.Lerp(position, oldPositions[0] - Main.screenPosition, 0.33f);
 			Color drawColor = fadeColor * EaseFunction.EaseQuadIn.Ease(lerp) * 0.5f;
@@ -99,13 +98,13 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			_prismaticTimer--;
 
 			_secondaryPalette.FadeColors(_primaryPalette.Colors, PrismaticProgress);
-			Lighting.AddLight(Projectile.Center, DrawHelpers.MulticolorLerp(PrismaticProgress, _primaryPalette.Colors).ToVector3() * 0.5f * PrismaticProgress);
+			Lighting.AddLight(Projectile.Center, Graphics.MulticolorLerp(PrismaticProgress, _primaryPalette.Colors).ToVector3() * 0.5f * PrismaticProgress);
 
 			if (Main.rand.NextBool(20))
 			{
 				Color c = _primaryPalette.Colors[Main.rand.Next(3)];
 
-				ParticleHandler.SpawnParticle(new SharpStarParticle(
+				ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(
 					Projectile.Center + Main.rand.NextVector2Circular(20f, 20f),
 					Projectile.velocity.RotatedByRandom(0.2f),
 					Color.White,
@@ -161,7 +160,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			Color fadeColor = Color.Lerp(Color.LightSteelBlue, Color.White, lerp).Additive();
 
 			if (_prismaticTimer > 0)
-				fadeColor = Color.Lerp(DrawHelpers.MulticolorLerp(lerp, _secondaryPalette.Colors), fadeColor, EaseFunction.EaseCircularIn.Ease(1f - PrismaticProgress));
+				fadeColor = Color.Lerp(Graphics.MulticolorLerp(lerp, _secondaryPalette.Colors), fadeColor, EaseFunction.EaseCircularIn.Ease(1f - PrismaticProgress));
 
 			if (i == 0)
 			{
@@ -172,7 +171,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 				for (int j = 0; j < 4; j++)
 				{
 					Vector2 offset = new Vector2(-2 * -Projectile.direction, 0).RotatedBy(Projectile.rotation - MathHelper.PiOver2) + Vector2.UnitX.RotatedBy(MathHelper.TwoPi * j / 4f) * 2;
-					Color drawColor = DrawHelpers.MulticolorLerp(PrismaticProgress, _secondaryPalette.Colors);
+					Color drawColor = Graphics.MulticolorLerp(PrismaticProgress, _secondaryPalette.Colors);
 
 					if (_prismaticTimer <= 0)
 						drawColor = Color.LightSteelBlue;
@@ -217,7 +216,8 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 		for (int i = 0; i < 4; i++)
 		{
 			Color c = _primaryPalette.Colors[Main.rand.Next(3)];
-			ParticleHandler.SpawnParticle(new SharpStarParticle(
+
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(
 				target.Center,
 				projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.3f, 0.6f),
 				Color.White.Additive(),
@@ -240,7 +240,7 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 				if (_idx2 > 2)
 					_idx2 = 0;
 
-				ParticleHandler.SpawnParticle(new PixelBloom(target.Center, velocity, _primaryPalette.Colors[_idx1].Additive(),
+				ParticleRenderers.UnderProjectiles.Add(new PixelBloom(target.Center, velocity, _primaryPalette.Colors[_idx1].Additive(),
 					_primaryPalette.Colors[_idx2].Additive(), scale, maxTime, DecelerateAction));
 			}
 		}
@@ -268,12 +268,12 @@ public class AdornedBowGlobalProjectile : GlobalProjectile
 			float scale = Main.rand.NextFloat(0.5f, 1f);
 			int lifeTime = Main.rand.Next(25, 50);
 
-			ParticleHandler.SpawnParticle(new PixelBloom(projectile.Center, velocity, _primaryPalette.Colors[Main.rand.Next(3)].Additive(), scale, lifeTime, DelegateAction));
-			ParticleHandler.SpawnParticle(new PixelBloom(projectile.Center, velocity, Color.White.Additive(), scale, lifeTime, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new PixelBloom(projectile.Center, velocity, _primaryPalette.Colors[Main.rand.Next(3)].Additive(), scale, lifeTime, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new PixelBloom(projectile.Center, velocity, Color.White.Additive(), scale, lifeTime, DelegateAction));
 
 			Color c = _primaryPalette.Colors[Main.rand.Next(3)];
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(
 				projectile.Center,
 				Main.rand.NextVector2CircularEdge(4f, 4f),
 				Color.White,

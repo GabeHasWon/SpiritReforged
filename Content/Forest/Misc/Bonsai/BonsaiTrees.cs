@@ -1,6 +1,5 @@
-using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.GameContent.Drawing;
 using TileHelper.Common;
@@ -62,7 +61,7 @@ public class BonsaiTrees : ModTile, WindTileRenderer.IDrawInWind
 			int timeLeft = Main.rand.Next(15, 30);
 
 			Vector2 rectangle = Main.rand.NextVector2FromRectangle(new((int)position.X, (int)position.Y, width, height));
-			ParticleHandler.SpawnParticle(new EmberParticle(rectangle, Vector2.Zero, color, scale, timeLeft, 2));
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(rectangle, Vector2.Zero, color, scale, timeLeft, 2));
 		}
 	}
 

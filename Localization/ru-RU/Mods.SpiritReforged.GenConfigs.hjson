@@ -511,8 +511,8 @@ Pages: {
 			}
 
 			EnchantedWorkbenchChance: {
-				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Хижины) Шанс на верстак"
-				Tooltip: Устанавливает знаменатель (1/x) шанса генерации зачарованного верстака в подземной хижине.
+				DisplayName: "[i:SpiritReforged/EnchantedWorkbenchItem] (Хижины) Шанс на стол для печатей"
+				Tooltip: Устанавливает знаменатель (1/x) шанса генерации стола для печатей в подземной хижине.
 			}
 
 			DisplayCaseChance: {

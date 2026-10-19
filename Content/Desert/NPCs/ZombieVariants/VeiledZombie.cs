@@ -1,6 +1,5 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon.Abstract;
-using SpiritReforged.Content.Vanilla.Food;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Desert.NPCs.ZombieVariants;

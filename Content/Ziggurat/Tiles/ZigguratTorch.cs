@@ -13,7 +13,7 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 public class ZigguratTorch : ModTile, ILoadItem
 {
 	public const int FrameHeight = 20;
-	public static readonly Asset<Texture2D> Flame = DrawHelpers.RequestLocal<ZigguratTorch>("ZigguratTorch_Flame", false);
+	public static readonly Asset<Texture2D> Flame = Graphics.Tex("SpiritReforged/Content/Ziggurat/Tiles/ZigguratTorch_Flame");
 
 	public static readonly SoundStyle Ignite = new("SpiritReforged/Assets/SFX/Tile/TorchIgnite", 2)
 	{

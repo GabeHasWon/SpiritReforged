@@ -254,8 +254,8 @@ public class StormGlyph : GlyphItem
 						Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f);
 						float scale = Main.rand.NextFloat(0.1f, 0.3f);
 
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 90, 12, Main.rand.NextBool() ? SpinAction : SpinAction_2));
-						ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, Main.rand.NextBool() ? SpinAction : SpinAction_2));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 90, 12, Main.rand.NextBool() ? SpinAction : SpinAction_2));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 90, 12, Main.rand.NextBool() ? SpinAction : SpinAction_2));
 					}
 
 					StormMetaballSystem.Add(new StormParticle(Main.rand.Next(2))
@@ -333,8 +333,8 @@ public class StormGlyph : GlyphItem
 					Vector2 velocity = Main.rand.NextVector2Circular(3f, 3f);
 					float scale = Main.rand.NextFloat(0.1f, 0.3f);
 
-					ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 60, 15, Main.rand.NextBool() ? SpinAction : SpinAction_2));
-					ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 60, 15, Main.rand.NextBool() ? SpinAction : SpinAction_2));
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 60, 15, Main.rand.NextBool() ? SpinAction : SpinAction_2));
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 60, 15, Main.rand.NextBool() ? SpinAction : SpinAction_2));
 
 					static void SpinAction(Particle p)
 					{
@@ -671,8 +671,8 @@ public class StormGlyph : GlyphItem
 
 			float scale = Main.rand.NextFloat(0.1f, 0.3f);
 
-			ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 120, 3, SpinAction));
-			ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 120, 3, SpinAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 120, 3, SpinAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 120, 3, SpinAction));
 		}
 
 		if (Main.rand.NextBool(10) && item.velocity.Y < 0)
@@ -683,8 +683,8 @@ public class StormGlyph : GlyphItem
 
 			float scale = Main.rand.NextFloat(0.1f, 0.3f);
 
-			ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 60, 3, DecelerateAction));
-			ParticleHandler.SpawnParticle(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 60, 3, DecelerateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.LightCyan.Additive(), scale, 60, 3, DecelerateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, velocity, Color.White.Additive(), scale * 0.5f, 60, 3, DecelerateAction));
 
 			velocity = Vector2.UnitY * Main.rand.NextFloat(0.5f, 1f);
 

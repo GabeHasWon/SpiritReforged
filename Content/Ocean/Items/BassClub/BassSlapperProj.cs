@@ -1,4 +1,3 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
@@ -117,7 +116,7 @@ class BassSlapperProj : BaseClubProj
 			if (FullCharge)
 				velocity *= 1.33f;
 
-			ParticleHandler.SpawnParticle(new BubbleParticle(dustPos, velocity * -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 40)));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(dustPos, velocity * -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 40)));
 
 			for (int j = 0; j < 2; j++)
 				Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(4, 4), DustID.Water, velocity * -Vector2.UnitY * Main.rand.NextFloat(), Scale: Main.rand.NextFloat(2));
@@ -139,7 +138,7 @@ class BassSlapperProj : BaseClubProj
 		var basePosition = Vector2.Lerp(Projectile.Center, target.Center, 0.6f);
 		Vector2 directionUnit = basePosition.DirectionFrom(Owner.MountedCenter) * TotalScale;
 
-		ParticleHandler.SpawnParticle(new SlapperHit(basePosition, FullCharge ? 1 : 0.75f, hit.Crit));
+		ParticleRenderers.UnderProjectiles.Add(new SlapperHit(basePosition, FullCharge ? 1 : 0.75f, hit.Crit));
 
 		int numParticles = FullCharge ? 12 : 6;
 		Color particleColor = hit.Crit ? Color.Red : Color.Goldenrod;
@@ -158,7 +157,7 @@ class BassSlapperProj : BaseClubProj
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
 			var p = new ImpactLine(position, particleVel, particleColor.Additive(160) * 0.75f, new Vector2(0.4f, 0.8f) * TotalScale, Main.rand.Next(12, 16), 0.8f);
 			p.UseLightColor = false;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 		}
 	}
 

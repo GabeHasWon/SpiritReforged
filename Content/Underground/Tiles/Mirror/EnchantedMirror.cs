@@ -1,7 +1,6 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
@@ -21,7 +20,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 {
 	public sealed class MirrorReturnPortal : ModProjectile, IInteractable
 	{
-		public static readonly Asset<Texture2D> Highlight = DrawHelpers.RequestLocal<EnchantedMirror>("EnchantedMirrorItem_Highlight", false);
+		public static readonly Asset<Texture2D> Highlight = Graphics.Tex("SpiritReforged/Content/Underground/Tiles/Mirror/EnchantedMirrorItem_Highlight");
 
 		public override string Texture => ModContent.GetInstance<EnchantedMirror>().AutoModItem().Texture;
 
@@ -87,7 +86,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.BlueFlare, 0, -5).noGravity = true;
 				
 				if (Main.rand.NextBool())
-					ParticleHandler.SpawnParticle(new CompositeSmoke(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50), 80, true, false));
+					ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50) * 0.4f, 80, new(true, false, 0)));
 			}
 		}
 
@@ -101,7 +100,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			Texture2D outline = TextureColorCache.ColorSolid(texture, Color.White);
 			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, sine * 5 + Projectile.gfxOffY);
 
-			DrawHelpers.DrawOutline(Main.spriteBatch, outline, position, Color.White, (offset) =>
+			Graphics.DrawOutline(Main.spriteBatch, outline, position, Color.White, (offset) =>
 			{
 				Main.EntitySpriteDraw(texture, position + offset * 2, null, Projectile.GetAlpha(Color.Cyan.Additive()) * 0.5f * mult, rotation, texture.Size() / 2, Projectile.scale, 0);
 				Main.EntitySpriteDraw(texture, position + offset, null, Projectile.GetAlpha(Color.Cyan.Additive()) * mult, rotation, texture.Size() / 2, Projectile.scale, 0);
@@ -279,13 +278,13 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 		Main.mouseRightRelease = false;
 
 		for (int x = 0; x < 10; x++)
-			ParticleHandler.SpawnParticle(new CompositeSmoke(Main.rand.NextVector2FromRectangle(player.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50), 80, true, false));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Main.rand.NextVector2FromRectangle(player.Hitbox), Vector2.UnitY * -Main.rand.NextFloat(2), Color.Cyan * 0.5f, Main.rand.Next(40, 80), new(true, false, 0)));
 
-		ParticleHandler.SpawnParticle(new SharpStarParticle(player.Center, Vector2.Zero, Color.Cyan.Additive(), 1, 20)
-		{ Layer = ParticleLayer.AbovePlayer, Rotation = 0 });
+		ParticleRenderers.OverPlayers.Add(new SharpStarParticle(player.Center, Vector2.Zero, Color.Cyan.Additive(), 1, 20)
+		{ Rotation = 0 });
 
-		ParticleHandler.SpawnParticle(new SharpStarParticle(player.Center, Vector2.Zero, Color.White.Additive(), 0.7f, 20)
-		{ Layer = ParticleLayer.AbovePlayer, Rotation = 0 });
+		ParticleRenderers.OverPlayers.Add(new SharpStarParticle(player.Center, Vector2.Zero, Color.White.Additive(), 0.7f, 20)
+		{ Rotation = 0 });
 
 		KillOldPortals(player, out int type);
 
@@ -341,7 +340,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			for (int p = 0; p < (firstHit ? 4 : 10); p++)
 			{
 				Vector2 position = Main.rand.NextVector2FromRectangle(new(i * 16 + 8, j * 16 + 8, 16, Frame_Height - 32));
-				ParticleHandler.SpawnParticle(new EnchantedMirrorShard(position, (Vector2.UnitY * -Main.rand.NextFloat(1, 5)).RotatedByRandom(1), Main.rand.NextFloat() - 0.5f, Main.rand.NextFloat(0.5f, 1), 60));
+				ParticleRenderers.OverSolids.Add(new EnchantedMirrorShard(position, (Vector2.UnitY * -Main.rand.NextFloat(1, 5)).RotatedByRandom(1), Main.rand.NextFloat() - 0.5f, Main.rand.NextFloat(0.5f, 1), 60));
 			}
 		}
 	}
@@ -385,16 +384,15 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			Vector2 backPosition = new(i * 16 + backtile_spread * range - (backtile_spread - tile_spread) / 2, (j + 4) * 16);
 			Vector2 position = new(i * 16 + tile_spread * range, (j + 4) * 16);
 
-			ParticleHandler.SpawnParticle(new CompositeSmoke(backPosition, Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50), 160, false, false)
-			{ Layer = ParticleLayer.BelowWall });
+			ParticleRenderers.UnderWalls.Add(new CompositeSmoke(backPosition, Vector2.UnitY * -Main.rand.NextFloat(2), new Color(12, 25, 50) * 0.4f, 160, new(false, false, 0)));
 
 			float taperOff = 1f - EaseFunction.EaseSine.Ease(range);
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, Vector2.UnitY * -Main.rand.NextFloat(taperOff), new Color(44, 90, 120) * taperOff, 120, false, false)
-			{ Layer = ParticleLayer.BelowNPC });
+			ParticleRenderers.UnderNPCs.Add(new CompositeSmoke(position, Vector2.UnitY * -Main.rand.NextFloat(taperOff), new Color(44, 90, 120) * taperOff * 0.5f, 120, new(false, false, 0))
+			{ Variant = Main.rand.Next(3, 6) });
 
 			if (Main.rand.NextBool())
-				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, Vector2.UnitY * (taperOff * -0.5f), Color.DarkCyan, 80, false, true)
-				{ Layer = ParticleLayer.AbovePlayer });
+				ParticleRenderers.OverPlayers.Add(new CompositeSmoke(position, Vector2.UnitY * (taperOff * -0.5f), Color.DarkCyan * 0.5f, 80, new(false, false, 0.08f))
+				{ Variant = Main.rand.Next(3, 6) });
 		}
 	}
 

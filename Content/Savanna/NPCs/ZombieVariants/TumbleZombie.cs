@@ -77,7 +77,7 @@ public class TumbleZombie : ModNPC, ISubstitute
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ModContent.ItemType<Items.WrithingSticks.WrithingSticks>(), 800);
-		npcLoot.AddCommon(ModContent.ItemType<HuntingRifle>(), 300);
+		npcLoot.AddCommon(ModContent.ItemType<HuntingRifle>(), 100);
 	}
 
 	public bool CanSubstitute(Player player) => player.InModBiome<SavannaBiome>();

@@ -4,7 +4,6 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.NPCCommon.Interfaces;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Desert.ScarabBoss.Items;
@@ -40,7 +39,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 	public static readonly SoundStyle ChitterSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/Chitter", 4) {  MaxInstances = 5};
 	public static readonly SoundStyle SmallChitterSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/SmallChitter", 4) { MaxInstances = 5 };
 	public static readonly SoundStyle WindLoopSound = new SoundStyle("SpiritReforged/Assets/SFX/Scarabeus/WindLoop") { IsLooped = true, MaxInstances = 0 };
-	private SlotId windLoopSFXInstance;
+	//private SlotId windLoopSFXInstance;
 	#endregion
 
 	#region Balance values
@@ -91,7 +90,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 	}
 	#endregion
 
-	private static int SpawningMusic = MusicID.QueenSlime;
+	//private static int SpawningMusic = MusicID.QueenSlime;
 	private static int Phase1Music;
 	private static int Phase2Music;
 	private static int PhaseTwoHeadSlot;
@@ -273,12 +272,14 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 			PortraitPositionXOverride = 0f
 		});
 
-		PhaseOneProfile = new(TextureAssets.Npc[Type], DrawHelpers.RequestLocal<Scarabeus>("Scarabeus_Sheen", false), [9, 8, 16, 8, 8, 8, 6, 17]);
-		PhaseTwoProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Sheen", false), [3, 6, 5, 13], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusPhaseTwo_Wings", false));
-		SimulatedProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusSimulated_Glow", false), simulated: true);
-		BallProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusBall_Sheen", false), [1]);
-		TakeoffProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Sheen", false), [25], DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Glow", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusTakeoff_Wings", false));
-		DeadProfile = new(DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead", false), DrawHelpers.RequestLocal<Scarabeus>("ScarabeusDead_Sheen", false), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
+		const string Path = "SpiritReforged/Content/Desert/ScarabBoss/Boss/Scarabeus";
+
+		PhaseOneProfile = new(TextureAssets.Npc[Type], Graphics.Tex(Path + "_Sheen"), [9, 8, 16, 8, 8, 8, 6, 17]);
+		PhaseTwoProfile = new(Graphics.Tex(Path + "PhaseTwo"), Graphics.Tex(Path + "PhaseTwo_Sheen"), [3, 6, 5, 13], Graphics.Tex(Path + "PhaseTwo_Glow"), Graphics.Tex(Path + "PhaseTwo_Wings"));
+		SimulatedProfile = new(Graphics.Tex(Path + "Simulated"), Graphics.Tex(Path + "Simulated_Sheen"), Enumerable.Repeat(4, 11).ToArray(), Graphics.Tex(Path + "Simulated_Glow"), simulated: true);
+		BallProfile = new(Graphics.Tex(Path + "Ball"), Graphics.Tex(Path + "Ball_Sheen"), [1]);
+		TakeoffProfile = new(Graphics.Tex(Path + "Takeoff"), Graphics.Tex(Path + "Takeoff_Sheen"), [25], Graphics.Tex(Path + "Takeoff_Glow"), Graphics.Tex(Path + "Takeoff_Wings"));
+		DeadProfile = new(Graphics.Tex(Path + "Dead"), Graphics.Tex(Path + "Dead_Sheen"), Enumerable.Repeat(4, 11).ToArray(), simulated: true);
 
 		Phase1Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/Scarabeus");
 		Phase2Music = MusicLoader.GetMusicSlot(Mod, "Assets/Music/ScarabeusP2");
@@ -507,15 +508,15 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 				Gore.NewGoreDirect(NPC.GetSource_Death(), area.TopLeft(), -NPC.velocity * 2.5f, Mod.Find<ModGore>("Scarabeus" + i.ToString()).Type, 1f);
 
 			for (int i = 0; i < 12; i++)
-				ParticleHandler.SpawnParticle(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f)));
+				ParticleRenderers.UnderSolids.Add(new ScarabeusGuts(area.Center(), -NPC.velocity * 2.5f + Main.rand.NextVector2Unit() * Main.rand.NextFloat(3f, 6f)));
 
 			Vector2 velocity = -NPC.velocity * 0.7f;
 
 			for (int i = 0; i < 30; i++)
 			{
-				Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);		
-				
-				ParticleHandler.SpawnParticle(new SmokeCloud(pos, velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.3f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
+				Vector2 pos = NPC.Center + Main.rand.NextVector2Circular(NPC.width / 2, NPC.height / 2);
+
+				ParticleRenderers.UnderSolids.Add(new SmokeCloud(pos, velocity.RotatedByRandom(1.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.3f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
 				{
 					Pixellate = true,
 					DissolveAmount = 1,
@@ -523,7 +524,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 					PixelDivisor = 3,
 				});
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(2.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.4f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
+				ParticleRenderers.UnderSolids.Add(new SmokeCloud(pos, -NPC.velocity.RotatedByRandom(2.5f) * Main.rand.NextFloat(2), Color.DarkOrange * 0.4f, Color.Yellow * 0.2f, Main.rand.NextFloat(0.2f, 0.4f), EaseFunction.EaseQuadOut, Main.rand.Next(30, 120), false)
 				{
 					Pixellate = true,
 					DissolveAmount = 1,

@@ -1,5 +1,4 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Misc;
 using SpiritReforged.Content.Savanna.Biome;
 using System.IO;
 using Terraria.DataStructures;

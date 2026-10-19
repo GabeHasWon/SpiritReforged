@@ -72,7 +72,7 @@ public class PileOfConsequencesPet : ModProjectile
 			Main.EntitySpriteDraw(texture, Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition, source, color, Projectile.oldRot[i], source.Size() / 2, Projectile.scale, effects);
 
 		DrawBones(ref lightColor, effects);
-		DrawHelpers.DrawChromaticAberration(Vector2.UnitX * 3, 1, (offset, color) =>
+		Graphics.DrawChromaticAberration(Vector2.UnitX * 3, 1, (offset, color) =>
 		{
 			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY) + offset;
 			Main.EntitySpriteDraw(texture, position, source, Projectile.GetAlpha(color) * 0.1f, Projectile.rotation, source.Size() / 2, Projectile.scale, effects, 0);
@@ -83,13 +83,13 @@ public class PileOfConsequencesPet : ModProjectile
 
 	private void DrawBones(ref Color lightColor, SpriteEffects effects)
 	{
-		Texture2D texture = DragonBoneParticle.Texture.Value;
+		Texture2D texture = Particle.GetTexture<DragonBoneParticle>();
 		Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
 		SpriteEffects reverse = (effects == SpriteEffects.FlipHorizontally) ? SpriteEffects.None : SpriteEffects.FlipHorizontally;
 		float sine = EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 80f);
 		Rectangle source;
 
-		DrawHelpers.DrawChromaticAberration(Vector2.UnitX * 3, 1, (offset, color) =>
+		Graphics.DrawChromaticAberration(Vector2.UnitX * 3, 1, (offset, color) =>
 		{
 			Color alphaColor = Projectile.GetAlpha(color);
 

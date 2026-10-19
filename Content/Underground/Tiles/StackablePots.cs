@@ -1,5 +1,5 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -95,7 +95,7 @@ public class StackablePots : ModTile
 		int style = x % 3 + y * 3;
 		var velocity = (Vector2.UnitY * -Main.rand.NextFloat(3f, 5f)).RotatedByRandom(1f);
 
-		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), velocity, ModContent.ProjectileType<FallingPot>(), 10, 0, ai0: style);
+		Projectile.NewProjectile(new EntitySource_TileBreak(i, j), new Vector2(i, j).ToWorldCoordinates(16, 16), velocity, ModContent.ProjectileType<FallingPot>(), 0, 0, ai0: style);
 
 		Offsets.Remove(new Point16(i, j));
 	}
@@ -156,7 +156,7 @@ internal class FallingPot : ModProjectile
 				Dust.NewDustDirect(Projectile.BottomLeft, Projectile.width, 4, DustID.Pot, velocity.X, velocity.Y, Scale: Main.rand.NextFloat() + .25f);
 			}
 
-			ParticleHandler.SpawnParticle(new Particles.SmokeCloud(Projectile.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
+			ParticleRenderers.UnderProjectiles.Add(new Particles.SmokeCloud(Projectile.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
 		}
 
 		var pos = Projectile.Center.ToTileCoordinates();
