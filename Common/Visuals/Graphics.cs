@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.Visuals;
+﻿using SpiritReforged.Content.Ziggurat.Tiles.Chains;
+
+namespace SpiritReforged.Common.Visuals;
 
 public static class Graphics
 {
@@ -70,5 +72,8 @@ public static class Graphics
 	public static string Path(this string value) => value.Replace('.', '/');
 
 	/// <summary>Simply calls <see cref="ModContent.Request{T}(string, AssetRequestMode)"/> for a texture on the given path.</summary>
+	[Obsolete("Prefer Graphics.Texture or Graphics.Path extensions")]
 	public static Asset<Texture2D> Tex(string path, AssetRequestMode mode = AssetRequestMode.AsyncLoad) => ModContent.Request<Texture2D>(path, mode);
+
+	public static Asset<Texture2D> Texture(this Type type, string value, AssetRequestMode mode = AssetRequestMode.AsyncLoad) => ModContent.Request<Texture2D>((type.Namespace + $".{value}").Path(), mode);
 }

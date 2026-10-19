@@ -6,7 +6,7 @@ namespace SpiritReforged.Common.UI.BackpackInterface;
 
 public class PackInventorySlot(Item[] items, int index) : BasicItemSlot(items, index, ItemSlot.Context.ChestItem, 0.6f)
 {
-	public static readonly Asset<Texture2D> Favourite = Graphics.Tex("SpiritReforged/Common/UI/BackpackInterface/Slot_Favourite");
+	public static readonly Asset<Texture2D> Favourite = typeof(PackInventorySlot).Texture("Slot_Favourite");
 	
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
