@@ -14,7 +14,7 @@
 
 魂灵新魄为独立项目，无需魂灵即可游玩，但魂灵新魄与魂灵有额外的联动内容。你可以在继续使用魂灵提供的大量内容的同时探索魂灵新魄。
 
-我们全新推出的咒缚（v0.2.2）为游戏引入了一套名为雕文的新武器附魔系统！
+我们全新推出的魂灵万圣节（v0.2.3）是一个万圣节更新，引入了许多与惊惧（Spooky Mod）有关的全新、独特的跨模组内容。同时启用两个模组即可体验大量特殊内容！
 
 -- 新增内容 --
 简而言之，魂灵新魄添加了：
@@ -29,4 +29,4 @@
 Discord: https://discord.com/invite/013k6H2ufdQjco5kv
 
 -- 贡献者 --
-tomat，alinahvoshch，Halmska，mathica, z_e_n_
+tomat，alinahvoshch，Halmska，mathica，z_e_n_
