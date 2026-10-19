@@ -102,27 +102,24 @@ public class CompositeRenderer : ModSystem
 
 public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 {
+	public readonly record struct RenderSettings(bool AddLight, bool UseLightColor, float BloomStrength);
+
 	public readonly Action<Particle> Action;
 
 	public Entity Parent { get; private set; }
 	public int Variant { get; set; }
 
-	private readonly bool _addLight;
-	private readonly bool _addBloom;
-	private readonly float _bloomOpacity;
-
+	private readonly RenderSettings _settings;
 	private Vector2 _offset; //Offset only when attached
 
-	public CompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, bool addLight = true, bool addBloom = true, Action<Particle> extraUpdateAction = null, float bloomOpacity = 0.08f)
+	public CompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, RenderSettings settings, Action<Particle> extraUpdateAction = null)
 	{
 		Position = position;
 		Velocity = velocity;
 		Rotation = 0f;
 		MaxTime = maxTime;
 
-		_addLight = addLight;
-		_addBloom = addBloom;
-		_bloomOpacity = bloomOpacity;
+		_settings = settings;
 
 		Color = color;
 		Variant = Main.rand.Next(3); //Choose a random large variant by default
@@ -149,7 +146,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 
 		Velocity *= 0.98f;
 
-		if (_addLight)
+		if (_settings.AddLight)
 			Lighting.AddLight(Position, Color.ToVector3() * (1f - Progress));
 
 		Action?.Invoke(this);
@@ -160,6 +157,11 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 		Texture2D texture = Texture;
 		Rectangle frame = Texture.Frame(6, 5, Variant, (int)MathHelper.Lerp(0, 5, Progress));
 		Vector2 position = Position - Main.screenPosition + Vector2.UnitY * Main.screenHeight * layer;
+		Color color = Color;
+
+		if (_settings.UseLightColor)
+			color = Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGBA(Color);
+
 		float progress = Progress;
 		float fadeOut = 1f;
 		
@@ -170,12 +172,17 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 			fadeOut = 1f - (progress - 0.5f) / 0.5f;
 
 		IDrawPixelated.PixelateDrawPosition(ref position);
-		spriteBatch.Draw(texture, position, frame, Color * fadeOut, Rotation, frame.Size() / 2, Scale / 2, SpriteEffects.None, 0);
+		spriteBatch.Draw(texture, position, frame, color * fadeOut, Rotation, frame.Size() / 2, Scale / 2, SpriteEffects.None, 0);
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
 	{
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+		Color color = Color;
+
+		if (_settings.UseLightColor)
+			color = Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGBA(Color);
+
 		float progress = Progress;
 		float fadeOut = 1f;
 
@@ -185,8 +192,8 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 		if (progress > 0.5f)
 			fadeOut = 1f - (progress - 0.5f) / 0.5f;
 
-		if (_addBloom)
-			spritebatch.Draw(bloom, Position + settings.AnchorPosition, null, Color.Additive() * _bloomOpacity * fadeOut, Rotation, bloom.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
+		if (_settings.BloomStrength > 0)
+			spritebatch.Draw(bloom, Position + settings.AnchorPosition, null, color.Additive() * _settings.BloomStrength * fadeOut, Rotation, bloom.Size() / 2, Scale * 0.5f, SpriteEffects.None, 0);
 
 		CompositeRenderer.CompositeItems.Add(this);
 	}

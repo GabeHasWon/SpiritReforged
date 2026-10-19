@@ -307,9 +307,9 @@ internal class DhampirNPC : ModNPC
 						SpawnMist();
 
 				if (Main.rand.NextBool())
-					ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(0.5f, 0.5f), Color.LightCyan, Main.rand.Next(60) + 10, false, bloomOpacity: 0.04f));
+					ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(0.5f, 0.5f), Color.LightCyan, Main.rand.Next(60) + 10, new(false, false, 0.04f)));
 
-				ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(3.5f, 3.5f), Color.AntiqueWhite, Main.rand.Next(40) + 20, false, false, p => p.Velocity *= 0.9f)
+				ParticleRenderers.UnderSolids.Add(new CompositeSmoke(NPC.Center, Main.rand.NextVector2Circular(3.5f, 3.5f), Color.AntiqueWhite, Main.rand.Next(40) + 20, new(false, false, 0), p => p.Velocity *= 0.9f)
 				{
 					Scale = 0.5f,
 				});

@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace SpiritReforged.Common.Visuals;
+﻿namespace SpiritReforged.Common.Visuals;
 
 public static class Graphics
 {

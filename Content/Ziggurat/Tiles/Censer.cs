@@ -42,7 +42,7 @@ public class Censer : ModTile, ILoadItem
 			float posHash = hitbox.X * hitbox.Y * 67.67f;
 			Vector2 velocity = (Vector2.UnitY * -1f).RotatedBy(Math.Sin(Main.timeForVisualEffects / 20f + posHash) / (3 + (posHash % 1f - 0.5f)));
 
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(spawn, velocity, Color.White * 0.2f, 60));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(spawn, velocity, Color.White * 0.3f, 60, new(false, true, 0)));
 		}
 	}
 }
