@@ -181,7 +181,7 @@ public sealed class ParticleRenderers : ModSystem
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.Transform);
+			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawParticles(spriteBatch, UnderWalls);
 

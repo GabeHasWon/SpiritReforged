@@ -10,6 +10,8 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 {
 	private class DustStream : Particle
 	{
+		public override string TexturePath => AssetLoader.EmptyTexture;
+
 		public DustStream(Vector2 position)
 		{
 			Position = position;
@@ -80,8 +82,6 @@ public class RedSandstoneBrickCracked : RedSandstoneBrick
 			SoundEngine.PlaySound(DebrisQuiet, center + new Vector2(8));
 		}
 		else if (effectOnly && Main.rand.NextBool(4))
-		{
 			ParticleRenderers.UnderProjectiles.Add(new DustStream(new Vector2(i, j).ToWorldCoordinates(8, 16)));
-		}
 	}
 }
