@@ -33,8 +33,10 @@ public class HerosMemorialStatue : ModTile, ILoadItem
 		TileObjectData.newTile.StyleWrapLimit = 2;
 		TileObjectData.newTile.StyleMultiplier = 2;
 		TileObjectData.newTile.StyleHorizontal = true;
+
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 

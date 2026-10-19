@@ -60,6 +60,8 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 		}
 	}
 
+	private const string Path = "SpiritReforged/Common/WorldGeneration/Micropasses/Passes/Ziggurat/";
+
 	public override string WorldGenName => "Ziggurat";
 
 	[GenConfigurable(0, 12)]
@@ -126,7 +128,7 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 	[Slider]
 	private static int AbovegroundPillarChance = 3;
 
-	PageInfo IGenerationPage.Info => new("Ziggurat", DrawHelpers.RequestLocal(GetType(), "ZigguratPage", false), DrawHelpers.RequestLocal(GetType(), "ZigguratPageButton", false))
+	PageInfo IGenerationPage.Info => new("Ziggurat", Graphics.Tex(Path + "ZigguratPage"), Graphics.Tex(Path + "ZigguratPageButton"))
 	{
 		Presets =
 		[
@@ -397,7 +399,7 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 		decorator.Enqueue(SprinkleSandDunes, 3);
 		decorator.Enqueue(PlacePot, (int)(segments * PotMultiplier));
 		decorator.Enqueue(PlaceDoor, 1);
-		decorator.Run();
+		decorator.Run(out _);
 
 		return result;
 	}
@@ -534,7 +536,7 @@ internal partial class ZigguratMicropass : Micropass, IGenerationPage
 		}
 
 		decorator.Enqueue(PlacePot, (int)(segments * PotMultiplier));
-		decorator.Run();
+		decorator.Run(out _);
 
 		return result;
 

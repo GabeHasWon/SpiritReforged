@@ -14,6 +14,9 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Cave Objects";
 
+	public static readonly Asset<Texture2D> UndergroundPage = Graphics.Tex("SpiritReforged/Common/WorldGeneration/Micropasses/Passes/UndergroundPage");
+	public static readonly Asset<Texture2D> UndergroundPageButton = Graphics.Tex("SpiritReforged/Common/WorldGeneration/Micropasses/Passes/UndergroundPageButton");
+
 	[GenConfigurable(0.05f, 50f, 0.05f)]
 	[Slider]
 	internal static float CartSpawnRate = 1;
@@ -26,7 +29,7 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 	[Slider]
 	private static float MirrorRate = 1;
 
-	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	PageInfo IGenerationPage.Info => new("Caves", UndergroundPage, UndergroundPageButton)
 	{
 		CopiedPage = new HouseLoader()
 	};

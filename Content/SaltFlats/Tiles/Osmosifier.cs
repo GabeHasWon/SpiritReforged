@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.IO;
@@ -105,7 +105,7 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, ILoadItem
 		if (!Main.dedServ)
 		{
 			SoundEngine.PlaySound(SaltBlock.Break with { Pitch = 0.5f }, worldCoords);
-			ParticleHandler.SpawnParticle(new SmokeCloud(worldCoords, -Vector2.UnitY, Color.White, 0.2f, Common.Easing.EaseFunction.EaseCubicOut, 60)
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(worldCoords, -Vector2.UnitY, Color.White, 0.2f, Common.Easing.EaseFunction.EaseCubicOut, 60)
 			{
 				TertiaryColor = Color.Pink,
 				Pixellate = true,

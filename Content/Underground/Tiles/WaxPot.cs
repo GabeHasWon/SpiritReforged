@@ -1,16 +1,16 @@
-﻿using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.UI.PotCatalogue;
-using static SpiritReforged.Common.TileCommon.NamedStyles;
-using Terraria.DataStructures;
-using SpiritReforged.Common.WorldGeneration;
+﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Content.Glyphs;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Content.Glyphs;
+using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
-using SpiritReforged.Common.ItemCommon;
+using Terraria.DataStructures;
+using static SpiritReforged.Common.TileCommon.NamedStyles;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
@@ -54,7 +54,7 @@ public class WaxPot : PotTile, ILootable
 		if (visible && TileObjectData.IsTopLeft(i, j) && Main.rand.NextBool(8) && Lighting.Brightness(i, j) > 0.5f)
 		{
 			Rectangle area = new(i * 16, j * 16, 32, 32);
-			ParticleHandler.SpawnParticle(new SharpStarParticle(Main.rand.NextVector2FromRectangle(area), Vector2.Zero, ChromaticWax.SpecialColor, 0.2f, 50, 0, AddLight: false));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(Main.rand.NextVector2FromRectangle(area), Vector2.Zero, ChromaticWax.SpecialColor, 0.2f, 50, 0, AddLight: false));
 		}
 	}
 
@@ -76,7 +76,7 @@ public class WaxPot : PotTile, ILootable
 			SoundEngine.PlaySound(SoundID.DD2_WitherBeastAuraPulse, position);
 
 			for (int x = 0; x < 20; x++)
-				ParticleHandler.SpawnParticle(new EmberParticle(position + Main.rand.NextVector2Circular(15, 15), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), ChromaticWax.SpecialColor, 1, 30, 2));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position + Main.rand.NextVector2Circular(15, 15), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), ChromaticWax.SpecialColor, 1, 30, 2));
 		}
 
 		base.KillMultiTile(i, j, frameX, frameY);

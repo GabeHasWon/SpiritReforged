@@ -1,15 +1,15 @@
-v0.2.2.9
-- Added complete Spanish translation! Thank you to MrBurrito7w7 for the translation
-- Updated Russian and Chinese localizations
-- Fixed enchanted Wax Presses being bombable (normal Wax Presses can explode normally)
-- Made Enchanted Mirrors not blow up, allow hammering or breaking its anchors - can still be mined normally
-- Added "Sunburnt Zombie" to Thorium Zombie Repellent list
-- Fixed stat pickups (like mana stars or hearts) going into backpacks
-- Added pickup toggle for backpacks, allowing (or disallowing) them from picking up items directly
-- Added 3 Desert Torches to Disentombed origin, as otherwise you are in pitch blackness often lol
-- Fixed Disentombed origin not working properly on spawn
-- Improved the performance of the Adorned Bow's visual effects
-- Falling stacked pots no longer deal any damage
-- Increased Hunting Rifle drop rate substantially (Tumbleweed Zombies: to 1/100 from 1/300, Safari Zombie: to 1/30 from 1/100)
-- Fixed Scarabeus bestiary entry not working properly when at not 100% UI zoom
-- Fixed Silver Food Platter hard crashing the game if placed on a table, and then the table being broken
+v0.2.3
+Alongside Spooky Mod's 1.4.4 update, we have added new, exclusive cross-mod content for players to enjoy while playing Spirit Reforged and Spooky together.
+Note: Most new content is only accessible while playing both Spirit Reforged and Spooky Mod at the same time. 
+
+
+- Added two new quest minibosses for Spooky's Little Eye Bounties: The Mummiath and Dhampir
+- Added new clubs based on Spooky content
+- Added Cartographer Map Pins, Uncommon Pots to many Spooky biomes!
+- Added Scaregrass, a spooky alternative to Stargrass found in the Spooky Forest! Scaregrass comes with its own foliage and tree types!
+- Added Trellises for Spooky Mod Woods: Spooky Forest Wood, Old Birch
+... and much more!
+
+**Spooky Mod**
+- Added the Boggy Shipyard, a new **Crossmod Ecotone**.
+...and much more!

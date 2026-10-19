@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -108,7 +108,7 @@ public class ReefSpearThrown : ModProjectile
 		for (int i = 0; i < Main.rand.Next(5, 7); i++)
 		{
 			Vector2 offset = (Vector2.UnitY.RotatedBy(Projectile.velocity.ToRotation()) * Main.rand.NextFloat(-15, 15)).RotatedByRandom(0.2f);
-			ParticleHandler.SpawnParticle(new BubbleParticle(Projectile.Center + offset, Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(1f, 4f), Main.rand.NextFloat(0.1f, 0.2f), Main.rand.Next(30, 61)));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(Projectile.Center + offset, Vector2.Normalize(Projectile.velocity) * Main.rand.NextFloat(1f, 4f), Main.rand.NextFloat(0.1f, 0.2f), Main.rand.Next(30, 61)));
 		}
 	}
 
@@ -160,7 +160,7 @@ public class ReefSpearThrown : ModProjectile
 
 		float velocityRatio = Math.Min(velocity.Length() / MAX_SPEED, 1);
 
-		ParticleHandler.SpawnParticle(new ReefSpearImpact(null,
+		ParticleRenderers.OverPlayers.Add(new ReefSpearImpact(null,
 			Projectile.Center - Vector2.Normalize(velocity) * 6,
 			Vector2.Normalize(velocity) * 2 * velocityRatio,
 			240,
@@ -182,7 +182,7 @@ public class ReefSpearThrown : ModProjectile
 				0.3f).WithSkew(0.8f, Projectile.velocity.ToRotation() - MathHelper.Pi).UsesLightColor();
 
 		particle.Velocity = Vector2.Normalize(velocity) * -velocityRatio / 3;
-		ParticleHandler.SpawnParticle(particle);
+		ParticleRenderers.OverPlayers.Add(particle);
 	}
 
 	public NPC GetStuckNPC() => Main.npc[(int)Projectile.ai[1]];

@@ -387,13 +387,19 @@ internal class BackpackPlayer : ModPlayer
 
 	private void ApplyEquip(Item backpack)
 	{
-		Player.back = EquipLoader.GetEquipSlot(Mod, backpack.ModItem.Name, EquipType.Back);
-		Player.front = EquipLoader.GetEquipSlot(Mod, backpack.ModItem.Name, EquipType.Front);
+		CheckEquipSlot(backpack, EquipType.Back, ref Player.back, ref Player.cBack);
+		CheckEquipSlot(backpack, EquipType.Front, ref Player.front, ref Player.cFront);
+		CheckEquipSlot(backpack, EquipType.HandsOn, ref Player.handon, ref Player.cHandOn);
+	}
 
-		if (!packDye.IsAir) 
+	private void CheckEquipSlot(Item backpack, EquipType type, ref int playerSlot, ref int playerCSlot)
+	{
+		if (EquipLoader.GetEquipSlot(Mod, backpack.ModItem.Name, type) is int slot and not -1)
 		{
-			Player.cBack = packDye.dye;
-			Player.cFront = packDye.dye;
+			playerSlot = slot;
+
+			if (!packDye.IsAir)
+				playerCSlot = packDye.dye;
 		}
 	}
 

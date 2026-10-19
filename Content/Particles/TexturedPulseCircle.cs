@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -31,8 +30,6 @@ public class TexturedPulseCircle : PulseCircle
 		_texture = texture;
 		_textureStretch = textureStretch;
 	}
-
-	public override ParticleLayer DrawLayer => Layer;
 
 	internal override string EffectPassName => "TexturedStyle";
 

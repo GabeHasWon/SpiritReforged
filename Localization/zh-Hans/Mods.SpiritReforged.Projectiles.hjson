@@ -101,6 +101,14 @@ ShockGlyphLightningBolt.DisplayName: 闪电矢
 MariglowSeed.DisplayName: 光盏种子
 RageHit.DisplayName: 愤怒一击
 MirrorReturnPortal.DisplayName: 返回之镜传送门
+Columbat.DisplayName: 蝠伦布
+Columbald.DisplayName: 秃伦布
+EyeballMinion.DisplayName: 眼球
+PumpkinEmberProjectile.DisplayName: 余烬
+ShovelClubBoneProjectile.DisplayName: 骨头
+SpareLeg.DisplayName: 备用腿
+SpareHand.DisplayName: 备用手
+SpareHeart.DisplayName: 备用心
 // GreatshieldHitbox.DisplayName: Greatshield Hitbox
 // OverloaderExplosion.DisplayName: Overloader Explosion
 // StoneshieldBash.DisplayName: Stoneshield Bash

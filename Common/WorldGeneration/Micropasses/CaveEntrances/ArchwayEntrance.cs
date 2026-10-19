@@ -1,9 +1,7 @@
 ﻿using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Common.WorldGeneration.Tools;
-using System.Diagnostics;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.CaveEntrances;
 

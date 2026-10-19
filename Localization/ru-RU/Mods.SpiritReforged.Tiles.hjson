@@ -1,4 +1,5 @@
 Records: {
+	# Reforged pots
 	CoinPortal:
 		'''
 		Всегда содержит портал с монетами.
@@ -28,6 +29,52 @@ Records: {
 	Biome: Содержит больше разнообразной добычи, чем обычные горшки.
 	Boulder: Покатится по земле, если его задеть.
 	Wax: Полон могущественной магической энергии.
+
+	# Spooky cross mod pots
+	SpookyForest: {
+		Name: Полная корзинка
+		Entry: Передовое достижение в области хрупких переносок конфет.
+	}
+
+	SpiderGrotto: {
+		Name: Кастрюля в паутине
+		Entry: Кто это всё готовил?..
+	}
+
+	NoseTemple: {
+		Name: Фарфоровый нос
+		Entry: Роскошнейший фарфор для тех, кто любит задирать нос.
+	}
+
+	FetidFarms: {
+		Name: Мешок с продуктами
+		Entry: Сегодняшнего сбора!
+	}
+
+	RottenDepths: {
+		Name: Фаршированный скелет
+		Entry: Похоже, эта рыба что-то съела перед смерть.
+	}
+
+	TarPits: {
+		Name: Смолямический горшок
+		Entry: Узорчатый, чуток липкий, немного труснувший.
+	}
+
+	Krampus: {
+		Name: Прекрасный подарок
+		Entry: Крутейшая подарочная коробка, что вы когда либо видели.
+	}
+
+	UpperCatacombs: {
+		Name: Древний резной горшок
+		Entry: На нём прекрасный узор, хотя его и трудно разглядеть.
+	}
+
+	LowerCatacombs: {
+		Name: Насмехающийся горшок
+		Entry: Да, он насмехается именно над тобой.
+	}
 }
 
 FablesGraves: {
@@ -47,4 +94,6 @@ DustyTomb.MapEntry: Запылившийся гроб
 # Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
 OganessonMoss.MapEntry: "{$Items.OganessonMossItem.DisplayName}"
 RadonMoss.MapEntry: "{$Items.RadonMossItem.DisplayName}"
+StarscareSapling.MapEntry: "{$MapObject.Sapling}"
+StarscareSaplingGreen.MapEntry: "{$MapObject.Sapling}"
 // C4.MapEntry: C4
