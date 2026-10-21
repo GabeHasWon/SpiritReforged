@@ -234,10 +234,10 @@ public class UncommonSpookyPots : PotTile, ILootable
 
 			if (spawnSlime)
 				NPC.NewNPCDirect(source, center, ModContent.NPCType<PotterySlime>());
-
-			if (Main.dedServ)
-				return;
 		}
+
+		if (Main.dedServ)
+			return;
 
 		Mod spooky = CrossMod.Spooky.Instance;
 

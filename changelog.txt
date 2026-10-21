@@ -1,8 +1,3 @@
-v0.2.3.1
-- Fixed Cartographer giving infinite pins, whoops!
-- Fixed gems on the mouse not being consumed on Ancient Altar use
-- Fixed missing texture issue with Cracked Red Sandstone Bricks
-- Fixed some smoke particles being improperly affected by lighting
-- Fixed major issue with the particle renderers being any combination of offset, on the wrong layer or zoomed incorrectly
-- Corrected the texture of hanging Censers
-- Updated Russian and Chinese localization
+v0.2.3.2
+- Made the Points of Interest system not try to add the same PoI position twice
+- Made the PoI system add all three new Spooky PoI (Smack o' Lantern, Gravemaker, Pumpkin Pails)

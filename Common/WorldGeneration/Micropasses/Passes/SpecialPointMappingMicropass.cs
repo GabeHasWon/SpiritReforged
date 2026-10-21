@@ -4,6 +4,8 @@ using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
+using SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
+using SpiritReforged.Content.Crossmod.Spooky.Tiles;
 using SpiritReforged.Content.Desert.DragonFossil;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Forest.Botanist.Tiles;
@@ -81,6 +83,14 @@ internal class SpecialPointMappingMicropass : Micropass
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
 		HashSet<int> curiosityTypes = [ModContent.TileType<BlunderbussTile>(), ModContent.TileType<PearlStringTile>(), ModContent.TileType<SkeletonHand>(), ModContent.TileType<Scarecrow>()];
+
+		if (CrossMod.Spooky.Enabled)
+		{
+			curiosityTypes.Add(ModContent.TileType<PumpkinPailTile>());
+			curiosityTypes.Add(ModContent.TileType<ShovelTile>());
+			curiosityTypes.Add(ModContent.TileType<SmackOLanternTile>());
+		}
+
 		HashSet<InterestType> placed = [];
 
 		int fablesVaultType = -1;
@@ -156,7 +166,10 @@ internal class SpecialPointMappingMicropass : Micropass
 
 		void Add(int x, int y, InterestType type)
 		{
-			PointOfInterestSystem.InterestByPosition.Add(new(x, y), new(type));
+			if (PointOfInterestSystem.InterestByPosition.TryGetValue(new Point16(x, y), out var value))
+				SpiritReforgedMod.Instance.Logger.Info($"Two (or more) interests were placed @ {x}, {y}, currently {value.type}, attempted {type}.");
+
+			PointOfInterestSystem.InterestByPosition.TryAdd(new(x, y), new(type));
 			placed.Add(type);
 		}
 	}
