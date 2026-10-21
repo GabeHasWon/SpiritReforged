@@ -104,7 +104,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 {
 	public readonly record struct RenderSettings(bool AddLight, bool UseLightColor, float BloomStrength);
 
-	/// <summary>A shortcut for small <see cref="Variant"/>s.</summary>
+	/// <summary>A random-value shortcut for small <see cref="Variant"/>s.</summary>
 	public static int SmallVariant => Main.rand.Next(3, 6);
 
 	public readonly Action<Particle> Action;

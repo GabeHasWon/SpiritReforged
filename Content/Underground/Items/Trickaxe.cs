@@ -12,7 +12,7 @@ namespace SpiritReforged.Content.Underground.Items;
 
 public class Trickaxe : ModItem
 {
-	/*public class MiningMeterPlayer : ModPlayer
+	/*public class MiningMeterPlayer : ModPlayer //Draws a meter indicator for current Trickaxe charge. Could be reimplemented if made fancier
 	{
 		public static readonly Asset<Texture2D> Meter = DrawHelpers.RequestLocal<Trickaxe>("MiningMeter", false);
 
