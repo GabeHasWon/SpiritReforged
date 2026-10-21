@@ -119,7 +119,7 @@ public abstract class SwungProjectile : ModProjectile
 		var origin = new Vector2(4, (effects == SpriteEffects.FlipVertically) ? 9 : 30); //The handle
 		var color = Projectile.GetAlpha(lightColor) * Math.Min(Counter / SwingTime * 3, 1) * 0.5f;
 
-		DrawHeld(lightColor, origin, Projectile.rotation * SwingDirection, effects);
+		DrawHeld(lightColor, origin, Projectile.rotation, effects);
 		DrawSmear(color, Projectile.rotation - SwingArc * 0.5f * Projectile.spriteDirection, effects);
 
 		return false;
@@ -160,7 +160,7 @@ public abstract class SwungProjectile : ModProjectile
 		return PreNewProjectile.New(source, position, velocity, type, damage, knockback, owner.whoAmI, ai0, ai1, ai2, (p) => (p.ModProjectile as SwungProjectile).SwingArc = swingArc);
 	}
 
-	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(ScaledReach + add, 0).RotatedBy(GetRotation(out _, out Player.CompositeArmStretchAmount _) - MathHelper.PiOver4);
+	public Vector2 GetEndPosition(int add = 0) => Projectile.Center + new Vector2(ScaledReach + add, 0).RotatedBy(GetAbsoluteAngle());
 
 	public Player.CompositeArmStretchAmount ProgressiveStretch() => (int)(Progress * 4f) switch
 	{
