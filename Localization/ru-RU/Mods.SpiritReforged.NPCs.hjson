@@ -531,17 +531,17 @@ DesertStactus: {
 
 CorruptStactus: {
 	DisplayName: Искажённый стактус
-	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	Entry: "{$NPCs.DesertStactus.Entry}"
 }
 
 CrimsonStactus: {
 	DisplayName: Багряный стактус
-	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	Entry: "{$NPCs.DesertStactus.Entry}"
 }
 
 HallowedStactus: {
 	DisplayName: Освящённый стактус
-	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	Entry: "{$NPCs.DesertStactus.Entry}"
 }
 
 BrineShrimp: {
@@ -715,7 +715,7 @@ BeetleTownPet: {
 		Ladybug15: Тюльпан
 	}
 
-	Census.SpawnCondition: Используйте [i:SpiritReforged/BeetleLicense] жучий паспорт, выпадающий со Скарабеуса
+	Census.SpawnCondition: Используйте [i:SpiritReforged/BeetleLicense] лицензию на жука, выпадающий со Скарабеуса
 }
 
 Enchanter: {
