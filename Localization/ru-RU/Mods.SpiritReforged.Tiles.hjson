@@ -96,3 +96,4 @@ OganessonMoss.MapEntry: "{$Items.OganessonMossItem.DisplayName}"
 RadonMoss.MapEntry: "{$Items.RadonMossItem.DisplayName}"
 StarscareSapling.MapEntry: "{$MapObject.Sapling}"
 StarscareSaplingGreen.MapEntry: "{$MapObject.Sapling}"
+// C4.MapEntry: C4

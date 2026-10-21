@@ -109,13 +109,6 @@ MirrorReturnPortal.DisplayName: Portal do Espelho do Retorno
 // SpareLeg.DisplayName: Spare Leg
 // SpareHand.DisplayName: Spare Hand
 // SpareHeart.DisplayName: Spare Heart
-// Firefall.DisplayName: Firefall
-// WindBurstProjectile.DisplayName: Wind Burst
-// SingularCollapse.DisplayName: Singularity
-// ShockGlyphLightningBolt.DisplayName: Lightning Bolt
-// MariglowSeed.DisplayName: Mariglow Seed
-// RageHit.DisplayName: Rage Hit
-// MirrorReturnPortal.DisplayName: Mirror of Return Portal
 // GreatshieldHitbox.DisplayName: Greatshield Hitbox
 // OverloaderExplosion.DisplayName: Overloader Explosion
 // StoneshieldBash.DisplayName: Stoneshield Bash
