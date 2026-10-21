@@ -3988,3 +3988,8 @@ Trickaxe: {
 		<right> to fire an explosive charge
 		'''
 }
+
+C4Item: {
+	DisplayName: C4
+	Tooltip: Destroys walls in a radius when interacted with
+}
