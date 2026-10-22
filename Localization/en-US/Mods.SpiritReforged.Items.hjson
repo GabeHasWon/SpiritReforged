@@ -4028,3 +4028,8 @@ Starbalest: {
 	DisplayName: Starbalest
 	Tooltip: Perfect reload causes shots to explode
 }
+
+HunterKeepsake: {
+	DisplayName: Hunter's Keepsake
+	Tooltip: Crossbow kills ensure your next shot deals critical damage
+}

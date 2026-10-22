@@ -55,7 +55,7 @@ public class FireworkBolt : ModItem
 
 		public override void OnKill(int timeLeft)
 		{
-			Projectile.Resize(50, 50);
+			Projectile.Resize(90, 90);
 			Projectile.Damage();
 
 			if (!Main.dedServ) //Firework effects

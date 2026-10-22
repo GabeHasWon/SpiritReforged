@@ -9,6 +9,7 @@ namespace SpiritReforged.Content.Forest.Crossbows;
 [ReinitializeDuringResizeArrays]
 public class BoltCache : ModSystem
 {
+	/// <summary>Whether the given projectile type is a crossbow bolt.</summary>
 	public static readonly bool[] IsCrossbowBolt = SpiritSets.ProjectileFactory.CreateBoolSet();
 
 	public override void PostSetupContent()
