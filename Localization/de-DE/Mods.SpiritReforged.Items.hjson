@@ -3165,7 +3165,8 @@ ChromaticWax: {
 	Gain: Die verzauberte Waffe erhält: [c/{0}:{1}]
 	Target: Kann nur auf Waffen angewendet werden
 	RightClick: Halte diese Glyphe und rechtsklicke den Gegenstand, den du verzaubern willst
-	GlyphPrefixing: "({0}) {1}"
+	# {0} - glyph prefix, {1} - item name
+	GlyphPrefixing: ({0}) {1}
 }
 
 BlazeGlyph: {
