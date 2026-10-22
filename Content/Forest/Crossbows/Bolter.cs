@@ -26,7 +26,6 @@ public class Bolter : ModItem, ReloadPlayer.IPerfectReload
 
 			_canEmbed = true;
 
-			projectile.hide = true;
 			projectile.penetrate++; //Withstand an additional strike
 			projectile.stopsDealingDamageAfterPenetrateHits = true;
 		}
@@ -72,6 +71,9 @@ public class Bolter : ModItem, ReloadPlayer.IPerfectReload
 					Dust.NewDustPerfect(projectile.Center, DustID.Blood, (projectile.velocity * -Main.rand.NextFloat(0.2f, 0.5f)).RotatedByRandom(0.5f));
 
 				Vector2 offset = projectile.Center - target.Center;
+				projectile.velocity = offset;
+				projectile.hide = true;
+
 				ParticleRenderers.OverNPCs.Add(new BloodHit(target, offset, 20, offset.ToRotation(), 1));
 			}
 		}

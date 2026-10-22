@@ -37,6 +37,19 @@ public class PrismBolt : ModItem
 
 		public override void AI()
 		{
+			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
+
+			if (Projectile.ai[0] > 60)
+				Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.4f, 10);
+
+			if (Projectile.ai[0] > 40)
+				Projectile.velocity *= 0.99f;
+
+			Projectile.ai[0]++;
+		}
+
+		public override void PostAI() //Update trails regardless of what PreAI returns
+		{
 			if (!Main.dedServ)
 			{
 				_trails ??=
@@ -48,16 +61,6 @@ public class PrismBolt : ModItem
 				foreach (VertexTrail trail in _trails)
 					trail.Update();
 			}
-
-			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-
-			if (Projectile.ai[0] > 60)
-				Projectile.velocity.Y = Math.Min(Projectile.velocity.Y + 0.4f, 10);
-
-			if (Projectile.ai[0] > 40)
-				Projectile.velocity *= 0.99f;
-
-			Projectile.ai[0]++;
 		}
 
 		public override void OnKill(int timeLeft)

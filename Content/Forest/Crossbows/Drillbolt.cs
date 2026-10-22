@@ -41,16 +41,6 @@ public class Drillbolt : ModItem
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-			if (!Main.dedServ)
-			{
-				_trail ??= new VertexTrail(new LightColorTrail(Color.LightGray * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
-				_trail.Update();
-
-				_noiseCone ??= (BasicNoiseCone)new BasicNoiseCone(Projectile.Center, Projectile.velocity, 40, new(50, 50)).SetColors(Color.White, Color.DarkGray).SetIntensity(2).AttachTo(Projectile);
-				_noiseCone.Rotation = Projectile.velocity.ToRotation();
-				_noiseCone.Update(ref ParticleRenderers.OverPlayers.Settings);
-			}
-
 			if (Projectile.ai[0] > 120)
 				Projectile.tileCollide = true; //Die on collision
 
@@ -69,9 +59,9 @@ public class Drillbolt : ModItem
 
 				if (Framing.GetTileSafely(Projectile.Center + Projectile.velocity) is Tile tile && WorldGen.SolidOrSlopedTile(tile))
 				{
-					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY, Color.Lerp(TileMaterial.FindMaterial(tile.TileType).Color, Color.Black, 0.2f), 30));
-					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY, TileMaterial.FindMaterial(tile.TileType).Color, 30) { Variant = CompositeSmoke.SmallVariant });
-					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, Vector2.UnitY * -Main.rand.NextFloat(1.2f), TileMaterial.FindMaterial(tile.TileType).Color, 40) { Variant = CompositeSmoke.SmallVariant });
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY, Color.Lerp(TileMaterial.FindMaterial(tile.TileType).Color, Color.Black, 0.2f), 30, new(false, true, 0)));
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY, TileMaterial.FindMaterial(tile.TileType).Color, 30, new(false, true, 0)) { Variant = CompositeSmoke.SmallVariant });
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(Projectile.Center, Vector2.UnitY * -Main.rand.NextFloat(1.2f), TileMaterial.FindMaterial(tile.TileType).Color, 40, new(false, true, 0)) { Variant = CompositeSmoke.SmallVariant });
 				}
 
 				SoundEngine.PlaySound(SoundID.WormDig, Projectile.Center);
@@ -86,6 +76,19 @@ public class Drillbolt : ModItem
 
 			_colliding = colliding;
 			_hitBuffer--;
+		}
+
+		public override void PostAI() //Update trails regardless of what PreAI returns
+		{
+			if (!Main.dedServ)
+			{
+				_trail ??= new VertexTrail(new LightColorTrail(Color.LightGray * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
+				_trail.Update();
+
+				_noiseCone ??= (BasicNoiseCone)new BasicNoiseCone(Projectile.Center, Projectile.velocity, 40, new(50, 50)).SetColors(Color.White, Color.DarkGray).SetIntensity(2).AttachTo(Projectile);
+				_noiseCone.Rotation = Projectile.velocity.ToRotation();
+				_noiseCone.Update(ref ParticleRenderers.OverPlayers.Settings);
+			}
 		}
 
 		public override void OnKill(int timeLeft) => base.OnKill(timeLeft);

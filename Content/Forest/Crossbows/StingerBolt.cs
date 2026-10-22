@@ -27,14 +27,17 @@ public class StingerBolt : ModItem
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
+			if (++Projectile.ai[0] > 60)
+				Projectile.velocity.Y += 0.1f;
+		}
+
+		public override void PostAI() //Update trails regardless of what PreAI returns
+		{
 			if (!Main.dedServ)
 			{
 				_trail ??= new VertexTrail(new LightColorTrail(Color.RosyBrown * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
 				_trail.Update();
 			}
-
-			if (++Projectile.ai[0] > 60)
-				Projectile.velocity.Y += 0.1f;
 		}
 
 		public override void OnKill(int timeLeft) => base.OnKill(timeLeft);
