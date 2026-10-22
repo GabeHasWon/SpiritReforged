@@ -13,6 +13,8 @@ public class ReloadPlayer : ModPlayer
 	public interface IPerfectReload
 	{
 		public bool PerfectReload { get; set;  }
+
+		public void OnPerfectReload(Player player) { }
 	}
 
 	public static readonly Asset<Texture2D> Meter = DrawHelpers.RequestLocal<Crossbow>("ReloadMeter", false);
@@ -117,7 +119,10 @@ public class ReloadPlayer : ModPlayer
 				SoundEngine.PlaySound(SoundID.MaxMana, Player.Center);
 
 				if (Player.HeldItem.ModItem is IPerfectReload perfect)
+				{
 					perfect.PerfectReload = true;
+					perfect.OnPerfectReload(Player);
+				}
 			}
 		}
 

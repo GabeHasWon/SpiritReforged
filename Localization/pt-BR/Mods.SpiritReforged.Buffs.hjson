@@ -197,3 +197,8 @@ ClockworkCog_Buff: {
 	// DisplayName: Clockwork Cog
 	// Description: The tiny cog fights for you!
 }
+
+ShadeCloak: {
+	// DisplayName: Shade Cloak
+	// Description: You are imperceptible
+}
