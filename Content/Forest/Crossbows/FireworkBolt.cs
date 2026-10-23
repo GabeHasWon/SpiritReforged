@@ -31,10 +31,10 @@ public class FireworkBolt : ModItem
 		{
 			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
 
-			if (++Projectile.ai[0] > 30)
+			if (++Projectile.ai[0] > 10)
 			{
 				Projectile.velocity.X *= 0.98f;
-				Projectile.velocity.Y -= 0.4f;
+				Projectile.velocity.Y -= 0.1f;
 			}
 
 			if (Projectile.ai[0] == 50)
@@ -55,28 +55,24 @@ public class FireworkBolt : ModItem
 
 		public override void OnKill(int timeLeft)
 		{
-			Projectile.Resize(90, 90);
+			Projectile.Resize(140, 140);
 			Projectile.Damage();
 
 			if (!Main.dedServ) //Firework effects
 			{
 				const int dust_count = 20;
+				float primaryHue = Main.rand.NextFloat();
+
 				for (int i = 0; i < dust_count; i++)
 				{
-					Color color = Main.hslToRgb(i / (float)dust_count, 1f, 0.5f);
-					ParticleRenderers.OverPlayers.Add(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(2, 2), color, Main.rand.NextFloat(0.5f, 1f), 40, 2));
+					ParticleRenderers.OverPlayers.Add(new EmberParticle(Projectile.Center, Main.rand.NextVector2Circular(2, 2), GetColor(primaryHue, 0.5f), Main.rand.NextFloat(0.5f, 1f), 40, 2));
 
 					if (Main.rand.NextBool(3))
-					{
-						color = Main.hslToRgb(i / (float)dust_count, 1f, 0.8f);
-						Dust.NewDustPerfect(Projectile.Center, DustID.FireworksRGB, Main.rand.NextVector2Circular(5, 5), 0, color);
-					}
+						Dust.NewDustPerfect(Projectile.Center, DustID.FireworksRGB, Main.rand.NextVector2Circular(5, 5), 0, GetColor(primaryHue, 0.8f));
 				}
 
 				for (int i = 0; i < 8; i++)
-				{
 					Dust.NewDustPerfect(Projectile.Center, DustID.FireworksRGB, Main.rand.NextVector2Circular(4, 4));
-				}
 
 				for (int i = 0; i < 4; i++)
 				{
@@ -91,6 +87,11 @@ public class FireworkBolt : ModItem
 
 				SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
 				SoundEngine.PlaySound(SoundID.DD2_CrystalCartImpact with { Pitch = 0.5f }, Projectile.Center);
+			}
+
+			static Color GetColor(float hue, float light)
+			{
+				return Main.hslToRgb(hue, 1f, light);
 			}
 		}
 

@@ -35,7 +35,7 @@ public class StingerBolt : ModItem
 		{
 			if (!Main.dedServ)
 			{
-				_trail ??= new VertexTrail(new LightColorTrail(Color.RosyBrown * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 75);
+				_trail ??= new VertexTrail(new LightColorTrail(Color.RosyBrown * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 120);
 				_trail.Update();
 			}
 		}

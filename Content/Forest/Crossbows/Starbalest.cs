@@ -1,6 +1,9 @@
 ﻿using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Crossbows;
@@ -13,17 +16,29 @@ public class Starbalest : ModItem, ReloadPlayer.IPerfectReload
 
 		public bool starburst;
 
-		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => lateInstantiation && entity.arrow;
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => BoltCache.IsCrossbowBolt[entity.type];
 
-		public override void AI(Projectile projectile) => base.AI(projectile);
-
-		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone) => base.OnHitNPC(projectile, target, hit, damageDone);
-
-		public override void OnKill(Projectile projectile, int timeLeft) => base.OnKill(projectile, timeLeft);
-
-		private void Explode(Projectile projectile)
+		public override void AI(Projectile projectile)
 		{
+			if (starburst && Main.rand.NextBool())
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(projectile.Center + Main.rand.NextVector2Circular(4, 4), projectile.velocity * Main.rand.NextFloat(0f, 0.2f), Color.Lerp(Color.Yellow, Color.BlueViolet, Main.rand.NextFloat()), Main.rand.NextFloat(0.1f, 0.5f), 20, 3));
+		}
 
+		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			if (starburst)
+				Explode(projectile);
+		}
+
+		public override void OnKill(Projectile projectile, int timeLeft)
+		{
+			if (starburst)
+				Explode(projectile);
+		}
+
+		private static void Explode(Projectile projectile)
+		{
+			SoundEngine.PlaySound(SoundID.DD2_KoboldExplosion with { PitchVariance = 0.3f }, projectile.Center);
 		}
 	}
 
@@ -66,9 +81,14 @@ public class Starbalest : ModItem, ReloadPlayer.IPerfectReload
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
     {
 		SwungProjectile.Spawn(position, velocity, ModContent.ProjectileType<StarbalestHeld>(), damage, knockback, player, 0, source);
-		PerfectReload = false;
+		PreNewProjectile.New(source, position, velocity, type, damage, knockback, player.whoAmI, preSpawnAction: (projectile) =>
+		{
+			if (PerfectReload && projectile.TryGetGlobalProjectile(out StarburstProjectile global))
+				global.starburst = true;
+		});
 
-		return true;
+		PerfectReload = false;
+		return false;
     }
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<Crossbow>()).AddIngredient(ItemID.MeteoriteBar, 10).AddIngredient(ItemID.FallenStar, 5).AddTile(TileID.Anvils).Register();

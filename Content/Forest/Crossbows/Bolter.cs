@@ -70,7 +70,7 @@ public class Bolter : ModItem, ReloadPlayer.IPerfectReload
 				for (int i = 0; i < 10; i++)
 					Dust.NewDustPerfect(projectile.Center, DustID.Blood, (projectile.velocity * -Main.rand.NextFloat(0.2f, 0.5f)).RotatedByRandom(0.5f));
 
-				Vector2 offset = projectile.Center - target.Center;
+				Vector2 offset = target.Center - projectile.Center;
 				projectile.velocity = offset;
 				projectile.hide = true;
 
