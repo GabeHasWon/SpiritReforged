@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using Microsoft.Xna.Framework.Graphics;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
@@ -35,12 +36,6 @@ public class Lumberjack : ModItem
 
 		public override void AI()
 		{
-			if (!Main.dedServ)
-			{
-				_trail ??= new VertexTrail(new GradientTrail(Color.LightGray, Color.Transparent), new NoCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 5, 40, -1, (factor) => 5f);
-				_trail.Update();
-			}
-
 			Projectile.rotation += 0.5f * Math.Clamp(Projectile.velocity.X, -1, 1);
 
 			if (Projectile.timeLeft <= FALL_TIME)
@@ -50,6 +45,15 @@ public class Lumberjack : ModItem
 
 				if (Projectile.timeLeft <= 10)
 					Projectile.scale *= 0.9f;
+			}
+		}
+
+		public override void PostAI()
+		{
+			if (!Main.dedServ)
+			{
+				_trail ??= new VertexTrail(new GradientTrail(Color.LightGray, Color.Transparent), new NoCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 5, 40, -1, (factor) => 5f);
+				_trail.Update();
 			}
 		}
 
@@ -91,7 +95,7 @@ public class Lumberjack : ModItem
 		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => _trail?.Draw(TrailSystem.TrailShaders, Main.graphics.GraphicsDevice, Matrix.Identity);
 	}
 
-	public class LumberjackHeld : SwungProjectile, IDrawPixelated
+	public class LumberjackHeld : SwungProjectile
 	{
 		public override LocalizedText DisplayName => ModContent.GetInstance<Lumberjack>().DisplayName;
 
@@ -159,6 +163,9 @@ public class Lumberjack : ModItem
 			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(0, Projectile.gfxOffY);
 			Main.EntitySpriteDraw(texture, position, source, lightColor, Projectile.rotation, origin, Projectile.scale, effects);
 
+			if (!_launchedSaw)
+				DrawSawblade(Main.spriteBatch);
+
 			return false;
 		}
 
@@ -168,27 +175,18 @@ public class Lumberjack : ModItem
 			SpriteEffects effects = SwingDirection == -1 ? SpriteEffects.FlipVertically : default;
 			Rectangle source = new(42, 0, 30, 30);
 			float rotation = Projectile.localAI[0] * _spinSpeed * 0.5f;
-			float scale = (Projectile.scale + EaseFunction.EaseSine.Ease(Math.Max(_spinSpeed - 0.8f, 0) / 0.2f) * 0.5f) / 2;
+			float scale = Projectile.scale + EaseFunction.EaseSine.Ease(Math.Max(_spinSpeed - 0.8f, 0) / 0.2f) * 0.5f;
 
 			Vector2 position = Projectile.Center - Main.screenPosition + new Vector2(42, 0).RotatedBy(Projectile.rotation);
 			Vector2 mainPosition = position;
-			IDrawPixelated.PixelateDrawPosition(ref mainPosition);
 
 			DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
 			{
 				Vector2 outlinePosition = position + offset;
-				IDrawPixelated.PixelateDrawPosition(ref outlinePosition);
-
 				spriteBatch.Draw(texture, outlinePosition, source, Projectile.GetAlpha(Color.Black) * 0.25f, rotation, source.Size() / 2, scale, effects, 0);
 			});
 
 			spriteBatch.Draw(texture, mainPosition, source, Projectile.GetAlpha(Lighting.GetColor((position + Main.screenPosition).ToTileCoordinates())), rotation, source.Size() / 2, scale, effects, 0);
-		}
-
-		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch)
-		{
-			if (!_launchedSaw)
-				DrawSawblade(spriteBatch);
 		}
 	}
 
