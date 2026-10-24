@@ -3165,6 +3165,8 @@ ChromaticWax: {
 	Gain: 被附魔的武器将获得：[c/{0}:{1}]
 	Target: 只能附魔于武器上
 	RightClick: 手持此雕文并右键你想要附魔的武器
+	# {0} - glyph prefix, {1} - item name
+	// GlyphPrefixing: "{0} {1}"
 }
 
 BlazeGlyph: {
