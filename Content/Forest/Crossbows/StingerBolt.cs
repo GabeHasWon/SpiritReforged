@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Forest.Crossbows;
 
 public class StingerBolt : ModItem
 {
-	public class StingerBoltProjectile : ModProjectile, IDrawPixelated
+	public class StingerBoltProjectile : Bolt.BoltProjectile, IDrawPixelated
 	{
 		public override LocalizedText DisplayName => ModContent.GetInstance<StingerBolt>().DisplayName;
 
@@ -19,35 +19,33 @@ public class StingerBolt : ModItem
 		{
 			Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
 			Projectile.extraUpdates = 1;
-			Projectile.penetrate = 2;
 			Projectile.aiStyle = -1;
-		}
-
-		public override void AI()
-		{
-			Projectile.rotation = Projectile.velocity.ToRotation() + MathHelper.PiOver2;
-
-			if (++Projectile.ai[0] > 60)
-				Projectile.velocity.Y += 0.1f;
+			Projectile.penetrate = 2;
 		}
 
 		public override void PostAI() //Update trails regardless of what PreAI returns
 		{
 			if (!Main.dedServ)
 			{
-				_trail ??= new VertexTrail(new LightColorTrail(Color.RosyBrown * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 120);
+				if (Stationary)
+				{
+					_trail.Dissolve();
+				}
+				else
+				{
+					_trail ??= new VertexTrail(new LightColorTrail(Color.RosyBrown * 0.5f, Color.Transparent), new RoundCap(), new EntityTrailPosition(Projectile), new DefaultShader(), 6 * Projectile.scale, 120);
+				}
+
 				_trail.Update();
 			}
 		}
 
-		public override void OnKill(int timeLeft) => base.OnKill(timeLeft);
-
-		public override bool PreDraw(ref Color lightColor)
+		public override void OnKill(int timeLeft)
 		{
-			Texture2D texture = TextureAssets.Projectile[Type].Value;
-			Main.EntitySpriteDraw(texture, Projectile.Center - Main.screenPosition, null, Projectile.GetAlpha(lightColor), Projectile.rotation, new Vector2(texture.Width / 2, Projectile.height / 2), Projectile.scale, 0);
+			Vector2 velocity = Projectile.velocity * 0.2f;
 
-			return false;
+			for (int i = 0; i < 5; i++)
+				Dust.NewDustDirect(Projectile.position, Projectile.width, Projectile.height, DustID.Ash, velocity.X, velocity.Y);
 		}
 
 		void IDrawPixelated.DrawPixelated(SpriteBatch spriteBatch) => _trail?.Draw(TrailSystem.TrailShaders, Main.spriteBatch.GraphicsDevice, Matrix.Identity);

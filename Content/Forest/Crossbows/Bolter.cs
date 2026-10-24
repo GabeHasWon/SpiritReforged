@@ -14,57 +14,23 @@ public class Bolter : ModItem, ReloadPlayer.IPerfectReload
 	{
 		public override bool InstancePerEntity => true;
 
-		public bool Embeded => _canEmbed && _targetWhoAmI != -1;
+		private bool _fromBolter;
 
-		private bool _canEmbed;
-		private int _targetWhoAmI = -1;
-
-		public void EnableEmbed(Projectile projectile)
+		public void EnableBleed(Projectile projectile)
 		{
-			if (_canEmbed)
+			if (_fromBolter)
 				return;
 
-			_canEmbed = true;
-
+			_fromBolter = true;
 			projectile.penetrate++; //Withstand an additional strike
-			projectile.stopsDealingDamageAfterPenetrateHits = true;
 		}
 
 		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => BoltCache.IsCrossbowBolt[entity.type];
 
-		public override bool PreAI(Projectile projectile)
-		{
-			if (Embeded)
-			{
-				if (Main.npc[_targetWhoAmI] is NPC npc && npc.active)
-				{
-					projectile.Center = npc.Center - projectile.velocity;
-					projectile.gfxOffY = npc.gfxOffY;
-				}
-				else
-				{
-					projectile.Kill();
-				}
-
-				return false;
-			}
-
-			return true;
-		}
-
-		public override bool ShouldUpdatePosition(Projectile projectile) => !Embeded;
-
-		public override void DrawBehind(Projectile projectile, int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI)
-		{
-			if (Embeded)
-				behindNPCsAndTiles.Add(index);
-		}
-
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (_canEmbed)
+			if (_fromBolter)
 			{
-				_targetWhoAmI = target.whoAmI;
 				target.AddBuff(BuffID.Bleeding, 60 * 5);
 
 				for (int i = 0; i < 10; i++)
@@ -75,21 +41,18 @@ public class Bolter : ModItem, ReloadPlayer.IPerfectReload
 				projectile.hide = true;
 
 				ParticleRenderers.OverNPCs.Add(new BloodHit(target, offset, 20, offset.ToRotation(), 1));
+
+				if (projectile.ModProjectile is Bolt.BoltProjectile boltProjectile)
+					boltProjectile.Target = target; //Force a target
 			}
 		}
 
-		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
-		{
-			bitWriter.WriteBit(_canEmbed);
-			binaryWriter.Write(_targetWhoAmI);
-		}
+		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter) => bitWriter.WriteBit(_fromBolter);
 
 		public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 		{
-			if (_canEmbed = bitReader.ReadBit())
-				EnableEmbed(projectile);
-
-			_targetWhoAmI = binaryReader.ReadInt32();
+			if (_fromBolter = bitReader.ReadBit())
+				EnableBleed(projectile);
 		}
 	}
 
@@ -121,7 +84,7 @@ public class Bolter : ModItem, ReloadPlayer.IPerfectReload
 		PreNewProjectile.New(source, position, velocity, type, damage, knockback, player.whoAmI, preSpawnAction: (projectile) =>
 		{
 			if (PerfectReload && projectile.TryGetGlobalProjectile(out EmbedGlobalProjectile global))
-				global.EnableEmbed(projectile);
+				global.EnableBleed(projectile);
 		});
 
 		PerfectReload = false;

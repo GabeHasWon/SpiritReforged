@@ -30,8 +30,8 @@ public class PrismBolt : ModItem
 		{
 			Projectile.CloneDefaults(ProjectileID.WoodenArrowFriendly);
 			Projectile.extraUpdates = 1;
-			Projectile.penetrate = 2;
 			Projectile.aiStyle = -1;
+			Projectile.penetrate = 2;
 			Projectile.stopsDealingDamageAfterPenetrateHits = true;
 		}
 

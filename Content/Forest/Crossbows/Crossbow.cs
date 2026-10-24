@@ -67,8 +67,6 @@ public class ReloadPlayer : ModPlayer
 
 		if (Main.LocalPlayer.HeldItem.ModItem is IPerfectReload perfect && perfect.PerfectReload) //Draw a perfect reload indicator
 		{
-			position -= Main.LocalPlayer.velocity;
-
 			Texture2D texture = AssetLoader.LoadedTextures["Star"].Value;
 			Vector2 scale = new Vector2(1f + _visualCounter * 3, 1) * (1f + EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 50f) * 0.2f);
 
