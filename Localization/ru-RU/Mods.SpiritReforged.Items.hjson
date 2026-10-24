@@ -1975,7 +1975,7 @@ RollingPotsItem: {
 	Tooltip: ""
 }
 
-MossSlimeBannerItem.DisplayName: Знамя мшистого слизня
+MossSlimeBannerItem.DisplayName: Знамя слизня со мхом
 
 InvisibleLure: {
 	DisplayName: Невидимая приманка
