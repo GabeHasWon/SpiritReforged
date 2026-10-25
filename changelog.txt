@@ -2,12 +2,14 @@ v0.2.3.2
 - Made the Points of Interest (PoI) system not add the same PoI position twice, causing an exception
 - Made the PoI system add all three new Spooky PoI (Smack o' Lantern, Gravemaker, Pumpkin Pails)
 - Fixed Columbat draw offset on the player select menu
+- Fixed Columbat being offset relative to the player in-world
 - Massively increased Mummiath spawn rate, spawn range (to nearby Ziggurat tiles) and leeway on some conditions
 - Reduced Mummiath max life by 40%
 - Fixed issue where Mummiath Heart didn't spawn death vfx properly
 - Added Mummiath and Dhampir to the Life Analyzer
-- Fixed issues with the Looker club eyeball minions, Blazing glyph missing textures
+- Fixed issues with the Looker club eyeball minions, Blazing glyph, Sanguine glyph missing textures
 - Made all of our Spooky crossmod NPCs not load if Spooky is not enabled
 - Fixed Gloomy Statue Stone ingredient requirement and result stack being swapped
 - Fixed Scaregrass turning into Dirt instead of Spooky Dirt on break
 - Fixed cross-mod Trellis vine placement not consuming the item used to place them
+- Fixed drawing issue with some food items
