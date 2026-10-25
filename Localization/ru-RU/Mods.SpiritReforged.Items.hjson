@@ -1025,7 +1025,7 @@ Blunderbuss: {
 }
 
 SafekeeperRing: {
-	DisplayName: Кольцо хранителя
+	DisplayName: Кольцо-оберег
 	Tooltip:
 		'''
 		Немного увеличивает урон по нежити
@@ -3662,7 +3662,7 @@ TrellisSpookyWoodTwoItem: {
 }
 
 DhampirQuestItem: {
-	DisplayName: Маленькая грустная мышь
+	DisplayName: Маленькая грустная летучая мышь
 	Tooltip:
 		'''
 		Вы испытываете к ней материнский инстинкт
