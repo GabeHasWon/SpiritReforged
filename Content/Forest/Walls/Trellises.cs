@@ -95,6 +95,8 @@ public class Trellis : ModWall, ILoadItem, ICheckItemUse
 				int range = customVine.style;
 				int style = WorldGen.genRand.Next(range * TrellisVine.StyleRange, range * TrellisVine.StyleRange + TrellisVine.StyleRange);
 				Placer.PlaceTile(i, j, customVine.type, style).Send();
+
+				return true;
 			}
 		}
 

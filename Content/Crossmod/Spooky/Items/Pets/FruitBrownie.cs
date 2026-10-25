@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ProjectileCommon;
 using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Crossmod.Spooky.Items.Pets;
 
@@ -20,6 +21,9 @@ internal class FruitBrownie : ModItem
 			Main.projPet[Type] = true;
 
 			HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
+
+			SettingsForCharacterPreview drawInfo = ProjectileID.Sets.SimpleLoop(0, 4, 6).WithOffset(-20, -40).WithSpriteDirection(-1);
+			ProjectileID.Sets.CharacterPreviewAnimations[Type] = drawInfo;
 		}
 
 		public override void SetDefaults()
@@ -71,7 +75,7 @@ internal class FruitBrownie : ModItem
 			}
 
 			Projectile.rotation = Projectile.velocity.X * 0.06f;
-			Projectile.Center = Vector2.Lerp(Projectile.Center, owner.Center - new Vector2(owner.direction * 40, 80), 0.3f);
+			Projectile.Center = Vector2.Lerp(Projectile.Center, owner.Center - new Vector2(owner.direction * 40 + 16, 80), 0.3f);
 		}
 
 		private void SetFrame()
