@@ -3835,3 +3835,13 @@ BoxOfSpareLimbs: {
 		Нога будет топтать врагов, рука — хватать их, и больше ничего
 		'''
 }
+
+LushWoodTrellisItem: {
+	// DisplayName: Lush Wood Trellis Item
+	// Tooltip: ""
+}
+
+LushWoodTrellisTwoItem: {
+	// DisplayName: Lush Wood Trellis Two Item
+	// Tooltip: ""
+}

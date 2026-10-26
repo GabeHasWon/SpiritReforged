@@ -3823,3 +3823,13 @@ BoxOfSpareLimbs: {
 		一条腿会跳向附近的敌人，一只手会抓住附近的敌人，然后没别的了
 		'''
 }
+
+LushWoodTrellisItem: {
+	// DisplayName: Lush Wood Trellis Item
+	// Tooltip: ""
+}
+
+LushWoodTrellisTwoItem: {
+	// DisplayName: Lush Wood Trellis Two Item
+	// Tooltip: ""
+}

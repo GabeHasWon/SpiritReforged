@@ -3823,3 +3823,13 @@ BoxOfSpareLimbs: {
 		A leg will hop at nearby enemies, and a hand will grab for nearby enemies, and nothing else
 		'''
 }
+
+LushWoodTrellisItem: {
+	DisplayName: Lush Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+LushWoodTrellisTwoItem: {
+	DisplayName: Crossed Lush Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}

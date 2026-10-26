@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
@@ -18,6 +19,8 @@ internal class SpookyMummyHead : ModNPC
 	private ref float MaxTime => ref NPC.ai[1];
 	private ref float JumpSpeed => ref NPC.ai[2];
 	private ref float JumpStrength => ref NPC.ai[3];
+
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 5;
 

@@ -85,6 +85,8 @@ internal class DhampirNPC : ModNPC
 	private readonly List<MistParticle> _particles = [];
 	private readonly FadeTracker _tracker = new FadeTracker(8);
 
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 8;
@@ -106,6 +108,7 @@ internal class DhampirNPC : ModNPC
 		NPC.noGravity = true;
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath6;
+		NPC.rarity = 5;
 
 		SpawnModBiomes = [ModContent.GetInstance<SaltBiome>().Type];
 	}

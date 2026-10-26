@@ -9,6 +9,8 @@ namespace SpiritReforged.Content.Glyphs.Sanguine;
 
 public class SanguineBlood : Particle, IDrawPixelated
 {
+	public override string TexturePath => AssetLoader.EmptyTexture;
+
 	private readonly Vector2[] _oldPosition;
 
 	private readonly Player _owner;
