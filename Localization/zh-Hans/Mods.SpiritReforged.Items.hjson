@@ -3824,11 +3824,11 @@ BoxOfSpareLimbs: {
 }
 
 LushWoodTrellisItem: {
-	// DisplayName: Lush Wood Trellis Item
-	// Tooltip: ""
+	DisplayName: 葱郁木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 LushWoodTrellisTwoItem: {
-	// DisplayName: Lush Wood Trellis Two Item
-	// Tooltip: ""
+	DisplayName: 十字葱郁木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
