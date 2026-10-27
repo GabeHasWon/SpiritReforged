@@ -93,6 +93,8 @@ public class DesertCloud : DissipatingImage
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		_opacity = EaseFunction.EaseCircularOut.Ease(Progress);
 		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
 
