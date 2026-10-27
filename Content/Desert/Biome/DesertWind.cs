@@ -22,8 +22,7 @@ public class DesertWind : ILoadable
 		if (!closer || Main.gamePaused || !Main.LocalPlayer.ZoneDesert || j > Main.worldSurface || Math.Abs(Main.windSpeedCurrent) < 0.3f || !WorldGen.InWorld(i, j, 4) || SubworldUtils.InSubworld())
 			return;
 
-		var tileAbove = Main.tile[i, j - 1];
-
+		Tile tileAbove = Main.tile[i, j - 1];
 		if (SandTypes.Contains(type) && !WorldGen.SolidTile(tileAbove) && tileAbove.LiquidAmount == 0 && tileAbove.WallType == WallID.None)
 		{
 			float odds = MathHelper.Lerp(1, 0.25f, Math.Abs(Main.windSpeedCurrent));
@@ -34,15 +33,14 @@ public class DesertWind : ILoadable
 			
 			if (Main.rand.NextBool(chance))
 			{
-				var position = new Vector2(i, j + 2) * 16;
-				var velocity = new Vector2(Main.windSpeedCurrent * Main.rand.NextFloat(2, 4), 0.2f);
+				Vector2 position = new Vector2(i, j + 2) * 16;
+				Vector2 velocity = new Vector2(Main.windSpeedCurrent * Main.rand.NextFloat(2, 4), 0.2f);
 
 				if (Sandstorm.Happening)
 					velocity *= 2;
 
 				int timeLeft = Main.rand.Next(250, 500);
-
-				var color = Color.Beige * 0.6f;
+				Color color = Color.Beige * 0.6f;
 
 				ParticleRenderers.UnderWalls.Add(new DesertCloud(position, velocity, Color.Beige * 0.6f, 0.5f, EaseFunction.EaseCircularOut, timeLeft + 10)
 				{
@@ -93,7 +91,10 @@ public class DesertCloud : DissipatingImage
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
-		base.Update(ref settings);
+		Position += Velocity; //Base update logic
+
+		if (MaxTime > 0 && ++TimeActive >= MaxTime)
+			ShouldBeRemovedFromRenderer = true;
 
 		_opacity = EaseFunction.EaseCircularOut.Ease(Progress);
 		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
