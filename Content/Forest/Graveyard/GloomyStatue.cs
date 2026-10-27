@@ -45,7 +45,7 @@ public class GloomyStatue : ModTile, ILoadItem
 		public override void ResetNearbyTileEffects() => ForcedGraveyardIntensity = null;
 	}
 
-	void ILoadItem.AddItemRecipes(ModItem item) => item.CreateRecipe(20).AddIngredient(ItemID.StoneBlock).AddIngredient(ItemID.Bone, 8).AddTile(TileID.HeavyWorkBench).AddCondition(Condition.InGraveyard).Register();
+	void ILoadItem.AddItemRecipes(ModItem item) => item.CreateRecipe(1).AddIngredient(ItemID.StoneBlock, 20).AddIngredient(ItemID.Bone, 8).AddTile(TileID.HeavyWorkBench).AddCondition(Condition.InGraveyard).Register();
 
 	public override void SetStaticDefaults()
 	{

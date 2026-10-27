@@ -3175,6 +3175,7 @@ ChromaticWax: {
 	Gain: The enchanted weapon will gain: [c/{0}:{1}]
 	Target: Can only be applied to weapons
 	RightClick: Hold this glyph and right-click the item you want to enchant
+	GlyphPrefixing: "{0} {1}"
 }
 
 BlazeGlyph: {
@@ -3906,6 +3907,16 @@ RhosRydd: {
 		{$CommonTooltips.Greatshield}
 		Hold to perform a short-ranged dash
 		'''
+}
+
+LushWoodTrellisItem: {
+	DisplayName: Lush Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+LushWoodTrellisTwoItem: {
+	DisplayName: Crossed Lush Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 Roromaraugi: {

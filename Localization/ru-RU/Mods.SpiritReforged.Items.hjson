@@ -3179,6 +3179,7 @@ ChromaticWax: {
 	Gain: Выбранный предмет получит эффект [c/{0}:«{1}»]:
 	Target: Можно применить только к оружию
 	RightClick: Нажмите ПКМ по оружию, держа этот глиф, чтобы наложить на него зачарование
+	// GlyphPrefixing: "{0} {1}"
 }
 
 BlazeGlyph: {
@@ -4000,4 +4001,14 @@ Trickaxe: {
 C4Item: {
 	// DisplayName: C4
 	// Tooltip: Destroys walls in a radius when interacted with
+}
+
+LushWoodTrellisItem: {
+	// DisplayName: Lush Wood Trellis Item
+	// Tooltip: ""
+}
+
+LushWoodTrellisTwoItem: {
+	// DisplayName: Lush Wood Trellis Two Item
+	// Tooltip: ""
 }

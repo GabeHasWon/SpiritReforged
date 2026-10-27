@@ -86,17 +86,17 @@ TubewormItem: {
 }
 
 CascadeChestplate: {
-	DisplayName: 珊瑚猎人护胸
+	DisplayName: 海礁猎人护胸
 	Tooltip: 50%击退抗性
 }
 
 CascadeHelmet: {
-	DisplayName: 珊瑚猎人头盔
+	DisplayName: 海礁猎人头盔
 	Tooltip: 使你获得水下呼吸能力
 }
 
 CascadeLeggings: {
-	DisplayName: 珊瑚猎人护胫
+	DisplayName: 海礁猎人护胫
 	Tooltip: 在水中时增加15%移动速度
 }
 
@@ -130,7 +130,7 @@ OceanPendant: {
 }
 
 ReefSpear: {
-	DisplayName: 珊瑚穿刺者
+	DisplayName: 海礁穿刺者
 	Tooltip: 右键投掷三叉戟，增加主攻击造成的伤害
 }
 
@@ -3175,6 +3175,7 @@ ChromaticWax: {
 	Gain: 被附魔的武器将获得：[c/{0}:{1}]
 	Target: 只能附魔于武器上
 	RightClick: 手持此雕文并右键你想要附魔的武器
+	// GlyphPrefixing: "{0} {1}"
 }
 
 BlazeGlyph: {
@@ -3657,8 +3658,8 @@ DhampirQuestItem: {
 	DisplayName: 悲伤小蝙蝠
 	Tooltip:
 		'''
-		在物品栏中时会吸引盐滩中的某种生物
-		“你本能的需要照顾它”
+		你本能的需要照顾它
+		在你物品栏内时会吸引盐滩的一种生物
 		'''
 }
 
@@ -3721,8 +3722,8 @@ MummyQuestItem: {
 	DisplayName: 古老皇冠
 	Tooltip:
 		'''
-		在物品栏中时会吸引庙塔顶部的某种生物
-		“这小的不成比例”
+		这皇冠小的不成比例
+		在你物品栏内时会吸引庙塔顶部的一种生物
 		'''
 }
 
@@ -3992,4 +3993,14 @@ Trickaxe: {
 C4Item: {
 	// DisplayName: C4
 	// Tooltip: Destroys walls in a radius when interacted with
+}
+
+LushWoodTrellisItem: {
+	// DisplayName: Lush Wood Trellis Item
+	// Tooltip: ""
+}
+
+LushWoodTrellisTwoItem: {
+	// DisplayName: Lush Wood Trellis Two Item
+	// Tooltip: ""
 }

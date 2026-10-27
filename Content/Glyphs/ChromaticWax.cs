@@ -570,7 +570,9 @@ public abstract class GlyphItem : ModItem
 		if (CrossMod.RussianLocalizable)
 			itemName = itemName.ToLowerInvariant();
 
-		item.SetNameOverride($"{GenderItemEffect(item, this.GetLocalizationKey(""))} " + itemName);
+		string key = "Mods.SpiritReforged.Items.ChromaticWax.GlyphPrefixing";
+		string newName = Language.GetTextValue(key, GenderItemEffect(item, this.GetLocalizationKey("")), itemName);
+		item.SetNameOverride(newName);
 
 		if (item.rare < ItemRarityID.Purple)
 			item.rare++;
@@ -620,6 +622,7 @@ public abstract class GlyphItem : ModItem
 	/// <summary> Used to modify drawing of glyph-affected items in the world. </summary>
 	/// <param name="item"> The item being drawn. </param>
 	/// <param name="spriteBatch"> The SpriteBatch being used. </param>
+	/// <param name="parameters"> The parameters used for drawing this item by default. </param>
 	public virtual void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters) => parameters.Draw();
 
 	public virtual void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed) { }

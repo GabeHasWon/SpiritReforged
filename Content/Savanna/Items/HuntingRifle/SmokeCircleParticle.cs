@@ -30,10 +30,8 @@ public class SmokeCircleParticle : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
 		Scale += 1f / _maxTime * 0.3f;
-
-		if (TimeActive > _maxTime)
-			ShouldBeRemovedFromRenderer = true;
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)

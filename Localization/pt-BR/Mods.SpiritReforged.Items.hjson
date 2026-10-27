@@ -3162,6 +3162,7 @@ ChromaticWax: {
 	Gain: O encantamento que sua irá ganhar vai ser: [c/{0}:{1}]
 	Target: Pode ser aplicado apenas em armas
 	RightClick: Segure este glifo e clique com o botão direito do mouse sobre a arma que você quer encantar
+	// GlyphPrefixing: "{0} {1}"
 }
 
 BlazeGlyph: {
@@ -3893,6 +3894,16 @@ RhosRydd: {
 		{$CommonTooltips.Greatshield}
 		Hold to perform a short-ranged dash
 		''' */
+}
+
+LushWoodTrellisItem: {
+	// DisplayName: Lush Wood Trellis Item
+	// Tooltip: ""
+}
+
+LushWoodTrellisTwoItem: {
+	// DisplayName: Lush Wood Trellis Two Item
+	// Tooltip: ""
 }
 
 Roromaraugi: {
