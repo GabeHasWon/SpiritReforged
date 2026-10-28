@@ -3165,6 +3165,7 @@ ChromaticWax: {
 	Gain: The enchanted weapon will gain: [c/{0}:{1}]
 	Target: Can only be applied to weapons
 	RightClick: Hold this glyph and right-click the item you want to enchant
+	# {0} - glyph prefix, {1} - item name
 	GlyphPrefixing: "{0} {1}"
 }
 
