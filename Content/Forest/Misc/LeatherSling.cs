@@ -17,8 +17,8 @@ public class LeatherSling : ModItem
 	{
 		var modPlayer = player.GetModPlayer<MagazinePlayer>();
 
-		modPlayer.shouldInventoryReload = true;
-		modPlayer.reloadTimeMultiplier = 3f; // 33% of reload speed, or 3 times slower than default
+		modPlayer.inventoryReload = true;
+		modPlayer.inventoryReloadTimerMax = 3;
 	}
 }
 
@@ -28,10 +28,9 @@ class LeatherSlingGlobalItem : GlobalItem
 	{
 		var magazinePlayer = Main.LocalPlayer.GetModPlayer<MagazinePlayer>();
 
-		if (item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineItem) && magazineItem.Active && magazinePlayer.shouldInventoryReload)
+		if (item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineItem) && magazineItem.Active)
 		{
-			float progress = magazineItem.inventoryReloadTimer / (float)(magazineItem.GetMagazineData()._reloadTime * magazinePlayer.inventoryReloadTimeMultiplier);
-		
+
 			// TODO: drawing logic	
 		}
 	}

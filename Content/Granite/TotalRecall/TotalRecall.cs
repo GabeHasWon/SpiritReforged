@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Subclasses.Shotguns;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Subclasses.Shotguns;
 using System.Linq;
 using Terraria.DataStructures;
 
@@ -56,12 +57,14 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 public class TotalRecallGlobalProjectile : GlobalProjectile
 {
 	public const int MAX_LINGER_TIME = 300;
-	public const int MAX_PULLBACK_TIME = 20;
 	public override bool InstancePerEntity => true;
 	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.CountsAsClass<RangedDamageClass>();
 
 	public Vector2 _pullbackPosition;
-	public int _pullbackTime;
+
+	public int _maxPullbackTime;
+	public bool _pullingBack;
+
 	public int _lingerTime;
 	public bool _active;
 
@@ -71,6 +74,8 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 		{
 			_active = true;
 			_lingerTime = MAX_LINGER_TIME;
+
+			_maxPullbackTime = projectile.timeLeft;
 		}
 	}
 
@@ -78,20 +83,17 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 	{
 		if (_active)
 		{
-			if (_pullbackTime > 0)
+			if (_pullingBack)
 			{
-				projectile.position = Vector2.Lerp(projectile.position, _pullbackPosition, 1 - _pullbackTime / (float)MAX_PULLBACK_TIME);
-				projectile.timeLeft = 2;
-
-				_pullbackTime--;
-				if (_pullbackTime == 0)
-					projectile.Kill();
+				projectile.velocity *= 1.02f;
 
 				return;
 			}
 
 			if (projectile.timeLeft < 2 && _lingerTime > 0)
 			{
+				Dust.NewDustPerfect(projectile.Center, DustID.Torch);
+
 				projectile.timeLeft = 2;
 				projectile.velocity *= 0.9f;
 				_lingerTime--;
@@ -105,8 +107,10 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 		{
 			if (p.active && p.TryGetGlobalProjectile<TotalRecallGlobalProjectile>(out var gp) && gp._active && gp._lingerTime > 0)
 			{
-				p.timeLeft = 2;
-				gp._pullbackTime = MAX_PULLBACK_TIME;
+				p.damage *= 2;
+				p.velocity = p.DirectionTo(player.Center) * 16f;
+				p.timeLeft = gp._maxPullbackTime;
+				gp._pullingBack = true;
 				gp._pullbackPosition = player.Center;
 			}
 		}

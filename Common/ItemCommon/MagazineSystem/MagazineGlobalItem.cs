@@ -130,9 +130,6 @@ public class MagazineGlobalItem : GlobalItem
 	// Whether or not the weapon uses magazine functionality on right click. Defaults to true.
 	private bool shouldUseMagazineOnRightClick;
 
-	// Used for reloading magazine weapons in the inventory.
-	public int inventoryReloadTimer;
-
 	private Vector2 _itemSize;
 	private Vector2 _itemOrigin;
 
@@ -155,8 +152,8 @@ public class MagazineGlobalItem : GlobalItem
 		return interpolant;
 	}
 
-	public int AmmoRemaining(Player player) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize() - _currentMagazine.AmmoUsed;
-	public float MagazineProgress(Player player) => 1f - AmmoRemaining(player) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize();
+	public int AmmoRemaining(Player player, Item item) => player.GetModPlayer<MagazinePlayer>().GetMagazineSize(item) - _currentMagazine.AmmoUsed;
+	public float MagazineProgress(Player player, Item item) => 1f - AmmoRemaining(player, item) / (float)player.GetModPlayer<MagazinePlayer>().GetMagazineSize(item);
 	public void ActivateMagazine(Item item, ShootSoundInvokation soundMethod, MagazineData data, Vector2 itemSize, Vector2 itemOrigin, MagazineReloadType reloadType, MagazineUIType uiType, bool useCustomUseStyle = true, bool useMagazineOnRightClick = true, float shotRecoil = 5f, float rotationRecoil = -0.5f)
 	{
 		oldHoldStyle = item.holdStyle;
@@ -208,7 +205,7 @@ public class MagazineGlobalItem : GlobalItem
 
 			if (ReloadType == MagazineReloadType.OneAtATime && reloadCancelCooldown <= 0)
 			{
-				if (AmmoRemaining(player) > 0)
+				if (AmmoRemaining(player, item) > 0)
 				{
 					reloadCancelCooldown = _magazineData._reloadTime;
 					_maxReloadTimer = 0;
@@ -285,14 +282,18 @@ public class MagazineGlobalItem : GlobalItem
 
 	void ActivateReload(Player player, Item item, int ammoUsed)
 	{
+		bool isHeld = player.HeldItem == item;
+
 		reloadDelay = item.useTime - 1;
 
 		//reloadCancelCooldown = _magazineData._reloadTime;
+		if (isHeld)
+		{
+			_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
+			_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
+		}
 
-		_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
-		_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
-
-		if (Main.myPlayer == player.whoAmI)
+		if (Main.myPlayer == player.whoAmI && isHeld)
 			player.direction = _shootDirection;
 
 		var mp = player.GetModPlayer<MagazinePlayer>();
@@ -301,7 +302,7 @@ public class MagazineGlobalItem : GlobalItem
 
 		if (ReloadType == MagazineReloadType.OneAtATime)
 		{
-			int maxReloadTime = (int)MathHelper.Lerp(reloadTime, reloadTime / 2, 1f - MagazineProgress(player));
+			int maxReloadTime = (int)MathHelper.Lerp(reloadTime, reloadTime / 2, 1f - MagazineProgress(player, item));
 			//int singleLoadTime = maxReloadTime / ammoUsed;
 
 			_oldAmmoUsed = ammoUsed;	
@@ -327,20 +328,20 @@ public class MagazineGlobalItem : GlobalItem
 				{
 					var data = _magazineData;
 
-					if (AmmoRemaining(player) <= 0)
+					if (AmmoRemaining(player, item) <= 0)
 						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), position);
 
-					_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress(player)), position);
+					_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress(player, item)), position);
 				}
 			}
 			else
 			{
 				var data = _magazineData;
 
-				if (AmmoRemaining(player) <= 0)
+				if (AmmoRemaining(player, item) <= 0)
 					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), position);
 
-				_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress(player)), position);
+				_soundInvokation?.Invoke(MathHelper.Lerp(data.minPitch, data.maxPitch, MagazineProgress(player, item)), position);
 			}
 
 			_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
@@ -501,115 +502,95 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
-			if (player.HeldItem == item)
-				HeldLogic(item, player);
-			else if (player.GetModPlayer<MagazinePlayer>().shouldInventoryReload)
-				InventoryLogic(item, player);
-		}
-	}
+			bool isHeld = player.HeldItem == item;
 
-	void HeldLogic(Item item, Player player)
-	{
-		if (reloadCancelCooldown > 0)
-			reloadCancelCooldown--;
+			// if we aren't holding the weapon AND we dont have any inventory reloading accessories, dont run reload logic at all
+			if (!isHeld && !player.GetModPlayer<MagazinePlayer>().CanInventoryReload)
+				return;
 
-		if (reloadDelay > 0)
-		{
-			reloadDelay--;
-		}
-		else
-		{
-			if (_currentMagazine.ReloadTimer > 0)
+			if (reloadCancelCooldown > 0)
+				reloadCancelCooldown--;
+
+			if (reloadDelay > 0)
 			{
-				item.holdStyle = ItemHoldStyleID.HoldFront;
-
-				/*if (ReloadType == MagazineReloadType.OneAtATime && player.controlUseItem && AmmoRemaining(player) > 0 && reloadCancelCooldown <= 0)
-				{
-					reloadCancelCooldown = _magazineData._reloadTime; 
-					_maxReloadTimer = 0;
-					_currentMagazine.ReloadTimer = 0;
-					return;
-				}*/
-
-				_currentMagazine.ReloadTimer--;
-
-				if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
-				{
-					float interpolant = 1 - MagazineProgress(player);
-					float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
-
-					const float padding = 0.25f;
-
-					if (reloadProgress is > padding and < (1f - padding))
-					{
-						float lerp = 1f - (reloadProgress - padding) / (1f - padding * 2);
-
-						int old = _currentMagazine.AmmoUsed;
-						_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
-
-						if (old != _currentMagazine.AmmoUsed)
-						{
-							MagazinePlayer.UnempowerShot();
-
-							SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
-						}
-					}
-				}
-				else if (ReloadType == MagazineReloadType.EntireMagazine)
-				{
-					if (_currentMagazine.ReloadTimer == 0)
-					{
-						// TODO: Replace this
-						SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f });
-						MagazinePlayer.UnempowerAllShots();
-						_currentMagazine.AmmoUsed = 0;
-					}
-				}
-
-				if (_currentMagazine.ReloadTimer == 0)
-					item.holdStyle = oldHoldStyle;
+				reloadDelay--;
 			}
 			else
 			{
-				item.holdStyle = oldHoldStyle;
-
-				if (_oldAmmoUsed > 0)
-					_oldAmmoUsed = 0;
-
-				if (_currentMagazine.AmmoUsed > 0)
+				if (_currentMagazine.ReloadTimer > 0)
 				{
-					if (++_reloadIdleTimer >= _maxReloadIdleTimer) // activate reload after a period of idling (no shooting)
-					{
-						ActivateReload(player, item, _currentMagazine.AmmoUsed);
+					item.holdStyle = ItemHoldStyleID.HoldFront;
 
-						_reloadIdleTimer = 0;
+					/*if (ReloadType == MagazineReloadType.OneAtATime && player.controlUseItem && AmmoRemaining(player) > 0 && reloadCancelCooldown <= 0)
+					{
+						reloadCancelCooldown = _magazineData._reloadTime; 
+						_maxReloadTimer = 0;
+						_currentMagazine.ReloadTimer = 0;
+						return;
+					}*/
+
+					if (isHeld || player.GetModPlayer<MagazinePlayer>().CanDecrementInventoryReloadTimer)
+						_currentMagazine.ReloadTimer--;
+
+					if (ReloadType == MagazineReloadType.OneAtATime && _oldAmmoUsed > 0)
+					{
+						float interpolant = 1 - MagazineProgress(player, item);
+						float reloadProgress = _currentMagazine.ReloadTimer / (float)_maxReloadTimer;
+
+						const float padding = 0.25f;
+
+						if (reloadProgress is > padding and < (1f - padding))
+						{
+							float lerp = 1f - (reloadProgress - padding) / (1f - padding * 2);
+
+							int old = _currentMagazine.AmmoUsed;
+							_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
+
+							if (old != _currentMagazine.AmmoUsed && isHeld)
+							{
+								MagazinePlayer.UnempowerShot();
+
+								SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+							}
+						}
+					}
+					else if (ReloadType == MagazineReloadType.EntireMagazine)
+					{
+						if (_currentMagazine.ReloadTimer == 0)
+						{
+							// TODO: Replace this
+							if (isHeld)
+							{
+								SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f });
+								MagazinePlayer.UnempowerAllShots();
+							}
+							
+							_currentMagazine.AmmoUsed = 0;
+						}
+					}
+
+					if (_currentMagazine.ReloadTimer == 0)
+						item.holdStyle = oldHoldStyle;
+				}
+				else
+				{
+					item.holdStyle = oldHoldStyle;
+
+					if (_oldAmmoUsed > 0)
+						_oldAmmoUsed = 0;
+
+					if (_currentMagazine.AmmoUsed > 0)
+					{
+						if (++_reloadIdleTimer >= _maxReloadIdleTimer) // activate reload after a period of idling (no shooting)
+						{
+							ActivateReload(player, item, _currentMagazine.AmmoUsed);
+
+							_reloadIdleTimer = 0;
+						}
 					}
 				}
 			}
 		}
-	}
-
-	/// <summary>
-	/// Used specifically to reload magazine weapons in the inventory, for items similar to <see cref="LeatherSling"/>
-	/// </summary>
-	/// <param name="item"></param>
-	/// <param name="player"></param>
-	void InventoryLogic(Item item, Player player)
-	{
-		var magazinePlayer = player.GetModPlayer<MagazinePlayer>();
-
-		if (_currentMagazine.AmmoUsed > 0)
-		{
-			Main.NewText(inventoryReloadTimer);
-
-			if (++inventoryReloadTimer > _magazineData._reloadTime * magazinePlayer.inventoryReloadTimeMultiplier)
-			{
-				_currentMagazine.AmmoUsed = 0;
-				Main.NewText("Fully Reloaded: " + item.Name);
-			}			
-		}
-		else if (inventoryReloadTimer > 0)
-			inventoryReloadTimer = 0;
 	}
 
 	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)

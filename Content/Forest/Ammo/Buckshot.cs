@@ -23,6 +23,7 @@ public class Buckshot : ShotgunAmmoItem
 
 			PreNewProjectile.New(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI, preSpawnAction: (projectile) =>
 			{
+				projectile.scale += 0.2f + Main.rand.NextFloat(0.5f);
 				(projectile.ModProjectile as ShotProjectile).BaseColor = new(255, 130, 0); // tint bullets slightly more red
 				spawnedProjectiles.Add(projectile);
 			});
@@ -36,7 +37,7 @@ public class Buckshot : ShotgunAmmoItem
 		return spawnedProjectiles;
 	}
 
-	public Buckshot() : base(Behavior, 3, .35f, 14f) { }
+	public Buckshot() : base(Behavior, 4, .3f, 18f) { }
 
 	public override void SafeSetDefaults()
 	{

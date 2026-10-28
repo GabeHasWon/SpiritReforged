@@ -3642,3 +3642,13 @@ Flakker: {
 	DisplayName: Flakker
 	Tooltip: ""
 }
+
+TotalRecall: {
+	DisplayName: Total Recall
+	Tooltip: ""
+}
+
+LeatherSling: {
+	DisplayName: Leather Sling
+	Tooltip: ""
+}

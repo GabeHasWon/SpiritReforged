@@ -37,12 +37,12 @@ public class LastWord : ModItem
 		{
 			if (equipped && MagazinePlayer.TryGetMagazineWeapon(Player, out var magazineWeapon))
 			{
-				if (magazineWeapon.AmmoRemaining(Player) == 1 && MagazinePlayer.empoweredCount <= 0 && !magazineWeapon.Reloading && canEmpower)
+				if (magazineWeapon.AmmoRemaining(Player, Player.HeldItem) == 1 && MagazinePlayer.empoweredCount <= 0 && !magazineWeapon.Reloading && canEmpower)
 				{
 					MagazinePlayer.EmpowerShot();
 					canEmpower = false;
 				}
-				else if (magazineWeapon.AmmoRemaining(Player) == Player.GetModPlayer<MagazinePlayer>().GetMagazineSize())
+				else if (magazineWeapon.AmmoRemaining(Player, Player.HeldItem) == Player.GetModPlayer<MagazinePlayer>().GetMagazineSize())
 					canEmpower = true;
 			}
 		}
@@ -61,7 +61,7 @@ public class LastWord : ModItem
 			if (!player.GetModPlayer<LastWordPlayer>().equipped)
 				return;
 
-			if (projectile.DamageType.CountsAsClass(DamageClass.Ranged) && source is EntitySource_ItemUse_WithAmmo ammoSource && MagazinePlayer.TryGetMagazineWeapon(player, out var magazineWeapon) && magazineWeapon.AmmoRemaining(player) == 0)
+			if (projectile.DamageType.CountsAsClass(DamageClass.Ranged) && source is EntitySource_ItemUse_WithAmmo ammoSource && MagazinePlayer.TryGetMagazineWeapon(player, out var magazineWeapon) && magazineWeapon.AmmoRemaining(player, ammoSource.Item) == 0)
 			{
 				Item ammoItem = ammoSource.AmmoItemIdUsed > 0 ? ContentSamples.ItemsByType[ammoSource.AmmoItemIdUsed] : null;
 
