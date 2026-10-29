@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
@@ -73,8 +73,8 @@ public class ZiplineProj : ModProjectile
 		if (Main.dedServ)
 			return;
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, (Color.Goldenrod * .75f).Additive(), 1, 100, 30, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut));
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, (Color.White * .5f).Additive(), 1, 100, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut));
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(position, (Color.Goldenrod * .75f).Additive(), 1, 100, 30, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut));
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(position, (Color.White * .5f).Additive(), 1, 100, 20, "Bloom", new Vector2(1), Common.Easing.EaseFunction.EaseCircularOut));
 
 		for (int i = 0; i < 12; i++)
 			Dust.NewDustPerfect(position, DustID.AmberBolt, Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f), Scale: Main.rand.NextFloat(.5f, 1.5f)).noGravity = true;

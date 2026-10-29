@@ -1,5 +1,5 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Particles;
@@ -73,7 +73,7 @@ public class Glowflower : ModTile
 		if (closer && !Main.gamePaused && Main.rand.NextBool(100))
 		{
 			Vector2 position = new Vector2(i, j).ToWorldCoordinates();
-			ParticleHandler.SpawnParticle(new GlowParticle(position, Main.rand.NextVector2Unit(), Color.Lerp(Color.GreenYellow, Color.Goldenrod, Main.rand.NextFloat()), Main.rand.NextFloat(0.2f, 0.5f), 300, 2, (p) =>
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, Main.rand.NextVector2Unit(), Color.Lerp(Color.GreenYellow, Color.Goldenrod, Main.rand.NextFloat()), Main.rand.NextFloat(0.2f, 0.5f), 300, 2, (p) =>
 			{
 				p.Velocity = p.Velocity.RotatedByRandom(0.3f);
 

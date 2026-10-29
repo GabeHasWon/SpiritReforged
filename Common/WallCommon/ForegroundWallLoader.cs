@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.Ziggurat.Tiles;
 using Terraria.DataStructures;
 using Terraria.Graphics.Light;
 

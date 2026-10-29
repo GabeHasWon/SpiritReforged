@@ -1,5 +1,3 @@
-using Terraria.Graphics.Shaders;
-
 namespace SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
 
 [AutoloadEquip(EquipType.Head)]

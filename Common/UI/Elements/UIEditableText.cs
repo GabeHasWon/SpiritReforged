@@ -2,7 +2,6 @@
 using Terraria.GameInput;
 using Terraria.UI;
 using ReLogic.OS;
-using Steamworks;
 using Terraria.UI.Chat;
 using Terraria.Audio;
 

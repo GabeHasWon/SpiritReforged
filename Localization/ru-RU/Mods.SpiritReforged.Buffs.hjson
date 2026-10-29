@@ -172,3 +172,13 @@ RageGlyphBuff: {
 	DisplayName: Мстительный урон [{0}]
 	Description: Накоплено {0} ед. урона
 }
+
+ColumbatBuff: {
+	DisplayName: Комышь
+	Description: Существо летучей мыши
+}
+
+ColumbaldBuff: {
+	DisplayName: Колысик
+	Description: Существо лысого
+}

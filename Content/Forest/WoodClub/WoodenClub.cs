@@ -9,7 +9,7 @@ public class WoodenClub : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 20;
+		Item.damage = 14;
 		Item.knockBack = 5;
 		ChargeTime = 40;
 		SwingTime = 24;

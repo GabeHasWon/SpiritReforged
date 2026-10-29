@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.Linq;
@@ -240,7 +239,7 @@ public class CrookLocust : ModProjectile
 				Color smokeColor = new Color(5, 5, 5) * 0.2f;
 				float scale = Main.rand.NextFloat(0.1f, 0.2f) * Timer / 30f;
 				var velSmoke = -Projectile.velocity * 0.05f;
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, 
+				ParticleRenderers.OverPlayers.Add(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, 
 					EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 				Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
@@ -269,7 +268,7 @@ public class CrookLocust : ModProjectile
 			Color smokeColor = new Color(5, 5, 5) * 0.25f;
 			float scale = Main.rand.NextFloat(0.07f, 0.15f);
 			var velSmoke = -Vector2.UnitY * Main.rand.NextFloat(2f, 5f);
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(50f, 50f), velSmoke, Color.DarkSeaGreen * 0.35f, smokeColor, scale, 
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(50f, 50f), velSmoke, Color.DarkSeaGreen * 0.35f, smokeColor, scale, 
 				EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(5, 5), DustID.Poisoned,
@@ -309,7 +308,7 @@ public class CrookLocust : ModProjectile
 			Color smokeColor = new Color(5, 5, 5) * 0.16f;
 			float scale = Main.rand.NextFloat(0.1f, 0.15f);
 			var velSmoke = -Projectile.velocity * 0.05f;
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale,
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale,
 				EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 
 			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(25, 25), DustID.Poisoned,

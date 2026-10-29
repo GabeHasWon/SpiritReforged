@@ -44,6 +44,13 @@ Misc: {
 		Random: Aleatorizar encantamiento
 	}
 
+	TombText: {
+		// 0: Here rests {0}.
+		// 1: Here lies {0}, loved by many.
+		// 2: Here lies {0} AND {1}.
+		// 3: The grave is empty.
+	}
+
 	NoStock: Agotado
 	GraveText: <wavy>El texto es viejo y desvanecido; no logras distinguir bien lo que dice.
 	MenuButton: Usar el estilo del menú
@@ -123,5 +130,5 @@ EcotoneEdges: {
 }
 
 DamageClasses.HybridDamageClass.DisplayName: Daño de clase hibrida
-// BackpackPickupEnabled: Direct pickup: Enabled
-// BackpackPickupDisabled: Direct pickup: Disabled
+BackpackPickupEnabled: Recolección directa: Activado
+BackpackPickupDisabled: Recolección directa: Desactivado

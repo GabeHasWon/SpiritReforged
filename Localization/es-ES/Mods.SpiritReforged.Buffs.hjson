@@ -172,3 +172,13 @@ RageGlyphBuff: {
 	DisplayName: Daño iracundo [{0}]
 	Description: Daño almacenado: {0}
 }
+
+ColumbatBuff: {
+	// DisplayName: Columbat
+	// Description: The being of bat
+}
+
+ColumbaldBuff: {
+	// DisplayName: Columbald
+	// Description: The being of bald
+}

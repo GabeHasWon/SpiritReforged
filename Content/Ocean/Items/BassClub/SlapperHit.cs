@@ -1,12 +1,10 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.Visuals;
+﻿using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Ocean.Items.BassClub;
 
 public class SlapperHit : Particle
 {
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
 	public static readonly Asset<Texture2D> CritTexture = DrawHelpers.RequestLocal(typeof(SlapperHit), "SlapperHit2", false);
 	private readonly bool _crit;
 
@@ -17,13 +15,12 @@ public class SlapperHit : Particle
 		_crit = crit;
 
 		Rotation = Main.rand.NextFloat(-0.4f, 0.4f);
-		Color = Color.White;
 		MaxTime = 12;
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var tex = _crit ? CritTexture.Value : ParticleHandler.GetTexture(Type);
+		var tex = _crit ? CritTexture.Value : Texture;
 		var frame = tex.Frame(1, 2, frameY: (int)(Progress * 2), sizeOffsetY: -2);
 		var color = Color.White * (1f - Progress) * 2;
 

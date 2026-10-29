@@ -55,6 +55,8 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		}
 	}
 
+	private const string Path = "SpiritReforged/Content/SaltFlats/";
+
 	[WorldBound]
 	public static List<Rectangle> SaltFlatsAreas = new();
 
@@ -90,7 +92,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static FastNoiseLite Noise;
 
-	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false))
+	PageInfo IGenerationPage.Info => new("SaltFlats", Graphics.Tex(Path + "SaltFlatsPage"), Graphics.Tex(Path + "SaltFlatsPageButton"))
 	{
 		Presets = 
 		[
@@ -405,7 +407,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		if (RuinQty > 0)
 			decorator.Enqueue(CreateRuin, RuinQty);
 
-		decorator.Run();
+		decorator.Run(out _);
 	}
 
 	private static bool PlaceReliquary(int i, int j)
@@ -640,7 +642,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 			if (!hasRoof && WorldGen.genRand.NextBool())
 				decorator.Enqueue(PlaceBell, 1);
 
-			decorator.Run();
+			decorator.Run(out _);
 
 			GenVars.structures.AddProtectedStructure(area);
 			WorldDetours.Regions.Add(new(area, WorldDetours.Context.Walls));
@@ -651,6 +653,10 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		return false;
 	}
 
+	/// <summary> Creates a peaked roof based on <paramref name="length"/>. </summary>
+	/// <param name="bounds"> The total bounds the roof encompasses. </param>
+	/// <param name="thickness"> The vertical thickness of the roof. </param>
+	/// <param name="length"> The flat outer length of the roof. </param>
 	private static void CreateRoof(Rectangle bounds, int thickness, int length)
 	{
 		bounds.Height -= length; //Automatic height calibration

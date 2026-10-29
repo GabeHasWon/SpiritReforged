@@ -1,9 +1,10 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Forest.RoguesCrest;
@@ -115,9 +116,9 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 				{
 					var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(2f);
 					var scale = new Vector2(Main.rand.NextFloat(.2f, .5f), Main.rand.NextFloat(3, 6));
-					var color = Lighting.GetColor(Projectile.Center.ToTileCoordinates()).MultiplyRGB(Color.Lerp(Color.White, Color.SaddleBrown, Main.rand.NextFloat(.5f))) * 2;
+					var color = Lighting.GetColor(Projectile.Center.ToTileCoordinates()).MultiplyRGB(Color.Lerp(Color.White, Color.SaddleBrown, Main.rand.NextFloat(0.5f))) * 2;
 
-					ParticleHandler.SpawnParticle(new Particles.ImpactLine(position, Projectile.velocity * .1f, color, scale, 8, Projectile));
+					ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, Projectile.velocity * 0.1f, color, scale, 8, Projectile));
 				}
 			}
 		}
@@ -129,14 +130,14 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 		{
 			target.AddBuff(ModContent.BuffType<OpenWounds>(), 60 * 10);
 
-			ParticleHandler.SpawnParticle(new Particles.ImpactLine(Projectile.Center, Projectile.velocity * .1f, Color.Red.Additive(), new Vector2(.75f, 8), 8, Projectile) { NoLight = true });
-			ParticleHandler.SpawnParticle(new Particles.ImpactLine(Projectile.Center, Projectile.velocity * .1f, Color.White.Additive(), new Vector2(.3f, 5), 8, Projectile) { NoLight = true });
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Projectile.velocity * 0.1f, Color.Red.Additive(), new Vector2(0.75f, 8), 8, Projectile) { NoLight = true });
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Projectile.velocity * 0.1f, Color.White.Additive(), new Vector2(0.3f, 5), 8, Projectile) { NoLight = true });
 
-			ParticleHandler.SpawnParticle(new Particles.LightBurst(target.Center, 0, Color.Red, .5f, 10) { noLight = true });
-			ParticleHandler.SpawnParticle(new Particles.LightBurst(target.Center, 0, Color.White, .3f, 10) { noLight = true });
+			ParticleRenderers.UnderProjectiles.Add(new LightBurst(target.Center, 0, Color.Red, 0.5f, 10) { noLight = true });
+			ParticleRenderers.UnderProjectiles.Add(new LightBurst(target.Center, 0, Color.White, 0.3f, 10) { noLight = true });
 
 			SoundEngine.PlaySound(BigSwing, Projectile.Center);
-			SoundEngine.PlaySound(SoundID.NPCDeath12 with { Volume = .1f, Pitch = .25f }, Projectile.Center);
+			SoundEngine.PlaySound(SoundID.NPCDeath12 with { Volume = 0.1f, Pitch = 0.25f }, Projectile.Center);
 		}
 
 		MoRHelper.Decapitation(target, ref damageDone, ref hit.Crit);
@@ -162,7 +163,7 @@ public class RogueKnifeMinion() : BaseMinion(500, 900, new Vector2(12, 12))
 				var drawPos = Projectile.oldPos[k] - Main.screenPosition + Projectile.Size / 2 + new Vector2(0f, Projectile.gfxOffY);
 				var color = Projectile.GetAlpha(lightColor) * ((Projectile.oldPos.Length - k) / (float)Projectile.oldPos.Length);
 
-				Main.EntitySpriteDraw(texture, drawPos, source, color * .75f, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
+				Main.EntitySpriteDraw(texture, drawPos, source, color * 0.75f, Projectile.rotation, origin, Projectile.scale, SpriteEffects.None, 0);
 			}
 
 		return false;

@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Particles;
@@ -79,9 +79,9 @@ public class ScryingPot : PotTile, ILootable
 			int pWhoAmI = Player.FindClosest(new Vector2(i, j) * 16, 32, 32);
 
 			if (Main.myPlayer == pWhoAmI)
-				TornMapPiece.LightMap(i, j, 280, out _, .5f); //Only reveal the map for the nearest player
+				TornMapPiece.LightMap(i, j, 280, out _, 0.5f); //Only reveal the map for the nearest player
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(spawn, Color.MediumPurple * .15f, .25f, 400, 20, "supPerlin", Vector2.One, Common.Easing.EaseFunction.EaseQuadOut));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(spawn, Color.MediumPurple * .15f, .25f, 400, 20, "supPerlin", Vector2.One, Common.Easing.EaseFunction.EaseQuadOut));
 			SoundEngine.PlaySound(SoundID.NPCDeath6 with { Pitch = .5f }, spawn);
 
 			for (int x = 0; x < 12; x++)
@@ -90,8 +90,8 @@ public class ScryingPot : PotTile, ILootable
 				int time = Main.rand.Next(20, 50);
 				float speed = Main.rand.NextFloat(4f);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(newSpawn, spawn.DirectionTo(newSpawn) * speed, Color.Purple, .5f, time));
-				ParticleHandler.SpawnParticle(new GlowParticle(newSpawn, spawn.DirectionTo(newSpawn) * speed, Color.White, .2f, time));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(newSpawn, spawn.DirectionTo(newSpawn) * speed, Color.Purple, .5f, time));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(newSpawn, spawn.DirectionTo(newSpawn) * speed, Color.White, .2f, time));
 			}
 
 			for (int x = 51; x < 54; x++)

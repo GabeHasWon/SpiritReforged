@@ -1,6 +1,6 @@
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.EarthshakerVanity;
 using SpiritReforged.Content.Underground.Moss;
@@ -177,7 +177,7 @@ public class DunceCrab : ModNPC
 				Collision.HitTiles(NPC.position, NPC.velocity, NPC.width, NPC.height);
 
 				SoundEngine.PlaySound(SoundID.NPCHit38 with { Pitch = .5f }, NPC.Center);
-				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .2f, Common.Easing.EaseFunction.EaseCircularOut, 120));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(NPC.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .2f, Common.Easing.EaseFunction.EaseCircularOut, 120));
 
 				for (int i = 0; i < 12; i++)
 					Dust.NewDustPerfect(NPC.Bottom, DustID.Dirt, (Vector2.UnitY * -Main.rand.NextFloat(4f)).RotatedByRandom(1f), 150, Scale: Main.rand.NextFloat() + 1).noGravity = true;

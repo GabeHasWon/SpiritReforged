@@ -2,7 +2,7 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -103,7 +103,8 @@ public class ExplosiveRumProj : ModProjectile
 					float scale = Main.rand.NextFloat(0.05f, 0.2f);
 					float intensity = 1.5f * Projectile.Opacity;
 					int maxTime = Main.rand.Next(40, 80);
-					ParticleHandler.SpawnParticle(new FireParticle(position, velocity, fireColors, intensity, scale, EaseFunction.EaseQuadOut, maxTime)
+
+					ParticleRenderers.UnderProjectiles.Add(new FireParticle(position, velocity, fireColors, intensity, scale, EaseFunction.EaseQuadOut, maxTime)
 					{
 						ColorLerpExponent = 2.5f,
 						PixelDivisor = 2,

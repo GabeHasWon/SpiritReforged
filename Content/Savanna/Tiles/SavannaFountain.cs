@@ -1,6 +1,5 @@
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Savanna.Biome;
 using Terraria.Audio;
 using Terraria.DataStructures;

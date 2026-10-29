@@ -172,3 +172,13 @@ RageGlyphBuff: {
 	DisplayName: Wrathful Damage [{0}]
 	Description: Stored damage: {0}
 }
+
+ColumbatBuff: {
+	DisplayName: Columbat
+	Description: The being of bat
+}
+
+ColumbaldBuff: {
+	DisplayName: Columbald
+	Description: The being of bald
+}
