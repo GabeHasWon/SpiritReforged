@@ -60,7 +60,7 @@ public abstract class SwungProjectile : ModProjectile
 
 	public override void AI()
 	{
-		var owner = Main.player[Projectile.owner];
+		Player owner = Main.player[Projectile.owner];
 
 		Projectile.spriteDirection = Projectile.direction = owner.direction = (Projectile.velocity.X > 0) ? 1 : -1;
 		Projectile.rotation = GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch);

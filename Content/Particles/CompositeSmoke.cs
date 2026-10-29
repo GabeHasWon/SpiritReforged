@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
+using Terraria;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
@@ -132,7 +133,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 	public CompositeSmoke AttachTo(Entity entity)
 	{
 		Parent = entity;
-		_offset = entity.Center - Position;
+		_offset = Position - entity.Center;
 
 		return this;
 	}
@@ -142,10 +143,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 		base.Update(ref settings);
 
 		if (Parent != null)
-		{
-			Position = Parent.Center + _offset;
-			_offset -= Velocity;
-		}
+			Position = Parent.Center + (_offset += Velocity);
 
 		Velocity *= 0.98f;
 

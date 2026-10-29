@@ -59,6 +59,19 @@ internal static class PlayerExtensions
 
 	public static Tile TargetTile(this Player player) => Framing.GetTileSafely(Player.tileTargetX, Player.tileTargetY);
 
+	public static bool HoldingProjectile(this Player player, out Projectile held)
+	{
+		int index = (player.heldProj == -1) ? player.GetModPlayer<FreeDodgePlayer>().oldHeldProjectile : player.heldProj;
+		if (index != -1)
+		{
+			held = Main.projectile[index];
+			return true;
+		}
+
+		held = null;
+		return false;
+	}
+
 	public static void SimpleShakeScreen(this Player player, float strength, float vibrationCycles, int frames, float distanceFalloff, string uniqueIdentity = null)
 	{
 		var direction = (Main.rand.NextFloat() * ((float)Math.PI * 2f)).ToRotationVector2();

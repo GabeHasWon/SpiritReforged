@@ -4,7 +4,6 @@ using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Greatshields;
 using Terraria.Audio;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Shields;
 
@@ -97,7 +96,7 @@ public class RhosRydd : GreatshieldItem
 			owner.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, Projectile.rotation - MathHelper.PiOver2);
 		}
 
-		public override bool? CanDamage() => _released ? base.CanDamage() : false;
+		public override bool? CanDamage() => _released ? null : false;
 
 		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 		{
@@ -164,10 +163,4 @@ public class RhosRydd : GreatshieldItem
 	}
 
 	public override void OnBlockDamage(Player player, Player.HurtInfo info) { }
-
-	public override void DrawShield(ref PlayerDrawSet drawInfo, bool guarding)
-	{
-		if (drawInfo.drawPlayer.ownedProjectileCounts[ModContent.ProjectileType<RhosRyddBash>()] == 0) //Don't draw while performing a shield bash
-			base.DrawShield(ref drawInfo, guarding);
-	}
 }
