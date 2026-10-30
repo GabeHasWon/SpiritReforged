@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Subclasses.Greatshields;
@@ -29,7 +30,7 @@ public abstract class GreatshieldItem : ModItem
 		Item.DamageType = ModContent.GetInstance<GreatshieldClass>();
 		Item.channel = true;
 		Item.useTime = Item.useAnimation = 30;
-		Item.UseSound = SoundID.Item1;
+		Item.UseSound = null;
 		Item.noMelee = true;
 		Item.noUseGraphic = true;
 		Item.useStyle = -1;
@@ -137,7 +138,10 @@ public abstract class GreatshieldProjectile : SwungProjectile
 		else
 		{
 			if (!owner.channel)
+			{
 				Released = true;
+				SoundEngine.PlaySound(SoundID.Item1, Projectile.Center);
+			}
 
 			if (Main.myPlayer == owner.whoAmI)
 			{
@@ -164,8 +168,9 @@ public abstract class GreatshieldProjectile : SwungProjectile
 		int direction = projectile.direction;
 		Color color = projectile.GetAlpha(lightColor);
 		BasicConfiguration config = swung.GetConfig<BasicConfiguration>();
+		Player owner = Main.player[projectile.owner];
 
-		if (Main.player[projectile.owner].HeldItem.ModItem is GreatshieldItem shieldItem)
+		if (owner.HeldItem.ModItem is GreatshieldItem shieldItem)
 		{
 			Texture2D texture = shieldItem.HeldTexture;
 			SpriteEffects effects = (direction == -1) ? SpriteEffects.FlipVertically : SpriteEffects.None;
@@ -175,6 +180,12 @@ public abstract class GreatshieldProjectile : SwungProjectile
 				+ (Vector2.UnitX * (config.Reach / 1.5f) * (EaseFunction.EaseSine.Ease(swung.Progress) + 0.25f)).RotatedBy(projectile.rotation);
 
 			Main.EntitySpriteDraw(texture, position, null, color, rotation, texture.Size() / 2, projectile.scale, effects);
+
+			if (owner.TryGetModPlayer(out GreatshieldPlayer shieldPlayer) && shieldPlayer.Blocking)
+			{
+				float scale = 1 + (EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 30f) + 1) * 0.1f;
+				Main.EntitySpriteDraw(texture, position, null, color * 0.3f, rotation, texture.Size() / 2, scale, effects, 0);
+			}
 		}
 
 		if (wave)
