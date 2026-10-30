@@ -200,12 +200,20 @@ public class Roromaraugi : GreatshieldItem
 
 	public override void OnBlockDamage(Player player, Player.HurtInfo info)
 	{
-		if (player.whoAmI == Main.myPlayer)
-		{
-			int damage = player.GetWeaponDamage(Item);
-			float knockback = player.GetWeaponKnockback(Item);
+		int damage = player.GetWeaponDamage(Item);
+		float knockback = player.GetWeaponKnockback(Item);
 
-			SwungProjectile.Spawn(player.Center, Vector2.UnitX * player.direction, ModContent.ProjectileType<RoromaraugiSwing>(), damage, knockback, player, -3);
+		foreach (Projectile projectile in Main.ActiveProjectiles)
+		{
+			if (projectile.owner == player.whoAmI && projectile.ModProjectile is RoromaraugiSwing roromaraugi)
+			{
+				roromaraugi.SwingArc = -3;
+				player.channel = false;
+				projectile.damage = damage;
+				projectile.knockBack = knockback;
+
+				break;
+			}
 		}
 	}
 

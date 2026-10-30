@@ -1,7 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Subclasses.Greatshields;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Shields;
 

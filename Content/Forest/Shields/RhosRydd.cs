@@ -57,13 +57,13 @@ public class RhosRydd : GreatshieldItem
 						int magnitude = 20;
 						owner.velocity = Vector2.Lerp(owner.velocity, Projectile.velocity * magnitude * 2, Progress);
 
-						if (Counter == SwingTime / 2)
+						if (Counter == SwingTime / 3)
 						{
 							owner.velocity = Projectile.velocity * magnitude;
 							SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown, Projectile.Center);
 						}
 
-						if (Counter == 0)
+						if (Counter == 1)
 							SoundEngine.PlaySound(SoundID.Item1 with { Pitch = -1 }, Projectile.Center);
 
 						for (int i = 0; i < 2; i++)

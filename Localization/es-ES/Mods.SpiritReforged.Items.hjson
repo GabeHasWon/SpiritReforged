@@ -12,7 +12,7 @@ CommonTooltips: {
 		''' */
 	/* Greatshield:
 		'''
-		hold <left> to block incoming damage
+		Hold <left> to block incoming damage
 		Gains increased damage with defense
 		''' */
 }
@@ -3893,7 +3893,11 @@ SpikedScutumRed: {
 
 Firewall: {
 	// DisplayName: Firewall
-	// Tooltip: "{$CommonTooltips.Greatshield}"
+	/* Tooltip:
+		'''
+		Hold <left> to block incoming damage and breath fire
+		Gains increased damage with defense
+		''' */
 }
 
 KiteShield: {
@@ -3905,8 +3909,8 @@ RhosRydd: {
 	// DisplayName: Rhos Rydd
 	/* Tooltip:
 		'''
-		{$CommonTooltips.Greatshield}
-		Hold to perform a short-ranged dash
+		Hold <left> to block incoming damage and perform a short-ranged dash
+		Gains increased damage with defense
 		''' */
 }
 
@@ -3922,7 +3926,11 @@ LushWoodTrellisTwoItem: {
 
 Roromaraugi: {
 	// DisplayName: Roromaraugi
-	// Tooltip: "{$CommonTooltips.Greatshield}"
+	/* Tooltip:
+		'''
+		Hold <left> to parry incoming damage
+		Gains increased damage with defense
+		''' */
 }
 
 StaminaRing: {
