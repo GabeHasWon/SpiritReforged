@@ -21,6 +21,7 @@ using System.Reflection;
 using Terraria.DataStructures;
 using static SpiritReforged.Common.DebuffOverhaul.BuffExtension;
 using static SpiritReforged.Common.TileCommon.Conversion.ConversionHandler;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 namespace SpiritReforged;
 
@@ -270,5 +271,8 @@ public partial class SpiritReforgedMod : Mod
 
 	[ModCall]
 	private static int TrellisVine(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path) => CrossmodTrellis.InternalRecieve(mod, itemStylePairs, name, path);
+
+	[ModCall]
+	internal static bool InOasis(Player plr) => OasisBiome.InOasis(plr);
 	#endregion
 }
