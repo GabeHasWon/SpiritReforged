@@ -485,18 +485,18 @@ WorldFrog: {
 }
 
 MossSlime: {
-	DisplayName: Моховой слизень
+	DisplayName: Слизень со мхом
 	Entry: Любопытный вид слизней, который почему-то покрыт мхом. Существует множество их разновидностей, но почему-то все покрыты именно светящимся мхом. Может, это лёгкий источник света?
 }
 
-KryptonMossSlime.DisplayName: Криптоновый моховой слизень
-LavaMossSlime.DisplayName: Лавовый моховой слизень
-NeonMossSlime.DisplayName: Неоновый моховой слизень
-XenonMossSlime.DisplayName: Ксеноновый моховой слизень
-ArgonMossSlime.DisplayName: Аргоновый моховой слизень
-HeliumMossSlime.DisplayName: Гелиевый моховой слизень
-OganessonMossSlime.DisplayName: Оганесоновый моховой слизень
-RadonMossSlime.DisplayName: Радоновый моховой слизень
+KryptonMossSlime.DisplayName: Слизень с криптоновым мхом
+LavaMossSlime.DisplayName: Слизень с лавовым мхом
+NeonMossSlime.DisplayName: Слизень с неоновым мхом
+XenonMossSlime.DisplayName: Слизень с ксеноновым мхом
+ArgonMossSlime.DisplayName: Слизень с аргоновым мхом
+HeliumMossSlime.DisplayName: Слизень с гелиевым мхом
+OganessonMossSlime.DisplayName: Слизень с оганесоновым мхом
+RadonMossSlime.DisplayName: Слизень с радоновым мхом
 Tumbleweed.DisplayName: "{$NPCName.Tumbleweed}"
 
 Flamingo: {
@@ -531,17 +531,17 @@ DesertStactus: {
 
 CorruptStactus: {
 	DisplayName: Искажённый стактус
-	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	Entry: "{$NPCs.DesertStactus.Entry}"
 }
 
 CrimsonStactus: {
 	DisplayName: Багряный стактус
-	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	Entry: "{$NPCs.DesertStactus.Entry}"
 }
 
 HallowedStactus: {
 	DisplayName: Освящённый стактус
-	Entry: "{$Mods.SpiritReforged.NPCs.DesertStactus.Entry}"
+	Entry: "{$NPCs.DesertStactus.Entry}"
 }
 
 BrineShrimp: {
@@ -715,7 +715,7 @@ BeetleTownPet: {
 		Ladybug15: Тюльпан
 	}
 
-	Census.SpawnCondition: Используйте [i:SpiritReforged/BeetleLicense] жучий паспорт, выпадающий со Скарабеуса
+	Census.SpawnCondition: Используйте [i:SpiritReforged/BeetleLicense] лицензию на жука, выпадающий со Скарабеуса
 }
 
 Enchanter: {
