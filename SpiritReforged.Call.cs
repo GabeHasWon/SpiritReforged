@@ -6,10 +6,12 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
-using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.Forest.Graveyard;
+using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
@@ -21,7 +23,6 @@ using System.Reflection;
 using Terraria.DataStructures;
 using static SpiritReforged.Common.DebuffOverhaul.BuffExtension;
 using static SpiritReforged.Common.TileCommon.Conversion.ConversionHandler;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 namespace SpiritReforged;
 
@@ -274,5 +275,8 @@ public partial class SpiritReforgedMod : Mod
 
 	[ModCall]
 	internal static bool InOasis(Player plr) => OasisBiome.InOasis(plr);
+
+	[ModCall]
+	internal static Rectangle[] GetOases() => [.. MicrobiomeSystem.Microbiomes.Where(x => x is OasisBiome).Select(x => ((OasisBiome)x).Rectangle)];
 	#endregion
 }

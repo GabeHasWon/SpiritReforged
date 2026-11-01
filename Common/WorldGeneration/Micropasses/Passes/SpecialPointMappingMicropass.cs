@@ -21,6 +21,8 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
+#nullable enable
+
 internal class SpecialPointMappingMicropass : Micropass
 {
 	public override string WorldGenName => "Points of Interest";
@@ -36,16 +38,16 @@ internal class SpecialPointMappingMicropass : Micropass
 		{
 			Assembly asm = CrossMod.Spooky.Instance.Code;
 
-			Type type = asm.GetType("Spooky.Content.Generation.VegetableGarden");
-			MethodInfo greenhouseHook = type.GetMethod("CanPlaceGreenhouse");
+			Type type = asm.GetType("Spooky.Content.Generation.VegetableGarden")!;
+			MethodInfo greenhouseHook = type.GetMethod("CanPlaceGreenhouse")!;
 			MonoModHooks.Add(greenhouseHook, CheckAddGreenhouse);
 
-			Type hellType = asm.GetType("Spooky.Content.Generation.SpookyHell");
-			MethodInfo arenaHook = hellType.GetMethod("GenerateNoseTempleStructure");
+			Type hellType = asm.GetType("Spooky.Content.Generation.SpookyHell")!;
+			MethodInfo arenaHook = hellType.GetMethod("GenerateNoseTempleStructure")!;
 			MonoModHooks.Add(arenaHook, CheckAddArena);
 
-			Type rottenType = asm.GetType("Spooky.Content.Generation.ZombieOcean");
-			MethodInfo rottenHook = rottenType.GetMethod("PlaceAmbience");
+			Type rottenType = asm.GetType("Spooky.Content.Generation.ZombieOcean")!;
+			MethodInfo rottenHook = rottenType.GetMethod("PlaceAmbience")!;
 			MonoModHooks.Add(rottenHook, CheckRottenDepths);
 		}
 	}
@@ -91,12 +93,8 @@ internal class SpecialPointMappingMicropass : Micropass
 			curiosityTypes.Add(ModContent.TileType<SmackOLanternTile>());
 		}
 
-		HashSet<InterestType> placed = [];
-
-		int fablesVaultType = -1;
-
-		if (CrossMod.Fables.CheckFind("WulfrumVault", out ModTile fablesVault))
-			fablesVaultType = fablesVault.Type;
+		HashSet<Type> placed = [];
+		IEnumerable<InterestDefinition> definitions = ModContent.GetContent<InterestDefinition>();
 
 		for (int i = 20; i < Main.maxTilesX - 20; i++)
 		{
@@ -104,33 +102,24 @@ internal class SpecialPointMappingMicropass : Micropass
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (TileMethods.TryGetChestID(i, j, out VanillaChestID chestType))
-				{
-					if (chestType == VanillaChestID.Sky)
-						Add(i, j, InterestType.FloatingIsland);
-				}
-				else if (tile.HasTile)
-				{
-					if (tile.TileType == TileID.Larva && tile.TileFrameX == 0 && tile.TileFrameY == 0)
-						Add(i, j, InterestType.Hive);
-					else if (tile.TileType == ModContent.TileType<SavannaGrass>() && !placed.Contains(InterestType.Savanna))
-						Add(i, j, InterestType.Savanna);
-					else if (tile.TileType == TileID.LargePiles2 && tile.TileFrameX == 920 && tile.TileFrameY == 0)
-						Add(i, j, InterestType.EnchantedSword);
-					else if (fablesVaultType == tile.TileType && TileObjectData.IsTopLeft(i, j))
-						Add(i, j, InterestType.WulfrumBunker);
-					else if (tile.TileType == ModContent.TileType<SaltBlockReflective>() && !placed.Contains(InterestType.SaltFlat))
-						Add(i, j, InterestType.SaltFlat);
-					else
-					{
-						if (curiosityTypes.Contains(tile.TileType) && TileObjectData.IsTopLeft(i, j))
-							Add(i, j, InterestType.Curiosity);
+				if (!tile.HasTile)
+					continue;
 
-						if (tile.TileType == ModContent.TileType<AmberFossil>() && TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity entity) 
-							&& entity is FossilEntity fossil && fossil.itemType == ModContent.ItemType<TinyDragon>())
-							Add(i, j, InterestType.Curiosity);
+				if (curiosityTypes.Contains(tile.TileType) && TileObjectData.IsTopLeft(i, j))
+					Add(i, j, InterestType.Curiosity);
+
+				if (tile.TileType == ModContent.TileType<AmberFossil>() && TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity? entity)
+					&& entity is FossilEntity fossil && fossil.itemType == ModContent.ItemType<TinyDragon>())
+					Add(i, j, InterestType.Curiosity);
+
+				foreach (InterestDefinition def in definitions)
+				{
+					if (def.MappedInterest && def.IsInterestAt(i, j, placed))
+					{
+						Add(i, j, InterestType.Custom, def);
+						break;
 					}
-                }
+				}
 			}
 		}
 
@@ -164,13 +153,14 @@ internal class SpecialPointMappingMicropass : Micropass
 
 		Add((int)GenVars.shimmerPosition.X, (int)GenVars.shimmerPosition.Y, InterestType.Shimmer);
 
-		void Add(int x, int y, InterestType type)
+		void Add(int x, int y, InterestType type, InterestDefinition? definition = null)
 		{
 			if (PointOfInterestSystem.InterestByPosition.TryGetValue(new Point16(x, y), out var value))
-				SpiritReforgedMod.Instance.Logger.Info($"Two (or more) interests were placed @ {x}, {y}, currently {value.type}, attempted {type}.");
+				SpiritReforgedMod.Instance.Logger.Info($"Two (or more) interests were placed @ {x}, {y}, currently {value.legacyType}, attempted {type}.");
 
-			PointOfInterestSystem.InterestByPosition.TryAdd(new(x, y), new(type));
-			placed.Add(type);
+			PointOfInterestSystem.Interest interest = definition is not null ? new(definition) : new(type);
+			PointOfInterestSystem.InterestByPosition.TryAdd(new(x, y), interest);
+			placed.Add(interest.GetType());
 		}
 	}
 }

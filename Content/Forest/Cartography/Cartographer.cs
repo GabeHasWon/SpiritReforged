@@ -157,11 +157,11 @@ public class Cartographer : WorldNPC, ITravelNPC
 		const string dialogue = "Mods.SpiritReforged.NPCs.Cartographer.Dialogue.Map";
 		PointOfInterestSystem.Interest interest = PointOfInterestSystem.InterestByPosition[position];
 
-		int itemType = (GetPinItemType(interest.type) is int value && value > -1) ? value : Main.rand.Next([.. ModContent.GetContent<PinItem>()]).Type;
+		int itemType = (GetPinItemType(interest.legacyType) is int value && value > -1) ? value : Main.rand.Next([.. ModContent.GetContent<PinItem>()]).Type;
 		Item item = new(itemType);
 		string name = item.ModItem.Name; //The name of the pin, used for identification
 
-		string text = Language.GetTextValue(dialogue + "." + interest.type + "." + Main.rand.Next(3));
+		string text = Language.GetTextValue(dialogue + "." + interest.legacyType + "." + Main.rand.Next(3));
 		if (Main.LocalPlayer.GetModPlayer<PinPlayer>().unlockedPins.Count == 0)
 			text += " " + Language.GetTextValue(dialogue + ".FirstPin"); //If the player owns no pins, append "first pin" dialogue at the end
 
@@ -178,7 +178,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 		RevealMap.Reveal(position.X, position.Y, radius);
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
-			new PointOfInterestSystem.SyncPoIData(position, interest.type, true).Send();
+			new PointOfInterestSystem.SyncPoIData(position, interest.legacyType, true).Send();
 	}
 
 	/// <summary> Gets the pin item associated with <paramref name="interest"/>, returns -1 if none exists. </summary>

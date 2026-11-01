@@ -2,3 +2,10 @@ v0.2.3.3
 - Publicized ICheckItemUse interface for crossmod use
 - Added CheckItem.RegisterMod for ICheckItemUse with weak references
 - Added Lush Wood (from Verdant) Trellises
+- Added the following Mod.Call functionalities:
+	"InOasis": returns bool, takes (Player player)
+	Returns if the player is in an oasis.
+
+	"GetOases": returns Rectangle[], takes nothing
+	Returns all Oasis bounding boxes in the current world. 
+- Updated Russian and Chinese localization
