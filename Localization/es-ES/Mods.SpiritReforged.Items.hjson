@@ -3166,7 +3166,8 @@ ChromaticWax: {
 	Gain: El arma a encantar obtendrá: [c/{0}:{1}]
 	Target: Solo puede ser aplicado a armas
 	RightClick: Sujeta este glifo y haz clic derecho en el objeto que deseas encantar
-	// GlyphPrefixing: "{0} {1}"
+	# {0} - glyph prefix, {1} - item name
+	GlyphPrefixing: ({0}) {1}
 }
 
 BlazeGlyph: {
