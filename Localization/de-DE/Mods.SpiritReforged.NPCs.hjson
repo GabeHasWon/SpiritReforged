@@ -329,6 +329,7 @@ Cartographer: {
 			}
 
 			FirstPin: Ich hab diesen Pin hier zu deiner "Pin-Sammlung" hinzugefügt. Du kannst jederzeit von der unteren linken Ecke deiner Karte darauf zugreifen.
+			// NoValidPins: Oh, sorry, look like I can't find any pins. I swear I had some though...did they come off when I fell...?
 		}
 	}
 

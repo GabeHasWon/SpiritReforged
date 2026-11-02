@@ -8,8 +8,10 @@ using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
+using SpiritReforged.Content.Forest.Cartography.Pins;
 using SpiritReforged.Content.Forest.Graveyard;
 using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.Glyphs;
@@ -271,12 +273,27 @@ public partial class SpiritReforgedMod : Mod
 	}
 
 	[ModCall]
-	private static int TrellisVine(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path) => CrossmodTrellis.InternalRecieve(mod, itemStylePairs, name, path);
+	internal static int TrellisVine(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path) => CrossmodTrellis.InternalRecieve(mod, itemStylePairs, name, path);
 
 	[ModCall]
 	internal static bool InOasis(Player plr) => OasisBiome.InOasis(plr);
 
 	[ModCall]
 	internal static Rectangle[] GetOases() => [.. MicrobiomeSystem.Microbiomes.Where(x => x is OasisBiome).Select(x => ((OasisBiome)x).Rectangle)];
+
+	[ModCall]
+	internal static CrossmodPin? RegisterPin(Mod mod, string name, string texture) => CrossmodPin.RegisterPin(mod, name, texture);
+
+	[ModCall]
+	internal static CrossmodInterest? RegisterInterest(Mod mod, string name, Func<int[]> getPins, bool isMapped, Func<int, int, HashSet<Type>, bool>? mapperFunc,
+		LocalizedText[]? dialogue = null, Func<bool>? isAvailable = null)
+	{
+		CrossmodInterest interest = new(name, getPins, isMapped, mapperFunc, dialogue, isAvailable);
+
+		if (mod.AddContent(interest))
+			return interest;
+
+		return null;
+	}
 	#endregion
 }

@@ -329,6 +329,7 @@ Cartographer: {
 			}
 
 			FirstPin: Я добавила эту булавку в твою коллекцию. Ты можешь её открыть в любое время в левом нижнем углу своей карты.
+			// NoValidPins: Oh, sorry, look like I can't find any pins. I swear I had some though...did they come off when I fell...?
 		}
 	}
 

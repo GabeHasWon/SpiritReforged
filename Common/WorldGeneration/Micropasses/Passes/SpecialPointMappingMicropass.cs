@@ -84,15 +84,6 @@ internal class SpecialPointMappingMicropass : Micropass
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		HashSet<int> curiosityTypes = [ModContent.TileType<BlunderbussTile>(), ModContent.TileType<PearlStringTile>(), ModContent.TileType<SkeletonHand>(), ModContent.TileType<Scarecrow>()];
-
-		if (CrossMod.Spooky.Enabled)
-		{
-			curiosityTypes.Add(ModContent.TileType<PumpkinPailTile>());
-			curiosityTypes.Add(ModContent.TileType<ShovelTile>());
-			curiosityTypes.Add(ModContent.TileType<SmackOLanternTile>());
-		}
-
 		HashSet<Type> placed = [];
 		IEnumerable<InterestDefinition> definitions = ModContent.GetContent<InterestDefinition>();
 
@@ -104,13 +95,6 @@ internal class SpecialPointMappingMicropass : Micropass
 
 				if (!tile.HasTile)
 					continue;
-
-				if (curiosityTypes.Contains(tile.TileType) && TileObjectData.IsTopLeft(i, j))
-					Add(i, j, InterestType.Curiosity);
-
-				if (tile.TileType == ModContent.TileType<AmberFossil>() && TileEntity.ByPosition.TryGetValue(new Point16(i, j), out TileEntity? entity)
-					&& entity is FossilEntity fossil && fossil.itemType == ModContent.ItemType<TinyDragon>())
-					Add(i, j, InterestType.Curiosity);
 
 				foreach (InterestDefinition def in definitions)
 				{

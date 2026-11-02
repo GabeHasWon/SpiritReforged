@@ -130,6 +130,8 @@ public class PointOfInterestSystem : ModSystem
 		}
 	}
 
+	public readonly record struct UnloadedInterest(Point16 Position, string DefinitionName, bool Discovered);
+
 	public class Interest(InterestDefinition definition)
 	{
 		public readonly InterestType legacyType = InterestType.Custom;
@@ -149,6 +151,10 @@ public class PointOfInterestSystem : ModSystem
 	/// <summary> A collection of interest data added during worldgen, keyed by tile position. </summary>
 	[WorldBound]
 	public static readonly Dictionary<Point16, Interest> InterestByPosition = [];
+
+	/// <summary> Collections of interests that were unable to be loaded properly. </summary>
+	[WorldBound]
+	internal static readonly List<UnloadedInterest> UnloadedInterests = [];
 
 	public override void Load()
 	{
@@ -174,6 +180,7 @@ public class PointOfInterestSystem : ModSystem
 	public override void SaveWorldData(TagCompound tag)
 	{
 		List<TagCompound> list = [];
+
 		foreach (Point16 position in InterestByPosition.Keys)
 		{
 			Interest interest = InterestByPosition[position];
@@ -181,8 +188,18 @@ public class PointOfInterestSystem : ModSystem
 			list.Add(new()
 			{
 				["position"] = position,
-				["type"] = (byte)interest.legacyType,
+				["type"] = interest.definition.FullName,
 				["discovered"] = interest.discovered
+			});
+		}
+
+		foreach (UnloadedInterest interest in UnloadedInterests)
+		{
+			list.Add(new()
+			{
+				["position"] = interest.Position,
+				["type"] = interest.DefinitionName,
+				["discovered"] = interest.Discovered
 			});
 		}
 
@@ -194,22 +211,28 @@ public class PointOfInterestSystem : ModSystem
 	{
 		// Populate points using the original legacy method if necessary
 		if (tag.TryGet("typesCount", out int _))
-		{
-			Legacy_TypedLoad(tag);
-			return;
-		}
+			LegacyLoad_TypedLoad(tag);
 		else if (tag.TryGet("pointsOfInterest", out List<TagCompound> list)) // Populate using list-legacy load
-		{
-			Legacy_InterestList(list);
-			return;
-		}
+			LegacyLoad_EnumType(list);
 		else // Use modern crossmod-compatible list mode
 		{
+			var interests = tag.GetList<TagCompound>("interests");
 
+			foreach (TagCompound item in interests)
+			{
+				Point16 position = item.Get<Point16>("position");
+				string type = item.GetString("type");
+				bool discovered = item.GetBool("discovered");
+
+				if (ModContent.TryFind<InterestDefinition>(type, out var def))
+					InterestByPosition.Add(position, new(def) { discovered = discovered });
+				else
+					UnloadedInterests.Add(new UnloadedInterest(position, type, discovered));
+			}
 		}
 	}
 
-	private static void Legacy_InterestList(List<TagCompound> list)
+	private static void LegacyLoad_EnumType(List<TagCompound> list)
 	{
 		foreach (TagCompound item in list)
 		{
@@ -221,7 +244,7 @@ public class PointOfInterestSystem : ModSystem
 		}
 	}
 
-	private static void Legacy_TypedLoad(TagCompound tag)
+	private static void LegacyLoad_TypedLoad(TagCompound tag)
 	{
 		Dictionary<InterestType, HashSet<Point16>> byPosition = [];
 		Dictionary<InterestType, HashSet<Point16>> worldGen_ByPosition = [];

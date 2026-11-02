@@ -329,6 +329,7 @@ Cartographer: {
 			}
 
 			FirstPin: Adicionei este alfinete à sua "Coleção de Alfinetes". Você pode acessá-lo a qualquer momento no canto inferior esquerdo do seu mapa.
+			// NoValidPins: Oh, sorry, look like I can't find any pins. I swear I had some though...did they come off when I fell...?
 		}
 	}
 

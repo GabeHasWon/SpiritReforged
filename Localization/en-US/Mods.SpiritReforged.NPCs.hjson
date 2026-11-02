@@ -329,6 +329,7 @@ Cartographer: {
 			}
 
 			FirstPin: I've added this here pin to your "Pin collection". You can access it any time from the bottom left corner of your map.
+			NoValidPins: Oh, sorry, look like I can't find any pins. I swear I had some though...did they come off when I fell...?
 		}
 	}
 

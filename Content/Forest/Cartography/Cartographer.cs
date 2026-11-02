@@ -17,6 +17,7 @@ using System.IO;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Content.Forest.Cartography;
 
@@ -126,15 +127,27 @@ public class Cartographer : WorldNPC, ITravelNPC
 			{
 				PointOfInterestSystem.Interest interest;
 				Point16 position;
+				PriorityQueue<int, float> indices = new();
+
+				for (int i = 0; i < PointOfInterestSystem.InterestByPosition.Count; ++i)
+					indices.Enqueue(i, Main.rand.NextFloat());
 
 				do
 				{
-					var pair = PointOfInterestSystem.InterestByPosition.ElementAt(Main.rand.Next(PointOfInterestSystem.InterestByPosition.Count));
+					// If we've exhausted every option, give up
+					if (indices.Count == 0)
+					{
+						Main.npcChatText = Language.GetTextValue("Mods.SpiritReforged.NPCs.Cartographer.Dialogue.Map.NoValidPins");
+						return;
+					}
+
+					int index = indices.Dequeue();
+					var pair = PointOfInterestSystem.InterestByPosition.ElementAt(index);
 
 					position = pair.Key;
 					interest = pair.Value;
 				}
-				while (interest.discovered); //Select a random undiscovered point
+				while (interest.discovered || !interest.definition.IsAvailable()); //Select a random undiscovered point
 
 				MapPointOfInterest(position, 60, new EntitySource_Gift(NPC));
 
@@ -154,16 +167,18 @@ public class Cartographer : WorldNPC, ITravelNPC
 
 	public static void MapPointOfInterest(Point16 position, int radius, IEntitySource itemSource)
 	{
-		const string dialogue = "Mods.SpiritReforged.NPCs.Cartographer.Dialogue.Map";
 		PointOfInterestSystem.Interest interest = PointOfInterestSystem.InterestByPosition[position];
-
-		int itemType = (GetPinItemType(interest.legacyType) is int value && value > -1) ? value : Main.rand.Next([.. ModContent.GetContent<PinItem>()]).Type;
+		
+		int itemType = Main.rand.Next(interest.definition.PinTypes);
 		Item item = new(itemType);
 		string name = item.ModItem.Name; //The name of the pin, used for identification
+		string text = Main.rand.Next(interest.definition.DiscoveryText).Value;
 
-		string text = Language.GetTextValue(dialogue + "." + interest.legacyType + "." + Main.rand.Next(3));
 		if (Main.LocalPlayer.GetModPlayer<PinPlayer>().unlockedPins.Count == 0)
+		{
+			const string dialogue = "Mods.SpiritReforged.NPCs.Cartographer.Dialogue.Map";
 			text += " " + Language.GetTextValue(dialogue + ".FirstPin"); //If the player owns no pins, append "first pin" dialogue at the end
+		} 
 
 		Main.npcChatText = text;
 		Main.npcChatCornerItem = item.type;
