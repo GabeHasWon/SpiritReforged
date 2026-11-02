@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Content.Aether.Items;
 using SpiritReforged.Content.Forest.Misc;
 using Terraria;
@@ -126,6 +127,9 @@ public class MagazineGlobalItem : GlobalItem
 
 	// because we have to manually interrupt item time to cancel a reload, we store a seperate timer to ensure proper behavior.
 	private int reloadCancelCooldown;
+
+	// Used to flash the ammo inventory icon when ammo is increased
+	private int ammoIconFlashTimer;
 
 	// Whether or not the weapon uses magazine functionality on right click. Defaults to true.
 	private bool shouldUseMagazineOnRightClick;
@@ -511,6 +515,9 @@ public class MagazineGlobalItem : GlobalItem
 			if (reloadCancelCooldown > 0)
 				reloadCancelCooldown--;
 
+			if (ammoIconFlashTimer > 0)
+				ammoIconFlashTimer--;
+
 			if (reloadDelay > 0)
 			{
 				reloadDelay--;
@@ -546,11 +553,16 @@ public class MagazineGlobalItem : GlobalItem
 							int old = _currentMagazine.AmmoUsed;
 							_currentMagazine.AmmoUsed = (int)MathHelper.Lerp(_oldAmmoUsed, 0, lerp);
 
-							if (old != _currentMagazine.AmmoUsed && isHeld)
+							if (old != _currentMagazine.AmmoUsed)
 							{
-								MagazinePlayer.UnempowerShot();
+								ammoIconFlashTimer = 20;
 
-								SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+								if (isHeld)
+								{
+									MagazinePlayer.UnempowerShot();
+
+									SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 2f, Pitch = MathHelper.Lerp(-0.25f, 0.25f, interpolant) });
+								}
 							}
 						}
 					}
@@ -564,6 +576,8 @@ public class MagazineGlobalItem : GlobalItem
 								SoundEngine.PlaySound(SoundID.MaxMana with { Volume = 2f });
 								MagazinePlayer.UnempowerAllShots();
 							}
+
+							ammoIconFlashTimer = 20;
 							
 							_currentMagazine.AmmoUsed = 0;
 						}
@@ -612,6 +626,50 @@ public class MagazineGlobalItem : GlobalItem
 			if (index != -1)
 			{
 				tooltips.Insert(index + 1, new(Mod, "SpiritReforged: Magazine Size", $"Can fire {magazineSize} shots before needing to reload"));
+			}
+		}
+	}
+
+	public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
+	{
+		const int slotDimensions = 52;
+
+		if (Active)
+		{
+			var ammoIcon = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineIcon").Value;
+			var ammoIconOutline = ModContent.Request<Texture2D>("SpiritReforged/Common/ItemCommon/MagazineSystem/MagazineIcon_Outline").Value;
+			
+			float iconScale = Main.inventoryScale;
+
+			float drawScale = iconScale * 0.8f;
+			Color color = drawColor * 0.5f;
+			if (ammoIconFlashTimer > 0)
+			{
+				float interpolant = ammoIconFlashTimer / 20f;
+
+				drawScale = iconScale * MathHelper.Lerp(1.25f, 0.8f, 1f - interpolant);
+				color = drawColor * MathHelper.Lerp(1f, 0.5f, 1f - interpolant);
+			}
+
+			Vector2 iconPosition = position + (new Vector2(slotDimensions / 2, slotDimensions / 2) - ammoIcon.Size() / 2 + new Vector2(-4, -26)) * iconScale;
+
+			Main.spriteBatch.Draw(ammoIcon, iconPosition, null, color, 0f, ammoIcon.Size() / 2f, drawScale, 0f, 0f);
+
+			if (ammoIconFlashTimer > 0)
+			{
+				float interpolant = ammoIconFlashTimer / 20f;
+
+				Main.spriteBatch.Draw(ammoIconOutline, iconPosition, null, Color.Yellow * interpolant, 0f, ammoIconOutline.Size() / 2f, drawScale, 0f, 0f);
+
+				if (_currentMagazine.AmmoUsed == 0)
+				{
+					var star = AssetLoader.LoadedTextures["Star"].Value;
+
+					Vector2 starScale = new Vector2(MathHelper.Lerp(0.25f, 1f, 1f - interpolant), 0.2f * interpolant) * iconScale;
+
+					Main.spriteBatch.Draw(star, iconPosition, null, Color.Yellow.Additive() * interpolant, 0f, star.Size() / 2f, starScale, 0f, 0f);
+					Main.spriteBatch.Draw(star, iconPosition, null, Color.White.Additive() * interpolant, 0f, star.Size() / 2f, starScale * 0.66f, 0f, 0f);
+				}
 			}
 		}
 	}
