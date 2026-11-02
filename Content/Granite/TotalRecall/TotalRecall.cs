@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using System.Linq;
 using Terraria.DataStructures;
@@ -7,6 +8,9 @@ namespace SpiritReforged.Content.Granite.TotalRecall;
 
 public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultiplier: -0.2f))
 {
+	int _shootDirection;
+	float _shootRotation;
+
 	public const int MAX_COOLDOWN = 120;
 	int cooldown;
 	public override bool AltFunctionUse(Player player) => cooldown <= 0 && Main.projectile.Any(p => p.active && p.owner == player.whoAmI && p.TryGetGlobalProjectile<TotalRecallGlobalProjectile>(out var gp) && gp._active && gp._lingerTime > 0);
@@ -34,8 +38,21 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 			cooldown--;
 	}
 
+	public override void UseItemFrame(Player player)
+	{
+		ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, -0.25f, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), false, new(0.05f, 0.95f));
+	}
+
+	public override void UseStyle(Player player, Rectangle heldItemFrame)
+	{
+		ItemVisualHelpers.SetGunUseStyle(player, Item, _shootDirection, -12, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), new Vector2(66, 26), new Vector2(-16, -4), new(0.05f, 0.95f));
+	}
+
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
+		_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
+
 		if (player.altFunctionUse == 2)
 		{
 			TotalRecallGlobalProjectile.Pullback(player);
