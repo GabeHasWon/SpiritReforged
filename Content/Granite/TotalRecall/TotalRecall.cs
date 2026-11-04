@@ -1,7 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using System.Linq;
+using Terraria;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Granite.TotalRecall;
@@ -74,6 +76,7 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 public class TotalRecallGlobalProjectile : GlobalProjectile
 {
 	public const int MAX_LINGER_TIME = 300;
+	public const int MAX_LIFE_TIME = 30;
 	public override bool InstancePerEntity => true;
 	public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.CountsAsClass<RangedDamageClass>();
 
@@ -83,17 +86,56 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 	public bool _pullingBack;
 
 	public int _lingerTime;
+	public int _lifeTime;
 	public bool _active;
+
+	public float LifetimeProgress(Projectile projectile) => _lifeTime / (float)(MAX_LIFE_TIME * projectile.extraUpdates);
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
 		if (source is EntitySource_ItemUse_WithAmmo ammoSource && ammoSource.Item.ModItem is not null and TotalRecall totalRecall)
 		{
 			_active = true;
-			_lingerTime = MAX_LINGER_TIME;
-
 			_maxPullbackTime = projectile.timeLeft;
 		}
+	}
+
+	public override bool? CanDamage(Projectile projectile)
+	{
+		if (_active && !_pullingBack)
+		{
+			return projectile.timeLeft > 1;
+		}
+
+		return base.CanDamage(projectile);
+	}
+
+	public override bool PreAI(Projectile projectile)
+	{
+		if (_active && !_pullingBack)
+		{
+			if (projectile.timeLeft > 2)
+			{
+				_lifeTime++;
+
+				projectile.timeLeft = (int)MathHelper.Lerp(_maxPullbackTime, 2, LifetimeProgress(projectile));
+				projectile.velocity *= 0.995f;
+			}
+			else
+			{
+				projectile.timeLeft = 2;
+
+				if (projectile.velocity.LengthSquared() > 0)
+					projectile.velocity *= 0.9f;
+
+				if (++_lingerTime > MAX_LINGER_TIME * projectile.extraUpdates)
+					projectile.Kill();
+
+				return false;
+			}	
+		}
+
+		return true;
 	}
 
 	public override void AI(Projectile projectile)
@@ -106,16 +148,35 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 
 				return;
 			}
-
-			if (projectile.timeLeft < 2 && _lingerTime > 0)
-			{
-				Dust.NewDustPerfect(projectile.Center, DustID.Torch);
-
-				projectile.timeLeft = 2;
-				projectile.velocity *= 0.9f;
-				_lingerTime--;
-			}
 		}
+	}
+
+	public override bool PreDraw(Projectile projectile, ref Color lightColor)
+	{
+		var bulletTex = ModContent.Request<Texture2D>("SpiritReforged/Content/Granite/TotalRecall/TotalRecallBullet").Value;
+		var star = AssetLoader.LoadedTextures["Star"].Value;
+		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
+
+		float progress = LifetimeProgress(projectile);
+
+		if (_pullingBack)
+		{
+			progress = projectile.timeLeft / (float)_maxPullbackTime;
+
+			Main.spriteBatch.Draw(bloom, projectile.Center - Main.screenPosition, null, Color.CornflowerBlue.Additive() * progress * 0.2f, 0f, bloom.Size() / 2f, 0.3f * projectile.scale, 0f, 0f);
+			Main.spriteBatch.Draw(bulletTex, projectile.Center - Main.screenPosition, null, Color.White * progress, 0f, bulletTex.Size() / 2f, 2f * projectile.scale, 0f, 0f);
+			Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.CadetBlue.Additive() * progress * 0.4f, 0f, star.Size() / 2f, 0.3f * projectile.scale, 0f, 0f);
+		}
+		else if (progress > 0.5f)
+		{
+			float opacity = (progress - 0.5f) / 0.5f;
+
+			Main.spriteBatch.Draw(bloom, projectile.Center - Main.screenPosition, null, Color.CornflowerBlue.Additive() * opacity * 0.2f, 0f, bloom.Size() / 2f, 0.3f * projectile.scale, 0f, 0f);
+			Main.spriteBatch.Draw(bulletTex, projectile.Center - Main.screenPosition, null, Color.White * opacity, 0f, bulletTex.Size() / 2f, 2f * projectile.scale, 0f, 0f);
+			Main.spriteBatch.Draw(star, projectile.Center - Main.screenPosition, null, Color.CadetBlue.Additive() * opacity * 0.4f, 0f, star.Size() / 2f, 0.3f * projectile.scale, 0f, 0f);
+		}
+
+		return _lingerTime <= 0 || _pullingBack;
 	}
 
 	public static void Pullback(Player player)

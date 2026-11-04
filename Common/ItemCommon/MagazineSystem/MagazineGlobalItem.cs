@@ -506,6 +506,9 @@ public class MagazineGlobalItem : GlobalItem
 	{
 		if (Active)
 		{
+			if (ammoIconFlashTimer > 0)
+				ammoIconFlashTimer--;
+
 			bool isHeld = player.HeldItem == item;
 
 			// if we aren't holding the weapon AND we dont have any inventory reloading accessories, dont run reload logic at all
@@ -514,9 +517,6 @@ public class MagazineGlobalItem : GlobalItem
 
 			if (reloadCancelCooldown > 0)
 				reloadCancelCooldown--;
-
-			if (ammoIconFlashTimer > 0)
-				ammoIconFlashTimer--;
 
 			if (reloadDelay > 0)
 			{
@@ -642,13 +642,13 @@ public class MagazineGlobalItem : GlobalItem
 			float iconScale = Main.inventoryScale;
 
 			float drawScale = iconScale * 0.8f;
-			Color color = drawColor * 0.5f;
+			Color color = new Color(255, 50, 50) * 0.5f;
 			if (ammoIconFlashTimer > 0)
 			{
 				float interpolant = ammoIconFlashTimer / 20f;
 
 				drawScale = iconScale * MathHelper.Lerp(1.25f, 0.8f, 1f - interpolant);
-				color = drawColor * MathHelper.Lerp(1f, 0.5f, 1f - interpolant);
+				color = new Color(255, 50, 50) * MathHelper.Lerp(1f, 0.5f, 1f - interpolant);
 			}
 
 			Vector2 iconPosition = position + (new Vector2(slotDimensions / 2, slotDimensions / 2) - ammoIcon.Size() / 2 + new Vector2(-4, -26)) * iconScale;
@@ -659,7 +659,7 @@ public class MagazineGlobalItem : GlobalItem
 			{
 				float interpolant = ammoIconFlashTimer / 20f;
 
-				Main.spriteBatch.Draw(ammoIconOutline, iconPosition, null, Color.Yellow * interpolant, 0f, ammoIconOutline.Size() / 2f, drawScale, 0f, 0f);
+				Main.spriteBatch.Draw(ammoIconOutline, iconPosition, null, Color.LightYellow * interpolant, 0f, ammoIconOutline.Size() / 2f, drawScale, 0f, 0f);
 
 				if (_currentMagazine.AmmoUsed == 0)
 				{
@@ -667,7 +667,7 @@ public class MagazineGlobalItem : GlobalItem
 
 					Vector2 starScale = new Vector2(MathHelper.Lerp(0.25f, 1f, 1f - interpolant), 0.2f * interpolant) * iconScale;
 
-					Main.spriteBatch.Draw(star, iconPosition, null, Color.Yellow.Additive() * interpolant, 0f, star.Size() / 2f, starScale, 0f, 0f);
+					Main.spriteBatch.Draw(star, iconPosition, null, Color.LightYellow.Additive() * interpolant, 0f, star.Size() / 2f, starScale, 0f, 0f);
 					Main.spriteBatch.Draw(star, iconPosition, null, Color.White.Additive() * interpolant, 0f, star.Size() / 2f, starScale * 0.66f, 0f, 0f);
 				}
 			}
