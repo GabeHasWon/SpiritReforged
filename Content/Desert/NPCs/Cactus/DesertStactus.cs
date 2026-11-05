@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using Terraria.DataStructures;
 using Terraria.ModLoader.Utilities;
 
 namespace SpiritReforged.Content.Desert.NPCs.Cactus;
@@ -24,5 +25,23 @@ public class DesertStactus : Stactus
 		}
 
 		return (spawnInfo.PlayerInTown || !spawnInfo.Player.ZoneDesert || !onSand) ? 0 : SpawnCondition.OverworldDayDesert.Chance * spawnModifier;
+	}
+
+	public override void OnSpawn(IEntitySource source) //Randomly transform into a Bomb Stactus with Fables enabled
+	{
+		if (Segment is SegmentType.Variant_A or SegmentType.Variant_B && CrossMod.Fables.Enabled && Main.rand.NextBool(8))
+		{
+			if (NPC.ModNPC is Stactus stactus)
+			{
+				int parentWhoAmI = stactus.Parent;
+				Parameters parameters = stactus.parameters;
+
+				NPC.Transform(ModContent.NPCType<BombStactus>());
+
+				stactus.parameters = parameters;
+				stactus.Parent = parentWhoAmI;
+				NPC.netUpdate = true;
+			}
+		}
 	}
 }

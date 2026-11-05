@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Common.Easing;
+﻿using Newtonsoft.Json.Linq;
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.NPCCommon.Interfaces;
@@ -98,9 +99,9 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 			else if (i == height - 1)
 				segment = SegmentType.Head;
 
-			var source = (parent != -1) ? Main.npc[parent].GetSource_FromThis() : new EntitySource_SpawnNPC();
 			int startIndex = (segment == SegmentType.Head) ? 0 : 30; //Ensures the head is drawn after all other segments in a stack
-			var npc = NPC.NewNPCDirect(source, NPC.Center, NPC.type, startIndex, parent, (int)segment, parameters.SpawnTime);
+			IEntitySource source = (parent != -1) ? Main.npc[parent].GetSource_FromThis() : new EntitySource_SpawnNPC();
+			NPC npc = NPC.NewNPCDirect(source, NPC.Center, NPC.type, startIndex, parent, (int)segment, parameters.SpawnTime);
 			npc.velocity.Y = (i + 1) * -1.5f;
 
 			if (npc.ModNPC is Stactus stactus)
@@ -113,19 +114,19 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 		}
 	}
 
-	/// <summary> The face texture associated with this NPC type. </summary>
+	/// <summary> The face texture associated with this NPC type. Throws exceptions on failure. </summary>
 	public Texture2D FaceTexture => Faces[Type].Value;
 
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 10;
 		NPCID.Sets.CantTakeLunchMoney[Type] = true;
+		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, new()
+		{
+			Position = new Vector2(0, 12)
+		});
 
-		var drawModifiers = new NPCID.Sets.NPCBestiaryDrawModifiers() { Position = new Vector2(0, 12) };
-		NPCID.Sets.NPCBestiaryDrawOffset.Add(Type, drawModifiers);
-
-		Faces.Add(Type, Graphics.Tex("SpiritReforged/Content/Desert/NPCs/Cactus/" + Name + "Faces"));
-
+		Faces.Add(Type, typeof(Stactus).Texture(Name + "Faces"));
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Plantlike);
 	}
 
@@ -170,7 +171,7 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 
 		if (ParentNPC != null)
 		{
-			if (Main.netMode != NetmodeID.MultiplayerClient && (ParentNPC.type != Type || !ParentNPC.active || ParentNPC.ModNPC is Stactus s && s.falling)) //ParentNPC is invalid
+			if (Main.netMode != NetmodeID.MultiplayerClient && (/*ParentNPC.type != Type ||*/ !ParentNPC.active || ParentNPC.ModNPC is not Stactus s || s.falling)) //ParentNPC is invalid
 			{
 				if (Segment is SegmentType.Head && FindNewParent(out var p))
 				{
@@ -258,7 +259,7 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 				if (style == 0)
 					count--; //Juvenile debuff
 
-				for (int i = 0; i < count; i++)
+				for (int i = 2; i < count; i++)
 				{
 					if (Collision.SolidTiles(NPC.position - new Vector2(0, NPC.height * i), NPC.width, NPC.height - 4))
 					{
@@ -464,11 +465,8 @@ public abstract class Stactus : ModNPC, IDeathCount, IPickupCoins
 		npcLoot.AddCommon(ModContent.ItemType<Thornball>(), 1, 5, 10);
 		npcLoot.AddCommon(ItemID.Cactus, 1, 6, 12);
 
-		if (CrossMod.Thorium.Enabled)
-		{
-			if (CrossMod.Thorium.TryFind("CactusFruit", out ModItem cactusFruit))
-				npcLoot.AddCommon(cactusFruit.Type, 10);
-		}
+		if (CrossMod.Thorium.Enabled && CrossMod.Thorium.TryFind("CactusFruit", out ModItem cactusFruit))
+			npcLoot.AddCommon(cactusFruit.Type, 10);
 
 		LeadingConditionRule rule = new(new IsPrickly());
 		rule.OnSuccess(ItemDropRule.Common(ItemID.PinkPricklyPear));
