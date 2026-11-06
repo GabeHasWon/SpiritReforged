@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.TileCommon;
+﻿using TileHelper.Common;
+
+namespace SpiritReforged.Common.TileCommon;
 
 /// <summary> Supports doors with custom dimensions and provides access to <see cref="OnDoorInteraction"/>. </summary>
 public interface ICustomDoor
@@ -42,7 +44,7 @@ public interface ICustomDoor
 		/// <summary> Transforms the provided door tile into its alternate type. </summary>
 		public static bool InteractWithCustomDoor(Tile tile, int i, int j)
 		{
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 			var data = TileObjectData.GetTileData(tile);
 			int type = (TileID.Sets.OpenDoorID[tile.TileType] is int openDoorType && openDoorType != -1) ? openDoorType : TileID.Sets.CloseDoorID[tile.TileType];
 

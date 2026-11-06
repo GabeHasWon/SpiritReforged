@@ -23,8 +23,8 @@ namespace SpiritReforged.Common.WorldGeneration.GenConfiguration;
 /// </summary>
 internal class GenConfigUIState(Action returnAction) : UIState
 {
-	private static readonly Asset<Texture2D> Border = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "PageBorder", false);
-	private static readonly Asset<Texture2D> ButtonBorder = DrawHelpers.RequestLocal(typeof(GenConfigUIState), "ButtonBorder", false);
+	private static readonly Asset<Texture2D> Border = Graphics.Tex("SpiritReforged/Common/WorldGeneration/GenConfiguration/PageBorder");
+	private static readonly Asset<Texture2D> ButtonBorder = Graphics.Tex("SpiritReforged/Common/WorldGeneration/GenConfiguration/ButtonBorder");
 
 	private readonly static Dictionary<string, int> PresetSelectedByPageName = [];
 
@@ -141,7 +141,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 			pageConfig = -1;
 
 		mainPanel = page.PageInfo.PageBack is { } value ? new UIImage(value.Value) { Color = new Color(160, 160, 160) } : new UIPanel();
-		mainPanel.Width = StyleDimension.FromPixels(800);
+		mainPanel.Width = StyleDimension.FromPixels(1000);
 		mainPanel.Height = StyleDimension.FromPixels(500);
 		mainPanel.Top = StyleDimension.FromPixels(20);
 		mainPanel.HAlign = 0.5f;
@@ -643,11 +643,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 	{
 		UIButton<string> setMax = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Max"))
 		{
-			Width = StyleDimension.FromPixels(80),
+			Width = StyleDimension.FromPixels(120),
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0.5f,
 			VAlign = 1f,
-			Left = StyleDimension.FromPixels(168)
+			Left = StyleDimension.FromPixels(198)
 		};
 
 		setMax.OnUpdate += _ =>
@@ -702,11 +702,11 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		UIButton<string> setMin = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.Min"))
 		{
-			Width = StyleDimension.FromPixels(80),
+			Width = StyleDimension.FromPixels(120),
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0.5f,
 			VAlign = 1f,
-			Left = StyleDimension.FromPixels(-168)
+			Left = StyleDimension.FromPixels(-198)
 		};
 
 		setMin.OnUpdate += _ =>
@@ -761,7 +761,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		presetButton = new(GetConfigPresetDisplay(page))
 		{
-			Width = StyleDimension.FromPixels(234),
+			Width = StyleDimension.FromPixels(264),
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0.5f,
 			VAlign = 1f,
@@ -797,7 +797,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 
 		UIButton<string> resetButton = new(Language.GetTextValue("Mods.SpiritReforged.GenConfigs.UI.ResetAll"))
 		{
-			Width = StyleDimension.FromPixels(80),
+			Width = StyleDimension.FromPixels(120),
 			Height = StyleDimension.FromPixels(50),
 			HAlign = 0,
 			VAlign = 1f,
@@ -820,7 +820,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(resetButton);
 		AddHoverTicks(resetButton);
 
-		UIImageFramed saveButton = new(DrawHelpers.RequestLocal(GetType(), "NewButton", false), new Rectangle(0, 0, 44, 44))
+		UIImageFramed saveButton = new(Graphics.Tex("SpiritReforged/Common/WorldGeneration/GenConfiguration/NewButton"), new Rectangle(0, 0, 44, 44))
 		{
 			Width = StyleDimension.FromPixels(44),
 			Height = StyleDimension.FromPixels(44),
@@ -844,7 +844,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(saveButton);
 		AddHoverTicks(saveButton);
 
-		UIImageFramed loadButton = new(DrawHelpers.RequestLocal(GetType(), "LoadButton", false), new Rectangle(0, 0, 44, 44))
+		UIImageFramed loadButton = new(Graphics.Tex("SpiritReforged/Common/WorldGeneration/GenConfiguration/LoadButton"), new Rectangle(0, 0, 44, 44))
 		{
 			Width = StyleDimension.FromPixels(44),
 			Height = StyleDimension.FromPixels(44),
@@ -867,7 +867,7 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		pagePanel.Append(loadButton);
 		AddHoverTicks(loadButton);
 
-		UIImageFramed loadFolderButton = new(DrawHelpers.RequestLocal(GetType(), "LoadFolder", false), new Rectangle(0, 0, 44, 44))
+		UIImageFramed loadFolderButton = new(Graphics.Tex("SpiritReforged/Common/WorldGeneration/GenConfiguration/LoadFolder"), new Rectangle(0, 0, 44, 44))
 		{
 			Width = StyleDimension.FromPixels(44),
 			Height = StyleDimension.FromPixels(44),
@@ -986,7 +986,14 @@ internal class GenConfigUIState(Action returnAction) : UIState
 		string[] paths = name.Split('/');
 
 		// Get page if it's not passed in
-		page ??= GenConfigLoader.PagesByModAndName[paths[0] + "/" + paths[1]];
+
+		if (page is null)
+		{
+			if (GenConfigLoader.PagesByModAndName.TryGetValue(paths[0] + "/" + paths[1], out var newPage))
+				page = newPage;
+			else
+				return false;
+		}
 
 		if (paths[0] != page.Mod.Name || paths[1] != page.PageInfo.PageName)
 		{

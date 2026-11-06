@@ -1,6 +1,5 @@
 using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -81,8 +80,8 @@ public class JellyfishMinion : BaseMinion
 
 	public static int SHOOT_RANGE { get; set; } = 400; //Static because it's used by the bolt class
 
-	public static readonly Asset<Texture2D> OutlineTexture = DrawHelpers.RequestLocal<JellyfishMinion>("JellyfishMinion_Outline", false);
-	public static readonly Asset<Texture2D> AttackAura = DrawHelpers.RequestLocal<JellyfishMinion>("JellyfishMinion_AttackAura", false);
+	public static readonly Asset<Texture2D> OutlineTexture = Graphics.Tex("SpiritReforged/Content/Ocean/Items/JellyMinion/JellyfishMinion_Outline");
+	public static readonly Asset<Texture2D> AttackAura = Graphics.Tex("SpiritReforged/Content/Ocean/Items/JellyMinion/JellyfishMinion_AttackAura");
 
 	public JellyfishMinion() : base(600, 800, new Vector2(28, 28)) { }
 
@@ -262,9 +261,9 @@ public class JellyfishMinion : BaseMinion
 				Vector2 vel = Main.rand.NextVector2Circular(6f, 6f);
 				Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
 
-				ParticleHandler.SpawnParticle(new BloomParticle(pos, vel, _jellyColors.ParticleOne.Additive() * 0.5f, 0.2f, 90, extraUpdateAction: DecelerateAction));
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, _jellyColors.ParticleTwo.Additive(), 0.2f, 90, extraUpdateAction: DecelerateAction));
-				ParticleHandler.SpawnParticle(new LightningBoltParticle(Projectile.Center, Main.rand.NextVector2Circular(5f, 5f), _jellyColors.LightningStart, _jellyColors.LightningEnd.Additive(), 0f, 0.6f, 40));
+				ParticleRenderers.UnderProjectiles.Add(new BloomParticle(pos, vel, _jellyColors.ParticleOne.Additive() * 0.5f, 0.2f, 90, extraUpdateAction: DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, vel, _jellyColors.ParticleTwo.Additive(), 0.2f, 90, extraUpdateAction: DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new LightningBoltParticle(Projectile.Center, Main.rand.NextVector2Circular(5f, 5f), _jellyColors.LightningStart, _jellyColors.LightningEnd.Additive(), 0f, 0.6f, 40));
 			}
 
 			if (Projectile.owner == Main.myPlayer)
@@ -293,7 +292,7 @@ public class JellyfishMinion : BaseMinion
 
 		for (int i = 0; i < 3; i++)
 		{
-			ParticleHandler.SpawnParticle(new BubbleParticle(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), -Projectile.velocity * 0.2f, Main.rand.NextFloat(0.12f, 0.26f), Main.rand.Next(20, 40)));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), -Projectile.velocity * 0.2f, Main.rand.NextFloat(0.12f, 0.26f), Main.rand.Next(20, 40)));
 			Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Circular(15f, 15f), DustID.Water, -Projectile.velocity * 0.2f, 55, default, 0.7f).noGravity = true;
 		}
 	}

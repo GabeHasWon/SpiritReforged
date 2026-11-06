@@ -1,6 +1,4 @@
-﻿using SpiritReforged.Common.Particle;
-
-namespace SpiritReforged;
+﻿namespace SpiritReforged;
 
 public class SpiritReforgedSystem : ModSystem
 {
@@ -11,12 +9,6 @@ public class SpiritReforgedSystem : ModSystem
 	/// <summary> Called after all other content has been set up. </summary>
 	public static event Action OnSetupContent;
 	public static event Action PostUpdateEverythingEvent;
-
-	public override void PreUpdateItems()
-	{
-		if (Main.netMode != NetmodeID.Server)
-			ParticleHandler.UpdateAllParticles();
-	}
 
 	public override void OnModLoad()
 	{

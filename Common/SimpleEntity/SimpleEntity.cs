@@ -10,7 +10,7 @@ public abstract class SimpleEntity : Entity
 	public int Type => SimpleEntitySystem.Types[GetType()];
 	public Asset<Texture2D> Texture => SimpleEntitySystem.Textures[Type];
 
-	public virtual string TexturePath => DrawHelpers.RequestLocal(GetType(), GetType().Name); //GetType().Namespace.Replace('.', '/') + "/" + GetType().Name;
+	public virtual string TexturePath => GetType().FullName.Path();
 
 	/// <summary> Can be used to set defaults. </summary>
 	public virtual void Load() { }

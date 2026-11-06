@@ -36,7 +36,7 @@ public class FrostedPlatform : ModTile
 
 		AddToArray(ref TileID.Sets.RoomNeeds.CountsAsDoor);
 		AddMapEntry(new Color(179, 146, 107));
-		this.Merge(TileID.Platforms);
+		TileMethods.Merge(Type, TileID.Platforms);
 
 		DustType = DustID.Ice;
 		AdjTiles = [TileID.Platforms];

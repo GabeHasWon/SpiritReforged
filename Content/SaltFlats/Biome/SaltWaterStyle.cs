@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.SaltFlats.Biome;
 
 public class SaltWaterStyle : ModWaterStyle
 {
-	public static readonly Asset<Texture2D> RainTexture = DrawHelpers.RequestLocal(typeof(SaltWaterStyle), "SaltRain", false);
+	public static readonly Asset<Texture2D> RainTexture = Graphics.Tex("SpiritReforged/Content/SaltFlats/Biome/SaltRain");
 
 	public static int StyleSlot { get; private set; }
 	public override void SetStaticDefaults() => StyleSlot = Slot;

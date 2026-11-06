@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Desert.Tiles;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
@@ -57,7 +57,7 @@ public class LightShaft : ModTile
 			for (int x = 0; x < 8; x++)
 			{
 				var center = new Vector2(i, j).ToWorldCoordinates();
-				ParticleHandler.SpawnParticle(new GlowParticle(center - new Vector2(0, 8), Main.rand.NextVector2Unit() * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.8f), 30));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(center - new Vector2(0, 8), Main.rand.NextVector2Unit() * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.8f), 30));
 			}
 		}
 	}
@@ -70,7 +70,7 @@ public class LightShaft : ModTile
 		if (closer && !Main.gamePaused && Main.rand.NextBool(30))
 		{
 			var center = new Vector2(i, j).ToWorldCoordinates();
-			ParticleHandler.SpawnParticle(new GlowParticle(new Vector2(center.X + Main.rand.Next(-size, size), center.Y), Vector2.UnitY * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.8f), 180));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(new Vector2(center.X + Main.rand.Next(-size, size), center.Y), Vector2.UnitY * Main.rand.NextFloat(), Color.Goldenrod, Main.rand.NextFloat(0.2f, 0.8f), 180));
 		}
 	}
 
@@ -83,7 +83,7 @@ public class LightShaft : ModTile
 		for (int x = 0; x < 3; x++)
 		{
 			float lerp = (float)Math.Sin((Main.timeForVisualEffects + x * 200f) / 50f);
-			var position = center + TileExtensions.TileOffset - Main.screenPosition + new Vector2(6f * lerp, 0);
+			var position = center + TileMethods.TileOffset - Main.screenPosition + new Vector2(6f * lerp, 0);
 
 			spriteBatch.Draw(texture, position, null, Color.Goldenrod.Additive() * (0.1f + 0.05f * lerp) * strength, 0, new Vector2(texture.Width / 2, 0), 1.5f, default, 0);
 			spriteBatch.Draw(texture, position, null, Color.White.Additive() * (0.05f + 0.025f * lerp) * strength, 0, new Vector2(texture.Width / 2, 0), 0.5f, default, 0);

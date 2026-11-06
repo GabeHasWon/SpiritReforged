@@ -1,14 +1,11 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class GooeyVine : ModTile, ISwayTile
+public class GooeyVine : ModTile
 {
-	public int Style => (int)TileDrawing.TileCounterType.Vine;
-
 	public override void SetStaticDefaults()
 	{
 		Main.tileBlockLight[Type] = true;
@@ -16,7 +13,7 @@ public class GooeyVine : ModTile, ISwayTile
 		Main.tileNoFail[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 
-		TileID.Sets.VineThreads[Type] = true;
+		WindTileRenderer.TileDrawInWind[Type] = TileDrawing.TileCounterType.Vine;
 		TileID.Sets.ReplaceTileBreakDown[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -46,7 +43,7 @@ public class GooeyVine : ModTile, ISwayTile
 
 		if (resetFrame)
 		{
-			short frame = (short)(below.HasTileType(Type) ? WorldGen.genRand.NextFromList(0, 18) : 36);
+			short frame = (short)(below.Active(Type) ? WorldGen.genRand.NextFromList(0, 18) : 36);
 			Main.tile[i, j].TileFrameY = frame;
 		}
 

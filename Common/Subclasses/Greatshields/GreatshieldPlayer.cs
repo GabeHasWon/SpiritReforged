@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Multiplayer;
+using SpiritReforged.Common.PlayerCommon;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Subclasses.Greatshields;
@@ -19,7 +20,7 @@ public class GreatshieldPlayer : ModPlayer
 		{
 			Player player = drawInfo.drawPlayer;
 
-			if (!player.dead && player.HeldItem.ModItem is GreatshieldItem shield)
+			if (!player.dead && player.HeldItem.ModItem is GreatshieldItem shield && !player.HoldingProjectile(out _))
 				shield.DrawShield(ref drawInfo, player.ItemAnimationActive);
 		}
 	}
@@ -95,8 +96,8 @@ public class GreatshieldPlayer : ModPlayer
 		if (Blocking)
 			Player.itemTime = Player.itemAnimation = 2; //Lock player item time
 
-		if (Player.whoAmI == Main.myPlayer && !Main.mouseRight)
-			Blocking = false; //Stop blocking if right click is released
+		if (!Player.channel)
+			Blocking = false; //Stop blocking if channel is released
 	}
 
 	public override void ModifyHurt(ref Player.HurtModifiers modifiers)

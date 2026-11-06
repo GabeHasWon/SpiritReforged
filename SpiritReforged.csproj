@@ -25,8 +25,6 @@
 	  </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Common\ItemCommon\MagazineSystem\UI\Flamethrower\" />
-    <Folder Include="Common\ItemCommon\MagazineSystem\UI\Bolt\" />
     <Folder Include="Localization\ru-RU\" />
   </ItemGroup>
   <ItemGroup>

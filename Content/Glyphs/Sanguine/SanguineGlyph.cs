@@ -2,7 +2,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
@@ -35,7 +34,9 @@ public partial class SanguineGlyph : GlyphItem
 
 		base.OnApplyGlyph(item, context);
 	}
+
 	protected override void OnRemoveGlyph(Item item, IApplicationContext context) => MoRHelper.OverrideElement(item, MoRHelper.Blood, -1);
+
 	public override void DrawHeldItem(ref PlayerDrawSet drawInfo, DrawData input)
 	{
 		for (int j = 0; j < 4; j++)
@@ -115,8 +116,7 @@ public partial class SanguineGlyph : GlyphItem
 		if (Main.rand.NextBool(60))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
-
-			ParticleHandler.SpawnParticle(new SmokeCloud(pos, Vector2.Zero, Color.DarkRed, 0.05f, EaseFunction.EaseQuadOut, 30, false));
+			ParticleRenderers.OverItems.Add(new SmokeCloud(pos, Vector2.Zero, Color.DarkRed, 0.05f, EaseFunction.EaseQuadOut, 30, false));
 
 			var dust = Dust.NewDustPerfect(pos, DustID.Blood, Main.rand.NextVector2Circular(0.5f, 0.5f), 150, default, 1.25f);
 			dust.noGravity = true;
@@ -126,8 +126,7 @@ public partial class SanguineGlyph : GlyphItem
 		if (Main.rand.NextBool(75))
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2CircularEdge(item.width / 3, item.height / 3);
-
-			ParticleHandler.SpawnParticle(new StickyBloodParticle(pos, Vector2.Zero, Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), Main.rand.NextFloat(0.02f, 0.12f)));
+			ParticleRenderers.OverItems.Add(new StickyBloodParticle(pos, Vector2.Zero, Main.rand.NextFloat(0.6f, 1.2f), Main.rand.Next(80, 120), Main.rand.NextFloat(0.02f, 0.12f)));
 		}
 	}
 
@@ -156,7 +155,9 @@ public partial class SanguineGlyph : GlyphItem
 
 public class SanguineGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
 {
-	private Effect GetEffect => shader.Value;
+	private Effect GetEffect => _shader.Value;
+
+	private readonly Asset<Effect> _shader = shader;
 
 	public override void Apply(Entity entity, DrawData? drawData = null)
 	{

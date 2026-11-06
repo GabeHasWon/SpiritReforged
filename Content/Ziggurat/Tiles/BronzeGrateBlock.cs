@@ -27,7 +27,7 @@ public class BronzeGrateBlock : ModTile, ILoadItem
 
 		SpiritSets.AllowsLiquid[Type] = true;
 
-		this.Merge(ModContent.TileType<BronzePlating>());
+		TileMethods.Merge(Type, ModContent.TileType<BronzePlating>());
 		AddMapEntry(new Color(179, 146, 107));
 
 		DustType = DustID.Copper;

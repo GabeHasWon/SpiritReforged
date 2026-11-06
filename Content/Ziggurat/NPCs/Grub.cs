@@ -6,7 +6,6 @@ using SpiritReforged.Content.Ziggurat.Walls;
 using System.IO;
 using Terraria.Audio;
 using Terraria.GameContent.Bestiary;
-using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Ziggurat.NPCs;
 

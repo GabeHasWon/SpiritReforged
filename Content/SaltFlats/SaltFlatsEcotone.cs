@@ -25,6 +25,7 @@ using Terraria.IO;
 using Terraria.ModLoader.Config;
 using Terraria.Utilities;
 using Terraria.WorldBuilding;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.SaltFlats;
 
@@ -53,6 +54,8 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 			}
 		}
 	}
+
+	private const string Path = "SpiritReforged/Content/SaltFlats/";
 
 	[WorldBound]
 	public static List<Rectangle> SaltFlatsAreas = new();
@@ -89,7 +92,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static FastNoiseLite Noise;
 
-	PageInfo IGenerationPage.Info => new("SaltFlats", DrawHelpers.RequestLocal(GetType(), "SaltFlatsPage", false), DrawHelpers.RequestLocal(GetType(), "SaltFlatsPageButton", false))
+	PageInfo IGenerationPage.Info => new("SaltFlats", Graphics.Tex(Path + "SaltFlatsPage"), Graphics.Tex(Path + "SaltFlatsPageButton"))
 	{
 		Presets = 
 		[
@@ -404,7 +407,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		if (RuinQty > 0)
 			decorator.Enqueue(CreateRuin, RuinQty);
 
-		decorator.Run();
+		decorator.Run(out _);
 	}
 
 	private static bool PlaceReliquary(int i, int j)
@@ -412,14 +415,14 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		Tile tile = Main.tile[i, j];
 		Tile belowTile = Main.tile[i, j + 1];
 
-		if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 120 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()))
+		if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 120 && belowTile.Active(ModContent.TileType<SaltBlockDull>()))
 		{
 			int type = ModContent.TileType<StoneReliquary>();
 			bool result = Placer.PlaceTile(i, j, type).success;
 
 			if (result)
 			{
-				TileExtensions.GetTopLeft(ref i, ref j);
+				(i, j) = Helpers.GetTopLeft(i, j);
 				if (Chest.CreateChest(i, j) is int search && search != -1)
 				{
 					PopulateChest(Main.chest[search]);
@@ -494,7 +497,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 			Tile tile = Main.tile[x, j];
 			Tile belowTile = Framing.GetTileSafely(x, j + 1);
 
-			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.HasTileType(ModContent.TileType<SaltBlockDull>()) && (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
+			if (!WorldGen.SolidTile(tile) && tile.WallType == WallID.None && tile.LiquidAmount < 20 && belowTile.Active(ModContent.TileType<SaltBlockDull>()) && (belowTile.BottomSlope || belowTile.Slope == SlopeType.Solid))
 			{
 				int type = WorldGen.genRand.NextBool(10) ? ModContent.TileType<SaltwortTall>() : ModContent.TileType<Saltwort>();
 				anySuccess |= Placer.PlaceTile(x, j, type).success;
@@ -639,7 +642,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 			if (!hasRoof && WorldGen.genRand.NextBool())
 				decorator.Enqueue(PlaceBell, 1);
 
-			decorator.Run();
+			decorator.Run(out _);
 
 			GenVars.structures.AddProtectedStructure(area);
 			WorldDetours.Regions.Add(new(area, WorldDetours.Context.Walls));
@@ -650,6 +653,10 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 		return false;
 	}
 
+	/// <summary> Creates a peaked roof based on <paramref name="length"/>. </summary>
+	/// <param name="bounds"> The total bounds the roof encompasses. </param>
+	/// <param name="thickness"> The vertical thickness of the roof. </param>
+	/// <param name="length"> The flat outer length of the roof. </param>
 	private static void CreateRoof(Rectangle bounds, int thickness, int length)
 	{
 		bounds.Height -= length; //Automatic height calibration

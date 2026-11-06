@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Glyphs;
 using Terraria.Graphics.Renderers;
@@ -54,14 +53,14 @@ public class GlyphButton : UIElement
 			spriteBatch.Draw(texture, GetDimensions().Center() + new Vector2(0, 2), null, Color.Black * 0.5f, 0, texture.Size() / 2, 1, 0, 0);
 			Color outlineColor = ItemLoader.GetItem(itemType) is GlyphItem glyphItem ? glyphItem.settings.Color : Color.White;
 
-			DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
+			Graphics.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
 				spriteBatch.Draw(outlineTexture, center + offset, null, outlineColor.Additive() * 0.5f, 0, texture.Size() / 2, 1, 0, 0));
 
 			if ((int)Main.timeForVisualEffects % 80 == 0 || Main.rand.NextBool(120))
 			{
 				Vector2 velocity = Main.rand.NextVector2Circular(0.5f, 0.5f);
 
-				TerrariaParticles.OverInventory.Add(new PrettySparkleParticle()
+				ParticleRenderers.OverInventory.Add(new PrettySparkleParticle()
 				{
 					LocalPosition = Main.rand.NextVector2FromRectangle(GetDimensions().ToRectangle()),
 					Scale = new Vector2(Main.rand.NextFloat(0.25f, 0.6f)),
@@ -74,7 +73,7 @@ public class GlyphButton : UIElement
 		}
 		else
 		{
-			DrawHelpers.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
+			Graphics.DrawOutline(spriteBatch, texture, center, Color.White, (offset) =>
 				spriteBatch.Draw(outlineTexture, center + offset, null, Color.Black * 0.3f * opacity, 0, texture.Size() / 2, 1, 0, 0));
 		}
 

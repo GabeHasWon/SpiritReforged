@@ -1,7 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.SimpleEntity;
-using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.TileCommon;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Ocean.Items.Buoys;
@@ -128,8 +128,8 @@ public class SmallBuoyEntity : SimpleEntity
 
 		if (!solidCollision)
 		{
-			rotation = Main.instance.TilesRenderer.GetWindCycle((int)(position.X / 16), (int)(position.Y / 16), TileSwaySystem.SunflowerWindCounter);
-			rotation += TileSwayHelper.GetHighestWindGridPushComplex((int)(position.X / 16), (int)(position.Y / 16), 2, 3, 120, 1f, 5, true);
+			rotation = Main.instance.TilesRenderer.GetWindCycle((int)(position.X / 16), (int)(position.Y / 16), WindTileRenderer.SunflowerWindCounter);
+			rotation += WindTileRenderer.GetHighestWindGridPushComplex((int)(position.X / 16), (int)(position.Y / 16), 2, 3, 120, 1f, 5, true);
 		}
 
 		spriteBatch.Draw(texture, drawPosition, null, color, rotation * .1f, origin, 1, SpriteEffects.None, 0f);

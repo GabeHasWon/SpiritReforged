@@ -1,7 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.SaltFlats.Biome;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -70,7 +69,7 @@ public class SaltFountain : ModTile, ILoadItem
 
 	private void ToggleTile(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		for (int x = i; x < i + 2; x++)
 		{

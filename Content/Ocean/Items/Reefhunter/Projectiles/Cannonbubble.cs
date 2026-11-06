@@ -1,9 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -129,16 +129,16 @@ public class Cannonbubble : ModProjectile
 		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Projectile/Impact_LightPop") with { PitchVariance = 0.4f, Pitch = 1.3f, Volume = .6f, MaxInstances = 10 }, Projectile.Center);
 
 		//ParticleHandler.SpawnParticle(new BubblePop(Projectile.Center, Projectile.scale * 0.35f, 0.8f, 30));
-		ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, RINGCOLOR, RINGCOLOR * 0.5f, 0.3f, 150 * Projectile.scale, 50, EaseFunction.EaseCircularOut).WithSkew(0.85f, -MathHelper.PiOver2).UsesLightColor());
+		ParticleRenderers.UnderProjectiles.Add(new PulseCircle(Projectile.Center, RINGCOLOR, RINGCOLOR * 0.5f, 0.3f, 150 * Projectile.scale, 50, EaseFunction.EaseCircularOut).WithSkew(0.85f, -MathHelper.PiOver2).UsesLightColor());
 
 		for(int i = -1; i <= 1; i += 2)
-			ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, RINGCOLOR, RINGCOLOR * 0.5f, 0.3f, 80 * Projectile.scale, 40, EaseFunction.EaseCircularOut).WithSkew(Main.rand.NextFloat(), Main.rand.NextFloat(MathHelper.TwoPi)).UsesLightColor());
+			ParticleRenderers.UnderProjectiles.Add(new PulseCircle(Projectile.Center, RINGCOLOR, RINGCOLOR * 0.5f, 0.3f, 80 * Projectile.scale, 40, EaseFunction.EaseCircularOut).WithSkew(Main.rand.NextFloat(), Main.rand.NextFloat(MathHelper.TwoPi)).UsesLightColor());
 
 		for (int i = 0; i < 2; i++)
-			ParticleHandler.SpawnParticle(new BubbleParticle(Projectile.Center, Main.rand.NextVec2CircularEven(1, 1), Main.rand.NextFloat(0.3f, 0.4f), 30));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(Projectile.Center, Main.rand.NextVec2CircularEven(1, 1), Main.rand.NextFloat(0.3f, 0.4f), 30));
 
 		for (int i = 0; i < 6; i++) 
-			ParticleHandler.SpawnParticle(new BubbleParticle(Projectile.Center, Main.rand.NextVec2CircularEven(2, 2), Main.rand.NextFloat(0.1f, 0.2f), 40));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(Projectile.Center, Main.rand.NextVec2CircularEven(2, 2), Main.rand.NextFloat(0.1f, 0.2f), 40));
 	}
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -224,7 +224,7 @@ public class Cannonbubble : ModProjectile
 		if (!Main.dedServ)
 		{
 			Color color = RINGCOLOR * EaseFunction.EaseCubicOut.Ease(strength);
-			ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, color, color * 0.5f, 0.6f, 100 * Projectile.scale * strength, 50, EaseFunction.EaseCircularOut).WithSkew(0.85f, Projectile.velocity.ToRotation() - MathHelper.Pi).UsesLightColor());
+			ParticleRenderers.UnderProjectiles.Add(new PulseCircle(Projectile.Center, color, color * 0.5f, 0.6f, 100 * Projectile.scale * strength, 50, EaseFunction.EaseCircularOut).WithSkew(0.85f, Projectile.velocity.ToRotation() - MathHelper.Pi).UsesLightColor());
 			SoundEngine.PlaySound(SoundID.Item54 with { PitchVariance = 0.3f, Volume = 0.5f * strength }, Projectile.Center);
 		}
 	}

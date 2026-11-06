@@ -2,7 +2,6 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Content.SaltFlats.Biome;
-using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles;

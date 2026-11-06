@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.BuffCommon;
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals.Glowmasks;
 
@@ -7,6 +8,7 @@ namespace SpiritReforged.Content.Desert.ScarabBoss.Items.ScarabPet;
 public class ScarabLightPetItem : ModItem
 {
 	[AutoloadGlowmask("255,255,255", false)]
+	[FromClassic("ScarabPetItem")]
 	public sealed class ScarabLightPet : ModProjectile 
 	{
 		private ref float AdditiveFade => ref Projectile.ai[0];

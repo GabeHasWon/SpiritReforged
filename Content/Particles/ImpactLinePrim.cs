@@ -1,12 +1,13 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
 public class ImpactLinePrim(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, float acceleration, Entity attatchedEntity = null) : ImpactLine(position, velocity, color, scale, timeLeft, acceleration, attatchedEntity)
 {
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		float progress = EaseFunction.EaseSine.Ease(Progress);
 		var scale = new Vector2(0.5f, progress) * _scaleMod;

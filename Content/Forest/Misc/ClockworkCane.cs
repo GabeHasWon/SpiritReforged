@@ -2,7 +2,6 @@ using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
@@ -201,7 +200,7 @@ public class ClockworkCog : BaseMinion, IDrawPixelated
 				Projectile.velocity.X *= 0.9f;
 
 				if (Counter % 20 == 10)
-					ParticleHandler.SpawnParticle(new PulseCircle(Projectile.Center, Color.Goldenrod * 0.1f, 0.1f, 150, 20, EaseFunction.EaseCubicOut, true).Attach(Projectile));
+					ParticleRenderers.UnderProjectiles.Add(new PulseCircle(Projectile.Center, Color.Goldenrod * 0.1f, 0.1f, 150, 20, EaseFunction.EaseCubicOut, true).Attach(Projectile));
 			}
 		}
 		else
@@ -262,7 +261,7 @@ public class ClockworkCog : BaseMinion, IDrawPixelated
 			ItemMethods.NewItemSynced(Projectile.GetSource_OnHit(target), ModContent.ItemType<ScrapPickup>(), target.Center);
 
 		for (int i = 0; i < 3; i++)
-			ParticleHandler.SpawnParticle(new EmberParticle(Projectile.Center, (Projectile.velocity * Main.rand.NextFloat(0.1f, 0.5f)).RotatedByRandom(1), Color.OrangeRed, 0.5f, 40, 3));
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(Projectile.Center, (Projectile.velocity * Main.rand.NextFloat(0.1f, 0.5f)).RotatedByRandom(1), Color.OrangeRed, 0.5f, 40, 3));
 
 		Projectile.velocity *= 0.8f; //Slow down and sync
 		Projectile.netUpdate = true;

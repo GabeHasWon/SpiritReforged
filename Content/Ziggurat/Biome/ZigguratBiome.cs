@@ -1,8 +1,8 @@
-﻿using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
-using SpiritReforged.Content.Ziggurat.Tiles;
+﻿using SpiritReforged.Content.Ziggurat.Tiles;
 using SpiritReforged.Content.Ziggurat.Walls;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 
 namespace SpiritReforged.Content.Ziggurat.Biome;
 
@@ -30,7 +30,7 @@ public class ZigguratBiome : ModBiome
 
 	/// <summary> A collection of walls associated with the natural biome. </summary>
 	public static readonly HashSet<int> WallTypes = [RedSandstoneBrickWall.UnsafeType, ModContent.WallType<RedSandstoneBrickForegroundWall>(), CarvedLapisWall.UnsafeType, PaleHiveWall.UnsafeType, ModContent.WallType<SandyZigguratWall>(), BronzePlatingWall.UnsafeType];
-	/// <summary> A collection of tiles associated with the natural biome. Used only for <see cref="Common.WorldGeneration.QuickConversion."/> </summary>
+	/// <summary> A collection of tiles associated with the natural biome. Used only for <see cref="Common.WorldGeneration.QuickConversion.FindConversionBiome"/> </summary>
 	public static readonly HashSet<int> TileTypes = [ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>(), ModContent.TileType<RedSandstoneSlab>()];
 
 	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/Ziggurat");
@@ -43,7 +43,7 @@ public class ZigguratBiome : ModBiome
 		Point tileCoords = player.Center.ToTileCoordinates();
 		int wallType = Framing.GetTileSafely(tileCoords).WallType;
 
-		return !Main.wallHouse[wallType] && ZigguratMicrobiome.TotalBounds.Any(x => x.Contains(tileCoords));
+		return !Main.wallHouse[wallType] && ZigguratMicropass.TotalBounds.Any(x => x.Contains(tileCoords));
 	}
 
 	public override void OnInBiome(Player player) => player.ZoneDesert = true;

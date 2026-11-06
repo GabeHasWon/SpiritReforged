@@ -12,6 +12,8 @@ namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
 internal class NewNeonsMicropass : Micropass, IGenerationPage
 {
+	private const string Path = "SpiritReforged/Common/WorldGeneration/Micropasses/Passes/";
+
 	public override string WorldGenName => "New Neon Mosses";
 
 	/// <summary> An array of natural glowing moss types from Spirit and vanilla. </summary>
@@ -21,14 +23,14 @@ internal class NewNeonsMicropass : Micropass, IGenerationPage
 	[GenConfigurable(1, 6)]
 	private static int NeonMossChance = 2;
 
-	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	PageInfo IGenerationPage.Info => new("Caves", Graphics.Tex(Path + "UndergroundPage"), Graphics.Tex(Path + "UndergroundPageButton"))
 	{
 		CopiedPage = new HouseLoader()
 	};
 
 	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
-	public override void Load(Mod mod)
+	public override void Load() 
 	{
 		NeonMossInfo = typeof(WorldGen).GetField("neonMossType", BindingFlags.Static | BindingFlags.NonPublic);
 		On_WorldGen.randMoss += ForceNewMoss;

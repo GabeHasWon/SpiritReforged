@@ -12,7 +12,7 @@ CommonTooltips: {
 		''' */
 	/* Greatshield:
 		'''
-		<right> to block incoming damage
+		Hold <left> to block incoming damage
 		Gains increased damage with defense
 		''' */
 }
@@ -101,8 +101,8 @@ CascadeLeggings: {
 }
 
 JellyfishJamJar: {
-	// DisplayName: Jellyfish Jam Jar
-	// Tooltip: Summons a tiny jellyfish to fight for you!
+	DisplayName: Банка с медузным джемом
+	Tooltip: Призывает крошку-медузу сражаться за вас!
 }
 
 Lifesaver: {
@@ -1065,7 +1065,7 @@ ExplorerTreadsItem: {
 	Tooltip:
 		'''
 		Даёт 50% шанс избежать урона от ловушки
-		Получение урона от ловушки даёт короткий бафф, увеличивающий скорость передвижения
+		Получение урона от ловушки даёт короткий бафф, увеличивающий мобильность
 		«С такими ботинками даже исследование храмов превращается в обычную прогулку»
 		'''
 }
@@ -1306,7 +1306,7 @@ DriftwoodHammer: {
 }
 
 RemedyPotion: {
-	DisplayName: Иммунное зелье
+	DisplayName: Зелье иммунитета
 	Tooltip:
 		'''
 		Даёт невосприимчивость к следующим дебаффам:
@@ -1406,12 +1406,12 @@ SandBombSticky: {
 }
 
 CoarseBomb: {
-	DisplayName: Грубая земляная бомба
+	DisplayName: Бомба грубой земли
 	Tooltip: Вызывает небольшой взрыв, разбрасывающий грубую землю
 }
 
 CoarseBombSticky: {
-	DisplayName: Липкая грубая земляная бомба
+	DisplayName: Липкая бомба грубой земли
 	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
 }
 
@@ -1663,37 +1663,37 @@ WheezerStatueItem: {
 }
 
 FlaskArgon: {
-	DisplayName: Флакон с аргоновым мхом
+	DisplayName: Колба с аргоновым мхом
 	Tooltip: Распространяет светящийся мох при столкновении
 }
 
 FlaskHelium: {
-	DisplayName: Флакон с гелиевым мхом
+	DisplayName: Колба с гелиевым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskKrypton: {
-	DisplayName: Флакон с криптоновым мхом
+	DisplayName: Колба с криптоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskNeon: {
-	DisplayName: Флакон с неоновым мхом
+	DisplayName: Колба с неоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskOganesson: {
-	DisplayName: Флакон с оганесоновым мхом
+	DisplayName: Колба с оганесоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskRadon: {
-	DisplayName: Флакон с радоновым мхом
+	DisplayName: Колба с радоновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskXenon: {
-	DisplayName: Флакон с ксеноновым мхом
+	DisplayName: Колба с ксеноновым мхом
 	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
@@ -1766,12 +1766,12 @@ BassSlapper: {
 
 Shockhammer: {
 	DisplayName: Ударный молот
-	Tooltip: При полном заряде создаёт ударную волну, протягивающуюся по земле
+	Tooltip: Полностью заряженные удары создают ударную волну, протягивающуюся по земле
 }
 
 Bowlder: {
 	DisplayName: Глыба
-	Tooltip: При полном заряде запускает смертоносную катящуюся глыбу
+	Tooltip: Полностью заряженные удары запускают смертоносную катящуюся глыбу
 }
 
 BoStaff: {
@@ -1824,32 +1824,32 @@ SavannaTorchItem: {
 }
 
 FlaskBlue: {
-	DisplayName: Флакон с синим мхом
+	DisplayName: Колба с синим мхом
 	Tooltip: Распространяет мох при столкновении
 }
 
 FlaskBrown: {
-	DisplayName: Флакон с коричневым мхом
+	DisplayName: Колба с коричневым мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskGreen: {
-	DisplayName: Флакон с зелёным мхом
+	DisplayName: Колба с зелёным мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskLava: {
-	DisplayName: Флакон с лавовым мхом
+	DisplayName: Колба с лавовым мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskPurple: {
-	DisplayName: Флакон с пурпурным мхом
+	DisplayName: Колба с пурпурным мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
 FlaskRed: {
-	DisplayName: Флакон с красным мхом
+	DisplayName: Колба с красным мхом
 	Tooltip: "{$Items.FlaskBlue.Tooltip}"
 }
 
@@ -1859,7 +1859,7 @@ TitleMusicBoxItem: {
 }
 
 Drypowder: {
-	DisplayName: Сухой порошок
+	DisplayName: Осушающий порошок
 	Tooltip: Распространяет саванну
 }
 
@@ -2595,17 +2595,17 @@ TrellisTwoDrywoodItem: {
 }
 
 BronzeGrateItem: {
-	DisplayName: Стена из бронзовой решётки
+	DisplayName: Бронзовая решётчатая стена
 	Tooltip: ""
 }
 
 BronzePlatingItem: {
-	DisplayName: Бронзовое покрытие
+	DisplayName: Бронзовая обшивка
 	Tooltip: ""
 }
 
 BronzePlatingWallItem: {
-	DisplayName: Стена с бронзовым покрытием
+	DisplayName: Стена с бронзовой обшивкой
 	Tooltip: ""
 }
 
@@ -2764,12 +2764,12 @@ SaltPanelWallItem: {
 }
 
 SaltPlateWallItem: {
-	DisplayName: Стена из соляной пластины
+	DisplayName: Стена из соляной плиты
 	Tooltip: ""
 }
 
 SaltFireplaceItem: {
-	DisplayName: Солончаковый камин
+	DisplayName: Соляной камин
 	Tooltip: ""
 }
 
@@ -2784,7 +2784,7 @@ SaltPanelItem: {
 }
 
 SaltPlateItem: {
-	DisplayName: Соляная пластина
+	DisplayName: Соляная плита
 	Tooltip: ""
 }
 
@@ -2881,7 +2881,7 @@ EnlilStatueItem: {
 
 SerratedClaws: {
 	DisplayName: Зазубренные клешни
-	Tooltip: ""
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
 FlagRingItem: {
@@ -3176,9 +3176,10 @@ NotSunItemIcon: {
 ChromaticWax: {
 	DisplayName: Хроматический воск
 	Tooltip: Можно обменять на магические глифы
-	Gain: Зачарованное оружие получит эффект [c/{0}:«{1}»]:
+	Gain: Выбранный предмет получит эффект [c/{0}:«{1}»]:
 	Target: Можно применить только к оружию
-	RightClick: Держа этот глиф, нажмите ПКМ по оружию, который вы хотите зачаровать
+	RightClick: Нажмите ПКМ по оружию, держа этот глиф, чтобы наложить на него зачарование
+	// GlyphPrefixing: "{0} {1}"
 }
 
 BlazeGlyph: {
@@ -3318,10 +3319,10 @@ PrefixVoucher: {
 	Tooltip:
 		'''
 		{0}
-		[c/{0}:«{1}»]:
+		Выбранный предмет получит эффект [c/{0}:«{1}»]:
 		'''
-	AccessoryTooltip: Нажмите ПКМ по аксессуару, к которому хотите применить этот префикс
-	WeaponTooltip: Нажмите ПКМ по оружию, к которому хотите применить этот префикс
+	AccessoryTooltip: Нажмите ПКМ по аксессуару, держа этот ваучер, чтобы наложить на него префикс
+	WeaponTooltip: Нажмите ПКМ по оружию, держа этот ваучер, чтобы наложить на него префикс
 }
 
 EnchantedStamp: {
@@ -3346,7 +3347,7 @@ CelestialStamp: {
 
 RageGlyph: {
 	DisplayName: Глиф ярости
-	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесёт при следующей атаке
+	Tooltip: Лишний урон, нанесённый при добивающей атаке, сохранится и будет нанесён при следующей атаке
 	Effect: Мстительный
 
 	Gendered: {
@@ -3404,7 +3405,7 @@ DisplayCaseItem: {
 }
 
 SkyPylonItem: {
-	DisplayName: Пилон космоса
+	DisplayName: Пилон небес
 	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
 }
 
@@ -3438,13 +3439,406 @@ MirrorItem: {
 }
 
 EnchantedWorkbenchItem: {
-	DisplayName: Зачарованный верстак
+	DisplayName: Стол для печатей
 	Tooltip: ""
 }
 
 CandlewickCoil: {
 	DisplayName: Моток верёвки из фитиля
 	Tooltip: Бросьте, чтобы расправить моток верёвки из фитиля
+}
+
+CandleBathtubItem: {
+	DisplayName: Свечная ванна
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: Свечная кровать
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: Свечной книжный шкаф
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Свечной подсвечник
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Свечная свеча
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Свечной стул
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Свечная люстра
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Свечной сундук
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Свечная дверь
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Свечной комод
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Свечная напольная лампа
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Свечной фонарь
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Свечная раковина
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Свечной диван
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Свечной стол
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Свечной унитаз
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Свечной верстак
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Свечные напольные часы
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Свечное пианино
+	Tooltip: ""
+}
+
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Привет всем пользователям чит-панелей!
+}
+
+WaxPlatformItem: {
+	DisplayName: Восковая платформа
+	Tooltip: ""
+}
+
+PinSpookyFarms: {
+	DisplayName: Смрадная булавка
+	Tooltip: ""
+}
+
+PinSpookyKrampus: {
+	DisplayName: Булавка Крампуса
+	Tooltip: ""
+}
+
+PinSpookyNose: {
+	DisplayName: Булавка Храма Шмыга
+	Tooltip: ""
+}
+
+PinSpookyRotten: {
+	DisplayName: Прогнившая булавка
+	Tooltip: ""
+}
+
+StarGourdGreenCarvedItem: {
+	DisplayName: Зелёная резная звездотыква
+	Tooltip: ""
+}
+
+StarGourdLimeCarvedItem: {
+	DisplayName: Лаймовая резная звездотыква
+	Tooltip: ""
+}
+
+StarGourdOrangeLimeCarvedItem: {
+	DisplayName: Лаймово-оранжевая резная звездотыква
+	Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	DisplayName: Оранжевая резная звездотыква
+	Tooltip: ""
+}
+
+StarGourdRedCarvedItem: {
+	DisplayName: Красная резная звездотыква
+	Tooltip: ""
+}
+
+StarGourdRottenCarvedItem: {
+	DisplayName: Гнилая резная звездотыква
+	Tooltip: ""
+}
+
+StarGourdWhiteCarvedItem: {
+	DisplayName: Белая резная звездотыква
+	Tooltip: ""
+}
+
+StarGourdYellowCarvedItem: {
+	DisplayName: Жёлтая резная звездотыква
+	Tooltip: ""
+}
+
+StarGourdYellowGreenCarvedItem: {
+	DisplayName: Жёлто-зелёная резная звездотыва
+	Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	DisplayName: Тыква-корзинка
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Классическая жуть'
+		'''
+}
+
+PumpkinPailPurple: {
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		«Непоколебимая жуть»
+		'''
+}
+
+PumpkinPailWhite: {
+	DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		«Настоящая жуть»
+		'''
+}
+
+TrellisOldBirchItem: {
+	DisplayName: Трельяж из старой берёзы
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisOldBirchTwoItem: {
+	DisplayName: Квадратный трельяж из старой берёзы
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodItem: {
+	DisplayName: Трельяж из старого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodTwoItem: {
+	DisplayName: Квадратный трельяж из старого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+DhampirQuestItem: {
+	DisplayName: Маленькая грустная мышь
+	Tooltip:
+		'''
+		Вы испытываете к ней материнский инстинкт
+		Привлекает существо в солончаковых равнинах, пока находится в вашем инвентаре
+		'''
+}
+
+UncommonSpookyPotsLowerCatacombsItem: {
+	DisplayName: "{$Tiles.Records.LowerCatacombs.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsUpperCatacombsItem: {
+	DisplayName: "{$Tiles.Records.UpperCatacombs.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsKrampusItem: {
+	DisplayName: "{$Tiles.Records.Krampus.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsTarPitsItem: {
+	DisplayName: "{$Tiles.Records.TarPits.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsRottenDepthsItem: {
+	DisplayName: "{$Tiles.Records.RottenDepths.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsFetidFarmsItem: {
+	DisplayName: "{$Tiles.Records.FetidFarms.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsNoseTempleItem: {
+	DisplayName: "{$Tiles.Records.NoseTemple.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsSpiderGrottoItem: {
+	DisplayName: "{$Tiles.Records.SpiderGrotto.Name}"
+	Tooltip: ""
+}
+
+UncommonSpookyPotsSpookyForestItem: {
+	DisplayName: "{$Tiles.Records.SpookyForest.Name}"
+	Tooltip: ""
+}
+
+FruitBrownie: {
+	DisplayName: Фруктовый брауни
+	Tooltip: «Он съедобный. Просто это не брауни»
+}
+
+SandBrownie: {
+	DisplayName: Песчаный брауни
+	Tooltip: «Спасибо, что хоть не стеклянный?»
+}
+
+MummyQuestItem: {
+	DisplayName: Древняя корона
+	Tooltip:
+		'''
+		Неестественно маленькая
+		Привлекает существо над Зиккуратом, пока находится в вашем инвентаре
+		'''
+}
+
+BallOfBandages: {
+	DisplayName: Клубок бинтов
+	Tooltip:
+		'''
+		Глазик может заинтересоваться этим
+		«Ощущается в руках очень странно»
+		'''
+}
+
+DhampirCompletionItem: {
+	DisplayName: Ухо дампира
+	Tooltip:
+		'''
+		Глазик может заинтересоваться этим
+		«Ай!»
+		'''
+}
+
+MummyBandageScrap: {
+	DisplayName: Обрывок бинта
+	Tooltip: Глазику, зачем-то, нужен именно клубок из бинтов...
+}
+
+LookerClub: {
+	DisplayName: Гляделка
+	Tooltip:
+		'''
+		Полностью заряженные удары призывают временные глаза-миньонов
+		Урон этих глаз считается и за урон ближнего боя, и урон призывателя
+		'''
+}
+
+PumpkinClub: {
+	DisplayName: Светильник-молотильник
+	Tooltip: Полностью заряженные удары разбрасывают пылающие ошмётки
+}
+
+ShovelClub: {
+	DisplayName: Гробокопатель
+	Tooltip: Полностью заряженные удары бросают кости в сторону курсора
+}
+
+DhampirPaintingItem: {
+	DisplayName: Картина «Дампир на закате»
+	Tooltip: «С. Пуки»
+}
+
+MummyPaintingItem: {
+	DisplayName: Картина «Мерцающие тыквы»
+	Tooltip: «С. Пуки»
+}
+
+DhampirCape: {
+	DisplayName: Обветренный плащ
+	Tooltip:
+		'''
+		Уменьшает силу гравитации и убирает урон от падения
+		Враги будут реже выбирать вас в качестве цели
+		Вы становитесь невидимыми, если отображение аксессуара отключено
+		«Выглядит так же классно, как ощущается его носить»
+		'''
+}
+
+DhampirRelic: {
+	DisplayName: Реликвия дампира
+	Tooltip: ""
+}
+
+MummyRelic: {
+	DisplayName: Реликвия мумиафа
+	Tooltip: ""
+}
+
+GiantThornWallItem: {
+	DisplayName: Стена из большой колючки
+	Tooltip: ""
+}
+
+StonePillarItem: {
+	DisplayName: Каменная колонна
+	Tooltip: ""
+}
+
+HerosMemorialStatueMossyItem: {
+	DisplayName: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.Tooltip}"
+}
+
+GloomyStatueItem: {
+	DisplayName: Мрачная статуя
+	Tooltip: ""
+}
+
+BoxOfSpareLimbs: {
+	DisplayName: Коробка с запасными частями тела
+	Tooltip:
+		'''
+		При получении вами урона призывает запасные части тела сражаются за вас
+		Нога будет топтать врагов, рука — хватать их, и больше ничего
+		'''
 }
 
 ScrapPickup: {
@@ -3506,7 +3900,11 @@ SpikedScutumRed: {
 
 Firewall: {
 	// DisplayName: Firewall
-	// Tooltip: "{$CommonTooltips.Greatshield}"
+	/* Tooltip:
+		'''
+		Hold <left> to block incoming damage and breath fire
+		Gains increased damage with defense
+		''' */
 }
 
 KiteShield: {
@@ -3518,14 +3916,28 @@ RhosRydd: {
 	// DisplayName: Rhos Rydd
 	/* Tooltip:
 		'''
-		{$CommonTooltips.Greatshield}
-		Hold to perform a short-ranged dash
+		Hold <left> to block incoming damage and perform a short-ranged dash
+		Gains increased damage with defense
 		''' */
+}
+
+LushWoodTrellisItem: {
+	// DisplayName: Lush Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+LushWoodTrellisTwoItem: {
+	// DisplayName: Crossed Lush Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 Roromaraugi: {
 	// DisplayName: Roromaraugi
-	// Tooltip: "{$CommonTooltips.Greatshield}"
+	/* Tooltip:
+		'''
+		Hold <left> to parry incoming damage
+		Gains increased damage with defense
+		''' */
 }
 
 StaminaRing: {
@@ -3663,4 +4075,23 @@ TotalRecall: {
 LeatherSling: {
 	// DisplayName: Leather Sling
 	// Tooltip: ""
+}
+
+Lumberjack: {
+	// DisplayName: Lumberjack
+	// Tooltip: ""
+}
+
+Trickaxe: {
+	// DisplayName: Trickaxe
+	/* Tooltip:
+		'''
+		Mining tiles grants charges
+		<right> to fire an explosive charge
+		''' */
+}
+
+C4Item: {
+	// DisplayName: C4
+	// Tooltip: Destroys walls in a radius when interacted with
 }

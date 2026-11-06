@@ -7,7 +7,8 @@ using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.WorldGeneration.PointOfInterest;
 
-/// <summary> Common identifier for interest types. </summary> //ALWAYS append new types immediately before Count to ensure proper loading
+/// <summary> Common identifier for interest types. </summary> 
+/// ALWAYS append new types immediately before Count to ensure proper loading
 public enum InterestType : byte
 {
 	FloatingIsland,
@@ -21,6 +22,10 @@ public enum InterestType : byte
 	WulfrumBunker, //Fables Mod exclusive
 	SaltFlat,
 	Ziggurat,
+	Spooky_NoseCult,
+	Spooky_KrampusWorkshop,
+	Spooky_RottenDepths,
+	Spooky_FetidFarms,
 	Count
 }
 

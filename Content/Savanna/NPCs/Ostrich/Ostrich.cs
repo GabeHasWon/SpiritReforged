@@ -1,9 +1,9 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Items.Food;
@@ -174,7 +174,7 @@ public class Ostrich : ModNPC
 					var tilePos = ((NPC.Center + new Vector2(NPC.width * NPC.direction, 8)) / 16).ToPoint();
 					var direction = Vector2.UnitX * (Main.rand.NextBool() ? -1 : 1);
 
-					TileSwayHelper.SetWindTime(tilePos.X, tilePos.Y, direction);
+					WindTileRenderer.SetWindTime(tilePos.X, tilePos.Y, direction);
 				} //Cause tiles to sway while munching
 
 				break;
@@ -225,7 +225,7 @@ public class Ostrich : ModNPC
 				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Volume = .5f, PitchVariance = .5f }, NPC.Center);
 
 			if (Counter % 15 == 0)
-				ParticleHandler.SpawnParticle(new OstrichImpact(NPC, NPC.Center, Vector2.Zero, 270, 100f, Math.Sign(NPC.velocity.X) == 1 ? 0 : MathHelper.Pi, 30, .6f));
+				ParticleRenderers.OverNPCs.Add(new OstrichImpact(NPC, NPC.Center, Vector2.Zero, 270, 100f, Math.Sign(NPC.velocity.X) == 1 ? 0 : MathHelper.Pi, 30, .6f));
 		}
 
 		if (NPC.velocity.X < 0) //Set direction
@@ -382,7 +382,7 @@ public class Ostrich : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (!spawnInfo.Common())
+		if (!spawnInfo.EventSafe())
 			return 0;
 
 		int x = spawnInfo.SpawnTileX;

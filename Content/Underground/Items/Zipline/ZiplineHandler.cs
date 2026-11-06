@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PlayerCommon;
+﻿using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
@@ -11,8 +10,8 @@ namespace SpiritReforged.Content.Underground.Items.Zipline;
 
 internal class ZiplineHandler : ILoadable
 {
-	internal static Asset<Texture2D> HookTexture;
-	internal static Asset<Texture2D> WireTexture;
+	internal static readonly Asset<Texture2D> HookTexture = Graphics.Tex("SpiritReforged/Content/Underground/Items/Zipline/Zipline_Hook");
+	internal static readonly Asset<Texture2D> WireTexture = Graphics.Tex("SpiritReforged/Content/Underground/Items/Zipline/Zipline_Wire");
 
 	/// <summary> <see cref="Zipline"/>s belonging to all players.<para/>
 	/// Use <see cref="Add"/> and <see cref="Zipline.RemovePoint"/> instead of directly adding and removing points from this set. </summary>
@@ -45,13 +44,7 @@ internal class ZiplineHandler : ILoadable
 		}
 	}
 
-	public void Load(Mod mod)
-	{
-		On_Main.DoDraw_Tiles_NonSolid += DrawAllZiplines;
-
-		HookTexture = DrawHelpers.RequestLocal(GetType(), "Zipline_Hook", false);
-		WireTexture = DrawHelpers.RequestLocal(GetType(), "Zipline_Wire", false);
-	}
+	public void Load(Mod mod) => On_Main.DoDraw_Tiles_NonSolid += DrawAllZiplines;
 
 	private static void DrawAllZiplines(On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self)
 	{
@@ -116,7 +109,7 @@ internal class ZiplinePlayer : ModPlayer
 			return;
 
 		if (Main.timeForVisualEffects % 3 == 0)
-			ParticleHandler.SpawnParticle(new LightningParticle(start, end, Color.Red, 30, 8f));
+			ParticleRenderers.UnderProjectiles.Add(new LightningParticle(start, end, Color.Red, 30, 8f));
 
 		if (Main.rand.NextBool(3))
 			Dust.NewDustPerfect(start, DustID.Torch, Scale: 2).noGravity = true;
@@ -133,7 +126,7 @@ internal class ZiplinePlayer : ModPlayer
 
 			if (!_fast)
 			{
-				ParticleHandler.SpawnParticle(new TexturedPulseCircle(end, Color.White, Color.Red, .25f, 80f, 20, "supPerlin", Vector2.Zero, Common.Easing.EaseFunction.EaseCircularOut).WithSkew(.5f, end.AngleTo(start)));
+				ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(end, Color.White, Color.Red, .25f, 80f, 20, "supPerlin", Vector2.Zero, Common.Easing.EaseFunction.EaseCircularOut).WithSkew(.5f, end.AngleTo(start)));
 				SoundEngine.PlaySound(SoundID.DD2_WyvernDiveDown with { Pitch = .5f }, start);
 
 				_fast = true;

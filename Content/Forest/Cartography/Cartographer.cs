@@ -68,6 +68,8 @@ public class Cartographer : WorldNPC, ITravelNPC
 	{
 		base.SetStaticDefaults();
 
+		NPCHeadLayer.Types.Add(Type);
+
 		Main.npcFrameCount[Type] = 25;
 
 		NPCID.Sets.ExtraFramesCount[Type] = 9;
@@ -186,6 +188,20 @@ public class Cartographer : WorldNPC, ITravelNPC
 			return ModContent.ItemType<PinBlood>();
 		else if (interest is InterestType.WulfrumBunker && CrossMod.Fables.Enabled)
 			return ModContent.ItemType<PinWulfrum>();
+		else if (CrossMod.Spooky.Enabled)
+		{
+			int spookyType = interest switch
+			{
+				InterestType.Spooky_NoseCult => ModContent.ItemType<PinSpookyNose>(),
+				InterestType.Spooky_FetidFarms => ModContent.ItemType<PinSpookyFarms>(),
+				InterestType.Spooky_KrampusWorkshop => ModContent.ItemType<PinSpookyKrampus>(),
+				InterestType.Spooky_RottenDepths => ModContent.ItemType<PinSpookyRotten>(),
+				_ => -1,
+			};
+
+			if (spookyType != -1)
+				return spookyType;
+		}
 
 		int type = interest switch
 		{

@@ -1,8 +1,8 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -69,21 +69,21 @@ public class Bomb : BombProjectile, ILargeExplosive
 		var ease = EffectEase;
 		var stretch = Vector2.One;
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * area, 20, "Smoke", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * area, 20, "Smoke", stretch, ease)
 		{
 			Angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi)
 		});
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 30 * area, 20, "Smoke", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 30 * area, 20, "Smoke", stretch, ease)
 		{
 			Angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi)
 		});
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, Vector2.Zero, Color.Gray, .04f * area, EaseFunction.EaseCubicOut, 40));
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Projectile.Center, Vector2.Zero, Color.Gray, .04f * area, EaseFunction.EaseCubicOut, 40));
 
 		const int time = 5;
-		ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Vector2.Zero, Color.Orange.Additive(), new Vector2(0.2f, 1f) * area, time));
-		ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Vector2.Zero, Color.White.Additive(), new Vector2(0.1f, 1f) * area, time));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Vector2.Zero, Color.Orange.Additive(), new Vector2(0.2f, 1f) * area, time));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Vector2.Zero, Color.White.Additive(), new Vector2(0.1f, 1f) * area, time));
 
 		for (int i = 0; i < area * 2; i++)
 		{
@@ -93,8 +93,8 @@ public class Bomb : BombProjectile, ILargeExplosive
 			var velocity = Main.rand.NextVector2Unit() * magnitude * 10f;
 			float scale = (1f - magnitude) * 0.08f * area;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 10, 3));
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, Color.White.Additive(), scale * .5f, 10, 3));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 10, 3));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + velocity * 10, velocity, Color.White.Additive(), scale * .5f, 10, 3));
 
 			var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(16f * area), DustID.Torch, Scale: Main.rand.NextFloat() + .5f);
 			d.noGravity = true;
@@ -444,8 +444,8 @@ public class BombScarab : Bomb
 
 			Projectile.Resize(10, 10);
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Cyan, Color.Orange * .3f, .4f, 200, 20, "SmokeSimple", Vector2.One, Common.Easing.EaseFunction.EaseCircularOut));
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.White, Color.Orange * .3f, .2f, 200, 20, "SmokeSimple", Vector2.One, Common.Easing.EaseFunction.EaseCircularOut));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Color.Cyan, Color.Orange * .3f, .4f, 200, 20, "SmokeSimple", Vector2.One, Common.Easing.EaseFunction.EaseCircularOut));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Color.White, Color.Orange * .3f, .2f, 200, 20, "SmokeSimple", Vector2.One, Common.Easing.EaseFunction.EaseCircularOut));
 		}
 
 		if (Projectile.owner == Main.myPlayer)

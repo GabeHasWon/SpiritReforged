@@ -1,7 +1,5 @@
 ﻿using ILLogger;
 using MonoMod.Cil;
-using SpiritReforged.Common.TileCommon.TileSway;
-using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria.DataStructures;
 using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
@@ -119,8 +117,6 @@ internal class DrawOrderSystem : ModSystem
 
 			if (tag is not null)
 				DrawOrderTypes.Add(tile.Type, tag.Layers);
-			else if (tile is ISwayTile sway && sway.Style == -1) //If no layers are defined for this ISwayTile, automatically add a valid layer for sway drawing
-				DrawOrderTypes.Add(tile.Type, [Layer.NonSolid]);
 		}
 	}
 

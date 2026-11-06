@@ -39,18 +39,14 @@ internal static class MiscExtensions
 
 	public static Vector2 TurnLeft(this Vector2 vec) => new(vec.Y, -vec.X);
 
-	/// <summary>
-	/// Ends & restarts the spriteBatch with default vanilla parameters.
-	/// </summary>
+	/// <summary> Ends and restarts the spriteBatch with default vanilla parameters. </summary>
 	public static void RestartToDefault(this SpriteBatch batch)
 	{
 		batch.End();
 		batch.BeginDefault();
 	}
 
-	/// <summary>
-	/// Begins the spriteBatch with default vanilla parameters.
-	/// </summary>
+	/// <summary> Begins the spriteBatch with default vanilla parameters. </summary>
 	/// <param name="batch"></param>
 	public static void BeginDefault(this SpriteBatch batch) => batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -97,7 +93,7 @@ internal static class MiscExtensions
 	}
 
 	/// <summary> Whether common NPC spawn conditions related to invasions and events are satisfied. </summary>
-	public static bool Common(this NPCSpawnInfo info) => !info.Invasion && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !info.Player.ZoneOldOneArmy;
+	public static bool EventSafe(this NPCSpawnInfo info) => !info.Invasion && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !info.Player.ZoneOldOneArmy;
 
 	public static float Modulo(this float dividend, float divisor)
 	{

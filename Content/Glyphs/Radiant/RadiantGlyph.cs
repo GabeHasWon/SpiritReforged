@@ -1,8 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
@@ -125,17 +123,11 @@ public class RadiantGlyph : GlyphItem
 		{
 			Vector2 pos = item.Center + Main.rand.NextVector2Circular(item.width / 2, item.height / 2);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.Goldenrod.Additive(), 0.2f, 35, 0)
-			{
-				Rotation = 0f,
-				Layer = ParticleLayer.AboveItem
-			});
+			ParticleRenderers.OverItems.Add(new SharpStarParticle(pos, Vector2.Zero, Color.Goldenrod.Additive(), 0.2f, 35, 0)
+			{ Rotation = 0f });
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), 0.15f, 30, 0, AddLight: false)
-			{
-				Rotation = 0f,
-				Layer = ParticleLayer.AboveItem
-			});
+			ParticleRenderers.OverItems.Add(new SharpStarParticle(pos, Vector2.Zero, Color.LightGoldenrodYellow.Additive(), 0.15f, 30, 0, AddLight: false)
+			{ Rotation = 0f });
 		}
 
 		if (Main.rand.NextBool(60))
@@ -145,18 +137,17 @@ public class RadiantGlyph : GlyphItem
 			float rot = Main.rand.NextFloat(6.28f);
 			int dir = Main.rand.NextBool() ? -1 : 1;
 
-			ParticleHandler.SpawnParticle(new LightFlash(item, pos, Color.DarkOrange, new Color(255, 212, 87), new Vector2(1f, 1.25f) * Main.rand.NextFloat(0.75f, 1.25f), 60 + Main.rand.Next(5, 40), rot, dir)
-			{
-				Layer = ParticleLayer.BelowProjectile,
-				fromRadiant = true
-			});
+			ParticleRenderers.UnderProjectiles.Add(new LightFlash(item, pos, Color.DarkOrange, new Color(255, 212, 87), new Vector2(1f, 1.25f) * Main.rand.NextFloat(0.75f, 1.25f), 60 + Main.rand.Next(5, 40), rot, dir)
+			{ fromRadiant = true });
 		}
 	}
 }
 
 public class RadiantGlyphShaderData(Asset<Effect> shader, string shaderPass) : ArmorShaderData(shader, shaderPass)
 {
-	private Effect GetEffect => shader.Value;
+	private Effect GetEffect => _shader.Value;
+
+	private readonly Asset<Effect> _shader = shader;
 
 	public override void Apply(Entity entity, DrawData? drawData = null)
 	{

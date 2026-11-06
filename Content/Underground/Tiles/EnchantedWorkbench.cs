@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
@@ -18,6 +18,19 @@ namespace SpiritReforged.Content.Underground.Tiles;
 
 public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 {
+	public class EnchantedWorkbenchStopBreak : GlobalTile
+	{
+		public override bool CanKillTile(int i, int j, int type, ref bool blockDamaged)
+		{
+			Tile above = Main.tile[i, j - 1];
+
+			if (above.HasTile && above.TileType == ModContent.TileType<EnchantedWorkbench>() && above.TileFrameX < FullFrameWidth)
+				return false;
+
+			return true;
+		}
+	}
+
 	public const int FullFrameWidth = 18 * 3;
 
 	#region local target
@@ -81,6 +94,8 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 		Main.tileSpelunker[Type] = true;
 		Main.tileNoFail[Type] = true;
 
+		TileID.Sets.PreventsTileHammeringIfOnTopOfIt[Type] = true;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style3x4);
 		TileObjectData.newTile.Origin = new(2, 3);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop, TileObjectData.newTile.Width, 0);
@@ -91,10 +106,22 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 		AddMapEntry(new Color(50, 25, 55), Language.GetText("Mods.SpiritReforged.Items.EnchantedWorkbenchItem.DisplayName"));
 	}
 
+	public override bool CanExplode(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		return tile.TileFrameX >= FullFrameWidth;
+	}
+
+	public override bool CanKillTile(int i, int j, ref bool blockDamaged)
+	{
+		Tile tile = Main.tile[i, j];
+		return tile.TileFrameX >= FullFrameWidth;
+	}
+
 	/// <summary> Deactivates the workbench tile at the provided coordinates and syncs it. </summary>
 	public static void Deactivate(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		for (int x = i; x < i + 3; x++)
 		{
 			for (int y = j; y < j + 4; y++)
@@ -126,7 +153,7 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 		if (Framing.GetTileSafely(i, j).TileFrameX >= FullFrameWidth)
 			return false;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		ActiveCoordinates = new(i, j);
 
 		UISystem.SetActive<EnchantmentUI>();
@@ -154,7 +181,7 @@ public sealed class EnchantedWorkbench : ModTile, ILoadItem, IGenerationPage
 				{
 					float scale = Main.rand.NextFloat(0.5f, 1);
 
-					ParticleHandler.SpawnParticle(Main.rand.NextBool() 
+					ParticleRenderers.UnderProjectiles.Add(Main.rand.NextBool() 
 						? new ShimmerStar(position, ChromaticWax.SpecialColor.Additive(), scale, 20, -Vector2.UnitY)
 						: new EmberParticle(position, -Vector2.UnitY, ChromaticWax.SpecialColor.Additive(), scale * 0.5f, 60, 1));
 				}

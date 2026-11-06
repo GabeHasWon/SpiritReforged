@@ -68,7 +68,7 @@ public class SaltCampfire : ModTile, ILoadItem
 
 	public override void HitWire(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		short frameAdjustment = (short)(!OnFire(i, j) ? -fullFrameHeight : fullFrameHeight);
 
 		for (int x = i; x < i + 3; x++)
@@ -147,7 +147,7 @@ public class SaltCampfire : ModTile, ILoadItem
 			TileLoader.SetAnimationFrame(Type, i, j, ref addFrameX, ref addFrameY);
 
 			var source = new Rectangle(tile.TileFrameX, tile.TileFrameY + addFrameY, 16, 16);
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(0, 2);
+			var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(0, 2);
 
 			spriteBatch.Draw(glowTexture.Value, position, source, Color.Pink with { A = 150 }, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		}

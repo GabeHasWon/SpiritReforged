@@ -1,9 +1,7 @@
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Skies;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Biome;
 using System.Linq;
-using Terraria.Graphics;
 
 namespace SpiritReforged.Content.SaltFlats.Biome;
 

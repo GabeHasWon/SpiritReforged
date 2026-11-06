@@ -19,7 +19,7 @@ public class CobbledBrick : ModTile, ILoadItem
 
 		TileID.Sets.ChecksForMerge[Type] = true;
 
-		this.Merge(TileID.Stone, TileID.Dirt);
+		TileMethods.Merge(Type, TileID.Stone, TileID.Dirt);
 		AddMapEntry(new Color(140, 140, 140));
 		DustType = DustID.Stone;
 	}

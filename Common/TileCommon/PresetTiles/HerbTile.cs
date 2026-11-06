@@ -13,30 +13,6 @@ public class HerbSet
 
 	public static readonly bool[] CustomBotanistDisplay = TileID.Sets.Factory.CreateNamedSet(nameof(CustomBotanistDisplay)).Description("Whether this herb tile will use custom drawing " +
 		"for botanist tiles. A tile must also be in the IsHerb set for this to be used.").RegisterBoolSet(false);
-
-	internal static object CallAddHerb(object arg, object? arg2)
-	{
-		bool hasCustomDrawing = arg2 is bool b && b;
-		
-		if (arg is string s)
-			SetHerb(ModContent.Find<ModTile>(s).Type, hasCustomDrawing);
-		else if (arg is int i)
-			SetHerb(i, hasCustomDrawing);
-		else if (arg is short sh)
-			SetHerb(sh, hasCustomDrawing);
-		else if (arg is ushort us)
-			SetHerb(us, hasCustomDrawing);
-		else
-			throw new ArgumentException("Argument to AddHerb must be a string (the tile's FullName) or int, short or ushort (the tile's type!)");
-
-		return true;
-	}
-
-	private static void SetHerb(int type, bool customDrawing)
-	{
-		IsHerb[type] = true;
-		CustomBotanistDisplay[type] = customDrawing;
-	}
 }
 
 /// <summary> Used for quickly building herb tiles. See <see cref="GetItemDrops(int, int)"/>. </summary>

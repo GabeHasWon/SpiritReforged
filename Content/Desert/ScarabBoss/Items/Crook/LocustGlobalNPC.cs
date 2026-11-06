@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 using Terraria.Audio;
@@ -34,7 +34,7 @@ public class LocustDamageGlobalNPC : GlobalNPC
 				Color smokeColor = new Color(5, 5, 5) * 0.2f;
 				float scale = Main.rand.NextFloat(0.1f, 0.2f);
 				var velSmoke = -Vector2.UnitY * 2f;
-				ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
+				ParticleRenderers.OverPlayers.Add(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(5f, 5f), velSmoke, Color.DarkSeaGreen * 0.25f, smokeColor, scale, EaseFunction.EaseQuadOut, Main.rand.Next(30, 40)));
 			}
 
 			SoundEngine.PlaySound(HitSound, target.Center);

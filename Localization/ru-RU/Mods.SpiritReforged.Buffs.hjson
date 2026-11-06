@@ -78,14 +78,14 @@ GildedScarabBuff: {
 	Description: Защита увеличена на {0} ед.
 }
 
-PoolNoodleBubbleBuff: {
-	DisplayName: Пузырь нудла
-	Description: Вы познали древнюю тайну истории Spirit... Ждите встречи с нашим супербоссом — Тёмной Сталью, Падшей звездой!
+Bubbled: {
+	DisplayName: Запузыренный
+	Description: Вы познали древнюю тайну истории Spirit... Ждите встречи с нашим супербоссом — Темносталью, Падшей звездой!
 }
 
 ExplorerSpeed: {
 	DisplayName: Скорость исследователя
-	Description: Ваша скорость значительно увеличена
+	Description: Мобильность значительно увеличена
 }
 
 RemedyPotionBuff: {
@@ -171,6 +171,16 @@ BlazeDebuff: {
 RageGlyphBuff: {
 	DisplayName: Мстительный урон [{0}]
 	Description: Накоплено {0} ед. урона
+}
+
+ColumbatBuff: {
+	DisplayName: Комышь
+	Description: Существо летучей мыши
+}
+
+ColumbaldBuff: {
+	DisplayName: Колысик
+	Description: Существо лысого
 }
 
 StonemasonBuff: {

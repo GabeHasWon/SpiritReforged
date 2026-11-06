@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Content.Glyphs;
+
 namespace SpiritReforged.Common.ProjectileCommon;
 
 internal static class ProjectileExtensions
@@ -10,13 +11,21 @@ internal static class ProjectileExtensions
 		return new Rectangle(0, projectile.frame * texture.Height / Main.projFrames[projectile.type], texture.Width, texture.Height / Main.projFrames[projectile.type]);
 	}
 
-	public static void Bounce(this Projectile projectile, Vector2 oldVelocity, float VelocityKeptRatio = 1f) 
-		=> projectile.velocity = new Vector2((projectile.velocity.X == oldVelocity.X) 
-			? projectile.velocity.X 
-			: -oldVelocity.X * VelocityKeptRatio, 
-			(projectile.velocity.Y == oldVelocity.Y) 
-			? projectile.velocity.Y 
-			: -oldVelocity.Y * VelocityKeptRatio);
+	public static void Bounce(this Projectile projectile, Vector2 oldVelocity, float VelocityKeptRatio = 1f)
+	{
+		if (projectile.velocity == oldVelocity) //Diminish velocity if otherwise unchanged
+		{
+			if (Math.Abs(projectile.velocity.X) > Math.Abs(projectile.velocity.Y))
+				projectile.velocity.X *= 0.5f;
+			else if (Math.Abs(projectile.velocity.Y) > Math.Abs(projectile.velocity.X))
+				projectile.velocity.Y *= 0.5f;
+		}
+
+		float x = (projectile.velocity.X == oldVelocity.X) ? projectile.velocity.X : -oldVelocity.X * VelocityKeptRatio;
+		float y = (projectile.velocity.Y == oldVelocity.Y) ? projectile.velocity.Y : -oldVelocity.Y * VelocityKeptRatio;
+
+		projectile.velocity = new Vector2(x, y);
+	}
 
 	/// <summary> Attempt to bounce off of shimmer when in contact. Use this for projectiles with AI styles of 0. </summary>
 	public static void TryShimmerBounce(this Projectile projectile)
@@ -145,7 +154,7 @@ internal static class ProjectileExtensions
 	/// <param name="projectile">The projectile to draw.</param>
 	/// <param name="framespersecond">The amount of frames to cycle through each second.</param>
 	/// <param name="loopFrame">The frame to loop to after reaching the maximum frame count. Defaults to zero.</param>
-	/// <param name="maxFrame">The frame to loop the animation upon reaching. If null, will use <see cref="Main.projFrames[projectile.type]"/> to get the default maximum frame count.</param>
+	/// <param name="maxFrame">The frame to loop the animation upon reaching. If null, will use <see cref="Main.projFrames"/> to get the default maximum frame count.</param>
 	public static void UpdateFrame(this Projectile projectile, int framespersecond, int loopFrame = 0, int? maxFrame = null)
 	{
 		if (framespersecond == 0)

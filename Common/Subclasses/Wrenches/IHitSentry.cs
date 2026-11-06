@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -82,12 +82,12 @@ public interface IHitSentry
 			dust.scale = 1f;
 			dust.velocity = velocity;
 
-			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.PaleGoldenrod.Additive(100), new Vector2(0.5f, Math.Abs(velocity.Y) / 2), 30));
-			ParticleHandler.SpawnParticle(new ImpactLine(position, velocity, Color.White.Additive(), new Vector2(0.25f, Math.Abs(velocity.Y) / 4), 30));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, velocity, Color.PaleGoldenrod.Additive(100), new Vector2(0.5f, Math.Abs(velocity.Y) / 2), 30));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, velocity, Color.White.Additive(), new Vector2(0.25f, Math.Abs(velocity.Y) / 4), 30));
 		}
 
-		ParticleHandler.SpawnParticle(new PulseCircle(sentry.Center, Color.PaleGoldenrod.Additive(100), Color.Goldenrod, 0.1f, 200, 30, Easing.EaseFunction.EaseOutBack(0.2f)));
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(sentry.Center, Vector2.Zero, Color.PaleGoldenrod.Additive(100), new Vector2(2, 3), 20, 0)
+		ParticleRenderers.OverPlayers.Add(new PulseCircle(sentry.Center, Color.PaleGoldenrod.Additive(100), Color.Goldenrod, 0.1f, 200, 30, Easing.EaseFunction.EaseOutBack(0.2f)));
+		ParticleRenderers.OverPlayers.Add(new ImpactLinePrim(sentry.Center, Vector2.Zero, Color.PaleGoldenrod.Additive(100), new Vector2(2, 3), 20, 0)
 		{ Rotation = MathHelper.PiOver2 });
 	}
 

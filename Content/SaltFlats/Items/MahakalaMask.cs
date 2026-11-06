@@ -2,7 +2,6 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.SaltFlats.Tiles;
-using SpiritReforged.Content.Savanna.Items.WrithingSticks;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Items;
@@ -61,7 +60,7 @@ public class MahakalaMaskBlue : ModItem
 
 	private class MahakalaGlowLayer : PlayerDrawLayer
 	{
-		private static readonly Asset<Texture2D> Glow = DrawHelpers.RequestLocal(typeof(MahakalaMaskBlue), "MahakalaGlow", false);
+		private static readonly Asset<Texture2D> Glow = Graphics.Tex("SpiritReforged/Content/SaltFlats/Items/MahakalaGlow");
 
 		public override Position GetDefaultPosition() => new AfterParent(PlayerDrawLayers.FrontAccFront);
 

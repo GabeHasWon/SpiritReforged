@@ -1,7 +1,4 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Content.SaltFlats.Biome;
 using SpiritReforged.Content.Savanna.Biome;
 
 namespace SpiritReforged.Content.Savanna.Tiles;

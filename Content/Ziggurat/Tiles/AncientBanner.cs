@@ -1,15 +1,13 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.TileCommon;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ziggurat.Tiles;
 
-public class AncientBanner : ModTile, ISwayTile, ILoadItem
+public class AncientBanner : ModTile, ILoadItem
 {
-	public int Style => (int)TileDrawing.TileCounterType.MultiTileVine;
-
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 2);
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.Silk, 3).AddTile(TileID.Loom).Register();
 
@@ -19,6 +17,8 @@ public class AncientBanner : ModTile, ISwayTile, ILoadItem
 		Main.tileNoAttach[Type] = true;
 		Main.tileLighted[Type] = true;
 		Main.tileLavaDeath[Type] = true;
+
+		WindTileRenderer.TileDrawInWind[Type] = TileDrawing.TileCounterType.MultiTileVine;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x2);
 		TileObjectData.newTile.Origin = Point16.Zero;

@@ -40,6 +40,8 @@ internal static class CrossMod
 			}
 		}
 
+		public readonly T Find<T>(string s) where T : ModType => Instance.Find<T>(s);
+
 		/// <inheritdoc cref="Mod.TryFind{T}(string, out T)"/>
 		public readonly bool TryFind<T>(string s, out T t) where T : ModType => ((Mod)this).TryFind(s, out t);
 
@@ -48,6 +50,33 @@ internal static class CrossMod
 		{
 			t = default;
 			return Enabled && ((Mod)this).TryFind(s, out t);
+		}
+
+		public readonly bool TryCall(out object result, params object[] parameters)
+		{
+			result = null;
+
+			if (!Enabled)
+				return false;
+
+			result = Instance.Call(parameters);
+			return true;
+		}
+
+		public readonly bool TryCall<T>(out T result, params object[] parameters)
+		{
+			result = default;
+
+			if (!Enabled)
+				return false;
+
+			object res = Instance.Call(parameters);
+
+			if (res is not T t)
+				return false;
+
+			result = t;
+			return true;
 		}
 
 		public static explicit operator Mod(ModEntry e) => e.Instance;
@@ -66,8 +95,10 @@ internal static class CrossMod
 	public static readonly ModEntry BossChecklist = new("BossChecklist");
 	public static readonly ModEntry SubworldLibrary = new("SubworldLibrary");
 	public static readonly ModEntry WorldGenPreviewer = new("WorldGenPreviewer");
+	public static readonly ModEntry Spooky = new("Spooky");
 
 	public static bool RussianLocalizable => RussianTranslate.Enabled && Language.ActiveCulture.Name == "ru-RU";
+	public static bool SpanishLocalizable => Language.ActiveCulture.Name == "es-ES";
 
 	/// <summary> The names and instances of loaded crossmod mods per <see cref="ModEntry"/>. </summary>
 	private static readonly Dictionary<string, Mod> LoadedMods = [];

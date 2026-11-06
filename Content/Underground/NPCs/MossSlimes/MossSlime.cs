@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using Terraria;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Underground.NPCs.MossSlimes;
@@ -178,7 +177,7 @@ internal class MossSlime : ModNPC
 					var start = NPC.BottomLeft + new Vector2(Main.rand.Next(NPC.width), 0);
 					var velocity = new Vector2(Main.rand.NextFloat(-2f, 2f), -2).RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(0.4f, 1f);
 
-					ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 						new Color(LightColor) * 0.85f, Main.rand.NextFloat(0.25f, 0.45f), 40, 8, p =>
 						{
 							p.Velocity.X *= Main.rand.NextFloat(.8f, .9f);

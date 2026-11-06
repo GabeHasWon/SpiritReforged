@@ -12,15 +12,17 @@ public class SaltSet : ILoadable
 
 	private static void LoadSaltFurniture()
 	{
-		string saltName = typeof(SaltSet).Namespace + ".Salt";
-		TileHelper.ArgumentCollection arguments = AllArgs(DustID.BubbleBurst_White, new Vector3(0.75f, 0.75f, 0.95f), SaltBlock.Break, false)
-			- new ClockTile()
-			- new BarrelTile()
-			- new BenchTile();
+		string name = typeof(SaltSet).Namespace + ".Salt";
+		Vector3 light = new(0.75f, 0.75f, 0.95f);
+
+		TileHelper.ArgumentCollection arguments = AllArgs(DustID.BubbleBurst_White, new(light, false), SaltBlock.Break)
+			- nameof(ClockTile)
+			- nameof(BarrelTile)
+			- nameof(BenchTile);
 
 		arguments.Get<ChandelierTile>().WindCycle = 0;
 
-		LoadFurnitureSet(saltName, arguments, AutoContent.ItemType<SaltPanel>());
+		LoadFurnitureSet(name, arguments, AutoContent.ItemType<SaltPanel>());
 	}
 
 	public void Unload() { }
