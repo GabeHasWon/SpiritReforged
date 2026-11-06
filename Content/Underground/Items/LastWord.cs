@@ -1,14 +1,14 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
-using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Shotguns;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underground.Items;
+
 public class LastWord : ModItem
 {
 	public const float DAMAGE_BONUS = 0.5f; // 50% damage bonus. Will be spread evenly between all pellets of a shotgun.
@@ -97,14 +97,13 @@ public class LastWord : ModItem
 
 				for (int i = 0; i < 2; i++)
 				{
-					ParticleHandler.SpawnParticle(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(15f, 15f), -Vector2.UnitY, Color.DarkRed * 0.2f, 0.05f, EaseFunction.EaseQuinticOut, 60)
+					ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(15f, 15f), -Vector2.UnitY, Color.DarkRed * 0.2f, 0.05f, EaseFunction.EaseQuinticOut, 60)
 					{
 						Pixellate = true,
 						PixelDivisor = 3,
 					});
 
 					Dust.NewDustPerfect(projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2.5f, 2.5f), 160, default, 1.35f).noGravity = true;
-
 					Dust.NewDustPerfect(projectile.Center, DustID.Blood, Main.rand.NextVector2Circular(2.5f, 2.5f), 180, default, 1.25f);
 				}
 			}							

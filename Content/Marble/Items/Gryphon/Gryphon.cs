@@ -7,10 +7,10 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering;
 using Terraria.Audio;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 
 namespace SpiritReforged.Content.Marble.Items.Gryphon;
+
 // TODO: Obtainment
 // This equates to +150% spread, before any charging, works in favor of the weapon though.
 public class Gryphon() : ShotgunItem(new(spreadMultiplier: 1.5f))
@@ -169,9 +169,9 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 		if (FullyCharged)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/GryphonEmpoweredShot") with { Volume = 0.66f }, Owner.Center);
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/GryphonEmpoweredShot") with { Volume = 0.66f }, Owner.Center); //CACHE ME
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
 				muzzlePosition,
 				Color.Cyan,
 				Color.White.Additive(),
@@ -182,7 +182,7 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 				new Vector2(2, 3),
 				EaseFunction.EaseCubicOut).WithSkew(0.9f, Projectile.rotation).UsesLightColor());
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
 				muzzlePosition + new Vector2(6, 0).RotatedBy(Projectile.rotation),
 				Color.Cyan,
 				Color.White.Additive(),
@@ -198,11 +198,13 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 		for (int i = 0; i < 3; i++)
 		{
-			ParticleHandler.SpawnParticle(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Projectile.velocity * Main.rand.NextFloat(1.5f * ChargeProgress), new(150, 230, 255), 30 + Main.rand.Next(60), false, false, (particle) => particle.Velocity.Y -= 0.01f, 0.02f));
-			
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Projectile.velocity * Main.rand.NextFloat(3f * ChargeProgress), Color.Gray, 20 + Main.rand.Next(60), false, false, (particle) => particle.Velocity.Y -= 0.01f, 0.02f));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Projectile.velocity * Main.rand.NextFloat(1.5f * ChargeProgress), new(150, 230, 255), 30 + Main.rand.Next(60), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Projectile.velocity * Main.rand.NextFloat(3f * ChargeProgress), Color.Gray, 20 + Main.rand.Next(60), default, (particle) => particle.Velocity.Y -= 0.01f)
+			{
+				Variant = CompositeSmoke.SmallVariant
+			});
 
-			ParticleHandler.SpawnParticle(new EmberParticle(muzzlePosition, Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(muzzlePosition, Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
 		}
 
 		for (int i = 0; i < (int)Math.Max(1, 15 * ChargeProgress); i++)
@@ -220,7 +222,7 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 			{
 				Vector2 shellPosition = ArmPosition + new Vector2(-16, -8 * Owner.direction).RotatedBy(Projectile.rotation);
 
-				ParticleHandler.SpawnParticle(new ShotgunShellParticle(shellPosition, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 6f) * ChargeProgress - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
+				ParticleRenderers.UnderProjectiles.Add(new ShotgunShellParticle(shellPosition, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 6f) * ChargeProgress - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
 
 				for (int i = 0; i < 4; i++)
 					Dust.NewDustPerfect(shellPosition + Main.rand.NextVector2Circular(6f, 6f), DustID.Torch, -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f), 50, default, Main.rand.NextFloat(2f));

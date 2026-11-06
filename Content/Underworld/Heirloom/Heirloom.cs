@@ -2,22 +2,14 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Shotguns;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Items.Pepperbox;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.ItemCommon.MagazineSystem.MagazineGlobalItem;
 
 namespace SpiritReforged.Content.Underworld.Heirloom;
+
 public class Heirloom() : ShotgunItem(new())
 {
 	const int MAX_ARM_PULLBACK_TIMER = 15;
@@ -112,7 +104,7 @@ public class Heirloom() : ShotgunItem(new())
 
 		if (player.altFunctionUse == 2)
 		{
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
 				barrelPosition,
 				Color.OrangeRed.Additive(),
 				Color.Yellow.Additive(),
@@ -128,8 +120,8 @@ public class Heirloom() : ShotgunItem(new())
 				Vector2 vel = velocity.RotateRandom(0.6f) * Main.rand.NextFloat(4f);
 				Vector2 pos = barrelPosition + Main.rand.NextVector2Circular(6, 6);
 
-				ParticleHandler.SpawnParticle(new BloomParticle(pos, vel, Color.DarkOrange.Additive() * 0.75f, 0.3f, 45, extraUpdateAction: p => p.Velocity *= 0.95f));
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, Color.LightYellow.Additive(), 0.25f, 45, extraUpdateAction: p => p.Velocity *= 0.95f));
+				ParticleRenderers.UnderProjectiles.Add(new BloomParticle(pos, vel, Color.DarkOrange.Additive() * 0.75f, 0.3f, 45, extraUpdateAction: p => p.Velocity *= 0.95f));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, vel, Color.LightYellow.Additive(), 0.25f, 45, extraUpdateAction: p => p.Velocity *= 0.95f));
 
 				Dust.NewDustPerfect(barrelPosition + Main.rand.NextVector2Circular(4, 4), DustID.Torch, velocity.RotatedByRandom(0.6f) * Main.rand.NextFloat(1f, 6f), 0, default, Main.rand.NextFloat(1f, 3.5f)).noGravity = true;
 			}
@@ -142,20 +134,16 @@ public class Heirloom() : ShotgunItem(new())
 
 		for (int i = 0; i < 4; i++)
 		{
-			ParticleHandler.SpawnParticle(new SmokeCloud(barrelPosition + Main.rand.NextVector2Circular(8, 8), velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.Black * 0.4f, Main.rand.NextFloat(0.07f, 0.15f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(60), true)
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(barrelPosition + Main.rand.NextVector2Circular(8, 8), velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.Black * 0.4f, Main.rand.NextFloat(0.07f, 0.15f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(60), true)
 			{
 				Pixellate = true,
 				PixelDivisor = 3
 			});
 
-			ParticleHandler.SpawnParticle(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.2f, 1f), Color.Black, 50 + Main.rand.Next(30), false, false)
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.2f, 1f), Color.Black, 50 + Main.rand.Next(30)));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 5f), new Color(20, 20, 20) * 0.66f, 35 + Main.rand.Next(30), default, SmokeAction)
 			{
-				Layer = ParticleLayer.AbovePlayer
-			});
-
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 5f), new Color(20, 20, 20) * 0.66f, 35 + Main.rand.Next(30), false, false, SmokeAction)
-			{
-				Layer = ParticleLayer.AbovePlayer
+				Variant = CompositeSmoke.SmallVariant
 			});		
 		}
 
@@ -248,28 +236,25 @@ public class Heirloom() : ShotgunItem(new())
 					Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
 					Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(2f));
 
-					ParticleHandler.SpawnParticle(new SmallCompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.Black * 0.5f, 65, false, false)
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.Black * 0.5f, 65)
 					{
-						Layer = ParticleLayer.AbovePlayer
+						Variant = CompositeSmoke.SmallVariant
 					});
 
-					ParticleHandler.SpawnParticle(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.DarkGray * 0.5f, 45, false, false)
-					{
-						Layer = ParticleLayer.AbovePlayer
-					});
+					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.DarkGray * 0.5f, 45));
 				}
 
 				for (int i = 0; i < 2; i++)
-					ParticleHandler.SpawnParticle(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(3f, 6f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(1.5f, 3f), 1f, 120, heirloom.lastUsedAmmo));
+					ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(3f, 6f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(1.5f, 3f), 1f, 120, heirloom.lastUsedAmmo));
 
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition);
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
 
 				heirloom.playedReloadEffects[0] = true;
 			}
 
 			if (animProgress > 0.55f && !heirloom.playedReloadEffects[1])
 			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f });
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f }); //CACHE ME
 
 				heirloom.armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
 				heirloom.playedReloadEffects[1] = true;

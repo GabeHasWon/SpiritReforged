@@ -1,14 +1,13 @@
 ﻿using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Subclasses.Shotguns;
-using SpiritReforged.Content.Underground.Items;
 
 namespace SpiritReforged.Content.Forest.Misc;
+
 public class GameHuntingKit : ModItem
 {
 	public override void SetDefaults()
 	{
 		Item.DefaultToAccessory();
-
 		Item.rare = ItemRarityID.Orange;
 		Item.value = Item.sellPrice(gold: 2);
 	}
@@ -22,12 +21,12 @@ public class GameHuntingKit : ModItem
 			player.GetModPlayer<MagazinePlayer>().magazineSizeMultiplier += 0.5f;
 	}
 
-	public override void AddRecipes()
+	/*public override void AddRecipes()
 	{
 		CreateRecipe().
 			AddIngredient<ChokeTube>().
 			AddIngredient<SuperExtendoMags>().
 			AddTile(TileID.TinkerersWorkbench).
 			Register();
-	}
+	}*/
 }

@@ -1,8 +1,10 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class SparkParticle : Particle
 {
 	private Color lineColor;
@@ -14,10 +16,6 @@ public class SparkParticle : Particle
 	private bool addLight = true;
 
 	private readonly Action<Particle> _action;
-	public ParticleLayer Layer { get; set; } = ParticleLayer.BelowProjectile;
-	public override ParticleLayer DrawLayer => Layer;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 
 	public SparkParticle(Vector2 position, Vector2 velocity, Color LineColor, Color BloomColor, float scale, int maxTime, Action<Particle> extraUpdateAction = null, bool AddLight = true, bool tileCollide = true)
 	{
@@ -35,7 +33,7 @@ public class SparkParticle : Particle
 
 	public SparkParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, Action<Particle> extraUpdateAction = null, bool AddLight = true, bool tileCollide = true) : this(position, velocity, color, color, scale, maxTime, extraUpdateAction, AddLight, tileCollide) { }
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
 		if (canCollide)
 		{
@@ -60,7 +58,7 @@ public class SparkParticle : Particle
 			TimeActive++;	
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Main.instance.LoadProjectile(873);
 
@@ -70,9 +68,7 @@ public class SparkParticle : Particle
 		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		spriteBatch.Draw(bloomtexture, Position - Main.screenPosition, null, bloomColor * 0.1f, Rotation + MathHelper.PiOver2, bloomtexture.Size() / 2, Scale * 0.5f * progress, SpriteEffects.None, 0);
-
 		spriteBatch.Draw(glowLine, Position - Main.screenPosition, null, lineColor, Rotation + MathHelper.PiOver2, glowLine.Size() / 2, new Vector2(0.2f, 1f) * Scale * progress, SpriteEffects.None, 0);
-
 		spriteBatch.Draw(glowLine, Position - Main.screenPosition, null, Color.White.Additive(), Rotation + MathHelper.PiOver2, glowLine.Size() / 2, new Vector2(0.2f, 1f) * Scale * progress * 0.5f, SpriteEffects.None, 0);
 	}
 }

@@ -1,18 +1,15 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Subclasses.Shotguns;
-using SpiritReforged.Content.Aether.Items;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Items.Pepperbox;
-using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.ItemCommon.MagazineSystem.MagazineGlobalItem;
 
 namespace SpiritReforged.Content.Forest.Flakker;
+
 public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread: 0.2f, spreadMultiplier: 0.65f))
 {
 	bool[] reloadEffects;
@@ -47,7 +44,7 @@ public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread
 
 		for (int i = 0; i < player.GetModPlayer<ShotgunPlayer>().ModifyShotCount(3); i++)
 		{
-			ParticleHandler.SpawnParticle(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
+			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
 
 			float baseSpread = i == 0 ? 0 : 0.25f;
 
@@ -58,33 +55,34 @@ public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread
 		for (int i = 0; i < 5; i++)
 		{
 			Dust.NewDustPerfect(shellPosition, DustID.Torch, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 0, default, Main.rand.NextFloat(1f, 2f));
-			
-			ParticleHandler.SpawnParticle(new SmokeCloud(shellPosition, -velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(2f), Color.DarkGray * 0.3f, 0.05f, EaseFunction.EaseQuadOut, 90)
+
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(shellPosition, -velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(2f), Color.DarkGray * 0.3f, 0.05f, EaseFunction.EaseQuadOut, 90)
 			{
 				Pixellate = true,
 				PixelDivisor = 3,
 			});
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(2f), Color.DarkGray * 0.2f, 0.15f, EaseFunction.EaseQuadOut, 90)
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(2f), Color.DarkGray * 0.2f, 0.15f, EaseFunction.EaseQuadOut, 90)
 			{
 				Pixellate = true,
 				PixelDivisor = 2,
 			});
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(5f), Color.Black * 0.3f, 0.1f, EaseFunction.EaseQuadOut, 60)
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(5f), Color.Black * 0.3f, 0.1f, EaseFunction.EaseQuadOut, 60)
 			{
 				Pixellate = true,
 				PixelDivisor = 2,
 			});
 
-			ParticleHandler.SpawnParticle(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray, Main.rand.Next(90), false, false, (particle) => particle.Velocity.Y -= 0.01f, 0.02f));
-
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightYellow, Main.rand.Next(90), false, false, (particle) => particle.Velocity.Y -= 0.005f, 0.02f));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightYellow, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+			{
+				Variant = CompositeSmoke.SmallVariant
+			});
 
 			for (int x = 0; x < 3; x++)
 			{
-				ParticleHandler.SpawnParticle(new GlowParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.OrangeRed, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
-
+				ParticleRenderers.OverPlayers.Add(new GlowParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.OrangeRed, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
 				Dust.NewDustPerfect(muzzlePosition, DustID.Torch, velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 9f), 0, default, Main.rand.NextFloat(1f, 4f)).noGravity = true;
 			}
 		}

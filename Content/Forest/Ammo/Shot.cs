@@ -1,21 +1,11 @@
-﻿using Mono.Cecil;
-using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Common.Subclasses.Shotguns;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using Terraria;
+﻿using SpiritReforged.Common.Subclasses.Shotguns;
 using Terraria.DataStructures;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Subclasses.Greatshields;
 using Terraria.Audio;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Forest.Ammo;
 public class Shot : ShotgunAmmoItem
@@ -120,15 +110,14 @@ public class ShotProjectile : ModProjectile
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
 	{
 		SoundEngine.PlaySound(SoundID.Item10, target.Center);
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BulletHit") with { Volume = 0.25f, Pitch = 0.1f }, target.Center); //CACHE ME
 
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/BulletHit") with { Volume = 0.25f, Pitch = 0.1f }, target.Center);
-
-		ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, Vector2.Zero, Color.Orange, 0.4f, 30)
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, Vector2.Zero, Color.Orange, 0.4f, 30)
 		{
 			TimeActive = 15
 		});
 
-		ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, Vector2.Zero, Color.White.Additive(), 0.3f, 25)
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, Vector2.Zero, Color.White.Additive(), 0.3f, 25)
 		{
 			TimeActive = 12
 		});

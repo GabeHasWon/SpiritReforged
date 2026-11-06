@@ -1,7 +1,8 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Shotguns;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -26,7 +27,7 @@ public class ShotgunShellParticle : Particle
 		Rotation = Main.rand.NextFloat(6.28f);
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
 		Tile tile = Framing.GetTileSafely((int)Position.X / 16, (int)Position.Y / 16);
 
@@ -64,7 +65,7 @@ public class ShotgunShellParticle : Particle
 		}
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		var texture = ModContent.Request<Texture2D>(_ammo.Texture + "_Shell").Value;
 		var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
@@ -78,19 +79,14 @@ public class ShotgunShellParticle : Particle
 		else
 			fade = 1f - (Progress - 0.1f) / 0.9f;
 
-		spriteBatch.End();
-		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+		spriteBatch.End(); //BATCH ME
+		spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix); //BATCH ME
 
-		spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.Black * 0.5f * fade, 0f, bloom.Size() / 2, Scale * 0.35f, 0, 0);
+		spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.Black * 0.5f * fade, 0f, bloom.Size() / 2, Scale * 0.35f, 0, 0); //BATCH ME
 
-		spriteBatch.End();
-		spriteBatch.BeginDefault();
+		spriteBatch.End(); //BATCH ME
+		spriteBatch.BeginDefault(); //BATCH ME 
 
-		spriteBatch.Draw(texture, Position - Main.screenPosition, null, Lighting.GetColor((int)Position.X / 16, (int)Position.Y / 16, Color) * fade, rotation, texture.Size() / 2, Scale, 0, 0);
+		spriteBatch.Draw(texture, Position - Main.screenPosition, null, Lighting.GetColor((int)Position.X / 16, (int)Position.Y / 16, Color) * fade, rotation, texture.Size() / 2, Scale, 0, 0); //BATCH ME
 	}
-
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
 }
-

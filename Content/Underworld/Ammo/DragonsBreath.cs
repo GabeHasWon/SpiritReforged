@@ -1,10 +1,9 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Greatshields;
 using SpiritReforged.Common.Subclasses.Shotguns;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -37,13 +36,13 @@ public class DragonsBreath : ShotgunAmmoItem
 
 			for (int x = 0; x < 2; x++)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(position, direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(speed * 0.5f), Color.DarkGray * 0.25f, Main.rand.NextFloat(0.02f, 0.09f), EaseFunction.EaseCubicOut, 90)
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(speed * 0.5f), Color.DarkGray * 0.25f, Main.rand.NextFloat(0.02f, 0.09f), EaseFunction.EaseCubicOut, 90)
 				{
 					Pixellate = true,
 					PixelDivisor = 2,
 				});
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(position, direction.RotatedByRandom(0.25f) * Main.rand.NextFloat(speed * 0.65f), Color.Black * 0.15f, Main.rand.NextFloat(0.03f, 0.12f), EaseFunction.EaseCubicOut, 40)
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, direction.RotatedByRandom(0.25f) * Main.rand.NextFloat(speed * 0.65f), Color.Black * 0.15f, Main.rand.NextFloat(0.03f, 0.12f), EaseFunction.EaseCubicOut, 40)
 				{
 					Pixellate = true,
 					PixelDivisor = 3,
@@ -51,9 +50,8 @@ public class DragonsBreath : ShotgunAmmoItem
 
 				Vector2 velo = direction.RotatedByRandom(0.5f) * Main.rand.NextFloat(speed / 2);
 
-				ParticleHandler.SpawnParticle(new BloomParticle(position, velo, Color.DarkOrange, 0.2f, 30, 1, (particle) => particle.Velocity *= 0.935f));
-
-				ParticleHandler.SpawnParticle(new GlowParticle(position, velo, Color.Orange, 0.3f, 30, 1, (particle) => particle.Velocity *= 0.935f));
+				ParticleRenderers.UnderProjectiles.Add(new BloomParticle(position, velo, Color.DarkOrange, 0.2f, 30, 1, (particle) => particle.Velocity *= 0.935f));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, velo, Color.Orange, 0.3f, 30, 1, (particle) => particle.Velocity *= 0.935f));
 			}
 		}
 
@@ -119,7 +117,7 @@ public class DragonsBreathProjectile : ModProjectile
 			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(16f, 16f);
 			Vector2 velocity = Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.4f, 1f);
 
-			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.DarkOrange, 1f, 30,
+			ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.DarkOrange, 1f, 30,
 				(particle) => particle.Velocity *= 0.95f, tileCollide: false));
 		}
 
@@ -133,7 +131,7 @@ public class DragonsBreathProjectile : ModProjectile
 					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 					Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f);
 
-					ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1.35f, Main.rand.Next(30, 60), SparkUpdate, tileCollide: false));
+					ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1.35f, Main.rand.Next(30, 60), SparkUpdate, tileCollide: false));
 				}
 
 				for (int i = 0; i < 6; i++)
@@ -141,7 +139,7 @@ public class DragonsBreathProjectile : ModProjectile
 					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 					Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f);
 
-					ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1f, Main.rand.Next(45, 75), (p) => p.Velocity *= 0.95f, tileCollide: false));
+					ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1f, Main.rand.Next(45, 75), (p) => p.Velocity *= 0.95f, tileCollide: false));
 				}
 
 				for (int i = 0; i < 6; i++)
@@ -149,7 +147,7 @@ public class DragonsBreathProjectile : ModProjectile
 					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 					Vector2 velocity = Main.rand.NextVector2Circular(12f, 12f);
 
-					ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, false, false));
+					ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, false, false));
 				}
 
 				static void SparkUpdate(Particle p)
@@ -221,7 +219,7 @@ public class DragonsBreathProjectile : ModProjectile
 			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 			Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f) * strength;
 
-			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1.35f, Main.rand.Next(30, 60), SparkUpdate, false));
+			ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1.35f, Main.rand.Next(30, 60), SparkUpdate, false));
 		}
 		
 		for (int i = 0; i < Math.Max(1, (int)(3 * strength)); i++)
@@ -229,7 +227,7 @@ public class DragonsBreathProjectile : ModProjectile
 			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 			Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f) * strength;
 
-			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1f, Main.rand.Next(45, 75), (p) => p.Velocity *= 0.95f, tileCollide: false));
+			ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1f, Main.rand.Next(45, 75), (p) => p.Velocity *= 0.95f, tileCollide: false));
 		}
 
 		for (int i = 0; i < Math.Max(1, (int)(18 * strength)); i++)
@@ -237,7 +235,7 @@ public class DragonsBreathProjectile : ModProjectile
 			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
 			Vector2 velocity = Main.rand.NextVector2Circular(15f, 15f) * strength;
 
-			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, false));
+			ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, false));
 		}
 
 		for (int i = 0; i < Math.Max(1, (int)(6 * strength)); i++)
@@ -254,10 +252,9 @@ public class DragonsBreathProjectile : ModProjectile
 			Vector2 velocity = -Vector2.UnitY * Main.rand.NextFloat(2f);
 			Color[] colors = [new Color(255, 220, 150, 120), new Color(255, 150, 0, 100), new Color(255, 50, 0, 100)];
 
-			ParticleHandler.SpawnParticle(new FireParticle(position, velocity, colors, 1.5f, Main.rand.NextFloat(0.05f, 0.1f), EaseBuilder.EaseQuadIn, 30 + Main.rand.Next(50))
+			ParticleRenderers.UnderProjectiles.Add(new FireParticle(position, velocity, colors, 1.5f, Main.rand.NextFloat(0.05f, 0.1f), EaseBuilder.EaseQuadIn, 30 + Main.rand.Next(50))
 			{
-				ColorLerpExponent = 2.5f,
-				Layer = ParticleLayer.BelowProjectile
+				ColorLerpExponent = 2.5f
 			});
 		}
 
