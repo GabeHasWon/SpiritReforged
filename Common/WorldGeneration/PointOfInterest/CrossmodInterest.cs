@@ -2,6 +2,7 @@
 
 #nullable enable
 
+[Autoload(false)]
 internal class CrossmodInterest(string name, Func<int[]> getPins, bool isMapped, Func<int, int, HashSet<Type>, bool>? mapperFunc,
 	LocalizedText[]? getDialogue = null, Func<bool>? isAvailable = null) : InterestDefinition
 {

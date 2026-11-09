@@ -1,3 +1,5 @@
+using SpiritReforged.Content.Forest.Cartography.Pins;
+using System.Diagnostics;
 using Terraria.Audio;
 
 namespace SpiritReforged.Common.ItemCommon.Pins;
@@ -6,13 +8,15 @@ namespace SpiritReforged.Common.ItemCommon.Pins;
 public abstract class PinItem : ModItem
 {
 	public override string Texture => base.Texture + "Item";
+	public virtual string MapTexture => base.Texture + "Map";
 
 	/// <summary>
 	/// <inheritdoc/><para/>Automatically adds required pin data to <see cref="PinMapLayer"/> and <see cref="PinSystem"/> databases. </summary>
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 1;
-		PinSystem.DataByName.Add(Name, new(Item, ModContent.Request<Texture2D>(base.Texture + "Map")));
+		_ = this;
+		PinSystem.DataByName.Add(Name, new(Item, ModContent.Request<Texture2D>(MapTexture)));
 	}
 
 	public override void SetDefaults()
