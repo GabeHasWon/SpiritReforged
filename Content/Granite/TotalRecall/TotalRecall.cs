@@ -3,14 +3,59 @@ using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Granite.TotalRecall;
 
 public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultiplier: -0.2f))
 {
+	class TotalRecallShellParticle(Vector2 position, Vector2 velocity, float scale, int maxTime, ShotgunAmmoItem item = null) : ShotgunShellParticle(position, velocity, scale, maxTime, item)
+	{
+		public override void Update(ref ParticleRendererSettings settings)
+		{
+			if (Progress < 0.33f)
+			{
+				float progress = Progress / 0.33f;
+
+				Position += Main.rand.NextVector2CircularEdge(1, 1) * (1 - progress); // shake
+
+				Velocity.Y += 0.05f;
+				if (Velocity.Y > 0)
+					Velocity.Y *= 1.04f;
+
+				if (Velocity.Y > 20f)
+					Velocity.Y = 20f;
+
+				Velocity *= 0.98f;
+				Velocity.X *= 0.96f;
+
+				Rotation += Velocity.Length() * 0.02f;
+			}
+			else
+			{
+				base.Update(ref settings);
+			}
+		}
+
+		public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
+		{
+			if (Progress < 0.33f)
+			{
+				var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
+
+				float progress = Progress / 0.33f;
+
+				spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.LightCyan.Additive(), 0f, bloom.Size() / 2f, Scale * 0.2f, 0f, 0f);
+			}
+
+			base.Draw(ref settings, spriteBatch);
+		}
+	}
+
 	int _shootDirection;
 	float _shootRotation;
 
@@ -70,7 +115,10 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 
 	public override void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, ShotgunAmmoItem ammo, int damage, float knockback)
 	{
+		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
+		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
 
+		ParticleRenderers.OverPlayers.Add(new TotalRecallShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
 	}
 }
 
