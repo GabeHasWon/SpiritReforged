@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
+using SpiritReforged.Common.Visuals;
 using System.Linq;
 using Terraria;
 using Terraria.DataStructures;
@@ -89,6 +90,8 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 	public int _lifeTime;
 	public bool _active;
 
+	public DistortionHandler.DistortionShaderItem _shaderItem;
+
 	public float LifetimeProgress(Projectile projectile) => _lifeTime / (float)(MAX_LIFE_TIME * projectile.extraUpdates);
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
@@ -123,6 +126,22 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 			}
 			else
 			{
+				if (_shaderItem is null)
+				{
+					_shaderItem = new();
+					DistortionHandler.AddItem(_shaderItem);
+				}
+				else
+				{
+					float lingerProgress = _lingerTime / (float)(MAX_LINGER_TIME * projectile.extraUpdates);
+
+					_shaderItem.Position = projectile.Center;
+					_shaderItem.timeActive = 2;
+					_shaderItem.Progress = lingerProgress;
+					_shaderItem.Scale = projectile.scale * (1 - lingerProgress);
+					_shaderItem.tintColor = Color.White;
+				}
+
 				projectile.timeLeft = 2;
 
 				if (projectile.velocity.LengthSquared() > 0)
