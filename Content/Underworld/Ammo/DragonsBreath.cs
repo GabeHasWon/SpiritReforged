@@ -81,7 +81,7 @@ public class DragonsBreathProjectile : ModProjectile
 {
 	public const int MAX_TIMELEFT = 35;
 
-	bool _hitTile;
+	//bool _hitTile;
 
 	public override string Texture => AssetLoader.EmptyTexture;
 
