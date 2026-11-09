@@ -77,8 +77,15 @@ public static class ChestPoolUtils
 		if (chest.item[itemIndex].active && newList.Count > 0)
 		{ //check if the spot items are being added to is active
 			int itemsToMove = itemIndex + chest.item.Skip(itemIndex).Where(x => x.active).Count();
+
 			for (int i = itemsToMove; i >= itemIndex; i--)
+			{
+				// Exit if we have run out of space
+				if (i + newList.Count >= chest.item.Length)
+					newList = newList[..^(i - 1)];
+
 				chest.item[i + newList.Count] = chest.item[i].Clone();
+			}
 		}
 
 		AddItemsToChest(newList, chest, itemIndex);
@@ -92,10 +99,11 @@ public static class ChestPoolUtils
 		int[] importantItemPool = list.ElementAt(0).itemTypes;
 		int itemToPlace = 0;
 		bool canPlace = false;
+
 		while (!canPlace)
 		{ //check if the chosen item has been placed before, and if all items havent already been placed
 			itemToPlace = random.Next(importantItemPool.Length);
-			if (!placedItems[itemToPlace] || placedItems.All(x => x == true))
+			if (!placedItems[itemToPlace] || placedItems.All(x => x))
 			{
 				placedItems[itemToPlace] = true;
 				canPlace = true;
@@ -136,8 +144,7 @@ public static class ChestPoolUtils
 		}
 	}
 
-	/// <inheritdoc cref="AddToVanillaChest(List{ChestInfo}, int, int, ushort)"/>
-	/// <param name="item"> The <see cref="ChestInfo"/> to add. </param>
+	/// <inheritdoc cref="AddToVanillaChest(List{ChestInfo}, int, int, ushort, UnifiedRandom)"/>
 	public static void AddToVanillaChest(ChestInfo item, int chestFrame, int index, ushort tileType = TileID.Containers, UnifiedRandom random = null) 
 		=> AddToVanillaChest(item.ToList(), chestFrame, index, tileType, random);
 
@@ -146,6 +153,7 @@ public static class ChestPoolUtils
 	/// <param name="chestFrame"> The horizontal frame of <paramref name="tileType"/> to consider. See <see cref="VanillaChestID"/> and <see cref="VanillaChestID2"/>. </param>
 	/// <param name="index"> The chest inventory index. </param>
 	/// <param name="tileType"> The chest tile type. </param>
+	/// <param name="random">The random being used.</param>
 	public static void AddToVanillaChest(List<ChestInfo> items, int chestFrame, int index = 0, ushort tileType = TileID.Containers, UnifiedRandom random = null)
 	{
 		chestFrame *= 36;
