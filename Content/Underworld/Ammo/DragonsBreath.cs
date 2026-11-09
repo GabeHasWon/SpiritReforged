@@ -100,7 +100,7 @@ public class DragonsBreathProjectile : ModProjectile
 		Projectile.timeLeft = MAX_TIMELEFT;
 		Projectile.penetrate = 3;
 		Projectile.scale = Main.rand.NextFloat(0.15f, 1f);
-		Projectile.tileCollide = false;
+		Projectile.tileCollide = true;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = 20;
 	}
@@ -121,7 +121,7 @@ public class DragonsBreathProjectile : ModProjectile
 				(particle) => particle.Velocity *= 0.95f, tileCollide: false));
 		}
 
-		if (!_hitTile)
+		/*if (!_hitTile)
 		{
 			Tile tile = Framing.GetTileSafely((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16);
 			if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType])
@@ -161,7 +161,7 @@ public class DragonsBreathProjectile : ModProjectile
 				Projectile.velocity *= 0.66f;
 				_hitTile = true;
 			}
-		}
+		}*/
 	}
 
 	public override bool PreDraw(ref Color lightColor)
