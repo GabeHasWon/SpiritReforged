@@ -15,10 +15,10 @@ public class GameHuntingKit : ModItem
 	public override void UpdateEquip(Player player)
 	{
 		player.GetModPlayer<ShotgunPlayer>().shotgunStats._spreadMultiplier -= 0.5f;
-		// If the player is holding a shotgun and it is also a magazine item, increase their magazine size by 50%
+		// If the player is holding a shotgun and it is also a magazine item, increase their magazine size by 40%
 		// Works as expected with weapon swapping
 		if (player.HeldItem.ModItem is not null and ShotgunItem shotgun && shotgun.Item.TryGetGlobalItem<MagazineGlobalItem>(out var result) && result.Active)
-			player.GetModPlayer<MagazinePlayer>().magazineSizeMultiplier += 0.5f;
+			player.GetModPlayer<MagazinePlayer>().magazineSizeMultiplier += 0.4f;
 	}
 
 	/*public override void AddRecipes()

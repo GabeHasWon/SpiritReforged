@@ -41,7 +41,7 @@ public class Buckshot : ShotgunAmmoItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 16;
+		Item.damage = 9;
 		Item.knockBack = 6f;
 	}
 

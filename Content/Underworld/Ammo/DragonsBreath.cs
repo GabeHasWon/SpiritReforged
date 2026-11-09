@@ -62,7 +62,7 @@ public class DragonsBreath : ShotgunAmmoItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 9;
+		Item.damage = 8;
 		Item.rare = ItemRarityID.Orange;
 		Item.value = Item.sellPrice(silver: 1);
 	}
@@ -98,7 +98,7 @@ public class DragonsBreathProjectile : ModProjectile
 		Projectile.extraUpdates = 1;
 		Projectile.Size = new(6);
 		Projectile.timeLeft = MAX_TIMELEFT;
-		Projectile.penetrate = 5;
+		Projectile.penetrate = 3;
 		Projectile.scale = Main.rand.NextFloat(0.15f, 1f);
 		Projectile.tileCollide = false;
 		Projectile.usesLocalNPCImmunity = true;

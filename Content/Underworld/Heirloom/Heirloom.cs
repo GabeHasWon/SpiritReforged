@@ -31,7 +31,7 @@ public class Heirloom() : ShotgunItem(new())
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 32;
+		Item.damage = 23;
 		Item.knockBack = 10f;
 		Item.width = 62;
 		Item.height = 22;
@@ -55,6 +55,8 @@ public class Heirloom() : ShotgunItem(new())
 
 		if (player.altFunctionUse == 2)
 		{
+			damage = (int)(damage * 0.94f); // 6% decrease in damage
+
 			player.velocity -= velocity * 5f;
 
 			if (Main.myPlayer == player.whoAmI)

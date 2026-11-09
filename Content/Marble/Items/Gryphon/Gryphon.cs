@@ -18,8 +18,8 @@ public class Gryphon() : ShotgunItem(new(spreadMultiplier: 1.5f))
 	public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<GryphonHoldout>()] <= 0;
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 12;
-		Item.knockBack = 6;
+		Item.damage = 19;
+		Item.knockBack = 8;
 		Item.width = 54;
 		Item.height = 26;
 		Item.useTime = Item.useAnimation = 90;
@@ -215,6 +215,12 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 		if (Owner.HeldItem.ModItem is Gryphon gryphon)
 		{
 			var shotgunStats = gryphon.shotgunStats;
+
+			if (FullyCharged)
+			{
+				shotgunStats._shotMultiplier += 0.2f; // 20% more shots when fully charged
+				shotgunStats._speedMultiplier += 0.25f; // 25% more speed when fully charged
+			}
 
 			Item ammoItem = Owner.ChooseAmmo(gryphon.Item);
 

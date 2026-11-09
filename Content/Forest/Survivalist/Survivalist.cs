@@ -26,10 +26,10 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 	public override void SafeSetDefaults()
 	{
 		Item.damage = 19;
-		Item.knockBack = 10f;
+		Item.knockBack = 5f;
 		Item.width = 66;
 		Item.height = 24;
-		Item.useTime = Item.useAnimation = 71;
+		Item.useTime = Item.useAnimation = 65;
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.noMelee = true;
 		Item.noUseGraphic = false;
@@ -39,7 +39,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 
 		var globalItem = Item.GetGlobalItem<MagazineGlobalItem>();
 
-		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot_0" + Main.rand.Next(1, 4)) with { Pitch = pitch, Volume = 0.66f, PitchVariance = 0.1f }, position), new(-0.2f, 0.6f, 5, 180), new(66, 24), new(-18, -2), MagazineReloadType.OneAtATime, MagazineUIType.Shell, true, false, -16, -0.3f);
+		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot_0" + Main.rand.Next(1, 4)) with { Pitch = pitch, Volume = 0.66f, PitchVariance = 0.1f }, position), new(-0.2f, 0.6f, 5, 150), new(66, 24), new(-18, -2), MagazineReloadType.OneAtATime, MagazineUIType.Shell, true, false, -16, -0.3f);
 		globalItem.SetAnimations(null, ShootUseStyle, ShootUseFrame, ReloadUseStyle, ReloadUseFrame);
 	}
 

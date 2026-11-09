@@ -25,8 +25,8 @@ public class Blunderbuss() : ShotgunItem(new ShotgunStats(spreadMultiplier: 0.15
 	public override void SafeSetDefaults()
     {
         Item.width = Item.height = 12;
-        Item.damage = 5;
-        Item.knockBack = 3.5f;
+        Item.damage = 11;
+        Item.knockBack = 6.5f;
         Item.useAnimation = Item.useTime = 80;
 		Item.UseSound = Fire;
         Item.noMelee = true;

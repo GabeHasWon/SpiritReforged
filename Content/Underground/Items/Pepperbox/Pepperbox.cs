@@ -60,7 +60,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 8;
+		Item.damage = 4;
 		Item.knockBack = 6;
 		Item.width = 40;
 		Item.height = 20;
@@ -68,13 +68,13 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.noMelee = true;
 		Item.noUseGraphic = false;
-		Item.value = Item.buyPrice(0, 1, 50, 0);
+		Item.value = Item.buyPrice(0, 5, 0, 0);
 		Item.rare = ItemRarityID.Blue;
 		Item.autoReuse = true;
 
 		var globalItem = Item.GetGlobalItem<MagazineGlobalItem>();
 
-		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch}, position), new(-0.2f, 0.5f, 4, 90), new(52, 24), new(-24, -2), MagazineReloadType.OneAtATime, MagazineUIType.Shell, true, default, -6, -0.15f);
+		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch}, position), new(-0.2f, 0.5f, 3, 90), new(52, 24), new(-24, -2), MagazineReloadType.OneAtATime, MagazineUIType.Shell, true, default, -6, -0.15f);
 		globalItem.SetAnimations(new(0.04f, 0.96f), reloadStyle: ReloadUseStyle, reloadFrame: ReloadUseFrame);
 	}
 
