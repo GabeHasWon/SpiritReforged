@@ -1,8 +1,6 @@
-﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
-using Terraria.DataStructures;
 using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Common.UI.PotCatalogue;
@@ -58,81 +56,6 @@ public class RecordHandler : ILoadable
 
 			if (p.DistanceSQ(world) < maxDistance * maxDistance)
 				p.GetModPlayer<RecordPlayer>().Validate(name);
-		}
-	}
-
-	public static bool ManualAddRecord(object[] args)
-	{
-		if (args.Length < 3)
-			throw new ArgumentException("AddPotstiaryRecord requires at least 3 parameters.");
-
-		if (args[0] is not int or ushort)
-			throw new ArgumentException("AddPotstiaryRecord parameter 1 should be an int or ushort.");
-
-		int type = (int)args[0];
-
-		if (args[1] is not int[] styles)
-			throw new ArgumentException("AddPotstiaryRecord parameter 2 should be an int[].");
-
-		if (args[2] is not string name)
-			throw new ArgumentException("AddPotstiaryRecord parameter 3 should be a string.");
-
-		var e = new TileRecord(name, type, styles);
-
-		if (args.Length > 3 && args[3] is byte rating)
-			e.AddRating(rating);
-
-		if (args.Length > 4) //Hidden
-			if (args[4] is bool hidden && hidden)
-				e.Hide();
-			else if (args[4] is Func<bool> hiddenFunc)
-				e.Hide(hiddenFunc);
-
-		if (args.Length > 5) //Add a loot pool
-			ParseLootAction(type, args[5]);
-
-		if (args.Length > 6 && args[6] is LocalizedText desc)
-			e.AddDescription(desc);
-
-		if (args.Length > 7 && args[7] is LocalizedText dispName)
-			e.AddDisplayName(dispName);
-
-		Records.Add(e);
-		return true;
-
-		static bool ParseLootAction(int type, object arg)
-		{
-			if (arg is bool hasBasicLoot && hasBasicLoot)
-			{
-				bool result = TileLootSystem.TryGetLootPool(ModContent.TileType<Pots>(), out LootTable.LootDelegate pool);
-
-				if (result)
-					TileLootSystem.RegisterLoot(pool, type);
-
-				return result;
-			}
-			else if (arg is Action<int, ILoot> dele)
-			{
-				TileLootSystem.RegisterLoot((loot) =>
-				{
-					if (loot is TileLootTable t)
-						dele.Invoke(t.Style, loot);
-				}); //Nest delegates to avoid using a .dll reference
-
-				return true;
-			}
-			else if (arg is Action<int, Point16, ILoot> dele2)
-			{
-				TileLootSystem.RegisterLoot((loot) =>
-				{
-					if (loot is TileLootTable t)
-						dele2.Invoke(t.Style, t.Coordinates, loot);
-				});
-
-				return true;
-			}
-
-			return false;
 		}
 	}
 }

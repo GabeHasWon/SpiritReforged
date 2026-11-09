@@ -1,11 +1,11 @@
 ﻿using SpiritReforged.Common.CombatTextCommon;
-using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 using Terraria.Audio;
+using Terraria.Graphics.Renderers;
 using static SpiritReforged.Content.Glyphs.Bee.BeeGlyph;
 
 namespace SpiritReforged.Content.Glyphs.Bee;
@@ -87,11 +87,11 @@ public class BeeGlobalNPC : GlobalNPC
 
 	public override void AI(NPC npc)
 	{
-		if (!Main.dedServ && tagged && Main.rand.NextBool(5) && ParticleHandler.Particles.Where(p => p is BeeOnNPC && (p as BeeOnNPC).Parent == npc).Count() < 3)
-			ParticleHandler.SpawnParticle(new BeeOnNPC(npc, Main.rand.NextVector2Circular(25f, 25f)));
+		if (!Main.dedServ && tagged && Main.timeForVisualEffects % BeeOnNPC.MAX_TIME == 0)
+			ParticleRenderers.OverNPCs.Add(new BeeOnNPC(npc, Main.rand.NextVector2Circular(25f, 25f)));
 
 		if (Main.rand.NextBool(100) && tagged)
-			ParticleHandler.SpawnParticle(new LargeBeeParticle(npc.Center + Main.rand.NextVector2Circular(20f, 20f), Main.rand.NextVector2Circular(2f, 2f), 0f, Main.rand.NextFloat(0.8f, 1.1f), 90 + Main.rand.Next(60)));
+			ParticleRenderers.OverNPCs.Add(new LargeBeeParticle(npc.Center + Main.rand.NextVector2Circular(20f, 20f), Main.rand.NextVector2Circular(2f, 2f), 0f, Main.rand.NextFloat(0.8f, 1.1f), 90 + Main.rand.Next(60)));
 	}
 
 	public override void OnHitByItem(NPC npc, Player player, Item item, NPC.HitInfo hit, int damageDone)
@@ -114,9 +114,11 @@ public class BeeGlobalNPC : GlobalNPC
 
 		if (projectile.IsMinionOrSentryRelated && CanExplode)
 		{
-			foreach (Particle p in ParticleHandler.Particles)
-				if (p is BeeOnNPC && (p as BeeOnNPC).Parent == npc)
-					p.Kill();
+			foreach (IParticle iParticle in ParticleRenderers.OverNPCs.Particles) //Remove all particles after a tag effect
+			{
+				if (iParticle is BeeOnNPC p && p.Parent == npc)
+					p.ShouldBeRemovedFromRenderer = true;
+			}
 
 			TagEffects(owner, npc, damageDone);
 			tagged = false;
@@ -142,12 +144,12 @@ public class BeeGlobalNPC : GlobalNPC
 
 			Vector2 pos = position + Main.rand.NextVector2CircularEdge(9f, 9f);
 
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.Orange, 0.2f, 20, 0));
-			ParticleHandler.SpawnParticle(new SharpStarParticle(pos, Vector2.Zero, Color.White * 0.5f, 0.1f, 20, 0));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(pos, Vector2.Zero, Color.Orange, 0.2f, 20, 0));
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(pos, Vector2.Zero, Color.White * 0.5f, 0.1f, 20, 0));
 		}
 
 		if (Main.rand.NextBool(5))
-			ParticleHandler.SpawnParticle(new BeeOnNPC(target, Main.rand.NextVector2Circular(25f, 25f)));
+			ParticleRenderers.OverNPCs.Add(new BeeOnNPC(target, Main.rand.NextVector2Circular(25f, 25f)));
 	}
 
 	private static void TagEffects(Player player, NPC target, int damageDone)
@@ -159,8 +161,8 @@ public class BeeGlobalNPC : GlobalNPC
 			Dust.NewDustPerfect(target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2), DustID.Bee, Main.rand.NextVector2Circular(5f, 5f), 50, default, 1.2f).noGravity = true;
 			Dust.NewDustPerfect(target.Center + Main.rand.NextVector2Circular(target.width / 2, target.height / 2), DustID.Honey, Main.rand.NextVector2Circular(5f, 5f), 50, default, 1.2f).noGravity = true;
 
-			ParticleHandler.SpawnParticle(new StickyHoneyParticle(target.Center + Main.rand.NextVector2Circular(5f, 5f), Main.rand.NextVector2Circular(5f, 5f), 1f, 90, 0.15f));
-			ParticleHandler.SpawnParticle(new StickyHoneyParticle(target.Center + Main.rand.NextVector2Circular(5f, 5f), Main.rand.NextVector2Circular(8f, 8f), 1f, 30, 0.15f));
+			ParticleRenderers.OverNPCs.Add(new StickyHoneyParticle(target.Center + Main.rand.NextVector2Circular(5f, 5f), Main.rand.NextVector2Circular(5f, 5f), 1f, 90, 0.15f));
+			ParticleRenderers.OverNPCs.Add(new StickyHoneyParticle(target.Center + Main.rand.NextVector2Circular(5f, 5f), Main.rand.NextVector2Circular(8f, 8f), 1f, 30, 0.15f));
 		}
 
 		int type = player.beeType();

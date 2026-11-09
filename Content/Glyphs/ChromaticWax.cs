@@ -7,7 +7,6 @@ using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.ModCompat.LocalizationTools;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.ProjectileCommon;
@@ -17,7 +16,6 @@ using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -25,6 +23,12 @@ using Terraria.ModLoader.IO;
 using static SpiritReforged.Content.Glyphs.CelestialStamp;
 
 namespace SpiritReforged.Content.Glyphs;
+
+/// <summary> Empty item used solely to register the appropriate shader. </summary>
+public class ChromaticWaxShaderDummy : ModItem
+{
+	public override string Texture => base.Texture.Replace("ShaderDummy", "");
+}
 
 [FromClassic("Glyph")]
 public class ChromaticWax : ModItem
@@ -35,7 +39,7 @@ public class ChromaticWax : ModItem
 	/// <summary> The item origin used for visual effects. </summary>
 	private Vector2 Center => Item.Center - Vector2.UnitY * EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 90f) * 3;
 
-	public static readonly Asset<Texture2D> WorldTexture = DrawHelpers.RequestLocal<ChromaticWax>("ChromaticWax_World", false);
+	public static readonly Asset<Texture2D> WorldTexture = Graphics.Tex("SpiritReforged/Content/Glyphs/ChromaticWax_World");
 
 	public override void SetStaticDefaults()
 	{
@@ -57,7 +61,7 @@ public class ChromaticWax : ModItem
 	public override void Update(ref float gravity, ref float maxFallSpeed)
 	{
 		if (Main.rand.NextBool(10))
-			ParticleHandler.SpawnParticle(new EmberParticle(Center + Main.rand.NextVector2Circular(10, 10), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), SpecialColor, 1, 30, 2));
+			ParticleRenderers.OverItems.Add(new EmberParticle(Center + Main.rand.NextVector2Circular(10, 10), Vector2.UnitY * -Main.rand.NextFloat(0.1f, 1f), SpecialColor, 1, 30, 2));
 	}
 
 	public override void ModifyTooltips(List<TooltipLine> tooltips)
@@ -105,7 +109,7 @@ public class ChromaticWax : ModItem
 		float itemScale = scale;
 		float itemRotation = rotation;
 
-		DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+		Graphics.DrawOutline(default, default, default, default, (offset) =>
 			spriteBatch.Draw(texture, Center - Main.screenPosition + offset, null, Item.GetAlpha(SpecialColor.Additive()), itemRotation, texture.Size() / 2, itemScale, 0, 0));
 
 		Texture2D star = AssetLoader.LoadedTextures["StarChromatic"].Value;
@@ -176,6 +180,21 @@ public class GlyphGlobalNPC : GlobalNPC
 
 public class GlyphGlobalProjectile : GlobalProjectile
 {
+	/// <summary> Stores active glyph effects from owned projectiles. </summary>
+	public sealed class ActiveGlyphPlayer : ModPlayer
+	{
+		public HashSet<GlyphItem.GlyphType> glyphEffects = [];
+		public bool reset;
+
+		public override void UpdateEquips()
+		{
+			if (reset)
+				glyphEffects.Clear();
+
+			reset = true;
+		}
+	}
+
 	public override bool InstancePerEntity => true;
 
 	public GlyphItem.GlyphType glyph;
@@ -210,14 +229,19 @@ public class GlyphGlobalProjectile : GlobalProjectile
 
 	public override void AI(Projectile projectile)
 	{
-		if (Main.dedServ || !ModContent.GetInstance<ReforgedClientConfig>().GlyphProjectileVisualEffects)
-			return;
-
-		if (projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0)
+		if (projectile.TryGetOwner(out Player owner) && projectile.GetGlyph() is GlyphItem.GlyphType glyph && glyph.ItemType > 0)
 		{
-			Player owner = Main.player[projectile.owner];
-			if (owner.heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
+			if ((projectile.minion || projectile.sentry) && owner.TryGetModPlayer(out ActiveGlyphPlayer activePlayer)) //Store the minion or sentry's active glyph
+			{
+				activePlayer.glyphEffects.Add(new(glyph.ItemType));
+				activePlayer.reset = false; //Don't reset immediately
+			}
+
+			if (Main.dedServ || !ModContent.GetInstance<ReforgedClientConfig>().GlyphProjectileVisualEffects)
 				return;
+
+			if (owner.heldProj == projectile.whoAmI && projectile.ModProjectile is not BaseClubProj)
+				return; //Prevent held projectiles from spawning dusts unless they are clubs
 
 			int counts = owner.ownedProjectileCounts[projectile.type] - 1;
 
@@ -403,7 +427,7 @@ public abstract class GlyphItem : ModItem
 				float iconScale = Main.inventoryScale;
 				Vector2 iconPosition = position + (new Vector2(slotDimensions / 2, slotDimensions / 2) - texture.Size() / 2 - new Vector2(4)) * iconScale;
 
-				DrawHelpers.DrawOutline(spriteBatch, texture, iconPosition, Color.White, (offset) =>
+				Graphics.DrawOutline(spriteBatch, texture, iconPosition, Color.White, (offset) =>
 					spriteBatch.Draw(texture, iconPosition + offset, null, Color.White.Additive() * ((1f + (float)Math.Sin(Main.timeForVisualEffects / 30f)) * 0.1f), 0, texture.Size() / 2, iconScale, 0, 0));
 
 				float progress = (float)_animationTime / AnimationTimeMax;
@@ -414,7 +438,7 @@ public abstract class GlyphItem : ModItem
 					Texture2D splashTexture = TextureAssets.Item[Glyph.ItemType].Value;
 					float splashScale = (Math.Max((progress - 0.7f) * 4, 0) + 1) * Main.UIScale;
 
-					DrawHelpers.DrawOutline(default, default, default, default, (offset) =>
+					Graphics.DrawOutline(default, default, default, default, (offset) =>
 						spriteBatch.Draw(splashTexture, position + offset, null, glyphItem.settings.Color.Additive(), 0, splashTexture.Size() / 2, EaseFunction.EaseQuinticOut.Ease(progress), 0, 0));
 
 					Effect blurEffect = AssetLoader.LoadedShaders["BlurLine"].Value;
@@ -482,6 +506,7 @@ public abstract class GlyphItem : ModItem
 	public readonly record struct GlyphType(int ItemType)
 	{
 		public string Name => ItemLoader.GetItem(ItemType)?.Name;
+		public bool Active => ItemType != ItemID.None;
 	}
 
 	public readonly record struct GlyphSettings(Color Color);
@@ -519,7 +544,13 @@ public abstract class GlyphItem : ModItem
 		Enchanter.SpecialShop.Add(Type, 3);
 	}
 
-	public virtual bool CanApplyGlyph(Item item) => item.damage > 0 && item.maxStack == 1 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type && !item.accessory;
+	public virtual bool CanApplyGlyph(Item item)
+	{
+		if (CrossMod.Classic.Enabled && (int)CrossMod.Classic.Instance.Call("getGlyph", item) != 0)
+			return false;
+
+		return item.damage > 0 && item.maxStack == 1 && item.TryGetGlobalItem(out GlyphGlobalItem glyphItem) && glyphItem.Glyph.ItemType != Type && !item.accessory;
+	}
 
 	/// <summary> Called when this glyph effect is applied to <paramref name="item"/>. </summary>
 	/// <param name="item"> The item being affected. </param>
@@ -539,7 +570,9 @@ public abstract class GlyphItem : ModItem
 		if (CrossMod.RussianLocalizable)
 			itemName = itemName.ToLowerInvariant();
 
-		item.SetNameOverride($"{GenderItemEffect(item, this.GetLocalizationKey(""))} " + itemName);
+		string key = "Mods.SpiritReforged.Items.ChromaticWax.GlyphPrefixing";
+		string newName = Language.GetTextValue(key, GenderItemEffect(item, this.GetLocalizationKey("")), itemName);
+		item.SetNameOverride(newName);
 
 		if (item.rare < ItemRarityID.Purple)
 			item.rare++;
@@ -556,7 +589,6 @@ public abstract class GlyphItem : ModItem
 			return Language.GetTextValue(baseKey + "Effect");
 
 		string gender = RussianGendering.GetGender(item.type);
-
 		return gender switch
 		{
 			"Feminine" => Language.GetTextValue(baseKey + "Gendered.Fem"),
@@ -590,6 +622,7 @@ public abstract class GlyphItem : ModItem
 	/// <summary> Used to modify drawing of glyph-affected items in the world. </summary>
 	/// <param name="item"> The item being drawn. </param>
 	/// <param name="spriteBatch"> The SpriteBatch being used. </param>
+	/// <param name="parameters"> The parameters used for drawing this item by default. </param>
 	public virtual void DrawInWorld(Item item, SpriteBatch spriteBatch, ItemMethods.ItemDrawParams parameters) => parameters.Draw();
 
 	public virtual void UpdateInWorld(Item item, ref float gravity, ref float maxFallSpeed) { }

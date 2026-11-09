@@ -1,14 +1,12 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using System.Linq;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
-public class AdornedFlash : ModProjectile
+public sealed class AdornedFlash : ModProjectile
 {
 	public const int MAX_PRISMATIC_TIMER = 20;
 
@@ -40,34 +38,38 @@ public class AdornedFlash : ModProjectile
 	private static void DrawLight(On_Main.orig_DrawCachedProjs orig, Main self, List<int> projCache, bool startSpriteBatch)
 	{
 		SpriteBatch sb = Main.spriteBatch;
-
 		orig(self, projCache, startSpriteBatch);
 
 		if (projCache.Equals(Main.instance.DrawCacheProjsBehindNPCs))
 		{
-			var flashes = new List<Projectile>();
-
-			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-			
-			foreach (Projectile p in Main.projectile.Where(p => p.active && p.type == ModContent.ProjectileType<AdornedFlash>()))
+			List<Projectile> cache = new();
+			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
-				flashes.Add(p);
-				(p.ModProjectile as AdornedFlash).PreDrawNonPreMult();
+				if (projectile.type == ModContent.ProjectileType<AdornedFlash>())
+					cache.Add(projectile); //Populate cache
 			}
 
-			sb.End();
-			sb.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			if (cache.Count > 0) //Don't restart the spritebatch unless needed
+			{
+				sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			foreach (Projectile p in flashes)
-				(p.ModProjectile as AdornedFlash).DrawPreMult();
+				foreach (Projectile p in cache)
+					(p.ModProjectile as AdornedFlash).PreDrawNonPreMult();
 
-			sb.End();
-			sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+				sb.End();
+				sb.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
-			foreach (Projectile p in flashes)
-				(p.ModProjectile as AdornedFlash).DrawPostPreMult();
+				foreach (Projectile p in cache)
+					(p.ModProjectile as AdornedFlash).DrawPreMult();
 
-			sb.End();
+				sb.End();
+				sb.Begin(default, default, Main.DefaultSamplerState, default, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+
+				foreach (Projectile p in cache)
+					(p.ModProjectile as AdornedFlash).DrawPostPreMult();
+
+				sb.End();
+			}
 		}
 	}
 
@@ -119,7 +121,7 @@ public class AdornedFlash : ModProjectile
 		Projectile.velocity = Projectile.rotation.ToRotationVector2();
 
 		if (Projectile.timeLeft > 40)
-			Lighting.AddLight(Projectile.Center, DrawHelpers.MulticolorLerp(Projectile.timeLeft / 50f, _primaryPalette.Colors).ToVector3() * (Projectile.timeLeft / 50f));
+			Lighting.AddLight(Projectile.Center, Graphics.MulticolorLerp(Projectile.timeLeft / 50f, _primaryPalette.Colors).ToVector3() * (Projectile.timeLeft / 50f));
 	}
 
 	public override void DrawBehind(int index, List<int> behindNPCsAndTiles, List<int> behindNPCs, List<int> behindProjectiles, List<int> overPlayers, List<int> overWiresUI) => behindNPCs.Add(index);
@@ -132,7 +134,7 @@ public class AdornedFlash : ModProjectile
 
 		for (int i = 0; i < 2; i++)
 		{
-			ParticleHandler.SpawnParticle(new SharpStarParticle(
+			ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(
 			target.Center,
 			Projectile.velocity.RotatedByRandom(1f) * Main.rand.NextFloat(5f, 7f),
 			Color.White.Additive(),
@@ -155,7 +157,7 @@ public class AdornedFlash : ModProjectile
 				if (_idx2 > 2)
 					_idx2 = 0;
 
-				ParticleHandler.SpawnParticle(new PixelBloom(target.Center, velocity, _primaryPalette.Colors[_idx1].Additive(), _primaryPalette.Colors[_idx2].Additive(), scale, maxTime, DecelerateAction));
+				ParticleRenderers.UnderProjectiles.Add(new PixelBloom(target.Center, velocity, _primaryPalette.Colors[_idx1].Additive(), _primaryPalette.Colors[_idx2].Additive(), scale, maxTime, DecelerateAction));
 			}
 		}
 

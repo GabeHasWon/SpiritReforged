@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Linq;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;

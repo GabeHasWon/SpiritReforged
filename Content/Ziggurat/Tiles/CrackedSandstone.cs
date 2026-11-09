@@ -13,7 +13,7 @@ public class CrackedSandstone : ModTile, ILoadItem
 		Main.tileSolid[Type] = true;
 		Main.tileBlockLight[Type] = true;
 
-		this.Merge(TileID.Sandstone, TileID.Sand, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());
+		TileMethods.Merge(Type, TileID.Sandstone, TileID.Sand, ModContent.TileType<RedSandstoneBrick>(), ModContent.TileType<RedSandstoneBrickCracked>());
 		AddMapEntry(new Color(174, 74, 48));
 
 		DustType = DustID.DynastyShingle_Red;

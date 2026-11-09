@@ -1,6 +1,6 @@
 using SpiritReforged.Common.BuffCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Desert.DragonFossil;
 
@@ -83,7 +83,7 @@ public class TinyDragonPet : ModProjectile
 				ChangeStyle(FLYING);
 
 			if (Main.rand.NextBool(3))
-				ParticleHandler.SpawnParticle(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity * Main.rand.NextFloat(0.25f), 1, 20));
+				ParticleRenderers.UnderProjectiles.Add(new DragonEmber(Main.rand.NextVector2FromRectangle(Projectile.Hitbox), Projectile.velocity * Main.rand.NextFloat(0.25f), 1, 20));
 
 			if (result.Length() < 30)
 				result *= 1.1f;

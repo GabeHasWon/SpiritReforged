@@ -18,7 +18,7 @@ public class RadonMossGrayBrick : GrassTile
 
 		RegisterItemDrop(ItemID.GrayBrick);
 		AddMapEntry(new Color(252, 248, 3));
-		this.Merge(TileID.Stone, TileID.GrayBrick);
+		TileMethods.Merge(Type, TileID.Stone, TileID.GrayBrick);
 		
 		HitSound = SoundID.Grass;
 		DustType = ModContent.DustType<RadonMossDust>();

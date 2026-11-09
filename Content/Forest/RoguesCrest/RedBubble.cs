@@ -1,11 +1,10 @@
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Forest.RoguesCrest;
 
 public class RedBubble : Particle
 {
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
 	public RedBubble(Vector2 position, Color color, float scale, int maxTime)
 	{
 		Position = position;
@@ -14,11 +13,9 @@ public class RedBubble : Particle
 		MaxTime = maxTime;
 	}
 
-	public override void Update() { }
-
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var texture = ParticleHandler.GetTexture(Type);
+		var texture = Texture;
 		var source = texture.Frame(1, 5, 0, (int)(Progress * 5), 0, -2);
 		var c = Lighting.GetColor(Position.ToTileCoordinates()).MultiplyRGB(Color);
 

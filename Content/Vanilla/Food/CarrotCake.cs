@@ -1,7 +1,9 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ModCompat.Classic;
 
 namespace SpiritReforged.Content.Vanilla.Food;
 
+[FromClassic("Cake")]
 public class CarrotCake : FoodItem
 {
 	public override void Defaults()

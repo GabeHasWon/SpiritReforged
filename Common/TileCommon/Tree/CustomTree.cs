@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Common.WorldGeneration.Noise;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
@@ -91,7 +92,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		return GrowTreeFromInstance(i, j, instance);
 	}
 
-	/// <summary> Attempts to grow a custom tree of <see cref="{T}"/> at the given coordinates. </summary>
+	/// <summary> Attempts to grow a custom tree of <typeparamref name="T"/> at the given coordinates. </summary>
 	/// <returns> Whether the tree was successfully grown. </returns>
 	public static bool GrowTree<T>(int i, int j) where T : CustomTree
 	{
@@ -164,7 +165,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		while (Framing.GetTileSafely(i, j + 1).TileType == Type)
 			j++; //Move to the base of the tree
 
-		if (ShakeableTreetops.Contains(FindSegment(i, j)) && TileExtensions.ShakeTree(i, j))
+		if (ShakeableTreetops.Contains(FindSegment(i, j)) && TileMethods.ShakeTree(i, j))
 		{
 			while (Framing.GetTileSafely(i, j - 1).TileType == Type)
 				j--;
@@ -224,18 +225,18 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 	public virtual void DrawTreeBody(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
 		Tile tile = Main.tile[i, j];
 		Rectangle source = new(tile.TileFrameX, 0, FrameSize - 2, FrameSize - 4);
-		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
 
 		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		return;
 	}
 
-	/// <summary> Used to draw treetops and tree branches based on coordinates resulting from <see cref="Noise"/>. </summary>
+	/// <summary> Used to draw treetops and tree branches based on coordinates resulting from <see cref="NoiseSystem._noise"/>. </summary>
 	public virtual void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch) { }
 
 	protected virtual void CreateTree(int i, int j, int height)

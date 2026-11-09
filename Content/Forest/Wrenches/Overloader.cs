@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Subclasses.Wrenches;
@@ -27,8 +26,8 @@ public class Overloader : CopperSpanner
 			{
 				Vector2 position = projectile.Center + Main.rand.NextVector2Circular(30, 30) * Main.rand.NextFloat();
 
-				ParticleHandler.SpawnParticle(new CompositeSmoke(position, -Vector2.UnitY, Color.Black, 40, false, false));
-				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, -Vector2.UnitY, Color.Gray, 40, false, false));
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(position, -Vector2.UnitY, Color.Black, 40, new(false, true, 0)));
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(position, -Vector2.UnitY, Color.Gray, 40, new(false, true, 0)) { Variant = Main.rand.Next(3, 6) });
 			}
 		}
 
@@ -81,10 +80,10 @@ public class Overloader : CopperSpanner
 					{
 						Vector2 position = Projectile.Center + Main.rand.NextVector2Circular(50, 50) * Main.rand.NextFloat();
 
-						ParticleHandler.SpawnParticle(new CompositeSmoke(position, -Vector2.UnitY, Color.Black, 40, false, false));
-						ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, -Vector2.UnitY, Color.Gray, 40, false, false));
+						ParticleRenderers.OverNPCs.Add(new CompositeSmoke(position, -Vector2.UnitY, Color.Black, 40, new(false, false, 0)));
+						ParticleRenderers.OverNPCs.Add(new CompositeSmoke(position, -Vector2.UnitY, Color.Gray, 40, new(false, false, 0)) { Variant = Main.rand.Next(3, 6) });
 
-						ParticleHandler.SpawnParticle(new EmberParticle(position, Projectile.Center.DirectionTo(position) * Main.rand.NextFloat(3), Color.OrangeRed, 0.8f, Main.rand.Next(20, 40), 5));
+						ParticleRenderers.OverNPCs.Add(new EmberParticle(position, Projectile.Center.DirectionTo(position) * Main.rand.NextFloat(3), Color.OrangeRed, 0.8f, Main.rand.Next(20, 40), 5));
 					}
 				}
 
@@ -98,19 +97,19 @@ public class Overloader : CopperSpanner
 		{
 			target.AddBuff(BuffID.OnFire, 120 + 10 * (int)Power);
 
-			ParticleHandler.SpawnParticle(new FireParticle(target.Center, Vector2.UnitY * -4f, [Color.White, Color.Orange, Color.Red], 1f, 0.12f, EaseFunction.EaseCircularOut, 35)
+			ParticleRenderers.OverNPCs.Add(new FireParticle(target.Center, Vector2.UnitY * -4f, [Color.White, Color.Orange, Color.Red], 1f, 0.12f, EaseFunction.EaseCircularOut, 35)
 			{ PixelDivisor = 2 });
 
 			for (int i = 0; i < 3; i++)
 			{
 				Vector2 position = target.Center + Main.rand.NextVector2Circular(20, 20) * Main.rand.NextFloat();
 
-				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, -Vector2.UnitY, Color.Black, 30, false, false));
-				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(position, -Vector2.UnitY, Color.Gray, 30, false, false));
+				ParticleRenderers.OverNPCs.Add(new CompositeSmoke(position, -Vector2.UnitY, Color.Black, 30, new(false, false, 0)) { Variant = Main.rand.Next(3, 6) });
+				ParticleRenderers.OverNPCs.Add(new CompositeSmoke(position, -Vector2.UnitY, Color.Gray, 30, new(false, false, 0)) { Variant = Main.rand.Next(3, 6) });
 			}
 
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.UnitX * Main.rand.NextFloat(-0.1f, 0.1f), Color.OrangeRed.Additive(), new Vector2(1, 2), 10, 0));
-			ParticleHandler.SpawnParticle(new ImpactLinePrim(target.Center, Vector2.UnitX * Main.rand.NextFloat(-0.1f, 0.1f), Color.White.Additive(), Vector2.One, 10, 0));
+			ParticleRenderers.OverNPCs.Add(new ImpactLinePrim(target.Center, Vector2.UnitX * Main.rand.NextFloat(-0.1f, 0.1f), Color.OrangeRed.Additive(), new Vector2(1, 2), 10, 0));
+			ParticleRenderers.OverNPCs.Add(new ImpactLinePrim(target.Center, Vector2.UnitX * Main.rand.NextFloat(-0.1f, 0.1f), Color.White.Additive(), Vector2.One, 10, 0));
 		}
 
 		public override bool PreDraw(ref Color lightColor)

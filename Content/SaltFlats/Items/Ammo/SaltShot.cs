@@ -1,23 +1,15 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Greatshields;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
-using SpiritReforged.Content.Ocean.Items.JellyMinion;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.SaltFlats.Tiles.Salt;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Items.Ammo;
+
 public class SaltShot : ShotgunAmmoItem
 {
 	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
@@ -37,13 +29,13 @@ public class SaltShot : ShotgunAmmoItem
 
 			for (int x = 0; x < 2; x++)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(position, direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(speed * 0.5f), Color.LightPink * 0.2f, Main.rand.NextFloat(0.01f, 0.04f), EaseFunction.EaseCubicOut, 60)
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(speed * 0.5f), Color.LightPink * 0.2f, Main.rand.NextFloat(0.01f, 0.04f), EaseFunction.EaseCubicOut, 60)
 				{
 					Pixellate = true,
 					PixelDivisor = 2,
 				});
 
-				ParticleHandler.SpawnParticle(new SmokeCloud(position, direction.RotatedByRandom(0.25f) * Main.rand.NextFloat(speed * 0.65f), Color.WhiteSmoke * 0.1f, Main.rand.NextFloat(0.02f, 0.06f), EaseFunction.EaseCubicOut, 85)
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, direction.RotatedByRandom(0.25f) * Main.rand.NextFloat(speed * 0.65f), Color.WhiteSmoke * 0.1f, Main.rand.NextFloat(0.02f, 0.06f), EaseFunction.EaseCubicOut, 85)
 				{
 					Pixellate = true,
 					PixelDivisor = 3,
@@ -236,7 +228,7 @@ public class SaltShotProjectile : ModProjectile
 
 	public override void OnKill(int timeLeft)
 	{
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/SaltMine" + Main.rand.Next(1, 4)) with { Pitch = 0.3f, Volume = 0.33f }, Projectile.Center);
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/SaltMine" + Main.rand.Next(1, 4)) with { Pitch = 0.3f, Volume = 0.33f }, Projectile.Center); //CACHE ME
 	}
 
 	void SpawnDusts()
@@ -244,7 +236,7 @@ public class SaltShotProjectile : ModProjectile
 		for (int i = 0; i < 2; i++)
 			Dust.NewDustPerfect(Projectile.Center, DustID.Pearlsand, Main.rand.NextVector2Circular(0.5f, 0.5f), 200, default, 0.65f).noGravity = true;
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, Main.rand.NextVector2Circular(0.25f, 0.25f), Color.LightCyan * 0.33f, Projectile.scale * 0.03f, EaseFunction.EaseCubicOut, 30)
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Projectile.Center, Main.rand.NextVector2Circular(0.25f, 0.25f), Color.LightCyan * 0.33f, Projectile.scale * 0.03f, EaseFunction.EaseCubicOut, 30)
 		{
 			Pixellate = true,
 			PixelDivisor = 2,

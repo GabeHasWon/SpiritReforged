@@ -1,17 +1,12 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.Subclasses.Greatshields;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.SaltFlats.Items.Ammo;
-using Terraria;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
@@ -121,17 +116,13 @@ public class SlugProjectile : ModProjectile
 			{
 				if (Main.rand.NextBool(3))
 				{
-					ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center + Projectile.velocity, -Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.4f), Color.Lerp(new(250, 250, 250), new(30, 30, 30), 1 - Projectile.timeLeft / (float)MAX_TIMELEFT) * 0.66f, 15 + Main.rand.Next(30), false, false)
-					{
-						Layer = ParticleLayer.BelowProjectile
-					});
-
+					ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center + Projectile.velocity, -Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.4f), Color.Lerp(new(250, 250, 250), new(30, 30, 30), 1 - Projectile.timeLeft / (float)MAX_TIMELEFT) * 0.66f, 15 + Main.rand.Next(30)));
 					Dust.NewDustPerfect(Projectile.Center, DustID.Ash, Main.rand.NextVector2Circular(3f, 3f), 200, default, Main.rand.NextFloat(2.5f)).noGravity = true;
 				}
 
-				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center + Projectile.velocity, -Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.2f), Color.Lerp(new(230, 230, 230), new(30, 30, 30), 1 - Projectile.timeLeft / (float)MAX_TIMELEFT) * 0.66f, 5 + Main.rand.Next(30), false, false)
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center + Projectile.velocity, -Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.2f), Color.Lerp(new(230, 230, 230), new(30, 30, 30), 1 - Projectile.timeLeft / (float)MAX_TIMELEFT) * 0.66f, 5 + Main.rand.Next(30))
 				{
-					Layer = ParticleLayer.BelowProjectile
+					Variant = CompositeSmoke.SmallVariant
 				});
 			}
 
@@ -302,20 +293,18 @@ public class SlugProjectile : ModProjectile
 			float rotation = Main.rand.NextFloat(6.28f);
 			float scorchScale = Main.rand.NextFloat(0.08f, 0.12f) * strength;
 
-			ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, Color.Orange.Additive(), rotation, scorchScale, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 15)
+			ParticleRenderers.UnderNPCs.Add(new DissipatingImage(Projectile.Center, Color.Orange.Additive(), rotation, scorchScale, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 15)
 			{
 				DistortEasing = EaseFunction.EaseQuadInOut,
 				Intensity = 0.5f,
-				Layer = ParticleLayer.BelowNPC,
 				Pixellate = true,
 				PixelDivisor = 2,
 			});
 
-			ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, Color.LightYellow.Additive(), rotation, scorchScale * 0.6f, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 10)
+			ParticleRenderers.UnderNPCs.Add(new DissipatingImage(Projectile.Center, Color.LightYellow.Additive(), rotation, scorchScale * 0.6f, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 10)
 			{
 				DistortEasing = EaseFunction.EaseQuadInOut,
 				Intensity = 0.5f,
-				Layer = ParticleLayer.BelowNPC,
 				Pixellate = true,
 				PixelDivisor = 2,
 			});
@@ -327,9 +316,8 @@ public class SlugProjectile : ModProjectile
 				Vector2 velocity = Main.rand.NextVector2Circular(4f, 4f) * strength;
 				float scale = Main.rand.NextFloat(0.05f, 0.15f) * strength;
 
-				ParticleHandler.SpawnParticle(new BloomParticle(Projectile.Center, velocity, Color.Orange, scale, 30, 1, p => p.Velocity *= 0.9f));
-
-				ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center, velocity, Color.Yellow, scale * 2f, 30, 1, p => p.Velocity *= 0.9f));
+				ParticleRenderers.UnderProjectiles.Add(new BloomParticle(Projectile.Center, velocity, Color.Orange, scale, 30, 1, p => p.Velocity *= 0.9f));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center, velocity, Color.Yellow, scale * 2f, 30, 1, p => p.Velocity *= 0.9f));
 			}
 		}
 		else
@@ -339,7 +327,6 @@ public class SlugProjectile : ModProjectile
 			for (int i = 0; i < 4; i++)	
 			{
 				Dust.NewDustPerfect(Projectile.Center, DustID.Ash, Main.rand.NextVector2Circular(3f, 3f), 100, default, Main.rand.NextFloat(2.5f)).noGravity = true;
-
 				Dust.NewDustPerfect(Projectile.Center, DustID.Ash, Main.rand.NextVector2Circular(2f, 2f), 150, default, Main.rand.NextFloat(2f));
 			}
 		}

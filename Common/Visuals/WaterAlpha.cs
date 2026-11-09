@@ -59,7 +59,7 @@ public class WaterAlpha : ILoadable
 			y /= 16;
 		}
 
-		if (OnWaterColor?.Invoke(x, y, ref colors, isPartial) ?? false)
+		if (OnWaterColor != null && !OnWaterColor.Invoke(x, y, ref colors, isPartial))
 			return;
 
 		float str = 0.72f * totalStrength;

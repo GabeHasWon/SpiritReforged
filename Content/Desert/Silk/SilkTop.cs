@@ -11,7 +11,7 @@ public class SilkTop : ModItem
 		if (!Main.dedServ)
 		{
 			const string name = "SilkTopAlt_Body";
-			AltEquipSlot = EquipLoader.AddEquipTexture(Mod, DrawHelpers.RequestLocal(GetType(), name), EquipType.Body, null, name);
+			AltEquipSlot = EquipLoader.AddEquipTexture(Mod, Texture + "Alt_Body", EquipType.Body, null, name);
 		}
 	}
 

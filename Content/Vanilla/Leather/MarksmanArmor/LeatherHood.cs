@@ -1,4 +1,3 @@
-using SpiritReforged.Content.Forest.MagicPowder;
 using Terraria.Graphics.Shaders;
 
 namespace SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;

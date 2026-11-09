@@ -35,7 +35,7 @@ public class SingularityRenderSystem : ModSystem
 			graphics.SetRenderTarget(SingularityTarget.Value);
 			graphics.Clear(Color.Transparent);
 
-			spriteBatch.Begin(SpriteSortMode.Deferred, DrawHelpers.AdditiveNoAlpha, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Deferred, Graphics.AdditiveNoAlpha, SamplerState.LinearClamp, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
 			foreach (ShaderItem item in ShaderItems)
 			{

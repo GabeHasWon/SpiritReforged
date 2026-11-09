@@ -79,7 +79,7 @@ public class ScryingLens : InfoItem
 			sb.Draw(texture, position, null, color * 0.5f, 0, texture.Size() / 2, new Vector2(2.5f, 0.25f) * 0.2f, default, 0);
 
 			var outlineColor = GetShimmerGradient().Additive() * 0.4f;
-			DrawHelpers.DrawOutline(sb, icon, position, outlineColor, (offset) => sb.Draw(icon, position + (offset * 2).RotatedBy(Main.timeForVisualEffects / 25f), null, outlineColor, 0, icon.Size() / 2, scale, default, 0));
+			Graphics.DrawOutline(sb, icon, position, outlineColor, (offset) => sb.Draw(icon, position + (offset * 2).RotatedBy(Main.timeForVisualEffects / 25f), null, outlineColor, 0, icon.Size() / 2, scale, default, 0));
 
 			Main.spriteBatch.Draw(icon, position, null, Color.White, 0, icon.Size() / 2, scale, default, 0);
 		}

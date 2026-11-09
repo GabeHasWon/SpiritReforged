@@ -1,6 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Utilities;
 
@@ -15,10 +16,13 @@ public class MineralSlag : ModItem
 		public int stack = stack;
 	}
 
+	public override string Texture => base.Texture + "0";
+
 	public override void SetStaticDefaults()
 	{
 		ItemID.Sets.ExtractinatorMode[Type] = Type;
-		VariantGlobalItem.AddVariants(Type, [new Point(20, 20), new Point(20, 20), new Point(20, 22), new Point(20, 22), new Point(20, 20)]);
+		VariantItemRenderer.VariantCounts[Type] = 4;
+
 		Item.ResearchUnlockCount = 25;
 	}
 
@@ -38,18 +42,18 @@ public class MineralSlag : ModItem
 	public override void ExtractinatorUse(int extractinatorBlockType, ref int resultType, ref int resultStack)
 	{
 		var choice = new WeightedRandom<ItemData>();
-		choice.Add(new ItemData(ItemID.GoldCoin), .09f);
-		choice.Add(new ItemData(ItemID.SilverCoin, Main.rand.Next(3) + 1), .7f);
+		choice.Add(new ItemData(ItemID.GoldCoin), 0.09f);
+		choice.Add(new ItemData(ItemID.SilverCoin, Main.rand.Next(3) + 1), 0.7f);
 		choice.Add(new ItemData(ItemID.CopperCoin, Main.rand.Next(40) + 1), 1.25f);
 
 		choice.Add(new ItemData(ItemID.CopperOre, Main.rand.Next(3) + 1));
 		choice.Add(new ItemData(ItemID.TinOre, Main.rand.Next(3) + 1));
 		choice.Add(new ItemData(ItemID.IronOre, Main.rand.Next(3) + 1));
 		choice.Add(new ItemData(ItemID.LeadOre, Main.rand.Next(3) + 1));
-		choice.Add(new ItemData(ItemID.SilverOre, Main.rand.Next(3) + 1), .8f);
-		choice.Add(new ItemData(ItemID.TungstenOre, Main.rand.Next(3) + 1), .8f);
-		choice.Add(new ItemData(ItemID.GoldOre, Main.rand.Next(3) + 1), .5f);
-		choice.Add(new ItemData(ItemID.PlatinumOre, Main.rand.Next(3) + 1), .5f);
+		choice.Add(new ItemData(ItemID.SilverOre, Main.rand.Next(3) + 1), 0.8f);
+		choice.Add(new ItemData(ItemID.TungstenOre, Main.rand.Next(3) + 1), 0.8f);
+		choice.Add(new ItemData(ItemID.GoldOre, Main.rand.Next(3) + 1), 0.5f);
+		choice.Add(new ItemData(ItemID.PlatinumOre, Main.rand.Next(3) + 1), 0.5f);
 
 		resultType = ((ItemData)choice).itemType;
 		resultStack = ((ItemData)choice).stack;
@@ -72,6 +76,8 @@ public class MineralSlagPickup : MineralSlag
 	public override void SetStaticDefaults()
 	{
 		ItemID.Sets.IsAPickup[Type] = true;
+		ItemID.Sets.ItemsThatShouldNotBeInInventory[Type] = true;
+
 		base.SetStaticDefaults();
 	}
 
@@ -81,16 +87,13 @@ public class MineralSlagPickup : MineralSlag
 		{
 			float duration = 60f * 5;
 			float intensity = (_timeLeft - (TimeLeftMax - duration)) / duration;
-
-			var texture = TextureAssets.Item[Type].Value;
-			var source = VariantGlobalItem.GetSource(Item);
+			Texture2D texture = VariantItemRenderer.GetTexture(Item, out _);
 
 			Main.EntitySpriteDraw(AssetLoader.LoadedTextures["Bloom"].Value, Item.Center - Main.screenPosition, null,
-				(Color.Yellow with { A = 0 }) * .35f * intensity, rotation, AssetLoader.LoadedTextures["Bloom"].Size() / 2, Item.scale * .25f, SpriteEffects.None);
+				Color.Yellow.Additive() * 0.35f * intensity, rotation, AssetLoader.LoadedTextures["Bloom"].Size() / 2, scale * 0.3f, 0);
 
 			for (int i = 0; i < 3; i++)
-				Main.EntitySpriteDraw(texture, Item.Center - Main.screenPosition, source,
-					Color.Orange with { A = 0 } * intensity, rotation, source.Size() / 2, Item.scale + .1f * i * intensity, SpriteEffects.None);
+				Item.DrawInWorld(Color.Lerp(Color.BlueViolet, Color.Orange, intensity).Additive() * intensity, rotation, scale, texture);
 		}
 	}
 
@@ -111,10 +114,10 @@ public class MineralSlagPickup : MineralSlag
 						var color = Color.Lerp(Color.Yellow, Color.Orange, Main.rand.NextFloat());
 						float magnitude = Main.rand.NextFloat();
 
-						ParticleHandler.SpawnParticle(new GlowParticle(Item.Bottom, Vector2.UnitY * -magnitude,
-							color, (1f - magnitude) * .5f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Item.Bottom, Vector2.UnitY * -magnitude,
+							color, (1f - magnitude) * 0.5f, Main.rand.Next(30, 120), 5, extraUpdateAction: delegate (Particle p)
 							{
-								p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-.1f, .1f));
+								p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-0.1f, 0.1f));
 							}));
 					}
 				}
@@ -125,14 +128,20 @@ public class MineralSlagPickup : MineralSlag
 			if (Main.rand.NextBool(3))
 			{
 				int type = Main.rand.NextBool() ? DustID.Torch : DustID.Ash;
-				var dust = Dust.NewDustDirect(Item.position, Item.width, Item.height, type, 0, 0, 0, default, Main.rand.NextFloat(.5f, 2f));
+				var dust = Dust.NewDustDirect(Item.position, Item.width, Item.height, type, 0, 0, 0, default, Main.rand.NextFloat(0.5f, 2f));
 				dust.noGravity = true;
-				dust.velocity = -Item.velocity * Main.rand.NextFloat(.5f);
+				dust.velocity = -Item.velocity * Main.rand.NextFloat(0.5f);
 
 				if (type == DustID.Ash)
 					dust.alpha = 150;
 			}
 		}
+	}
+
+	public override void OnStack(Item source, int numToTransfer)
+	{
+		if (source.ModItem is MineralSlagPickup slag)
+			_timeLeft = slag._timeLeft;
 	}
 
 	public override bool CanPickup(Player player) => true;

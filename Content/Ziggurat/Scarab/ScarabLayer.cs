@@ -8,7 +8,7 @@ internal abstract class ScarabLayerBase : PlayerDrawLayer
 	public const int NumFramesY = 8;
 	public const int FrameDuration = 8;
 
-	private static readonly Asset<Texture2D> ScarabShieldTexture = DrawHelpers.RequestLocal<ScarabLayerBase>("GildedScarab_Player", false);
+	private static readonly Asset<Texture2D> ScarabShieldTexture = Graphics.Tex("SpiritReforged/Content/Ziggurat/Scarab/GildedScarab_Player");
 
 	protected abstract bool CanDraw(int visualCounter);
 

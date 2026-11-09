@@ -2,17 +2,12 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Shotguns;
-using SpiritReforged.Content.Aether.Items;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Underground.Items.Pepperbox;
 
@@ -20,9 +15,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 {
 	class PepperboxFlash : Particle
 	{
-		int _variant;
-		public override ParticleLayer DrawLayer => ParticleLayer.BelowProjectile;
-		public override ParticleDrawType DrawType => ParticleDrawType.Custom;
+		private readonly int _variant;
 
 		public PepperboxFlash(Vector2 position, Vector2 velocity, float scale, int maxTime)
 		{
@@ -36,30 +29,28 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 			_variant = Main.rand.Next(3);
 		}
 
-		public override void Update()
+		public override void Update(ref ParticleRendererSettings settings)
 		{
 			Velocity *= 0.95f;
 		}
 
-		public override void CustomDraw(SpriteBatch spriteBatch)
+		public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 		{
-			var texture = ParticleHandler.GetTexture(Type);
+			var texture = Texture;
 			var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 			var frame = texture.Frame(1, 3, 0, _variant);
 
-			float progress = EaseBuilder.EaseCircularOut.Ease(1f - Progress);
+			float progress = EaseFunction.EaseCircularOut.Ease(1f - Progress);
 
 			if (progress > 0.9f)
 			{
 				float lerp = (progress - 0.9f) / 0.1f;
-
-				Main.spriteBatch.Draw(texture, Position - Main.screenPosition, frame, Color * lerp, 0f, frame.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - lerp), 0f, 0f);
+				spriteBatch.Draw(texture, Position - Main.screenPosition, frame, Color * lerp, 0f, frame.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - lerp), 0f, 0f);
 			}
 
-			Main.spriteBatch.Draw(bloom, Position - Main.screenPosition, null, new Color(255, 150, 0, 0) * progress * 0.25f, 0f, bloom.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - progress) * 0.33f, 0f, 0f);
-
-			Main.spriteBatch.Draw(bloom, Position - Main.screenPosition, null, new Color(255, 180, 0, 0) * progress * 0.2f, 0f, bloom.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - progress) * 0.25f, 0f, 0f);
+			spriteBatch.Draw(bloom, Position - Main.screenPosition, null, new Color(255, 150, 0, 0) * progress * 0.25f, 0f, bloom.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - progress) * 0.33f, 0f, 0f);
+			spriteBatch.Draw(bloom, Position - Main.screenPosition, null, new Color(255, 180, 0, 0) * progress * 0.2f, 0f, bloom.Size() / 2f, MathHelper.Lerp(Scale, Scale * 0.75f, 1f - progress) * 0.25f, 0f, 0f);
 		}
 	}
 
@@ -92,15 +83,13 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
 		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
 
-		ParticleHandler.SpawnParticle(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
-
-		ParticleHandler.SpawnParticle(new PepperboxFlash(muzzlePosition, velocity, Main.rand.NextFloat(0.9f, 1.1f), 20 + Main.rand.Next(5, 10)));
+		ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
+		ParticleRenderers.OverPlayers.Add(new PepperboxFlash(muzzlePosition, velocity, Main.rand.NextFloat(0.9f, 1.1f), 20 + Main.rand.Next(5, 10)));
 
 		for (int i = 0; i < 3; i++)
 		{
-			ParticleHandler.SpawnParticle(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity, Color.White, 75, false, false, (particle) => particle.Velocity.Y -= 0.01f, 0.02f));
-
-			ParticleHandler.SpawnParticle(new EmberParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity, Color.White, 75, default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.OverPlayers.Add(new EmberParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
 		}
 
 		spawnedReloadDust = false;
@@ -180,13 +169,13 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 			{
 				Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
 
-				ParticleHandler.SpawnParticle(new SmallCompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.5f, 45, false, false)
+				ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.5f, 45)
 				{
-					Layer = ParticleLayer.AbovePlayer
+					Variant = CompositeSmoke.SmallVariant
 				});
 			}
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition);
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
 
 			pepperbox.spawnedReloadDust = true;
 		}

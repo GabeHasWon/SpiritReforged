@@ -2,10 +2,10 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Dusts;
 using SpiritReforged.Content.Particles;
@@ -137,10 +137,9 @@ class BlasphemerProj : BaseClubProj
 				SecondaryColor = Color.DarkSlateGray,
 				TertiaryColor = Color.Black,
 				ColorLerpExponent = 2,
-				Intensity = 0.33f,
-				Layer = ParticleLayer.BelowProjectile
+				Intensity = 0.33f
 			};
-			ParticleHandler.SpawnParticle(smokeCloud);
+			ParticleRenderers.UnderProjectiles.Add(smokeCloud);
 		}
 
 		if (FullCharge)
@@ -175,11 +174,11 @@ class BlasphemerProj : BaseClubProj
 				var center = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f);
 				var velocity = (Projectile.velocity * Main.rand.NextFloat(3f)).RotatedBy(Projectile.rotation);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(center, velocity / 2, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f), 60, 5));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(center, velocity / 2, Color.Yellow, Color.Red, Main.rand.NextFloat(0.3f), 60, 5));
 			}
 		}
 
-		if(CheckAIState(AIStates.SWINGING))
+		if (CheckAIState(AIStates.SWINGING))
 		{
 			for(int i = 0; i < (FullCharge ? 3 : 2); i++)
 			{
@@ -189,7 +188,7 @@ class BlasphemerProj : BaseClubProj
 				float scale = Main.rand.NextFloat(0.09f, 0.15f) * TotalScale * (FullCharge ? 1.25f : 1);
 				int maxTime = (int)(Main.rand.Next(10, 35) / (FullCharge ? 1 : 1.33f));
 
-				ParticleHandler.SpawnParticle(new FireParticle(position, velocity, colors, 1.25f, scale, EaseQuadIn, maxTime) 
+				ParticleRenderers.UnderProjectiles.Add(new FireParticle(position, velocity, colors, 1.25f, scale, EaseQuadIn, maxTime) 
 				{ 
 					ColorLerpExponent = 2.5f 
 				});

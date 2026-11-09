@@ -13,7 +13,7 @@ namespace SpiritReforged.Content.Ziggurat.Tiles;
 public class ZigguratTorch : ModTile, ILoadItem
 {
 	public const int FrameHeight = 20;
-	public static readonly Asset<Texture2D> Flame = DrawHelpers.RequestLocal<ZigguratTorch>("ZigguratTorch_Flame", false);
+	public static readonly Asset<Texture2D> Flame = Graphics.Tex("SpiritReforged/Content/Ziggurat/Tiles/ZigguratTorch_Flame");
 
 	public static readonly SoundStyle Ignite = new("SpiritReforged/Assets/SFX/Tile/TorchIgnite", 2)
 	{
@@ -152,7 +152,7 @@ public class ZigguratTorch : ModTile, ILoadItem
 		{
 			Texture2D texture = TextureAssets.Flames[0].Value;
 			Rectangle source = new(0, 0, 22, 22);
-			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 4) - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 4) - Main.screenPosition + TileMethods.TileOffset;
 
 			spriteBatch.Draw(texture, position, source, Color.White.Additive(50), 0, source.Size() / 2, 1.3f, SpriteEffects.None, 0);
 
@@ -164,7 +164,7 @@ public class ZigguratTorch : ModTile, ILoadItem
 		{
 			Texture2D texture = Flame.Value;
 			var source = texture.Frame(1, 5, 0, frame, 0, -2);
-			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 2) - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j).ToWorldCoordinates(8 + Main.rand.NextFloat(-1f, 1f) * 1.5f, 2) - Main.screenPosition + TileMethods.TileOffset;
 
 			spriteBatch.Draw(texture, position, source, color, 0, new Vector2(source.Width / 2, source.Height), 1, SpriteEffects.None, 0);
 		}

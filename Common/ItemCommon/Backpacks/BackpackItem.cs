@@ -1,9 +1,9 @@
 ﻿using SpiritReforged.Common.UI.BackpackInterface;
 using SpiritReforged.Common.UI.Misc;
 using SpiritReforged.Content.Aether.Items;
+using SpiritReforged.Content.Crossmod.Spooky.SpookyForest;
 using System.IO;
 using System.Linq;
-using Terraria;
 using Terraria.ModLoader.IO;
 using Terraria.UI;
 
@@ -20,7 +20,7 @@ public abstract class BackpackItem : ModItem
 		get
 		{
 			int count = slotCount + ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
-			_items ??= Enumerable.Repeat(new Item(), count).ToArray();
+			_items ??= [.. Enumerable.Repeat(new Item(), count)];
 
 			if (_items.Length < count) //Length has increased, resize the array and preserve contents
 			{
@@ -40,13 +40,42 @@ public abstract class BackpackItem : ModItem
 	}
 
 	private Item[] _items;
+
 	/// <summary> The number slots this backpack has by default. </summary>
 	protected int slotCount;
+
+	public int UsedSlotCount(Player player) => slotCount 
+		+ ((Main.LocalPlayer.TryGetModPlayer(out GlitterPurse.GlitterPursePlayer pursePlayer) && pursePlayer.usedGlitterPurse) ? GlitterPurse.SlotIncrease : 0);
+
+	/// <summary>
+	/// Solely used to make sure _items isn't copied between instances when spawned by the Hiker.
+	/// </summary>
+	internal void EnsureNewItemArray(Player player)
+	{
+		int length = _items?.Length ?? UsedSlotCount(player);
+		_items = new Item[length];
+		
+		for (int i = 0; i < length; ++i)
+		{
+			_items[i] = new Item(0);
+			_items[i].TurnToAir();
+		}
+	}
 
 	public override ModItem Clone(Item newEntity)
 	{
 		ModItem clone = base.Clone(newEntity);
-		(clone as BackpackItem)._items = _items;
+		Item[] items = null;
+
+		if (_items is not null)
+		{
+			items = new Item[_items.Length];
+
+			for (int i = 0; i < items.Length; ++i)
+				items[i] = _items[i].Clone();
+		}
+
+		(clone as BackpackItem)._items = items;
 		(clone as BackpackItem).slotCount = slotCount;
 
 		return clone;
@@ -81,6 +110,9 @@ public abstract class BackpackItem : ModItem
 
 		player.GetModPlayer<BackpackPlayer>().backpack = Item.Clone();
 		Item.SetDefaults(oldPack.type);
+
+		if (oldPack.ModItem is PumpkinPailOrange) // Hardcoded exception as the pails need to be consumable in order to place properly
+			Item.stack++;
 	}
 
 	public override void NetSend(BinaryWriter writer)

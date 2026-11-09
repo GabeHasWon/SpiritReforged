@@ -1,11 +1,6 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.Subclasses.Greatshields;
+﻿using SpiritReforged.Common.Subclasses.Greatshields;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Subclasses.Shotguns;
@@ -140,7 +135,7 @@ public class ShotgunGlobalItem : GlobalItem
 			Vector2 normalized = velocity.SafeNormalize(Vector2.UnitX);
 			Vector2 shellPos = position + new Vector2(item.width / 2, -8 * player.direction).RotatedBy(velocity.ToRotation());
 
-			ParticleHandler.SpawnParticle(new ShotgunShellParticle(shellPos,
+			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPos,
 				-normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 1f, 60, ammo));
 
 			for (int i = 0; i < 4; i++)

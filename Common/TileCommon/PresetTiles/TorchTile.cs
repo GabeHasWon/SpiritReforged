@@ -79,7 +79,7 @@ public abstract class TorchTile : ModTile
 		{
 			float xx = Utils.RandomInt(ref randSeed, -10, 11) * 0.15f;
 			float yy = Utils.RandomInt(ref randSeed, -10, 1) * 0.35f;
-			var position = new Vector2(i * 16 - (int)Main.screenPosition.X - 4 / 2f + xx, j * 16 - (int)Main.screenPosition.Y + offsetY + yy) + TileExtensions.TileOffset;
+			var position = new Vector2(i * 16 - (int)Main.screenPosition.X - 4 / 2f + xx, j * 16 - (int)Main.screenPosition.Y + offsetY + yy) + TileMethods.TileOffset;
 
 			spriteBatch.Draw(TileHelperSets.TileGlowmask[Type].Texture.Value, position, frame, new Color(100, 100, 100, 0), 0f, default, 1f, SpriteEffects.None, 0f);
 		}

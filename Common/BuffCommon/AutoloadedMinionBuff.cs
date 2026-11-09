@@ -1,4 +1,3 @@
-using System.Diagnostics.Eventing.Reader;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.BuffCommon;

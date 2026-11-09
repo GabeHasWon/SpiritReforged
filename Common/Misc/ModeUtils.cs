@@ -20,7 +20,7 @@ internal class ModeUtils
 			legendary = master;
 
 		if (Main.masterMode)
-			return Main.getGoodWorld ? legendary : master;
+			return Main.getGoodWorld && Main.GameModeInfo.IsMasterMode ? legendary : master;
 		else if (Main.expertMode)
 			return expert;
 
@@ -34,7 +34,7 @@ internal class ModeUtils
 			legendary = master;
 
 		if (Main.masterMode)
-			return Main.getGoodWorld ? legendary : master;
+			return Main.getGoodWorld && Main.GameModeInfo.IsMasterMode ? legendary : master;
 		else if (Main.expertMode)
 			return expert;
 

@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -144,7 +144,7 @@ public class ReefSpearProjectile : ModProjectile
 					Vector2 particleVelocity = RealDirection / particleLifetime;
 					particleVelocity *= -1.5f;
 
-					ParticleHandler.SpawnParticle(new ReefSpearImpact(
+					ParticleRenderers.UnderProjectiles.Add(new ReefSpearImpact(
 						Projectile,
 						Projectile.Center - particleVelocity,
 						particleVelocity,
@@ -228,13 +228,13 @@ public class ReefSpearProjectile : ModProjectile
 				EaseFunction.EaseCubicOut).WithSkew(0.75f, _direction.ToRotation() + _rotationOffset * _rotationDirection - MathHelper.Pi).UsesLightColor();
 		particle.Velocity = Vector2.Normalize(RealDirection) / 2;
 
-		ParticleHandler.SpawnParticle(particle);
+		ParticleRenderers.UnderProjectiles.Add(particle);
 
 		for (int i = 0; i < (int)(Main.rand.Next(5, 7) * scaleMod); i++)
 		{
 			Vector2 offset = Vector2.UnitY.RotatedBy(_direction.ToRotation() + _rotationOffset * _rotationDirection) * Main.rand.NextFloat(-15, 15) * scaleMod;
 			offset = offset.RotatedByRandom(0.2f);
-			ParticleHandler.SpawnParticle(new BubbleParticle(particleBasePos + offset, Vector2.Normalize(RealDirection) * Main.rand.NextFloat(1f, 4f) * scaleMod, Main.rand.NextFloat(0.1f, 0.2f), Main.rand.Next(30, 61)));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(particleBasePos + offset, Vector2.Normalize(RealDirection) * Main.rand.NextFloat(1f, 4f) * scaleMod, Main.rand.NextFloat(0.1f, 0.2f), Main.rand.Next(30, 61)));
 		}
 
 		_hitEffectCooldown = true;

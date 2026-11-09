@@ -82,7 +82,7 @@ public class WalkieTalkie : ModItem
 		var icon = TextureAssets.Item[ModContent.ItemType<WalkieTalkie>()].Value;
 		var outline = TextureColorCache.ColorSolid(icon, Color.White);
 
-		DrawHelpers.DrawOutline(sb, outline, position, Color.Black * 0.25f);
+		Graphics.DrawOutline(sb, outline, position, Color.Black * 0.25f);
 		sb.Draw(icon, position, null, Color.White, 0, icon.Size() / 2, 1, default, 0);
 	}
 

@@ -1,8 +1,10 @@
-﻿using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
+﻿using SpiritReforged.Common.ModCompat.Classic;
+using SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items;
 
+[FromClassic("ScarabBow")]
 public class AdornedBow : ModItem
 {
 	public readonly record struct PrismaticPalette

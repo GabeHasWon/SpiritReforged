@@ -48,6 +48,13 @@ Misc: {
 		Random: Случайное зачарование
 	}
 
+	TombText: {
+		0: Здесь покоится {0}.
+		1: Здесь лежит {0}. Ты всегда в нашей памяти
+		2: Здесь лежат {0} и {1}.
+		3: Эта могила пуста.
+	}
+
 	NoStock: Нет в наличии
 	GraveText: <wavy>Текст старый и выцветший; вы не можете разобрать, что здесь написано.
 	MenuButton: Использовать тему меню
@@ -99,12 +106,12 @@ Emotes: {
 InfoDisplays: {
 	LedgerInfoDisplay: {
 		DisplayName: Стоимость предметов
-		Description: Видимость стоимости: ВКЛ
+		Description: Стоимость видима
 	}
 
 	ScryingLensInfoDisplay: {
 		DisplayName: Трансмутации в мерцании
-		Description: Видимость трансмутаций: ВКЛ
+		Description: Трансмутации видимы
 	}
 }
 
@@ -133,3 +140,6 @@ DamageClasses: {
 	// MagazineDamageClass.DisplayName: "{$LegacyTooltip.3}"
 	// ShotgunClass.DisplayName: "{$LegacyTooltip.3}"
 }
+
+BackpackPickupEnabled: Автоматический подбор предметов: ВКЛ
+BackpackPickupDisabled: Автоматический подбор предметов: ВЫКЛ

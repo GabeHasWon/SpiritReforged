@@ -95,7 +95,7 @@ public class FlagRing : EntityTile<FlagRing.FlagRingEntity>, ILoadItem
 	}
 
 	public const int SlopeFrame = 18;
-	public static readonly Asset<Texture2D> FlagTrail = DrawHelpers.RequestLocal<FlagRing>("FlagTrail", false);
+	public static readonly Asset<Texture2D> FlagTrail = Graphics.Tex("SpiritReforged/Content/Desert/Tiles/FlagTrail", AssetRequestMode.ImmediateLoad);
 
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(copper: 8);
 	public void AddItemRecipes(ModItem item) => item.CreateRecipe(5).AddRecipeGroup("CopperBars").AddIngredient(ItemID.Silk).AddTile(TileID.Anvils).Register();

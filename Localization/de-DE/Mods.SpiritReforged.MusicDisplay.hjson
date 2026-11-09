@@ -1,0 +1,76 @@
+ModName: Spirit Reforged
+Salvati: Salvati
+Sbubby: Sbubby
+Moonbird: Moonbird
+By: von
+BySalvati: "{$By} {$Salvati}"
+
+Duststorm: {
+	DisplayName: Treibende Prärie (Staubsturm-Thema)
+	Author: "{$By} {$Sbubby}"
+}
+
+Savanna: {
+	DisplayName: Fieberbäume (Savanne-Tag-Thema)
+	Author: "{$BySalvati}, {$Sbubby}"
+}
+
+SavannaNight: {
+	DisplayName: Mondbeschienene Wiese (Savanne-Nacht-Thema)
+	Author: "{$BySalvati}"
+}
+
+DeepOcean: {
+	DisplayName: Unterwasser-Abenteuer (Tiefsee-Thema)
+	Author: "{$BySalvati}"
+}
+
+SavannaOtherworld: {
+	DisplayName: Andersweltliche Savanne (Tag)
+	Author: "{$By} {$Moonbird}"
+}
+
+SavannaOtherworldNight: {
+	DisplayName: Andersweltliche Savanne (Nacht)
+	Author: "{$By} soundbin"
+}
+
+DuststormOtherworld: {
+	DisplayName: Andersweltlicher Staubsturm
+	Author: "{$By} jakedastardly"
+}
+
+Ziggurat: {
+	DisplayName: Ziggurat
+	Author: "{$By} {$Moonbird}, {$Salvati}"
+}
+
+Salt: {
+	DisplayName: Gespiegelte Himmel (Salzebene-Tag-Thema)
+	Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	DisplayName: Gebrochene Sterne (Salzebene-Nacht-Thema)
+	Author: "{$By} {$Sbubby}"
+}
+
+Scarabeus: {
+	DisplayName: Himmelsstürmende Komplikationen (Scarabeus-Thema)
+	Author: "{$By} {$Sbubby}"
+}
+
+ScarabeusP2: {
+	DisplayName: Himmelsstürmende Komplikationen (Scarabeus-Thema, Phase 2)
+	Author: "{$By} {$Sbubby}"
+}
+
+RadioScarab: {
+	DisplayName: Himmelsstürmende Komplikationen (Radio-Fassung)
+	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	DisplayName: Eine Weitere Reise (Spirit-Titel-Thema)
+	Author: "{$By} {$Salvati}"
+}

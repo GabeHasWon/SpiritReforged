@@ -1,8 +1,9 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.SaltFlats.Tiles.Salt;
 
@@ -13,7 +14,7 @@ public class SaltBlockDull : SaltBlock
 		base.SetStaticDefaults();
 		Main.tileBlockLight[Type] = true;
 
-		this.Merge(ModContent.TileType<SaltBlockReflective>(), TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand);
+		TileMethods.Merge(Type, ModContent.TileType<SaltBlockReflective>(), TileID.Sand, TileID.Ebonsand, TileID.Crimsand, TileID.Pearlsand);
 		AddMapEntry(new Color(180, 170, 170));
 	}
 
@@ -29,7 +30,7 @@ public class SaltBlockDull : SaltBlock
 			if (Main.rand.NextBool(32))
 				Placer.Check(i, j - 1, ModContent.TileType<SaltwortTall>()).IsClear().Place().Send();
 
-			if (Main.rand.NextBool(8) && (above.HasTileType(ModContent.TileType<Saltwort>()) || above.HasTileType(ModContent.TileType<SaltwortTall>())))
+			if (Main.rand.NextBool(8) && (above.Active(ModContent.TileType<Saltwort>()) || above.Active(ModContent.TileType<SaltwortTall>())))
 			{
 				Tile tile = Main.tile[i, j];
 				Point16 result = new(126, 252);
@@ -58,7 +59,7 @@ public class SaltBlockDull : SaltBlock
 				TertiaryColor = Color.HotPink
 			};
 
-			ParticleHandler.SpawnParticle(smoke);
+			ParticleRenderers.OverSolids.Add(smoke);
 		}
 	}
 

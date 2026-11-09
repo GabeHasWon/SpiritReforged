@@ -37,18 +37,18 @@ ReforgedClientConfig: {
 	Headers.Developer: Ferramentas de Desenvolvidor
 
 	GlyphProjectileVisualEffects: {
-		// Label: Glyph Projectile Effects
-		// Tooltip: Determines if projectiles with glyphs should create visual effects
+		Label: Efeitos Visuais de Projéteis de Glifos
+		Tooltip: ""
 	}
 
 	GlyphItemVisualEffects: {
-		// Label: Glyph Item Effects
-		// Tooltip: Determines if items with glyphs should have shaders and visual effects when dropped in world
+		Label: Efeitos Visuais de Itens de Glifos
+		Tooltip: ""
 	}
 
 	BannerJingle: {
-		// Label: Banner Jingle
-		// Tooltip: Enables the banner jingle, which plays when the first banner for an NPC type is spawned.
+		Label: Jingle de Bandeira
+		Tooltip: Ativa o jingle para bandeiras, quando você consegue a sua primeira bandeira de uma certa criatura.
 	}
 }
 
@@ -71,15 +71,15 @@ ReforgedServerConfig: {
 	}
 
 	AutoloadHeldProjectiles: {
-		// Label: Autoload Held Projectiles
-		/* Tooltip:
+		Label: Carregar automaticamente projéteis segurados
+		Tooltip:
 			'''
-			Enables a system that automatically detects 'held projectiles' during loading.
-			This may substantially increase load times or cause load errors if enabled with other mods,
-			but may fix some issues with certain mechanics (such as glyphs) in-game.
-			Ideally, other mods use the HeldProjectile named projectile set (bool) for stable compatibility.
+			Ativa um sistema que detecta a propriedade 'held projectile' ao carregar.
+			Isso pode aumentar substancialmente os tempos de carregamento ou causar erros de carregamento se ativado em conjunto com outros mods,
+			mas pode corrigir alguns problemas com certas mecânicas (como glifos) no jogo.
+			Idealmente, outros mods utilizam o conjunto de projéteis nomeado 'HeldProjectile' (bool) para garantir uma compatibilidade estável.
 
-			This has NO effect on vanilla or Reforged projectiles, which are already set.
-			''' */
+			Isso não tem efeito algum sobre projéteis originais do vanilla ou do Reforged, que já estão definidos.
+			'''
 	}
 }

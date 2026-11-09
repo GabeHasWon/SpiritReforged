@@ -1,0 +1,69 @@
+Discoveries: Entdeckungen werden hinzugefügt
+Stargrass: Sterngras wächst
+HerosMemorial: Ein Held wird geehrt
+Butterfly: Schmetterlingsschreine werden versteckt
+FishingCoves: Angelplätze werden hinzugefügt
+PopulateOcean: Der Ozean wird besiedelt
+Gravel: Kies wird platziert
+SavannaTerrain: Plateaus werden erschaffen
+SavannaObjects: Die Savanne wird besiedelt
+SaltFlats: Salz wird hinzugefügt
+Ecotones: Ökotone werden kartiert
+Caves: Höhlen werden dekoriert
+DesertExtras: Geheimnisse werden im Sand versteckt
+NeonMosses: Leuchtmoos entsteht
+Pottery: Töpfe werden versteckt
+Scarecrow: Vögel werden verscheucht
+
+Mapping: {
+	Exit: Drücke 'Escape', um das Kartieren vorzeitig zu beenden (falls pausiert)
+	Tilde: Halte 'Tilde' (~) gedrückt, um das Overlay auszublenden
+	Help:
+		'''
+		Ökotone werden mehrfach über die Oberfläche der Welt kartiert
+		Sie besitzen drei "Definitionen": linke Kante, sich selbst und rechte Kante
+		Das könnte etwa so aussehen: Wald < Wüste < Wald
+		    Die linke Kante ist ein Wald
+		    Das aktuelle Biom ist eine Wüste
+		    Die rechte Kante ist ein Wald
+		Ihr rotes Rechteck ist der Bereich ihrer Minimal-/Maximalwerte
+		Das blaue Rechteck ist die Start-bis-Ende-Größe, also Start und Ende der kartierten Oberfläche
+		Die über dem Ökoton angezeigte Größe ist die Größe des roten Rechtecks, zusammen mit der Höhe des blauen
+		'''
+	Toggle: Klicken, um die manuelle Ökoton-Auswahl während der Weltgenerierung zu {0}.
+	Enable: aktivieren
+	Disable: deaktivieren
+	Select: Klicke auf Bereiche, um {0} dort erzwungen erscheinen zu lassen.
+	Continue: Klicke auf diesen Text, um fortzufahren
+	OrEscape: (oder drücke die Escape-Taste)
+	Step: Kartiere {0}
+	Invalid: (Ungültig - {0})
+}
+
+Signs: {
+	Underground: {
+		Common: {
+			0: <wavy>Töpfe hüten das Geheimnis...
+			1: <wavy>Der Text ist zu verblasst, um ihn zu lesen.
+			2: <colorful:255,80,80>Das Schild ist mit unleserlichem Gekritzel einer zweifelhaften Flüssigkeit bedeckt.
+			3: <wavy>......ers Waren
+			4: <wavy>Das alte Schild ist fast zu Staub zerfallen.
+			5: <wavy>Ein grob gezeichnetes Skelett winkt.
+			6: <wavy>Wenn du das liest, bin ich schon tot.
+			7: Wenn du das liest, geht's mir bestens!
+			8: <wavy>Vorsicht: Würmer
+			9: Das Schild schwafelt über etwas, das du nicht ganz verstehst. Es lohnt sich nicht, weiterzulesen.
+			10: Zwergenschrift ist über das ganze Schild gekritzelt. Du kannst nichts davon lesen.
+		}
+
+		Rare: {
+			0: <wavy>Sammle meine Seiten...
+			1: Sieht aus, als gäbe es hier keine Schleimbälle. -der Schildmaler
+			2:
+				'''
+				<wavy>0
+				Tage seit dem Höhlenvorfall
+				'''
+		}
+	}
+}

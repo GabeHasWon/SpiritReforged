@@ -1,16 +1,18 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
+
 public class BloomParticle : GlowParticle
 {
 	public BloomParticle(Vector2 position, Vector2 velocity, Color startColor, Color endColor, float scale, int maxTime, int maxTrailLength = 1, Action<Particle> extraUpdateAction = null) : base(position, velocity, startColor, endColor, scale, maxTime, maxTrailLength, extraUpdateAction) { }
 	public BloomParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, int maxTrailLength = 1, Action<Particle> extraUpdateAction = null) : this(position, velocity, color, color, scale, maxTime, maxTrailLength, extraUpdateAction) { }
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings,SpriteBatch spriteBatch)
 	{
-		Texture2D tex = ParticleHandler.GetTexture(Type);
+		Texture2D tex = Texture;
 		Texture2D bloom = AssetLoader.LoadedTextures["BloomHarsh"].Value;
 		float scaleTimeModifier = EaseFunction.EaseCubicOut.Ease(1 - Progress);
 

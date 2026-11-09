@@ -1,0 +1,76 @@
+ModName: Spirit Reforged
+Salvati: Salvati
+Sbubby: Sbubby
+Moonbird: Moonbird
+By: by
+BySalvati: "{$By} {$Salvati}"
+
+Duststorm: {
+	DisplayName: Pradera Errante (Tema de la Tormenta de Polvo)
+	Author: "{$By} {$Sbubby}"
+}
+
+Savanna: {
+	DisplayName: Árboles de Fiebre (Tema de Día de la Sabana)
+	Author: "{$BySalvati}, {$Sbubby}"
+}
+
+SavannaNight: {
+	DisplayName: Pradera a la Luz de la Luna (Tema de Noche de la Sabana)
+	Author: "{$BySalvati}"
+}
+
+DeepOcean: {
+	DisplayName: Aventura Submarina (Tema del Océano Profundo)
+	Author: "{$BySalvati}"
+}
+
+SavannaOtherworld: {
+	DisplayName: Día de la Sabana de Otro Mundo
+	Author: "{$By} {$Moonbird}"
+}
+
+SavannaOtherworldNight: {
+	DisplayName: Noche de la Sabana de Otro Mundo
+	Author: "{$By} soundbin"
+}
+
+DuststormOtherworld: {
+	DisplayName: Tormenta de Polvo de Otro Mundo
+	Author: "{$By} jakedastardly"
+}
+
+Ziggurat: {
+	DisplayName: Zigurat
+	Author: "{$By} {$Moonbird}, {$Salvati}"
+}
+
+Salt: {
+	DisplayName: Cielos Reflejados (Tema de Día del Salar)
+	Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	DisplayName: Estrellas Refractadas (Tema de Noche del Salar)
+	Author: "{$By} {$Sbubby}"
+}
+
+Scarabeus: {
+	DisplayName: Complicaciones Surcadoras (Tema de Escarabeus)
+	Author: "{$By} {$Sbubby}"
+}
+
+ScarabeusP2: {
+	DisplayName: Complicaciones Surcadoras (Tema de Escarabeus, Fase 2)
+	Author: "{$By} {$Sbubby}"
+}
+
+RadioScarab: {
+	DisplayName: Complicaciones Surcadoras (Edición de la Radio)
+	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	DisplayName: Otra Aventura (Tema del Titulo de Spirit)
+	Author: "{$By} {$Salvati}"
+}

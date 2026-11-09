@@ -1,13 +1,13 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Subclasses.Greatshields;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Items.BigBombs;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Forest.Survivalist;
+
 public class SurvivalistGrenadeProjectile : ModProjectile
 {
 	internal SlotId loopingSound;
@@ -26,7 +26,7 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 	public override void AI()
 	{
 		if (Projectile.ai[0] == 0)
-			loopingSound = SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/SurvivalistGrenadeLooping") { IsLooped = true, Volume = 0.33f }, Projectile.Center);
+			loopingSound = SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/SurvivalistGrenadeLooping") { IsLooped = true, Volume = 0.33f }, Projectile.Center); //CACHE ME
 
 		if (loopingSound.IsValid)
 		{
@@ -90,44 +90,45 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 
 		for (int i = 0; i < (int)(12 * strength); i++)
 		{
-			ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center + Main.rand.NextVector2Circular(32, 32), Main.rand.NextVector2Circular(3.5f, 3.5f),
-				new Color(50, 50, 50), 20 + Main.rand.Next(40), false, false, p =>
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center + Main.rand.NextVector2Circular(32, 32), Main.rand.NextVector2Circular(3.5f, 3.5f),
+				new Color(50, 50, 50), 20 + Main.rand.Next(40), default, p =>
+				{
+					p.Velocity *= 0.9f;
+					p.Velocity.Y -= 0.03f;
+				}));
+
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center + Main.rand.NextVector2Circular(32, 32), Main.rand.NextVector2Circular(3.5f, 3.5f),
+				new Color(150, 150, 150), 10 + Main.rand.Next(40), default, p =>
 				{
 					p.Velocity *= 0.9f;
 					p.Velocity.Y -= 0.03f;
 				})
-			{ Layer = ParticleLayer.BelowProjectile});
+			{
+				Variant = CompositeSmoke.SmallVariant
+			});
 
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center + Main.rand.NextVector2Circular(32, 32), Main.rand.NextVector2Circular(3.5f, 3.5f),
-				new Color(150, 150, 150), 10 + Main.rand.Next(40), false, false, p =>
-				{
-					p.Velocity *= 0.9f;
-					p.Velocity.Y -= 0.03f;
-				})
-			{ Layer = ParticleLayer.BelowProjectile });
-
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(32, 32), Main.rand.NextVector2Circular(5.5f, 5.5f),
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Projectile.Center + Main.rand.NextVector2Circular(32, 32), Main.rand.NextVector2Circular(5.5f, 5.5f),
 				new Color(100, 100, 100) * 0.2f, 0.2f, EaseFunction.EaseQuadOut, Main.rand.Next(50)));
 		}
 
 		Vector2 glowPos = Projectile.Center;
 		Vector2 stretch = Vector2.One;
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Yellow.Additive(), Color.Orange, 0.6f, 180 * strength, 30, "Smoke", stretch, EaseFunction.EaseQuinticOut)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(glowPos, Color.Yellow.Additive(), Color.Orange, 0.6f, 180 * strength, 30, "Smoke", stretch, EaseFunction.EaseQuinticOut)
 		{ Angle = Main.rand.NextFloat(MathHelper.TwoPi) });
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Yellow.Additive(), Color.DarkOrange.Additive(), 0.4f, 150 * strength, 30, "Smoke", stretch, EaseFunction.EaseCubicOut)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(glowPos, Color.Yellow.Additive(), Color.DarkOrange.Additive(), 0.4f, 150 * strength, 30, "Smoke", stretch, EaseFunction.EaseCubicOut)
 		{ Angle = Main.rand.NextFloat(MathHelper.TwoPi) });
 
 		for (int i = 0; i < (int)(8 * strength); i++)
 		{
 			if (Main.rand.NextBool())
-				ParticleHandler.SpawnParticle(new BloomParticle(glowPos, Main.rand.NextVector2CircularEdge(7f, 7f) * Main.rand.NextFloat(0.65f, 1f), Color.Orange, 0.4f * strength, Main.rand.Next(20, 70), 1, EmberUpdate));
+				ParticleRenderers.UnderProjectiles.Add(new BloomParticle(glowPos, Main.rand.NextVector2CircularEdge(7f, 7f) * Main.rand.NextFloat(0.65f, 1f), Color.Orange, 0.4f * strength, Main.rand.Next(20, 70), 1, EmberUpdate));
 
 			Vector2 pos = Projectile.Center;
 			Vector2 velocity = Main.rand.NextVector2CircularEdge(13f, 13f) * Main.rand.NextFloat(0.5f, 1f) * strength;
 
-			ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.Orange, Color.Goldenrod, Main.rand.NextFloat()), 1.65f, Main.rand.Next(10, 50), p => p.Velocity *= 0.9f, tileCollide: false));
+			ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.Orange, Color.Goldenrod, Main.rand.NextFloat()), 1.65f, Main.rand.Next(10, 50), p => p.Velocity *= 0.9f, tileCollide: false));
 		
 			for (int x = 0; x < 3; x++)
 			{
@@ -135,27 +136,25 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 			}
 		}
 
-		ParticleHandler.SpawnParticle(new BloomParticle(glowPos, Vector2.Zero, Color.DarkOrange, 1.33f * strength, 40));
+		ParticleRenderers.UnderProjectiles.Add(new BloomParticle(glowPos, Vector2.Zero, Color.DarkOrange, 1.33f * strength, 40));
 		
-		ParticleHandler.SpawnParticle(new BloomParticle(glowPos, Vector2.Zero, Color.Orange, 1 * strength, 30));
+		ParticleRenderers.UnderProjectiles.Add(new BloomParticle(glowPos, Vector2.Zero, Color.Orange, 1 * strength, 30));
 
 		float rotation = Main.rand.NextFloat(6.28f);
 		float scorchScale = Main.rand.NextFloat(0.15f, 0.3f) * strength;
 
-		ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, Color.DarkOrange.Additive(), rotation, scorchScale, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 35)
+		ParticleRenderers.UnderNPCs.Add(new DissipatingImage(Projectile.Center, Color.DarkOrange.Additive(), rotation, scorchScale, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 35)
 		{
 			DistortEasing = EaseFunction.EaseQuadInOut,
 			Intensity = 0.5f,
-			Layer = ParticleLayer.BelowNPC,
 			Pixellate = true,
 			PixelDivisor = 2,
 		});
 
-		ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, Color.Orange.Additive(), rotation, scorchScale * 0.6f, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 20)
+		ParticleRenderers.UnderNPCs.Add(new DissipatingImage(Projectile.Center, Color.Orange.Additive(), rotation, scorchScale * 0.6f, Main.rand.NextFloat(0.1f, 0.2f), "Fire1", new(0.5f, 0.5f), new(4, 0.5f), 20)
 		{
 			DistortEasing = EaseFunction.EaseQuadInOut,
 			Intensity = 0.5f,
-			Layer = ParticleLayer.BelowNPC,
 			Pixellate = true,
 			PixelDivisor = 2,
 		});
@@ -166,7 +165,7 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 			p.Velocity.Y += 0.06f;
 
 			if (Main.rand.NextBool())
-				ParticleHandler.SpawnParticle(new SmokeCloud(p.Position + Main.rand.NextVector2Circular(5, 5), Main.rand.NextVector2Circular(0.5f, 0.5f), new Color(90, 90, 90) * 0.5f * (1 - p.Progress), 0.06f, EaseFunction.EaseQuadOut, 30)
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(p.Position + Main.rand.NextVector2Circular(5, 5), Main.rand.NextVector2Circular(0.5f, 0.5f), new Color(90, 90, 90) * 0.5f * (1 - p.Progress), 0.06f, EaseFunction.EaseQuadOut, 30)
 				{	
 					Pixellate = true,
 					PixelDivisor = 3

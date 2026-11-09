@@ -1,7 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Easing;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -10,8 +7,6 @@ public class RoarRing(Vector2 position, float ringWidth, float maxRadius, int ma
 	public Texture2D NoiseTexture { get; set; } = AssetLoader.LoadedTextures["vnoise"].Value;
 	public Vector2 TextureStretch { get; set; } = new(2.25f, 0.065f);
 	public float Opacity { get; set; } = 1;
-
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
 
 	internal override string EffectPassName => "RoarStyle";
 

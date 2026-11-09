@@ -1,8 +1,8 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.TileMerging;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.RenderTargets;
 using SpiritReforged.Content.Particles;
 using TileHelper.Common;
@@ -18,7 +18,7 @@ public class PolishedAmber : ModTile, ILoadItem
 		{
 			foreach (var pt in _grid)
 			{
-				TileExtensions.DrawSingleTile(pt.X, pt.Y, true, Vector2.Zero);
+				TileMethods.DrawSingleTile(pt.X, pt.Y, true, Vector2.Zero);
 				TileMerger.DrawMerge(spriteBatch, pt.X, pt.Y, Color.Black, Vector2.Zero, TileID.Sand);
 			}
 		});
@@ -81,7 +81,7 @@ public class PolishedAmber : ModTile, ILoadItem
 		TileID.Sets.CanBeClearedDuringOreRunner[Type] = false;
 
 		AddMapEntry(Color.Orange);
-		this.Merge(ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>(), TileID.Sand);
+		TileMethods.Merge(Type, ModContent.TileType<PolishedAmber>(), ModContent.TileType<AmberFossil>(), ModContent.TileType<AmberFossilSafe>(), TileID.Sand);
 
 		DustType = DustID.GemAmber;
 		MineResist = 0.5f;
@@ -96,19 +96,19 @@ public class PolishedAmber : ModTile, ILoadItem
 			Vector2 position = Main.rand.NextVector2FromRectangle(new((int)coords.X, (int)coords.Y, 16, 16));
 
 			float scale = Main.rand.NextFloat(0.2f, 0.5f);
-			ParticleHandler.SpawnParticle(new GlowParticle(position, Vector2.UnitY * -0.3f, Color.Goldenrod * 0.5f, scale, 200));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, Vector2.UnitY * -0.3f, Color.Goldenrod * 0.5f, scale, 200));
 		}
 	}
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out _))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out _))
 			return false;
 
 		Overlay.AddToGrid(i, j);
 
-		TileExtensions.DrawSingleTile(i, j, true, TileExtensions.TileOffset);
-		TileMerger.DrawMerge(spriteBatch, i, j, color, TileExtensions.TileOffset, TileID.Sand);
+		TileMethods.DrawSingleTile(i, j, true, TileMethods.TileOffset);
+		TileMerger.DrawMerge(spriteBatch, i, j, color, TileMethods.TileOffset, TileID.Sand);
 		return false;
 	}
 }

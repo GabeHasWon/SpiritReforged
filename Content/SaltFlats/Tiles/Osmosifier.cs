@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using System.IO;
@@ -60,7 +60,7 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, ILoadItem
 	/// <summary> Checks whether this tile is submerged. </summary>
 	private static void CheckConditions(int i, int j)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		var bottomLeft = Main.tile[i, j + 1];
 		var bottomRight = Main.tile[i + 1, j + 1];
@@ -105,7 +105,7 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, ILoadItem
 		if (!Main.dedServ)
 		{
 			SoundEngine.PlaySound(SaltBlock.Break with { Pitch = 0.5f }, worldCoords);
-			ParticleHandler.SpawnParticle(new SmokeCloud(worldCoords, -Vector2.UnitY, Color.White, 0.2f, Common.Easing.EaseFunction.EaseCubicOut, 60)
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(worldCoords, -Vector2.UnitY, Color.White, 0.2f, Common.Easing.EaseFunction.EaseCubicOut, 60)
 			{
 				TertiaryColor = Color.Pink,
 				Pixellate = true,
@@ -143,7 +143,7 @@ public class Osmosifier : SingleSlotTile<OsmosifierSlot>, ILoadItem
 		{
 			var texture = TextureAssets.Item[slot.item.type].Value;
 			float sine = (float)Math.Sin(Main.timeForVisualEffects / 30f);
-			var position = new Vector2(i, j).ToWorldCoordinates(16, -16) - Main.screenPosition + TileExtensions.TileOffset + Vector2.UnitY * sine * 2;
+			var position = new Vector2(i, j).ToWorldCoordinates(16, -16) - Main.screenPosition + TileMethods.TileOffset + Vector2.UnitY * sine * 2;
 
 			spriteBatch.Draw(texture, position, null, Color.White, 0, texture.Size() / 2, 1, default, 0);
 		}

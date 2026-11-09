@@ -1,12 +1,12 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
 using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
-using static SpiritReforged.Common.Easing.EaseFunction;
-using static Microsoft.Xna.Framework.MathHelper;
 using System.IO;
+using static Microsoft.Xna.Framework.MathHelper;
+using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Desert.ScarabBoss.Items.Projectiles;
 
@@ -155,7 +155,7 @@ public class SunOrb : ModProjectile
 
 		target.AddBuff(BuffID.OnFire, 240);
 
-		ParticleHandler.SpawnParticle(new LightBurst(target.Center, Main.rand.NextFloatDirection(), Color.LightGoldenrodYellow, 0.6f, 30));
+		ParticleRenderers.OverPlayers.Add(new LightBurst(target.Center, Main.rand.NextFloatDirection(), Color.LightGoldenrodYellow, 0.6f, 30));
 
 		int numSmoke = 6;
 		for (int i = 0; i < numSmoke; i++)
@@ -164,7 +164,7 @@ public class SunOrb : ModProjectile
 			float progress = i / (float)numSmoke;
 			float scale = Lerp(0.08f, 0.04f, progress);
 			var vel = Vector2.Lerp(-Vector2.UnitY, -Vector2.UnitY * 4, progress);
-			ParticleHandler.SpawnParticle(new SmokeCloud(target.Center, vel, smokeColor, scale, EaseQuadOut, 40, false));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(target.Center, vel, smokeColor, scale, EaseQuadOut, 40, false));
 		}
 
 		for (int i = 0; i < 6; i++)
@@ -182,7 +182,7 @@ public class SunOrb : ModProjectile
 				p.Velocity.X *= 0.92f;
 			}
 
-			ParticleHandler.SpawnParticle(new GlowParticle(particleCenter, particleVel, lightColor, darkColor, scale, lifeTime, 5, delegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(particleCenter, particleVel, lightColor, darkColor, scale, lifeTime, 5, delegateAction));
 		}
 	}
 

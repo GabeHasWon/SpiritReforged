@@ -1,3 +1,5 @@
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat.Classic;
 using Terraria.DataStructures;
 using TileHelper.Common;
 
@@ -31,12 +33,15 @@ public class HerosMemorialStatue : ModTile, ILoadItem
 		TileObjectData.newTile.StyleWrapLimit = 2;
 		TileObjectData.newTile.StyleMultiplier = 2;
 		TileObjectData.newTile.StyleHorizontal = true;
+
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(216, 216, 216), Language.GetText("Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName"));
+		SpiritClassic.AddItemReplacement("HerosMemorialStatue", AutoContent.ItemType<HerosMemorialStatue>()); //Register a Classic item replacement
 
 		DustType = DustID.Stone;
 	}

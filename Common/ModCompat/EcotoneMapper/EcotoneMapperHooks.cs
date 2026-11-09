@@ -15,7 +15,7 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.ModCompat.EcotoneMapper;
 
-internal class EcotoneMapperHooks : ModSystem 
+public class EcotoneMapperHooks : ModSystem 
 {
 	public readonly record struct EcotoneEntryPair(EcotoneBase Ecotone, EcotoneSurfaceMapping.EcotoneEntry Entry);
 

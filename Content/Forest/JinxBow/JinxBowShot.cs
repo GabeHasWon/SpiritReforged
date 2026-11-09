@@ -1,6 +1,5 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -80,8 +79,8 @@ public class JinxBowShot : GlobalProjectile
 		Texture2D arrowTex = TextureAssets.Projectile[projectile.type].Value;
 		Color color = TextureColorCache.GetBrightestColor(arrowTex);
 
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(projectile.Center, Vector2.Zero, color.Additive(), new(0.66f, 2.25f), 10, 1));
-		ParticleHandler.SpawnParticle(new LightBurst(projectile.Center, Main.rand.NextFloatDirection(), color.Additive(), 0.66f, 25));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(projectile.Center, Vector2.Zero, color.Additive(), new(0.66f, 2.25f), 10, 1));
+		ParticleRenderers.UnderProjectiles.Add(new LightBurst(projectile.Center, Main.rand.NextFloatDirection(), color.Additive(), 0.66f, 25));
 
 		for(int i = 0; i < 12; i++) 
 		{
@@ -90,8 +89,8 @@ public class JinxBowShot : GlobalProjectile
 			int lifeTime = Main.rand.Next(12, 40);
 			static void DelegateAction(Particle p) => p.Velocity *= 0.9f;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(projectile.Center, velocity, color.Additive(), scale, lifeTime, 1, DelegateAction));
-			ParticleHandler.SpawnParticle(new GlowParticle(projectile.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(projectile.Center, velocity, color.Additive(), scale, lifeTime, 1, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(projectile.Center, velocity, Color.White.Additive(), scale, lifeTime, 1, DelegateAction));
 		}
 	}
 

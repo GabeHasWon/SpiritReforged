@@ -91,6 +91,7 @@ public static class WorldMethods
 		return count;
 	}
 
+	public static bool AreaClear(Rectangle tileArea, bool countNonSolid = false) => AreaCount(tileArea.X, tileArea.Y, tileArea.Width, tileArea.Height, countNonSolid) == 0;
 	public static bool AreaClear(int i, int j, int width, int height, bool countNonSolid = false) => AreaCount(i, j, width, height, countNonSolid) == 0;
 
 	/// <summary> Checks whether this tile area is completely submerged in water. </summary>

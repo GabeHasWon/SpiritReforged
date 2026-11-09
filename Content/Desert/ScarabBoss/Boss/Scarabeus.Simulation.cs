@@ -116,7 +116,7 @@ public partial class Scarabeus : ModNPC
 			float lerp = 0.5f + (float)Math.Sin(Main.timeForVisualEffects / 30f) * 0.5f;
 			Main.EntitySpriteDraw(texture, basePosition + (origin - NPC.frame.Size() / 2).RotatedBy(NPC.rotation), frame, NPC.DrawColor(Color.White), rotation, origin, scale, effects);
 
-			DrawHelpers.DrawOutline(Main.spriteBatch, texture, NPC.Center - Main.screenPosition, default, (offset) =>
+			Graphics.DrawOutline(Main.spriteBatch, texture, NPC.Center - Main.screenPosition, default, (offset) =>
 				Main.EntitySpriteDraw(texture, position, frame, NPC.DrawColor(Color.White).Additive(80) * 0.25f * lerp, rotation, origin, scale, effects));
 		}
 	}

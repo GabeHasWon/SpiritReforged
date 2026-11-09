@@ -1,15 +1,9 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Tiles;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Marble.Items.Gryphon;
+
 public class GryphonGlobalProjectile : GlobalProjectile
 {
 	public bool active;
@@ -28,8 +22,8 @@ public class GryphonGlobalProjectile : GlobalProjectile
 				Vector2 vel = projectile.velocity.RotateRandom(0.1f) * Main.rand.NextFloat(0.2f);
 				Vector2 pos = projectile.Center + Main.rand.NextVector2Circular(5f, 5f);
 
-				ParticleHandler.SpawnParticle(new BloomParticle(pos, vel, Color.Cyan.Additive(), 0.2f, 45, extraUpdateAction: p => p.Velocity *= 0.9f));
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, Color.White.Additive(), 0.2f, 45, extraUpdateAction: p => p.Velocity *= 0.9f));
+				ParticleRenderers.UnderProjectiles.Add(new BloomParticle(pos, vel, Color.Cyan.Additive(), 0.2f, 45, extraUpdateAction: p => p.Velocity *= 0.9f));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(pos, vel, Color.White.Additive(), 0.2f, 45, extraUpdateAction: p => p.Velocity *= 0.9f));
 			}
 		}		
 	}

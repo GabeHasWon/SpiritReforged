@@ -1,11 +1,10 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
 public class CartoonHit : Particle
 {
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
 	public readonly int style;
 
 	public CartoonHit(Vector2 position, int duration, float scale = 1, float rotation = 0, Vector2? velocity = null)
@@ -14,13 +13,11 @@ public class CartoonHit : Particle
 		Scale = scale;
 		Rotation = rotation;
 		MaxTime = duration;
-
-		Color = Color.White;
 		Velocity = velocity ?? new Vector2(-2).RotatedBy(rotation);
 		style = Main.rand.Next(3);
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings,SpriteBatch spriteBatch)
 	{
 		Texture2D texture = Texture;
 		Rectangle source = texture.Frame(1, 3, 0, style, 0, -2);

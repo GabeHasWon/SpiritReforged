@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
@@ -19,7 +20,7 @@ public abstract class EntityTile<T> : ModTile where T : ModTileEntity
 			return null;
 
 		if (findTopLeft)
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 
 		int id = ModContent.GetInstance<T>().Find(i, j);
 		return (id == -1) ? null : (T)TileEntity.ByID[id];

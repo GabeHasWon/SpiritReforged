@@ -65,31 +65,4 @@ internal static class PotionColorDatabase
 		{ ModContent.ItemType<DoubleJumpPotion>(), new Color(147, 132, 207) },
 		{ ModContent.ItemType<FlightPotion>(), Color.SkyBlue },
 	};
-
-	public static void RegisterColor(int item, Color color, bool decorative) 
-	{
-		if (decorative)
-			DecorativeBrewColors.Add(item, color);
-		else
-			NaturalBrewColors.Add(item, color);
-	}
-
-	public static bool ParseNewPotion(params object[] args)
-	{
-		if (args.Length < 3)
-			throw new ArgumentException("AddPotionVat requires int, Color, bool arguments!");
-
-		int value;
-
-		value = SpiritReforgedMod.ConvertToInteger(args[0], "AddPotionVat parameter 0 should be an int, short or ushort!");
-
-		if (args[1] is not Color color)
-			throw new ArgumentException("AddPotionVat parameter 1 should be a Color!");
-
-		if (args[2] is not bool decor)
-			throw new ArgumentException("AddPotionVat parameter 2 should be a bool!");
-
-		RegisterColor(value, color, decor);
-		return true;
-	}
 }

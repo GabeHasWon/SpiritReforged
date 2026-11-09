@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.Chests;
 using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
@@ -54,7 +53,7 @@ public class HouseLoader : ILoadable, IGenerationPage
 	[PriorityModifier(nameof(SignChance))]
 	private static int RareSignChance = 25;
 
-	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(typeof(CaveDecorMicropass), "UndergroundPage", false), DrawHelpers.RequestLocal(typeof(CaveDecorMicropass), "UndergroundPageButton", false))
+	PageInfo IGenerationPage.Info => new("Caves", CaveDecorMicropass.UndergroundPage, CaveDecorMicropass.UndergroundPageButton)
 	{
 		Presets =
 		[

@@ -2,7 +2,6 @@
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Conversion;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.TileCommon.Tree;
 using SpiritReforged.Content.Savanna.DustStorm;
 using SpiritReforged.Content.Savanna.Items.Food;
@@ -41,7 +40,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 	public static float GetSway(int i, int j, double factor = 0)
 	{
 		if (factor == 0)
-			factor = TileSwaySystem.TreeWindCounter;
+			factor = WindTileRenderer.TreeWindCounter;
 
 		return Main.instance.TilesRenderer.GetWindCycle(i, j, factor) * 0.4f;
 	}
@@ -129,7 +128,7 @@ public class AcaciaTree : CustomTree, ISetConversion
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);
@@ -315,7 +314,7 @@ public class AcaciaTreeHallow : AcaciaTree
 
 	public override void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
 		var position = new Vector2(i, j) * 16 - Main.screenPosition + TreeExtensions.GetPalmTreeOffset(i, j);

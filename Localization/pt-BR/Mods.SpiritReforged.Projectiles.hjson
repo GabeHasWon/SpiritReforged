@@ -94,13 +94,21 @@ SoilBallProjectile.DisplayName: Bola de Tralha
 // SaltTombstoneProjectile.DisplayName: "{$Items.SaltTombstoneItem.DisplayName}"
 // SaltGravestoneProjectile.DisplayName: "{$Items.SaltGravestoneItem.DisplayName}"
 // SaltGraveMarkerProjectile.DisplayName: "{$Items.SaltGraveMarkerItem.DisplayName}"
-// Firefall.DisplayName: Firefall
-// WindBurstProjectile.DisplayName: Wind Burst
-// SingularCollapse.DisplayName: Singularity
-// ShockGlyphLightningBolt.DisplayName: Lightning Bolt
-// MariglowSeed.DisplayName: Mariglow Seed
-// RageHit.DisplayName: Rage Hit
-// MirrorReturnPortal.DisplayName: Mirror of Return Portal
+Firefall.DisplayName: Chuva de Fogo
+WindBurstProjectile.DisplayName: Rajada de Vento
+SingularCollapse.DisplayName: Colapso
+ShockGlyphLightningBolt.DisplayName: Glifo de Choque Raio
+MariglowSeed.DisplayName: Sementes de Calêndula Solar
+RageHit.DisplayName: Ataque Raivoso
+MirrorReturnPortal.DisplayName: Portal do Espelho do Retorno
+// Columbat.DisplayName: Columbat
+// Columbald.DisplayName: Columbald
+// EyeballMinion.DisplayName: Eyeball
+// PumpkinEmberProjectile.DisplayName: Ember
+// ShovelClubBoneProjectile.DisplayName: Bone
+// SpareLeg.DisplayName: Spare Leg
+// SpareHand.DisplayName: Spare Hand
+// SpareHeart.DisplayName: Spare Heart
 // GreatshieldHitbox.DisplayName: Greatshield Hitbox
 // OverloaderExplosion.DisplayName: Overloader Explosion
 // StoneshieldBash.DisplayName: Stoneshield Bash
@@ -117,3 +125,4 @@ SoilBallProjectile.DisplayName: Bola de Tralha
 // SlugProjectile.DisplayName: Slug Projectile
 // SurvivalistGrenadeProjectile.DisplayName: Survivalist Grenade Projectile
 // FlakkerProjectile.DisplayName: Flakker Projectile
+// MiningCharge.DisplayName: Mining Charge

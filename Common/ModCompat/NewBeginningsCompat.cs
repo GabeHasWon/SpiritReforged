@@ -1,16 +1,16 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes.Ziggurat;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
-using SpiritReforged.Common.WorldGeneration.PointOfInterest;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
 using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
-using SpiritReforged.Content.Forest.Botanist.Tiles;
+using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
 using SpiritReforged.Content.Forest.WoodClub;
+using SpiritReforged.Content.Glyphs;
+using SpiritReforged.Content.Glyphs.CharmcasterSet;
 using SpiritReforged.Content.Ocean.Items.KoiTotem;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 using SpiritReforged.Content.Ocean.Items.Vanity.DiverSet;
@@ -20,7 +20,6 @@ using SpiritReforged.Content.Savanna.Items.HuntingRifle;
 using SpiritReforged.Content.Savanna.Items.Vanity;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Vanilla.Leather.HideTunic;
-using SpiritReforged.Content.Ziggurat.Walls;
 using SpiritReforged.Content.Ziggurat.Windshear;
 using System.Linq;
 using Terraria.DataStructures;
@@ -48,6 +47,7 @@ internal class NewBeginningsCompat : ModSystem
 			AddDisentombed();
 			AddWorshipper();
 			AddPurifier();
+			AddEnchanter();
 		});
 
 		void AddDiver()
@@ -106,7 +106,7 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
 			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnInZiggurat);
-			AddOrigin("Disentombed", [], equip, misc, dele);
+			AddOrigin("Disentombed", [(ItemID.DesertTorch, 3)], equip, misc, dele);
 		}
 
 		void AddWorshipper()
@@ -128,6 +128,16 @@ internal class NewBeginningsCompat : ModSystem
 			});
 
 			AddOrigin("Purifier", [], equip, misc, dele);
+		}
+
+		void AddEnchanter()
+		{
+			object equip = beginnings.Call("EquipData", ModContent.ItemType<CharmcasterHat>(), ModContent.ItemType<CharmcasterRobe>(), 
+				ModContent.ItemType<CharmcasterLeggings>(), Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, ModContent.NPCType<Enchanter>());
+			object dele = GetDelegateData(() => true, list => { }, () => false, () => Point16.Zero);
+
+			AddOrigin("Enchanter", [(ModContent.ItemType<Flarepowder>(), 60), (ModContent.ItemType<ChromaticWax>(), 3)], equip, misc, dele);
 		}
 
 		void AddOrigin(string name, (int, int)[] inventory, object equipData, object miscData, object delegateData) 
@@ -158,32 +168,45 @@ internal class NewBeginningsCompat : ModSystem
 
 	private static Point16 SpawnInOasis()
 	{
-		if (UndergroundOasisBiome.OasisAreas.Count == 0)
+		if (OasisMicropass.OasisAreas.Count == 0)
 			return Point16.NegativeOne;
 
-		Rectangle selection = WorldGen.genRand.NextFromList([.. UndergroundOasisBiome.OasisAreas]);
+		Rectangle selection = WorldGen.genRand.NextFromList([.. OasisMicropass.OasisAreas]);
 		return new(selection.Center.X, selection.Center.Y);
 	}
 
 	private static Point16 SpawnInZiggurat()
 	{
-		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicrobiome).ToHashSet();
+		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicropass.ZigguratBiome).Select(x => (ZigguratMicropass.ZigguratBiome)x).ToHashSet();
 
 		if (ziggurats.Count == 0)
 			return Point16.NegativeOne;
 
-		Point16 pos = WorldGen.genRand.Next([.. ziggurats]).Position;
+		ZigguratMicropass.ZigguratBiome ziggurat = WorldGen.genRand.Next([.. ziggurats]);
+		Point16 pos = ziggurat.Position;
 		Point16 spawn;
 		Tile tile;
 
 		do
 		{
-			spawn = new Point16(pos.X + WorldGen.genRand.Next(-100, 300), pos.Y + WorldGen.genRand.Next(-200, 200));
+			Rectangle bounds = ziggurat.FullArea;
+			spawn = new Point16(pos.X + WorldGen.genRand.Next(-bounds.Width / 2, bounds.Width / 2), pos.Y + WorldGen.genRand.Next(-10, bounds.Height - 20));
 			tile = Main.tile[spawn];
-		} while (tile.HasTile || !(tile.WallType == ModContent.WallType<RedSandstoneBrickCrackedWall>() || tile.WallType == ModContent.WallType<RedSandstoneBrickWall>())
-			|| Collision.SolidCollision(spawn.ToWorldCoordinates() - new Vector2(36), 72, 72) || !Collision.SolidCollision(spawn.ToWorldCoordinates() + new Vector2(-18, 36), 36, 16));
+		} while (tile.HasTile || !DisentombedIsValidWall(tile) || !DisentombedOpenSpace(spawn));
 
 		return spawn;
+	}
+
+	private static bool DisentombedOpenSpace(Point16 spawn)
+	{
+		Vector2 worldSpawn = spawn.ToWorldCoordinates(0, 0);
+		return Collision.SolidCollision(worldSpawn - new Vector2(36, 0), 72, 36, false) && !Collision.SolidCollision(worldSpawn + new Vector2(-18, -40), 36, 36);
+	}
+
+	private static bool DisentombedIsValidWall(Tile t)
+	{
+		SpiritReforgedMod mod = SpiritReforgedMod.Instance;
+		return t.WallType == mod.Find<ModWall>("RedSandstoneBrickWallUnsafe").Type || t.WallType == mod.Find<ModWall>("RedSandstoneBrickWallUnsafe").Type;
 	}
 
 	private static Point16 SpawnUnderground()

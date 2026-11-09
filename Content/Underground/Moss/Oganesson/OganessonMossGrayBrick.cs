@@ -1,6 +1,5 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Dusts;
 using TileHelper.Common;
 
@@ -19,7 +18,7 @@ public class OganessonMossGrayBrick : GrassTile
 
 		RegisterItemDrop(ItemID.GrayBrick);
 		AddMapEntry(new Color(220, 220, 220));
-		this.Merge(TileID.Stone, TileID.GrayBrick);
+		TileMethods.Merge(Type, TileID.Stone, TileID.GrayBrick);
 
 		DustType = ModContent.DustType<OganessonMossDust>();
 		HitSound = SoundID.Grass;

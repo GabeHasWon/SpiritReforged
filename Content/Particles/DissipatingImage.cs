@@ -1,7 +1,8 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -9,8 +10,6 @@ public class DissipatingImage : Particle
 {
 	public Color? SecondaryColor { get; set; } = null;
 	public Color? TertiaryColor { get; set; } = null;
-
-	public ParticleLayer Layer { get; set; } = ParticleLayer.AboveProjectile;
 
 	public virtual bool UseLightColor { get; set; }
 	public virtual bool Pixellate { get; set; }
@@ -27,6 +26,7 @@ public class DissipatingImage : Particle
 
 	private readonly Texture2D _texture;
 	private readonly float _maxDistortion;
+	private readonly Color _tint;
 	private readonly Vector2 _noiseStretch = new (1);
 	private readonly Vector2 _texExponent = new(2, 1);
 	private readonly Vector2 _scrollOffset = new(Main.rand.NextFloat(), Main.rand.NextFloat());
@@ -41,7 +41,7 @@ public class DissipatingImage : Particle
 		Scale = scale;
 		_texture = AssetLoader.LoadedTextures[texture].Value;
 		_maxDistortion = maxDistortion;
-		Color = color;
+		_tint = color;
 		MaxTime = maxTime;
 	}
 
@@ -58,7 +58,7 @@ public class DissipatingImage : Particle
 		Scale = scale;
 		_texture = texture;
 		_maxDistortion = maxDistortion;
-		Color = color;
+		_tint = color;
 		MaxTime = maxTime;
 	}
 
@@ -68,27 +68,25 @@ public class DissipatingImage : Particle
 		_texExponent = textureExponentRange;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		_opacity = EaseFunction.EaseQuadOut.Ease(Progress);
 		_opacity = (float)Math.Sin(_opacity * MathHelper.Pi);
 		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
 	}
 
-	public override ParticleLayer DrawLayer => Layer;
+	public virtual Color GetLightColor() => UseLightColor ? Lighting.GetColor(Position.ToTileCoordinates()) : Color.White;
 
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public virtual Color GetLightColor() => UseLightColor ? Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y) : Color.White;
-
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"].Value;
 		Vector2 size = Scale * _texture.Size() * _scaleMod;
 
-		effect.Parameters["primaryColor"].SetValue(Color.ToVector4());
-		effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? Color).ToVector4());
-		effect.Parameters["tertiaryColor"].SetValue((TertiaryColor ?? Color).ToVector4());
+		effect.Parameters["primaryColor"].SetValue(_tint.ToVector4());
+		effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? _tint).ToVector4());
+		effect.Parameters["tertiaryColor"].SetValue((TertiaryColor ?? _tint).ToVector4());
 		effect.Parameters["colorLerpExp"].SetValue(ColorLerpExponent);
 
 		effect.Parameters["Progress"].SetValue(Progress);
@@ -109,12 +107,12 @@ public class DissipatingImage : Particle
 		float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
 		effect.Parameters["texExponent"].SetValue(texExponent);
 
-		var square = new SquarePrimitive
+		SquarePrimitive square = new()
 		{
 			Color = GetLightColor(),
 			Height = size.Y,
 			Length = size.X,
-			Position = Position - Main.screenPosition,
+			Position = Position + settings.AnchorPosition,
 			Rotation = Rotation,
 		};
 		PrimitiveRenderer.DrawPrimitiveShape(square, effect);

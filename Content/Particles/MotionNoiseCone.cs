@@ -1,6 +1,7 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering;
+﻿using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -24,7 +25,7 @@ public abstract class MotionNoiseCone : Particle
 
 	public MotionNoiseCone(Entity entity, Vector2 basePosition, Vector2 velocity, float width, float length, float rotation, int maxTime, int detatchTime = -1) : this(basePosition, velocity, width, length, rotation, maxTime)
 	{
-		if(entity == null)
+		if (entity == null)
 			return;
 
 		_attachedEntity = entity;
@@ -41,8 +42,10 @@ public abstract class MotionNoiseCone : Particle
 		return this;
 	}
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (TimeActive == _detachTime && _attachedEntity != null)
 			_attachedEntity = null;
 
@@ -56,14 +59,9 @@ public abstract class MotionNoiseCone : Particle
 
 			Position = _attachedEntity.Center + _offset;
 		}
-
 		else
 			Velocity *= 0.97f;
 	}
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
 
 	internal virtual Color DarkColor { get; set; }
 	internal virtual Color BrightColor { get; set; }
@@ -124,7 +122,7 @@ public abstract class MotionNoiseCone : Particle
 	/// </summary>
 	internal virtual float FinalIntensity { get; set; }
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Effect effect = AssetLoader.LoadedShaders["MotionNoiseCone"].Value;
 		Texture2D texture = AssetLoader.LoadedTextures["vnoise"].Value;

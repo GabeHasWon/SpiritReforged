@@ -56,6 +56,8 @@ public partial class CatalogueUI : AutoUIState
 
 		Append(_entries);
 		Append(_info);
+
+		OverrideSamplerState = SamplerState.PointWrap;
 	}
 
 	public override void OnActivate()

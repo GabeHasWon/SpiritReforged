@@ -1,0 +1,52 @@
+﻿using Terraria.DataStructures;
+
+namespace SpiritReforged.Common.PlayerCommon;
+
+//Ported Preemptively from 'rapiers' branch
+public sealed class FreeDodgePlayer : ModPlayer
+{
+	public interface IFreeDodge
+	{
+		/// <summary> Called whenever the player is about to take damage. </summary>
+		/// <returns> Whether damage should be dodged. </returns>
+		public bool FreeDodge(Player.HurtInfo info);
+	}
+
+	public interface IImmuneTo
+	{
+		/// <summary> Called whenever the player is about to take damage. </summary>
+		/// <returns> Whether the player should be immune. </returns>
+		public bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable);
+	}
+
+	public int oldHeldProjectile;
+	public StatModifier freeDodgeTime = StatModifier.Default;
+
+	public override void Load() => On_Player.Update += CacheHeldProjectile;
+
+	private static void CacheHeldProjectile(On_Player.orig_Update orig, Player self, int i)
+	{
+		if (self.TryGetModPlayer(out FreeDodgePlayer freeDodgePlayer))
+			freeDodgePlayer.oldHeldProjectile = self.heldProj;
+
+		orig(self, i);
+	}
+
+	public override void ResetEffects() => freeDodgeTime = StatModifier.Default;
+
+	public override bool ImmuneTo(PlayerDeathReason damageSource, int cooldownCounter, bool dodgeable)
+	{
+		if (oldHeldProjectile != -1 && Main.projectile[oldHeldProjectile].ModProjectile is IImmuneTo iImmuneTo)
+			return iImmuneTo.ImmuneTo(damageSource, cooldownCounter, dodgeable);
+
+		return false;
+	}
+
+	public override bool FreeDodge(Player.HurtInfo info)
+	{
+		if (oldHeldProjectile != -1 && Main.projectile[oldHeldProjectile].ModProjectile is IFreeDodge iFreeDodge)
+			return iFreeDodge.FreeDodge(info);
+
+		return false;
+	}
+}

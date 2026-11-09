@@ -1,9 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat.Classic;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.UI.Enchantment;
 using SpiritReforged.Common.UI.System;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Glyphs.CharmcasterSet;
 using SpiritReforged.Content.Particles;
@@ -18,6 +19,7 @@ using Terraria.Utilities;
 namespace SpiritReforged.Content.Glyphs;
 
 [AutoloadHead]
+[FromClassic("RuneWizard")]
 public class Enchanter : ModNPC
 {
 	/// <summary> Used to track whether <see cref="Enchanter"/> has spawned previously in this world. Not useable on multiplayer clients. </summary>
@@ -116,6 +118,8 @@ public class Enchanter : ModNPC
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Sky");
 
 	public override ITownNPCProfile TownNPCProfile() => NPCProfile;
+
+	public override bool CanGoToStatue(bool toKingStatue) => true;
 
 	public override bool CanTownNPCSpawn(int numTownNPCs)
 	{
@@ -224,7 +228,7 @@ public class Enchanter : ModNPC
 		.Add<Flarepowder>()
 		.Add<VexpowderBlue>(Condition.CorruptWorld, Condition.BloodMoonOrHardmode)
 		.Add<VexpowderRed>(Condition.CrimsonWorld, Condition.BloodMoonOrHardmode)
-		.Add(ItemID.PeaceCandle, Condition.NotBloodMoon)
+		.Add(new Item(ItemID.PeaceCandle) { shopCustomPrice = Item.buyPrice(0, 0, 90, 0) }, Condition.NotBloodMoon)
 		.Add(ItemID.WaterCandle, Condition.NotBloodMoon, Condition.Hardmode)
 		.Add(ItemID.ShadowCandle, Condition.BloodMoon)
 		.Add(new Item(ItemID.Teacup) { shopCustomPrice = Item.buyPrice(0, 0, 10, 0) })
@@ -239,7 +243,7 @@ public class Enchanter : ModNPC
 	{
 		if (!Main.dedServ && NPC.life <= 0)
 			for (int i = 0; i < 10; i++)
-				ParticleHandler.SpawnParticle(new CartoonSmoke(Main.rand.NextVector2FromRectangle(NPC.Hitbox), 30, 1, Main.rand.NextVector2Circular(2, 2)));
+				ParticleRenderers.UnderProjectiles.Add(new CartoonSmoke(Main.rand.NextVector2FromRectangle(NPC.Hitbox), 30, 1, Main.rand.NextVector2Circular(2, 2)));
 
 		for (int d = 0; d < 8; d++)
 			Dust.NewDustPerfect(Main.rand.NextVector2FromRectangle(NPC.getRect()), DustID.Blood, Main.rand.NextVector2Unit() * 1.5f, 0, default, Main.rand.NextFloat(1f, 1.5f));

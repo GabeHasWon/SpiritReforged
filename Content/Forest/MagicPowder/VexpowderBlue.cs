@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -48,7 +48,7 @@ internal class VexpowderBlueDust : FlarepowderDust
 			var velocity = (Projectile.velocity * mag).RotatedByRandom(0.2f);
 
 			if (Main.rand.NextBool())
-				ParticleHandler.SpawnParticle(new MagicParticle(Projectile.Center, velocity * 0.75f, Colors[1], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
+				ParticleRenderers.UnderProjectiles.Add(new MagicParticle(Projectile.Center, velocity * 0.75f, Colors[1], Main.rand.NextFloat(0.1f, 1f), Main.rand.Next(20, 100)));
 
 			Vector2 cloudPos = Projectile.Center + Vector2.Normalize(Projectile.velocity) * 10;
 			var fireCloud = new SmokeCloud(cloudPos, velocity, Colors[1].Additive(), Main.rand.NextFloat(0.08f, 0.12f), EaseFunction.EaseCubicOut, Main.rand.Next(40, 60), false)
@@ -58,8 +58,7 @@ internal class VexpowderBlueDust : FlarepowderDust
 				Intensity = 0.15f,
 				Pixellate = true
 			};
-
-			ParticleHandler.SpawnParticle(fireCloud);
+			ParticleRenderers.UnderProjectiles.Add(fireCloud);
 
 			var smokeCloud = new SmokeCloud(fireCloud.Position, fireCloud.Velocity * 1.25f, Color.Lerp(Color.Gray, Colors[1], 0.4f), fireCloud.Scale * 1.25f, EaseFunction.EaseCubicOut, Main.rand.Next(40, 70))
 			{
@@ -67,10 +66,9 @@ internal class VexpowderBlueDust : FlarepowderDust
 				TertiaryColor = Color.Lerp(Color.Black, Colors[4], 0.4f),
 				ColorLerpExponent = 2,
 				Intensity = 0.33f,
-				Layer = ParticleLayer.BelowProjectile,
 				Pixellate = true
 			};
-			ParticleHandler.SpawnParticle(smokeCloud);
+			ParticleRenderers.UnderProjectiles.Add(smokeCloud);
 		}
 	}
 
@@ -92,13 +90,13 @@ internal class VexpowderBlueDust : FlarepowderDust
 
 		var circle = new TexturedPulseCircle(Projectile.Center, (Colors[3] * 0.5f).Additive(), 2, 42, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 		circle.Angle = angle;
-		ParticleHandler.SpawnParticle(circle);
+		ParticleRenderers.UnderProjectiles.Add(circle);
 
 		var circle2 = new TexturedPulseCircle(Projectile.Center, (Colors[0] * 0.5f).Additive(), 1, 40, 20, "Bloom", new Vector2(1), EaseFunction.EaseCircularOut);
 		circle2.Angle = angle;
-		ParticleHandler.SpawnParticle(circle2);
+		ParticleRenderers.UnderProjectiles.Add(circle2);
 
-		ParticleHandler.SpawnParticle(new StarParticle(Projectile.Center, Vector2.Zero, Colors[2].Additive() * 0.5f, Colors[2].Additive() * 0.5f, 0.4f, 15, 0.1f));
-		ParticleHandler.SpawnParticle(new StarParticle(Projectile.Center, Vector2.Zero, Color.White.Additive() * 0.5f, Colors[2].Additive() * 0.5f, 0.2f, 15));
+		ParticleRenderers.UnderProjectiles.Add(new StarParticle(Projectile.Center, Vector2.Zero, Colors[2].Additive() * 0.5f, Colors[2].Additive() * 0.5f, 0.4f, 15, 0.1f));
+		ParticleRenderers.UnderProjectiles.Add(new StarParticle(Projectile.Center, Vector2.Zero, Color.White.Additive() * 0.5f, Colors[2].Additive() * 0.5f, 0.2f, 15));
 	}
 }

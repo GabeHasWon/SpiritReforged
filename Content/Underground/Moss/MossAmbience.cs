@@ -1,5 +1,4 @@
 ﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Moss.Oganesson;
@@ -106,22 +105,7 @@ public sealed class MossAmbience : GlobalTile
 
 	private static void DrawAbovePlayer(On_Main.orig_DrawInfernoRings orig, Main self)
 	{
-		foreach (IParticle particle in OverPlayers.Particles)
-		{
-			if (particle is FloatingMoss floatingMoss)
-				floatingMoss.drawOutline = true; //Set to outline mode
-		}
-
 		OverPlayers.Draw(Main.spriteBatch);
-
-		foreach (IParticle particle in OverPlayers.Particles)
-		{
-			if (particle is FloatingMoss floatingMoss)
-				floatingMoss.drawOutline = false; //Set to non-outline mode
-		}
-
-		OverPlayers.Draw(Main.spriteBatch);
-
 		orig(self);
 	}
 
@@ -182,7 +166,7 @@ public sealed class MossAmbience : GlobalTile
 		Vector2 startPos = new Vector2(i, j).ToWorldCoordinates();
 		Vector2 velocity = new(Main.rand.NextFloat(-0.5f, 0.5f), Main.rand.NextFloat(-0.6f, -0.2f));
 
-		ParticleHandler.SpawnParticle(new GlowParticle(startPos, velocity,
+		ParticleRenderers.OverPlayers.Add(new GlowParticle(startPos, velocity,
 			mossColor * 0.225f, 0.25f, Main.rand.Next(260, 400), 4, p =>
 			{
 				p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-0.005f, 0.005f)) * 0.98f;
@@ -190,8 +174,8 @@ public sealed class MossAmbience : GlobalTile
 				p.Scale = 0.5f + 0.15f * (float)Math.Sin(p.TimeActive * 0.05f);
 
 				//constantly update helium moss colors
-				if (mossColor == Main.DiscoColor)
-					p.Color = Main.DiscoColor;
+				if (mossColor == Main.DiscoColor && p is GlowParticle glowParticle)
+					glowParticle.Color = Main.DiscoColor;
 			}));
 	}
 
@@ -229,11 +213,11 @@ public sealed class MossAmbience : GlobalTile
 		Vector2 start = player.BottomLeft + new Vector2(Main.rand.Next(player.width), 0);
 		Vector2 velocity = new Vector2(Main.rand.NextFloat(-1f, 1f), -1).RotatedByRandom(MathHelper.PiOver4) * Main.rand.NextFloat(0.4f, 1f);
 
-		ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 			new Color(0, 184, 255) * 0.5f, Main.rand.NextFloat(0.25f, 0.45f), 180, 8, p =>
 			{
-				p.Velocity.X *= Main.rand.NextFloat(.8f, .9f);
-				p.Velocity.Y *= Main.rand.NextFloat(.96f, .99f);
+				p.Velocity.X *= Main.rand.NextFloat(0.8f, 0.9f);
+				p.Velocity.Y *= Main.rand.NextFloat(0.96f, 0.99f);
 			}));
 	}
 
@@ -252,7 +236,7 @@ public sealed class MossAmbience : GlobalTile
 		else
 			rotationDir = 1f;
 
-		ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 			new Color(255, 92, 160) * 0.65f, Main.rand.NextFloat(0.25f, 0.45f), Main.rand.Next(90, 140), 8, p =>
 			{
 				Vector2 toCenter = (center - p.Position).SafeNormalize(Vector2.Zero);
@@ -268,7 +252,7 @@ public sealed class MossAmbience : GlobalTile
 		Vector2 start = player.BottomLeft + new Vector2(Main.rand.Next(player.width), 0);
 		Vector2 velocity = new Vector2(Main.rand.NextFloat(-1f, 1f), -1).RotatedByRandom(MathHelper.PiOver2) * Main.rand.NextFloat(1f, 2f);
 
-		ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 			new Color(105, 255, 41) * 0.5f, Main.rand.NextFloat(0.25f, 0.45f), 120, 7, p =>
 			{
 				if (Main.rand.NextBool(24))
@@ -287,7 +271,7 @@ public sealed class MossAmbience : GlobalTile
 		Vector2 start = player.BottomLeft + new Vector2(Main.rand.Next(player.width), 0);
 		Vector2 velocity = new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), -0.4f);
 
-		ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 			new Color(210, 97, 255) * 0.5f, Main.rand.NextFloat(0.25f, 0.45f), Main.rand.Next(95, 135), 8, p =>
 			{
 				Vector2 toPlayer = (player.Center - p.Position).SafeNormalize(Vector2.Zero);
@@ -304,11 +288,13 @@ public sealed class MossAmbience : GlobalTile
 		Vector2 start = player.BottomLeft + new Vector2(Main.rand.Next(player.width), 0);
 		Vector2 velocity = new Vector2(Main.rand.NextFloat(-0.2f, 0.2f), -0.4f);
 
-		ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 			Main.DiscoColor, Main.rand.NextFloat(0.25f, 0.45f), Main.rand.Next(95, 135), 8, p =>
 			{
-				p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-.3f, .3f)) * 0.98f;
-				p.Color = Main.DiscoColor;
+				p.Velocity = p.Velocity.RotatedBy(Main.rand.NextFloat(-0.3f, 0.3f)) * 0.98f;
+				
+				if (p is GlowParticle glowParticle)
+					glowParticle.Color = Main.DiscoColor;
 			}));
 	}
 
@@ -318,10 +304,10 @@ public sealed class MossAmbience : GlobalTile
 		Vector2 start = player.BottomLeft + new Vector2(Main.rand.Next(player.width), 0);
 		Vector2 velocity = new Vector2(0, -1).RotatedByRandom(MathHelper.PiOver2) * Main.rand.NextFloat(.25f, .5f);
 
-		ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 			new Color(252, 90, 3) * 0.85f, Main.rand.NextFloat(0.25f, 0.45f), 90, 4, p =>
 			{
-				p.Velocity.Y += Main.rand.NextFloat(.02f, .03f);
+				p.Velocity.Y += Main.rand.NextFloat(0.02f, 0.03f);
 			}));
 	}
 
@@ -331,10 +317,10 @@ public sealed class MossAmbience : GlobalTile
 		Vector2 start = player.BottomLeft + new Vector2(Main.rand.Next(player.width), 0);
 		Vector2 velocity = new Vector2(Main.rand.NextFloat(-.5f, .5f), Main.rand.NextFloat(-1.2f, -0.3f));
 
-		ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 			new Color(248, 255, 56) * 0.5f, Main.rand.NextFloat(0.25f, 0.45f), 260, 8, p =>
 			{
-				p.Velocity *= .98f;
+				p.Velocity *= 0.98f;
 				p.Scale = 0.25f + 0.15f * (float)Math.Sin(p.TimeActive * 0.05f);
 
 			}));
@@ -346,13 +332,13 @@ public sealed class MossAmbience : GlobalTile
 		Vector2 start = player.BottomLeft + new Vector2(Main.rand.Next(player.width), 0);
 		Vector2 velocity = new Vector2(0f, Main.rand.NextFloat(-2f, -1f));
 
-		ParticleHandler.SpawnParticle(new GlowParticle(start, velocity,
+		ParticleRenderers.UnderProjectiles.Add(new GlowParticle(start, velocity,
 			new Color(255, 255, 255) * 0.75f, Main.rand.NextFloat(0.25f, 0.45f), 60, 8, p =>
 			{
-				p.Velocity.Y *= Main.rand.NextFloat(.96f, .99f);
+				p.Velocity.Y *= Main.rand.NextFloat(0.96f, 0.99f);
 				if (p.TimeActive == 50)
 					for (int i = 0; i < 2; i++)
-						ParticleHandler.SpawnParticle(new GlowParticle(p.Position, new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 1f)), new Color(255, 255, 255) * 0.25f, Main.rand.NextFloat(0.25f, 0.3f), 30, 8));
+						ParticleRenderers.UnderProjectiles.Add(new GlowParticle(p.Position, new Vector2(Main.rand.NextFloat(-1f, 1f), Main.rand.NextFloat(-1f, 1f)), new Color(255, 255, 255) * 0.25f, Main.rand.NextFloat(0.25f, 0.3f), 30, 8));
 			}));
 	}
 	#endregion
@@ -361,7 +347,7 @@ public sealed class MossAmbience : GlobalTile
 public class FloatingMoss(int style) : ABasicParticle
 {
 	public const int FRAME_COUNT = 7;
-	public static readonly Asset<Texture2D> Texture = DrawHelpers.RequestLocal<FloatingMoss>("FloatingMoss", false);
+	public static readonly Asset<Texture2D> Texture = Graphics.Tex("SpiritReforged/Content/Underground/Moss/FloatingMoss");
 
 	public Rectangle Hitbox => new((int)LocalPosition.X - 2, (int)LocalPosition.Y - 2, 4, 4);
 
@@ -427,7 +413,7 @@ public class FloatingMoss(int style) : ABasicParticle
 		Color variableColor = MossAmbience.LerpedWaterTint;
 		Texture2D texture = Texture.Value;
 		Texture2D bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-		Rectangle source = texture.Frame(FRAME_COUNT, 2, _style, drawOutline ? 1 : 0, 0, -2);
+		Rectangle source = texture.Frame(FRAME_COUNT, 1, _style, 0, -2, 0);
 		Vector2 position = LocalPosition + settings.AnchorPosition - Main.screenPosition + new Vector2(0, 2);
 
 		Vector3 hsl = Main.rgbToHsl(variableColor);
@@ -438,11 +424,7 @@ public class FloatingMoss(int style) : ABasicParticle
 		variableColor = Main.hslToRgb(hsl);
 
 		spritebatch.Draw(texture, position, source, variableColor * _opacity, Rotation, source.Size() / 2, Scale, default, 0);
-
-		if (!drawOutline)
-		{
-			spritebatch.Draw(bloom, position, null, variableColor.Additive() * _opacity * 0.1f, Rotation, bloom.Size() / 2, Scale * 0.2f, default, 0);
-			Lighting.AddLight(LocalPosition, MossAmbience.LerpedWaterTint.ToVector3() * 0.3f * _opacity);
-		}
+		spritebatch.Draw(bloom, position, null, variableColor.Additive() * _opacity * 0.1f, Rotation, bloom.Size() / 2, Scale * 0.2f, default, 0);
+		Lighting.AddLight(LocalPosition, MossAmbience.LerpedWaterTint.ToVector3() * 0.3f * _opacity);
 	}
 }

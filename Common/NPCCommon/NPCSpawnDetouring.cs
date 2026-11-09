@@ -1,6 +1,5 @@
 ﻿using MonoMod.Cil;
 using SpiritReforged.Content.SaltFlats.Biome;
-using System.Reflection.Emit;
 
 namespace SpiritReforged.Common.NPCCommon;
 

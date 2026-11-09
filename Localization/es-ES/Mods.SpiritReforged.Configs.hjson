@@ -1,0 +1,85 @@
+ReforgedClientConfig: {
+	DisplayName: Configuración de cliente
+
+	ReflectionDetail: {
+		Label: Detalle de los reflejos
+		Tooltip:
+			'''
+			Determina el detalle de todos los reflejos.
+			Valores más altos significan más detalle a cambio de un mayor coste de rendimiento.
+			'''
+	}
+
+	AmbientSounds: {
+		Label: Sonidos ambientales
+		Tooltip: Reproduce sonidos ambientales en biomas específicos.
+	}
+
+	ScreenshakeStrength: {
+		Label: Fuerza del movimiento de la cámara
+		Tooltip: Controla que tan fuerte es el movimiento de la cámara en Reforged.
+	}
+
+	DisableWater: {
+		Label: Desactivar efectos visuales del agua
+		Tooltip: Desactiva los efectos visuales del agua de Reforged.
+	}
+
+	DebugEcotones: {
+		Label: Depuración de Ecotonos (con el previsualizador de generación de mundo)
+		Tooltip:
+			'''
+			REQUIERE el mod WorldGen Previewer.
+			Permite que desarrolladores y jugadores que usan el sistema de ecotonos depuren problemas y comprendan los ecotonos mediante una superposición útil.
+			'''
+	}
+
+	Headers.Developer: Herramientas de desarrollo
+
+	GlyphProjectileVisualEffects: {
+		Label: Efectos de proyectil de los glifos
+		Tooltip: Determina si los glifos crean efectos visuales en los proyectiles.
+	}
+
+	GlyphItemVisualEffects: {
+		Label: Efectos de glifo en objetos
+		Tooltip: Determina si los objetos con glifos tienen sombreadores y efectos visuales cuando se dejan caer en el mundo.
+	}
+
+	BannerJingle: {
+		Label: Jingle de estandartes
+		Tooltip: Activa un jingle que se reproduce cuando se obtiene el primer estandarte para un tipo de enemigo.
+	}
+}
+
+ReforgedServerConfig: {
+	DisplayName: Configuración de servidor
+
+	VentCritters: {
+		Label: Criaturas de respiraderos
+		Tooltip:
+			'''
+			Permite la generación de numerosas criaturas alrededor de los respiraderos hidrotermales.
+			Estas criaturas no interfieren con las tasas de regeneración de enemigos.
+			Sin embargo, sí contribuyen al límite máximo de NPCs.
+			'''
+	}
+
+	MaxFloatingItemCount: {
+		Label: Límite de objetos flotantes
+		Tooltip: Determina cuántos objetos flotantes pueden estar activos en el mundo al mismo tiempo.
+	}
+
+	AutoloadHeldProjectiles: {
+		Label: Carga automática de proyectiles sujetados
+		Tooltip:
+			'''
+			Activa un sistema que detecta automáticamente los “proyectiles sostenidos” durante la recarga.
+			Esto puede aumentar sustancialmente los tiempos de carga o provocar errores de carga si se activa junto con otros mods,
+			pero también puede solucionar algunos problemas con ciertas mecánicas (como los glifos) dentro del juego.
+			Idealmente, otros mods deberían usar el conjunto de proyectiles nombrado HeldProjectile (bool) para asegurar una compatibilidad estable.
+
+			Esto no tiene ningún efecto sobre los proyectiles de vanilla ni los de Reforged, los cuales ya están configurados.
+			'''
+	}
+}

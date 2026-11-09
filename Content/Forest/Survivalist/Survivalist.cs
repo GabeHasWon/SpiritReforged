@@ -1,24 +1,15 @@
 ﻿using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Subclasses.Shotguns;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static SpiritReforged.Common.ItemCommon.MagazineSystem.MagazineGlobalItem;
 using Terraria.Audio;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underworld.Heirloom;
 using Terraria.DataStructures;
-using SpiritReforged.Content.Aether.Items;
 using SpiritReforged.Common.Misc;
-using static tModPorter.ProgressUpdate;
-using SpiritReforged.Content.Underground.Items.Pepperbox;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Forest.Survivalist;
+
 public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 {
 	public const int MAX_COOLDOWN = 300;
@@ -65,7 +56,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 			
 			for (int i = 0; i < 8; i++)
 			{
-				ParticleHandler.SpawnParticle(new SmokeCloud(underbarrelPosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkGray * 0.3f, 0.05f, EaseFunction.EaseQuadOut, 60)
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(underbarrelPosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkGray * 0.3f, 0.05f, EaseFunction.EaseQuadOut, 60)
 				{
 					Pixellate = true,
 					PixelDivisor = 3,
@@ -74,7 +65,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 				Dust.NewDustPerfect(underbarrelPosition, DustID.Torch, velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(6f), 0, default, Main.rand.NextFloat(1f, 4f)).noGravity = true;
 			}
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
 				underbarrelPosition,
 				Color.DarkOrange.Additive(),
 				Color.Orange.Additive(),
@@ -85,7 +76,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 				new Vector2(2, 3),
 				EaseFunction.EaseCubicOut).WithSkew(0.9f, velocity.ToRotation()).UsesLightColor());
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/SurvivalistGrenadeShot_0" + Main.rand.Next(1, 3)) with { Volume = 0.5f, PitchVariance = 0.1f}, position);
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/SurvivalistGrenadeShot_0" + Main.rand.Next(1, 3)) with { Volume = 0.5f, PitchVariance = 0.1f}, position); //CACHE ME
 
 			Projectile.NewProjectile(source, position, velocity * 11f, ModContent.ProjectileType<SurvivalistGrenadeProjectile>(), 30 + damage / 3, knockback * 2, player.whoAmI);
 
@@ -101,27 +92,28 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 
 		for (int i = 0; i < 5; i++)
 		{
-			ParticleHandler.SpawnParticle(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(2f), Color.LightGray * 0.2f, 0.15f, EaseFunction.EaseQuadOut, 90)
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(2f), Color.LightGray * 0.2f, 0.15f, EaseFunction.EaseQuadOut, 90)
 			{
 				Pixellate = true,
 				PixelDivisor = 2,
 			});
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(5f), Color.DimGray * 0.3f, 0.1f, EaseFunction.EaseQuadOut, 60)
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(5f), Color.DimGray * 0.3f, 0.1f, EaseFunction.EaseQuadOut, 60)
 			{
 				Pixellate = true,
 				PixelDivisor = 2,
 			});
 
-			ParticleHandler.SpawnParticle(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray, Main.rand.Next(90), false, false, (particle) => particle.Velocity.Y -= 0.01f, 0.02f));
-			
-			ParticleHandler.SpawnParticle(new SmallCompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray, Main.rand.Next(90), false, false, (particle) => particle.Velocity.Y -= 0.005f, 0.02f));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+			{
+				Variant = CompositeSmoke.SmallVariant
+			});
 
 			for (int x = 0; x < 2; x++)
 			{ 
-				ParticleHandler.SpawnParticle(new GlowParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkOrange, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
-				
-				ParticleHandler.SpawnParticle(new GlowParticle(muzzlePosition, Main.rand.NextVector2Circular(3, 3), Color.Orange, 0.2f, 40, 2, p => p.Velocity *= 0.9f));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkOrange, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, Main.rand.NextVector2Circular(3, 3), Color.Orange, 0.2f, 40, 2, p => p.Velocity *= 0.9f));
 
 				Dust.NewDustPerfect(muzzlePosition, DustID.Torch, Main.rand.NextVector2Circular(4, 4), 0, default, Main.rand.NextFloat(1f, 3f)).noGravity = true;
 			}
@@ -281,18 +273,15 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 						Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
 						Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(2f));
 
-						ParticleHandler.SpawnParticle(new SmallCompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.9f, 65, false, false)
+						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.9f, 65)
 						{
-							Layer = ParticleLayer.AbovePlayer
+							Variant = CompositeSmoke.SmallVariant
 						});
 
-						ParticleHandler.SpawnParticle(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.Gray * 0.66f, 45, false, false)
-						{
-							Layer = ParticleLayer.AbovePlayer
-						});
+						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.Gray * 0.66f, 45));
 					}
 
-					ParticleHandler.SpawnParticle(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(1f, 3f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(2f, 3.5f), 1f, 120, survivalist.lastUsedAmmo));
+					ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(1f, 3f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(2f, 3.5f), 1f, 120, survivalist.lastUsedAmmo));
 					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunPump") with { Volume = 0.75f }, breakPosition);
 				}
 
@@ -399,16 +388,15 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 					for (int i = 0; i < 3; i++)
 					{
 						Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
-
 						Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Smoke, breakVelocity + Main.rand.NextVector2Circular(0.5f, 0.5f), 120, default, Main.rand.NextFloat(4f)).noGravity = true;
 
-						ParticleHandler.SpawnParticle(new SmallCompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.5f, 45, false, false)
+						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.5f, 45)
 						{
-							Layer = ParticleLayer.AbovePlayer
+							Variant = CompositeSmoke.SmallVariant
 						});
 					}
 
-					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition);
+					SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
 
 					survivalist.reloadEffects[0] = true;
 				}

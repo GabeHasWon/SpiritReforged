@@ -14,6 +14,9 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 {
 	public override string WorldGenName => "Cave Objects";
 
+	public static readonly Asset<Texture2D> UndergroundPage = Graphics.Tex("SpiritReforged/Common/WorldGeneration/Micropasses/Passes/UndergroundPage");
+	public static readonly Asset<Texture2D> UndergroundPageButton = Graphics.Tex("SpiritReforged/Common/WorldGeneration/Micropasses/Passes/UndergroundPageButton");
+
 	[GenConfigurable(0.05f, 50f, 0.05f)]
 	[Slider]
 	internal static float CartSpawnRate = 1;
@@ -26,7 +29,7 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 	[Slider]
 	private static float MirrorRate = 1;
 
-	PageInfo IGenerationPage.Info => new("Caves", DrawHelpers.RequestLocal(GetType(), "UndergroundPage", false), DrawHelpers.RequestLocal(GetType(), "UndergroundPageButton", false))
+	PageInfo IGenerationPage.Info => new("Caves", UndergroundPage, UndergroundPageButton)
 	{
 		CopiedPage = new HouseLoader()
 	};
@@ -81,7 +84,7 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 		return Main.tile[x, y].TileType == type;
 	}
 
-	private static void CreateMirrors(int count)
+	public static void CreateMirrors(int count)
 	{
 		int instantaneousAttempts = 0;
 
@@ -94,7 +97,9 @@ internal class CaveDecorMicropass : Micropass, IGenerationPage
 			(int x, int y) = (plot.X, plot.Y);
 			WorldMethods.FindGround(x, ref y);
 
-			if ((Main.tile[x, y].TileType == TileID.Granite || instantaneousAttempts > 200) && !Main.tile[x, y - 1].CheckingLiquid) //Generate anywhere, but favour granite microbiomes initially
+			// Generate anywhere, but favour granite initially
+			bool graniteOrLateCheck = Main.tile[x, y].TileType == TileID.Granite || instantaneousAttempts > 200;
+			if (graniteOrLateCheck && !Main.tile[x, y - 1].CheckingLiquid && (Main.tile[x, y - 1].LiquidType == LiquidID.Water || Main.tile[x, y - 1].LiquidAmount == 0)) 
 			{
 				y--;
 

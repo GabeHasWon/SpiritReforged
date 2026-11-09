@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.ItemCommon.Pins;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.UI.System;
-using SpiritReforged.Common.Visuals;
 using Terraria.GameInput;
 using Terraria.UI;
 
@@ -108,37 +108,41 @@ internal class PinUIState : AutoUIState
 		base.DrawSelf(spriteBatch);
 
 		bool hasNewPin = Main.LocalPlayer.GetModPlayer<PinPlayer>().newPins.Count != 0;
-		if (openButton.IsMouseHovering)
+		int frame = openButton.IsMouseHovering ? 1 : 0;
+		Color color = (openButton.IsMouseHovering || hasNewPin) ? Color.White : Color.White * 0.5f;
+
+		Vector2 position = openButton.GetDimensions().Center() - new Vector2(buttonTexture.Width() / 2, buttonTexture.Height() / 4);
+		Rectangle source = buttonTexture.Frame(1, 2, 0, frame, sizeOffsetY: -2);
+
+		if (hasNewPin)
 		{
-			Main.LocalPlayer.mouseInterface = true;
-			DrawButton(Color.White, 1);
+			float lerp = (float)Math.Sin(Main.timeForVisualEffects / 20f);
+			var glowPos = openButton.GetDimensions().Center() + new Vector2(0, 4);
+
+			spriteBatch.Draw(AssetLoader.LoadedTextures["Bloom"].Value, glowPos, null,
+				Color.White.Additive() * (0.5f - lerp * 0.025f), 0, AssetLoader.LoadedTextures["Bloom"].Size() / 2, 0.25f - lerp * 0.025f, default, 0);
+
+			spriteBatch.Draw(AssetLoader.LoadedTextures["GodrayCircle"].Value, glowPos, null,
+				Color.Orange.Additive() * (0.5f - lerp * 0.025f), (float)Main.timeForVisualEffects / 120, AssetLoader.LoadedTextures["GodrayCircle"].Size() / 2, 0.1f - lerp * 0.01f, default, 0);
+
+			DrawGodrays(Main.spriteBatch, glowPos, Color.Goldenrod.Additive(), 22, 10, 5);
+			DrawGodrays(Main.spriteBatch, glowPos, Color.White.Additive(), 16, 5, 5);
 		}
-		else
+
+		spriteBatch.Draw(buttonTexture.Value, position, source, color);
+	}
+
+	public static void DrawGodrays(SpriteBatch spriteBatch, Vector2 position, Color rayColor, float baseLength, float width, int numRays)
+	{
+		for (int i = 0; i < numRays; i++)
 		{
-			DrawButton(hasNewPin ? Color.White : Color.White * .5f, 0);
-		}
+			var ray = AssetLoader.LoadedTextures["Ray"].Value;
+			float rotation = i * (MathHelper.TwoPi / numRays) + Main.GlobalTimeWrappedHourly * ((i % 3 + 1f) / 3) - MathHelper.PiOver2; //Half of rays rotate faster, so it looks less like a rotating static image
 
-		void DrawButton(Color color, int frame)
-		{
-			var position = openButton.GetDimensions().Center() - new Vector2(buttonTexture.Width() / 2, buttonTexture.Height() / 4);
-			var source = buttonTexture.Frame(1, 2, 0, frame, sizeOffsetY: -2);
+			float length = baseLength * (float)(Math.Sin((Main.GlobalTimeWrappedHourly + i) * 2) / 5 + 1); //Arbitrary sine function to fluctuate length between rays over time
+			var rayscale = new Vector2(width / ray.Width, length / ray.Height);
 
-			if (hasNewPin)
-			{
-				float lerp = (float)Math.Sin(Main.timeForVisualEffects / 20f);
-				var glowPos = openButton.GetDimensions().Center() + new Vector2(0, 4);
-
-				spriteBatch.Draw(AssetLoader.LoadedTextures["Bloom"].Value, glowPos, null, 
-					(Color.White with { A = 0 }) * (.5f - lerp * .025f), 0, AssetLoader.LoadedTextures["Bloom"].Size() / 2, .25f - lerp * .025f, default, 0);
-
-				spriteBatch.Draw(AssetLoader.LoadedTextures["GodrayCircle"].Value, glowPos, null,
-					(Color.Orange with { A = 0 }) * (.5f - lerp * .025f), (float)Main.timeForVisualEffects / 120, AssetLoader.LoadedTextures["GodrayCircle"].Size() / 2, .1f - lerp * .01f, default, 0);
-
-				DrawHelpers.DrawGodrays(Main.spriteBatch, glowPos, Color.Goldenrod with { A = 0 }, 22, 10, 5);
-				DrawHelpers.DrawGodrays(Main.spriteBatch, glowPos, Color.White with { A = 0 }, 16, 5, 5);
-			}
-
-			spriteBatch.Draw(buttonTexture.Value, position, source, color);
+			spriteBatch.Draw(ray, position, null, rayColor, rotation, new Vector2(ray.Width / 2, 0), rayscale, SpriteEffects.None, 0);
 		}
 	}
 }

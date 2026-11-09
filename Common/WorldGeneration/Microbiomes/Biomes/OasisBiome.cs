@@ -5,7 +5,7 @@ using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
-public class OasisBiome : Microbiome
+public class OasisBiome : MicrobiomeSystem.Microbiome
 {
 	public static bool InOasis(Player p)
 	{
@@ -40,17 +40,14 @@ public class OasisBiome : Microbiome
 	private static bool MapOasis(On_WorldGen.orig_PlaceOasis orig, int X, int Y)
 	{
 		bool value = orig(X, Y);
-
 		if (value)
 		{
 			int index = GenVars.numOasis - 1;
 			if (index < GenVars.oasisPosition.Length)
-				Create<OasisBiome>(GenVars.oasisPosition[index], false);
+				Create<OasisBiome>(GenVars.oasisPosition[index]);
 		}
 
 		return value;
 	}
 	#endregion
-
-	protected override void OnPlace(Point16 point) { }
 }

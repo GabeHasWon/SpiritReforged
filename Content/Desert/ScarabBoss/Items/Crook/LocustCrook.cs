@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.IO;
@@ -169,7 +168,7 @@ public class LocustCrook : ModItem
 				Projectile.Kill();
 
 			if (Main.rand.NextBool(15))
-				ParticleHandler.SpawnParticle(new SharpStarParticle(Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
+				ParticleRenderers.UnderProjectiles.Add(new SharpStarParticle(Projectile.Center + Main.rand.NextVector2Circular(25f, 25f),
 					-Projectile.velocity * 0.05f, Color.White.Additive() * 0.5f, new Color(255, 120, 0, 0), Main.rand.NextFloat(0.1f, 0.2f), 20, 0f));
 
 			Projectile.velocity *= 0.98f;

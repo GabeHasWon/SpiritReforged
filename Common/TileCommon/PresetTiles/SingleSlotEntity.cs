@@ -77,7 +77,7 @@ public abstract class SingleSlotEntity : ModTileEntity
 
 	public override int Hook_AfterPlacement(int i, int j, int type, int style, int direction, int alternate)
 	{
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		var d = TileObjectData.GetTileData(Main.tile[i, j]);
 
 		var size = (d is null) ? new Point(1, 1) : new Point(d.Width, d.Height);
@@ -126,7 +126,7 @@ public abstract class SingleSlotTile<T> : EntityTile<T> where T : SingleSlotEnti
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				TileExtensions.GetTopLeft(ref i, ref j);
+				(i, j) = Helpers.GetTopLeft(i, j);
 				Vector2 pos = new Vector2(i, j).ToWorldCoordinates();
 
 				Item.NewItem(new EntitySource_TileBreak(i, j), pos, slot.item);

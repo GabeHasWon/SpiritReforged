@@ -1,20 +1,13 @@
-﻿using Mono.Cecil;
-using SpiritReforged.Common.Subclasses.Greatshields;
+﻿using SpiritReforged.Common.Subclasses.Greatshields;
 using SpiritReforged.Common.Subclasses.Shotguns;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static System.Net.Mime.MediaTypeNames;
-using Terraria;
 using Terraria.Audio;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Forest.Flakker;
+
 public class FlakkerProjectile : ModProjectile
 {
 	public Flakker parent;
@@ -84,7 +77,7 @@ public class FlakkerProjectile : ModProjectile
 
 			float strength = Main.rand.NextFloat(0.9f, 1.1f);
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(glowPos, Color.Yellow.Additive(), Color.OrangeRed, 0.6f, 60 * strength, (int)(30 * strength), "Smoke", stretch, EaseFunction.EaseQuinticOut)
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(glowPos, Color.Yellow.Additive(), Color.OrangeRed, 0.6f, 60 * strength, (int)(30 * strength), "Smoke", stretch, EaseFunction.EaseQuinticOut)
 			{ Angle = Main.rand.NextFloat(MathHelper.TwoPi) });
 
 			for (int i = 0; i < (int)(4 * strength); i++)
@@ -92,7 +85,7 @@ public class FlakkerProjectile : ModProjectile
 				Vector2 pos = Projectile.Center;
 				Vector2 velocity = Main.rand.NextVector2CircularEdge(5f, 5f) * Main.rand.NextFloat(0.5f, 1f) * strength;
 
-				ParticleHandler.SpawnParticle(new SparkParticle(pos, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat()), 0.65f, Main.rand.Next(30, 70), p => p.Velocity *= 0.9f, tileCollide: false));
+				ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.OrangeRed, Color.Yellow, Main.rand.NextFloat()), 0.65f, Main.rand.Next(30, 70), p => p.Velocity *= 0.9f, tileCollide: false));
 
 				for (int x = 0; x < 3; x++)
 				{
@@ -100,14 +93,16 @@ public class FlakkerProjectile : ModProjectile
 				}
 			}
 		}
-		else
+		else //EMPTY BLOCK
 		{
 
 		}
 
-		ParticleHandler.SpawnParticle(new CompositeSmoke(Projectile.Center, -Vector2.UnitY * Main.rand.NextFloat(), new(120, 120, 120), 50, false, false, p => p.Velocity *= 0.95f));
-		
-		ParticleHandler.SpawnParticle(new SmallCompositeSmoke(Projectile.Center, -Vector2.UnitY * Main.rand.NextFloat(), new(200, 200, 200), 30, false, false, p => p.Velocity *= 0.95f));
+		ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY * Main.rand.NextFloat(), new(120, 120, 120), 50, default, p => p.Velocity *= 0.95f));
+		ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY * Main.rand.NextFloat(), new(200, 200, 200), 30, default, p => p.Velocity *= 0.95f)
+		{
+			Variant = CompositeSmoke.SmallVariant
+		});
 
 		Dust.NewDustPerfect(Projectile.Center, DustID.Torch, Main.rand.NextVector2Circular(4, 4), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
 	}
@@ -122,10 +117,10 @@ public class FlakkerProjectile : ModProjectile
 
 			Vector2 drawPosition = Projectile.oldPos[i] + Projectile.Size / 2 - Main.screenPosition;
 
-			Main.spriteBatch.Draw(texture, drawPosition, null, lightColor * lerp * 0.33f, Projectile.rotation, texture.Size() / 2f, Projectile.scale, 0f, 0f);
+			Main.spriteBatch.Draw(texture, drawPosition, null, lightColor * lerp * 0.33f, Projectile.rotation, texture.Size() / 2f, Projectile.scale, 0f, 0f); //MAIN.ENTITYSPRITEDRAW
 		}
 
-		Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, texture.Size() / 2f, Projectile.scale, 0f, 0f);
+		Main.spriteBatch.Draw(texture, Projectile.Center - Main.screenPosition, null, lightColor, Projectile.rotation, texture.Size() / 2f, Projectile.scale, 0f, 0f); //MAIN.ENTITYSPRITEDRAW
 
 		return false;
 	}
