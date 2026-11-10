@@ -198,8 +198,8 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 		for (int i = 0; i < 3; i++)
 		{
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Projectile.velocity * Main.rand.NextFloat(1.5f * ChargeProgress), new(150, 230, 255), 30 + Main.rand.Next(60), default, (particle) => particle.Velocity.Y -= 0.01f));
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Projectile.velocity * Main.rand.NextFloat(3f * ChargeProgress), Color.Gray, 20 + Main.rand.Next(60), default, (particle) => particle.Velocity.Y -= 0.01f)
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Projectile.velocity * Main.rand.NextFloat(1.5f * ChargeProgress), new Color(150, 230, 255) * 0.4f, 30 + Main.rand.Next(60), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), Projectile.velocity * Main.rand.NextFloat(3f * ChargeProgress), Color.Gray * 0.4f, 20 + Main.rand.Next(60), default, (particle) => particle.Velocity.Y -= 0.01f)
 			{
 				Variant = CompositeSmoke.SmallVariant
 			});

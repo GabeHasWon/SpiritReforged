@@ -74,8 +74,8 @@ public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread
 				PixelDivisor = 2,
 			});
 
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightYellow, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightYellow * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
 			{
 				Variant = CompositeSmoke.SmallVariant
 			});
