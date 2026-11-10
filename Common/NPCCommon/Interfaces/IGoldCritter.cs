@@ -17,7 +17,11 @@ public class GoldCritterNPC : GlobalNPC
 {
 	public override bool AppliesToEntity(NPC entity, bool lateInstantiation) => entity.ModNPC is IGoldCritter;
 
-	public override void SetDefaults(NPC npc) => npc.rarity = 3;
+	public override void SetDefaults(NPC npc)
+	{
+		NPCID.Sets.GoldCrittersCollection.Add(npc.type);
+		npc.rarity = 3;
+	}
 
 	public override void SetBestiary(NPC npc, BestiaryDatabase database, BestiaryEntry bestiaryEntry)
 	{
