@@ -37,15 +37,10 @@ public class SparkParticle : Particle
 	{
 		base.Update(ref settings);
 
-		if (canCollide)
+		if (canCollide && Collision.SolidCollision(Position - new Vector2(4), 8, 8) && !HitTile)
 		{
-			Tile tile = Framing.GetTileSafely((int)Position.X / 16, (int)Position.Y / 16); // we really need collision for particles I think
-
-			if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType] && !HitTile)
-			{
-				Velocity *= 0f;
-				HitTile = true;
-			}
+			Velocity *= 0f;
+			HitTile = true;
 		}
 		
 		if (addLight)
@@ -57,14 +52,16 @@ public class SparkParticle : Particle
 			_action?.Invoke(this);
 		}
 		else
-			TimeActive++;	
+		{
+			TimeActive++;
+		}	
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		Main.instance.LoadProjectile(873);
 
-		float progress = 1 - EaseBuilder.EaseCubicOut.Ease(Progress);
+		float progress = 1 - EaseFunction.EaseCubicOut.Ease(Progress);
 
 		var glowLine = TextureAssets.Projectile[873].Value;
 		Texture2D bloomtexture = AssetLoader.LoadedTextures["Bloom"].Value;
