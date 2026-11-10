@@ -35,6 +35,8 @@ public class SparkParticle : Particle
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		if (canCollide)
 		{
 			Tile tile = Framing.GetTileSafely((int)Position.X / 16, (int)Position.Y / 16); // we really need collision for particles I think
