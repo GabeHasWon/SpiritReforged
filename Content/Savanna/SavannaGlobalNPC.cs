@@ -23,7 +23,7 @@ public class SavannaGlobalNPC : GlobalNPC
 
 	public override void ModifyShop(NPCShop shop)
 	{
-		if (shop.NpcType == NPCID.Painter)
+		if (shop.NpcType == NPCID.Painter && shop.Name == "Decor")
 		{
 			shop.Add(Mod.Find<ModItem>(nameof(DustyFields) + "Item").Type, Condition.MoonPhaseFull, SpiritConditions.InSavanna);
 			shop.Add(Mod.Find<ModItem>(nameof(DustyFields) + "Item").Type, Condition.MoonPhaseWaningGibbous, SpiritConditions.InSavanna);
