@@ -3835,11 +3835,11 @@ LushWoodTrellisTwoItem: {
 }
 
 TrellisSpookyWoodVanillaItem: {
-	// DisplayName: Trellis Spooky Wood Vanilla Item
-	// Tooltip: ""
+	DisplayName: 阴森木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoSpookyWoodVanillaItem: {
-	// DisplayName: Trellis Two Spooky Wood Vanilla Item
-	// Tooltip: ""
+	DisplayName: 十字阴森木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
