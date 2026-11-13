@@ -3833,3 +3833,13 @@ LushWoodTrellisTwoItem: {
 	DisplayName: Crossed Lush Wood Trellis
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
+
+TrellisSpookyWoodVanillaItem: {
+	DisplayName: Spooky Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoSpookyWoodVanillaItem: {
+	DisplayName: Crossed Spooky Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
