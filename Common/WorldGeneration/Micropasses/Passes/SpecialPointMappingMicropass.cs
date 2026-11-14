@@ -14,6 +14,7 @@ using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Tiles;
+using System.Numerics;
 using System.Reflection;
 using Terraria.DataStructures;
 using Terraria.IO;
@@ -31,6 +32,9 @@ internal class SpecialPointMappingMicropass : Micropass
 
 	private static Point NoseArena = new(-1, -1);
 	private static Point RottenDepths = new(-1, -1);
+
+	[WorldBound]
+	private static HashSet<string> PlacedInterests = [];
 
 	public override void PostSetupContent(Mod mod)
 	{
@@ -84,7 +88,7 @@ internal class SpecialPointMappingMicropass : Micropass
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		HashSet<string> placed = [];
+		PlacedInterests.Clear();
 		IEnumerable<InterestDefinition> definitions = ModContent.GetContent<InterestDefinition>();
 
 		for (int i = 20; i < Main.maxTilesX - 20; i++)
@@ -98,7 +102,7 @@ internal class SpecialPointMappingMicropass : Micropass
 
 				foreach (InterestDefinition def in definitions)
 				{
-					if (def.MappedInterest && def.IsInterestAt(i, j, placed))
+					if (def.MappedInterest && def.IsInterestAt(i, j, PlacedInterests))
 					{
 						Add(i, j, InterestType.Custom, def);
 						break;
@@ -136,15 +140,17 @@ internal class SpecialPointMappingMicropass : Micropass
 		}
 
 		Add((int)GenVars.shimmerPosition.X, (int)GenVars.shimmerPosition.Y, InterestType.Shimmer);
+	}
 
-		void Add(int x, int y, InterestType type, InterestDefinition? definition = null)
-		{
-			if (PointOfInterestSystem.InterestByPosition.TryGetValue(new Point16(x, y), out var value))
-				SpiritReforgedMod.Instance.Logger.Info($"Two (or more) interests were placed @ {x}, {y}, currently {value.legacyType}, attempted {type}.");
+	public static void Add(int x, int y, string interestName) => Add(x, y, InterestType.Custom, ModContent.Find<InterestDefinition>(interestName));
 
-			PointOfInterestSystem.Interest interest = definition is not null ? new(definition) : new(type);
-			PointOfInterestSystem.InterestByPosition.TryAdd(new(x, y), interest);
-			placed.Add(interest.definition.FullName);
-		}
+	public static void Add(int x, int y, InterestType type, InterestDefinition? definition = null)
+	{
+		if (PointOfInterestSystem.InterestByPosition.TryGetValue(new Point16(x, y), out var value))
+			SpiritReforgedMod.Instance.Logger.Info($"Two (or more) interests were placed @ {x}, {y}, currently {value.legacyType}, attempted {type}.");
+
+		PointOfInterestSystem.Interest interest = definition is not null ? new(definition) : new(type);
+		PointOfInterestSystem.InterestByPosition.TryAdd(new(x, y), interest);
+		PlacedInterests.Add(interest.definition.FullName);
 	}
 }

@@ -8,6 +8,7 @@ using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
 using SpiritReforged.Common.WorldGeneration.Microbiomes;
 using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
@@ -314,5 +315,8 @@ public partial class SpiritReforgedMod : Mod
 
 		return null;
 	}
+
+	[ModCall]
+	internal static void PlaceInterest(int x, int y, string name) => SpecialPointMappingMicropass.Add(x, y, name);
 	#endregion
 }

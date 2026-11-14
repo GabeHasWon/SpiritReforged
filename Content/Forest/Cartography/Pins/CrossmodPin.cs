@@ -15,8 +15,17 @@ public class CrossmodPin(string internalName, string texturePath) : PinItem
 	public override string Texture => TexturePath;
 	public override string MapTexture => Texture + "Map";
 
-	private readonly string InternalName = internalName;
-	private readonly string TexturePath = texturePath;
+	private string InternalName = internalName;
+	private string TexturePath = texturePath;
+	protected override bool CloneNewInstances => true;
+
+	public override ModItem Clone(Item newEntity)
+	{
+		var pin = (CrossmodPin)base.Clone(newEntity);
+		pin.InternalName = InternalName;
+		pin.TexturePath = TexturePath;
+		return pin;
+	}
 
 	public CrossmodPin() : this("", "") { }
 
