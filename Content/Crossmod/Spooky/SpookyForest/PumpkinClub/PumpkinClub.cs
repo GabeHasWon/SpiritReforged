@@ -18,7 +18,7 @@ public class PumpkinClub : ClubItem
 		Item.width = 60;
 		Item.height = 60;
 		Item.crit = 4;
-		Item.value = Item.sellPrice(gold: 5);
+		Item.value = Item.sellPrice(gold: 1);
 		Item.rare = ItemRarityID.Green;
 		Item.shoot = ModContent.ProjectileType<PumpkinClubProj>();
 	}

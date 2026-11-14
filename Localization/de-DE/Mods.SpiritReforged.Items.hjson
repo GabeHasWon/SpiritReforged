@@ -3751,7 +3751,7 @@ LookerClub: {
 }
 
 PumpkinClub: {
-	// DisplayName: Smack-o-Lantern
+	// DisplayName: Smack 'O Lantern
 	// Tooltip: Charged strikes split into flaming chunks
 }
 
@@ -3831,5 +3831,15 @@ LushWoodTrellisItem: {
 
 LushWoodTrellisTwoItem: {
 	// DisplayName: Crossed Lush Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodVanillaItem: {
+	// DisplayName: Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoSpookyWoodVanillaItem: {
+	// DisplayName: Crossed Spooky Wood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }

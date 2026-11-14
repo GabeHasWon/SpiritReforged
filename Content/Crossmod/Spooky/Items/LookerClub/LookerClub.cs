@@ -16,7 +16,7 @@ public class LookerClub : ClubItem
 		Item.width = 60;
 		Item.height = 60;
 		Item.crit = 4;
-		Item.value = Item.sellPrice(0, 0, 0, 5);
+		Item.value = Item.sellPrice(0, 0, 75, 0);
 		Item.rare = ItemRarityID.Orange;
 		Item.shoot = ModContent.ProjectileType<LookerClubProj>();
 	}

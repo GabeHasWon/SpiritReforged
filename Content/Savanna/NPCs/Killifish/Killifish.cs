@@ -44,7 +44,6 @@ public class Killifish : ModNPC
 		NPC.noGravity = true;
 		NPC.npcSlots = 0;
 		NPC.dontCountMe = true;
-		NPC.friendly = true;
 		NPC.dontTakeDamage = false;
 		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
