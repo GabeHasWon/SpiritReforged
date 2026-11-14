@@ -11,6 +11,7 @@ public class Cricket : ModNPC, ISubstitute
 
 	public override void SetStaticDefaults()
 	{
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 		CreateItemDefaults();
 		Main.npcFrameCount[Type] = 2;
 	}
