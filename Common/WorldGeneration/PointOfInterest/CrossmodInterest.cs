@@ -3,7 +3,7 @@
 #nullable enable
 
 [Autoload(false)]
-internal class CrossmodInterest(string name, Func<int[]> getPins, bool isMapped, Func<int, int, HashSet<Type>, bool>? mapperFunc,
+internal class CrossmodInterest(string name, Func<int[]> getPins, bool isMapped, Func<int, int, HashSet<string>, bool>? mapperFunc,
 	LocalizedText[]? getDialogue = null, Func<bool>? isAvailable = null) : InterestDefinition
 {
 	public override int[] PinTypes => GetPinTypes();
@@ -26,5 +26,5 @@ internal class CrossmodInterest(string name, Func<int[]> getPins, bool isMapped,
 			DiscoveryText = OverrideDialogue;
 	}
 
-	public override bool IsInterestAt(int x, int y, HashSet<Type> placedInterests) => mapperFunc?.Invoke(x, y, placedInterests) ?? false;
+	public override bool IsInterestAt(int x, int y, HashSet<string> placedInterests) => mapperFunc?.Invoke(x, y, placedInterests) ?? false;
 }

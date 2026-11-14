@@ -23,7 +23,7 @@ public abstract class InterestDefinition : ModType, ILocalizedModType
 	internal virtual InterestType LegacyInterestType => InterestType.Custom;
 
 	/// <summary>
-	/// If true, this instance assigns if its enabled through <see cref="IsInterestAt(int, int, HashSet{Type})"/>.<br/>
+	/// If true, this instance assigns if its enabled through <see cref="IsInterestAt(int, int, HashSet{string})"/>.<br/>
 	/// Disable if you use your own logic (such as placing an interest in another generation step).
 	/// </summary>
 	public virtual bool MappedInterest => true;
@@ -58,7 +58,7 @@ public abstract class InterestDefinition : ModType, ILocalizedModType
 	/// <summary>
 	/// Whether to mark the position as this interest. Return true to place this interest at the location.
 	/// </summary>
-	public virtual bool IsInterestAt(int x, int y, HashSet<Type> placedInterests) => false;
+	public virtual bool IsInterestAt(int x, int y, HashSet<string> placedInterests) => false;
 
 	/// <summary>
 	/// If this interest is obtainable in this world.

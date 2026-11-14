@@ -20,6 +20,7 @@ using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Terraria.DataStructures;
@@ -78,7 +79,7 @@ public partial class SpiritReforgedMod : Mod
 
 				ParameterInfo[] parameters = info.GetParameters();
 				int optionalCount = parameters.Count(x => x.IsOptional); //The number of optional parameters of this method
-				object[] namedObjects = new object[parameters.Length];
+				object?[] namedObjects = new object?[parameters.Length];
 
 				if (arguments.Length > parameters.Length)
 					throw new ArgumentException(name + ((optionalCount > 0)
@@ -87,7 +88,25 @@ public partial class SpiritReforgedMod : Mod
 
 				for (int c = 0; c < arguments.Length; c++)
 				{
-					object argument = arguments[c];
+					object? argument = arguments[c];
+
+					if (argument is null)
+					{
+						// If the parameter can be null, set it to null and then let it go,
+						// otherwise, crash immediately, with a clarified error message.
+
+						ParameterInfo typeInfo = parameters[c];
+						bool canBeNull = !typeInfo.ParameterType.IsValueType || Nullable.GetUnderlyingType(typeInfo.ParameterType) != null;
+
+						if (!canBeNull)
+							throw new NullReferenceException($"Argument {c} ({parameters[c].Name}) cannot be null.");
+						else
+						{
+							namedObjects[c] = argument;
+							continue;
+						}
+					}
+
 					Type argumentType = argument.GetType();
 
 					if (argument.GetType() == argumentType)
@@ -285,7 +304,7 @@ public partial class SpiritReforgedMod : Mod
 	internal static CrossmodPin? RegisterPin(Mod mod, string name, string texture) => CrossmodPin.RegisterPin(mod, name, texture);
 
 	[ModCall]
-	internal static CrossmodInterest? RegisterInterest(Mod mod, string name, Func<int[]> getPins, bool isMapped, Func<int, int, HashSet<Type>, bool>? mapperFunc,
+	internal static CrossmodInterest? RegisterInterest(Mod mod, string name, Func<int[]> getPins, bool isMapped, Func<int, int, HashSet<string>, bool>? mapperFunc,
 		LocalizedText[]? dialogue = null, Func<bool>? isAvailable = null)
 	{
 		CrossmodInterest interest = new(name, getPins, isMapped, mapperFunc, dialogue, isAvailable);

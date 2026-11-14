@@ -84,7 +84,7 @@ internal class SpecialPointMappingMicropass : Micropass
 
 	public override void Run(GenerationProgress progress, GameConfiguration config)
 	{
-		HashSet<Type> placed = [];
+		HashSet<string> placed = [];
 		IEnumerable<InterestDefinition> definitions = ModContent.GetContent<InterestDefinition>();
 
 		for (int i = 20; i < Main.maxTilesX - 20; i++)
@@ -144,7 +144,7 @@ internal class SpecialPointMappingMicropass : Micropass
 
 			PointOfInterestSystem.Interest interest = definition is not null ? new(definition) : new(type);
 			PointOfInterestSystem.InterestByPosition.TryAdd(new(x, y), interest);
-			placed.Add(interest.GetType());
+			placed.Add(interest.definition.FullName);
 		}
 	}
 }

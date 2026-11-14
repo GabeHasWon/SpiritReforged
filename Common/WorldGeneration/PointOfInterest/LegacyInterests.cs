@@ -38,7 +38,7 @@ public class LegacyCuriositiesInterest : InterestDefinition
 		}
 	}
 
-	public override bool IsInterestAt(int x, int y, HashSet<Type> placedInterests)
+	public override bool IsInterestAt(int x, int y, HashSet<string> placedInterests)
 	{
 		Tile tile = Main.tile[x, y];
 
@@ -64,7 +64,7 @@ public class FloatingIslandInterest : InterestDefinition
 		DiscoveryText = [Language.GetText(key + "0"), Language.GetText(key + "1"), Language.GetText(key + "2")];
 	}
 
-	public override bool IsInterestAt(int x, int y, HashSet<Type> placedInterests)
+	public override bool IsInterestAt(int x, int y, HashSet<string> placedInterests)
 	{
 		if (TileMethods.TryGetChestID(x, y, out VanillaChestID chestType) && chestType == VanillaChestID.Sky)
 			return true;
@@ -84,7 +84,7 @@ public class EnchantedSwordInterest : InterestDefinition
 		DiscoveryText = [Language.GetText(key + "0"), Language.GetText(key + "1"), Language.GetText(key + "2")];
 	}
 
-	public override bool IsInterestAt(int x, int y, HashSet<Type> placedInterests)
+	public override bool IsInterestAt(int x, int y, HashSet<string> placedInterests)
 	{
 		Tile tile = Main.tile[x, y];
 		return tile.TileType == TileID.LargePiles2 && tile.TileFrameX == 920 && tile.TileFrameY == 0;
@@ -128,10 +128,10 @@ public class SavannaInterest : InterestDefinition
 		DiscoveryText = [Language.GetText(key + "0"), Language.GetText(key + "1"), Language.GetText(key + "2")];
 	}
 
-	public override bool IsInterestAt(int x, int y, HashSet<Type> placedInterests)
+	public override bool IsInterestAt(int x, int y, HashSet<string> placedInterests)
 	{
 		Tile tile = Main.tile[x, y];
-		return tile.TileType == ModContent.TileType<SavannaGrass>() && !placedInterests.Contains(typeof(SavannaInterest));
+		return tile.TileType == ModContent.TileType<SavannaGrass>() && !placedInterests.Contains(FullName);
 	}
 }
 
@@ -146,7 +146,7 @@ public class HiveInterest : InterestDefinition
 		DiscoveryText = [Language.GetText(key + "0"), Language.GetText(key + "1"), Language.GetText(key + "2")];
 	}
 
-	public override bool IsInterestAt(int x, int y, HashSet<Type> placedInterests)
+	public override bool IsInterestAt(int x, int y, HashSet<string> placedInterests)
 	{
 		Tile tile = Main.tile[x, y];
 		return tile.TileType == TileID.Larva && tile.TileFrameX == 0 && tile.TileFrameY == 0;
@@ -166,7 +166,7 @@ public class FablesBunkerInterest : InterestDefinition
 		DiscoveryText = [Language.GetText(key + "0"), Language.GetText(key + "1"), Language.GetText(key + "2")];
 	}
 
-	public override bool IsInterestAt(int x, int y, HashSet<Type> placedInterests)
+	public override bool IsInterestAt(int x, int y, HashSet<string> placedInterests)
 	{
 		if (!CrossMod.Fables.CheckFind("WulfrumVault", out ModTile fablesVault))
 			return false;
@@ -202,10 +202,10 @@ public class SaltFlatsInterest : InterestDefinition
 		DiscoveryText = [Language.GetText(key + "0"), Language.GetText(key + "1"), Language.GetText(key + "2")];
 	}
 
-	public override bool IsInterestAt(int x, int y, HashSet<Type> placedInterests)
+	public override bool IsInterestAt(int x, int y, HashSet<string> placedInterests)
 	{
 		Tile tile = Main.tile[x, y];
-		return tile.TileType == ModContent.TileType<SaltBlockReflective>() && !placedInterests.Contains(typeof(SaltFlatsInterest));
+		return tile.TileType == ModContent.TileType<SaltBlockReflective>() && !placedInterests.Contains(FullName);
 	}
 }
 
