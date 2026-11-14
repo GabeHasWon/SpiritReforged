@@ -1,5 +1,3 @@
-using SpiritReforged.Content.Forest.Cartography.Pins;
-using System.Diagnostics;
 using Terraria.Audio;
 
 namespace SpiritReforged.Common.ItemCommon.Pins;
@@ -15,7 +13,6 @@ public abstract class PinItem : ModItem
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 1;
-		_ = this;
 		PinSystem.DataByName.Add(Name, new(Item, ModContent.Request<Texture2D>(MapTexture)));
 	}
 
