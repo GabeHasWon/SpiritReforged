@@ -6,22 +6,27 @@ using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
+using SpiritReforged.Common.WorldGeneration.PointOfInterest;
 using SpiritReforged.Content.Desert.ScarabBoss.Boss;
 using SpiritReforged.Content.Forest.Botanist.Items;
-using SpiritReforged.Content.Forest.Walls;
+using SpiritReforged.Content.Forest.Cartography.Pins;
 using SpiritReforged.Content.Forest.Graveyard;
+using SpiritReforged.Content.Forest.Walls;
 using SpiritReforged.Content.Glyphs;
 using SpiritReforged.Content.SaltFlats;
 using SpiritReforged.Content.Savanna.Ecotone;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Underground.Tiles.Potion;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using Terraria.DataStructures;
 using static SpiritReforged.Common.DebuffOverhaul.BuffExtension;
 using static SpiritReforged.Common.TileCommon.Conversion.ConversionHandler;
-using SpiritReforged.Common.WorldGeneration.Microbiomes.Biomes;
 
 namespace SpiritReforged;
 
@@ -75,7 +80,7 @@ public partial class SpiritReforgedMod : Mod
 
 				ParameterInfo[] parameters = info.GetParameters();
 				int optionalCount = parameters.Count(x => x.IsOptional); //The number of optional parameters of this method
-				object[] namedObjects = new object[parameters.Length];
+				object?[] namedObjects = new object?[parameters.Length];
 
 				if (arguments.Length > parameters.Length)
 					throw new ArgumentException(name + ((optionalCount > 0)
@@ -84,7 +89,25 @@ public partial class SpiritReforgedMod : Mod
 
 				for (int c = 0; c < arguments.Length; c++)
 				{
-					object argument = arguments[c];
+					object? argument = arguments[c];
+
+					if (argument is null)
+					{
+						// If the parameter can be null, set it to null and then let it go,
+						// otherwise, crash immediately, with a clarified error message.
+
+						ParameterInfo typeInfo = parameters[c];
+						bool canBeNull = !typeInfo.ParameterType.IsValueType || Nullable.GetUnderlyingType(typeInfo.ParameterType) != null;
+
+						if (!canBeNull)
+							throw new NullReferenceException($"Argument {c} ({parameters[c].Name}) cannot be null.");
+						else
+						{
+							namedObjects[c] = argument;
+							continue;
+						}
+					}
+
 					Type argumentType = argument.GetType();
 
 					if (argument.GetType() == argumentType)
@@ -270,9 +293,30 @@ public partial class SpiritReforgedMod : Mod
 	}
 
 	[ModCall]
-	private static int TrellisVine(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path) => CrossmodTrellis.InternalRecieve(mod, itemStylePairs, name, path);
+	internal static int TrellisVine(Mod mod, Func<(int, int)[]> itemStylePairs, string name, string path) => CrossmodTrellis.InternalRecieve(mod, itemStylePairs, name, path);
 
 	[ModCall]
 	internal static bool InOasis(Player plr) => OasisBiome.InOasis(plr);
+
+	[ModCall]
+	internal static Rectangle[] GetOases() => [.. MicrobiomeSystem.Microbiomes.Where(x => x is OasisBiome).Select(x => ((OasisBiome)x).Rectangle)];
+
+	[ModCall]
+	internal static CrossmodPin? RegisterPin(Mod mod, string name, string texture) => CrossmodPin.RegisterPin(mod, name, texture);
+
+	[ModCall]
+	internal static CrossmodInterest? RegisterInterest(Mod mod, string name, Func<int[]> getPins, bool isMapped, Func<int, int, HashSet<string>, bool>? mapperFunc,
+		LocalizedText[]? dialogue = null, Func<bool>? isAvailable = null)
+	{
+		CrossmodInterest interest = new(name, getPins, isMapped, mapperFunc, dialogue, isAvailable);
+
+		if (mod.AddContent(interest))
+			return interest;
+
+		return null;
+	}
+
+	[ModCall]
+	internal static void PlaceInterest(int x, int y, string name) => SpecialPointMappingMicropass.Add(x, y, name);
 	#endregion
 }

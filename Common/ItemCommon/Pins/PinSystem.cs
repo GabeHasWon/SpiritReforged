@@ -13,7 +13,7 @@ public class PinSystem : ModSystem
 	public TagCompound pins = [];
 
 	/// <summary> Places the pin of <paramref name="heldPinValue"/> type at the given coordinates. </summary>
-	/// <param name="heldPinValue"><see cref="PinItem.PinName"/> of the pin.</param>
+	/// <param name="heldPinValue">Name of the pin.</param>
 	/// <param name="position">Position, in tile coordinates, to place the pin at.</param>
 	public static void Place(string heldPinValue, Vector2 position)
 	{
@@ -24,7 +24,7 @@ public class PinSystem : ModSystem
 	}
 
 	/// <summary> Removes the pin of <paramref name="name"/> type. Since there's only one pin per type per world, this needs only the name. </summary>
-	/// <param name="name"><see cref="PinItem.PinName"/> of the pin.</param>
+	/// <param name="name">name of the pin.</param>
 	public static void Remove(string name)
 	{
 		ModContent.GetInstance<PinSystem>().RemovePin(name);
