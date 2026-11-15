@@ -11,7 +11,7 @@ public class PumpkinClub : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 8;
+		Item.damage = 11;
 		Item.knockBack = 5f;
 		ChargeTime = 60;
 		SwingTime = 35;

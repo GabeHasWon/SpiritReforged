@@ -9,7 +9,7 @@ public class ShovelClub : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 15;
+		Item.damage = 35;
 		Item.knockBack = 5f;
 		ChargeTime = 60;
 		SwingTime = 25;
