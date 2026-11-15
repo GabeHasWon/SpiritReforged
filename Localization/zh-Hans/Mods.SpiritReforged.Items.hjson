@@ -3829,7 +3829,6 @@ LushWoodTrellisItem: {
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
-
 LushWoodTrellisTwoItem: {
 	DisplayName: 十字葱郁木藤架
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"

@@ -1,4 +1,7 @@
-﻿namespace SpiritReforged.Common.Easing;
+﻿using System.Linq;
+using System.Reflection;
+
+namespace SpiritReforged.Common.Easing;
 
 public abstract class EaseFunction
 {
@@ -25,6 +28,27 @@ public abstract class EaseFunction
 	public static readonly EaseFunction EaseCircularInOut = new PolynomialEase((float x) => (x < 0.5f) ? (1f - (float)Math.Sqrt(1.0 - Math.Pow(x * 2, 2))) * 0.5f : (float)((Math.Sqrt(1.0 - Math.Pow(-2 * x + 2, 2)) + 1) * 0.5));
 
 	public static readonly EaseFunction EaseSine = new PolynomialEase((float x) => (float)Math.Sin(x * MathHelper.Pi));
+
+	public static EaseFunction[] AllFunctions
+	{
+		get
+		{
+			if (_functions is null)
+			{
+				var types = typeof(EaseFunction).GetFields().Where(x => x.FieldType == typeof(EaseFunction));
+				List<EaseFunction> funcs = [];
+
+				foreach (FieldInfo field in types)
+					funcs.Add((EaseFunction)field.GetValue(null));
+
+				_functions = [.. funcs];
+			}
+
+			return _functions;
+		}
+	}
+
+	private static EaseFunction[] _functions = null;
 
 	public static EaseFunction EaseOutBack(double maxValue = 1.70158)
 	{
