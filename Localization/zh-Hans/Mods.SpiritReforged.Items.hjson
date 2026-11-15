@@ -3835,6 +3835,16 @@ LushWoodTrellisTwoItem: {
 	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
+TrellisSpookyWoodVanillaItem: {
+	DisplayName: 阴森木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoSpookyWoodVanillaItem: {
+	DisplayName: 十字阴森木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
 BasaltTileItem: {
 	// DisplayName: Basalt Tile Item
 	// Tooltip: ""

@@ -10,6 +10,8 @@ public sealed class StoneReliquary : ChestTile, ICustomContainer, ILoadItem
 {
 	public void SetItemDefaults(ModItem item) => item.Item.value = Item.sellPrice(silver: 10);
 
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe().AddIngredient(ItemID.StoneBlock, 15).AddRecipeGroup("Salt", 4).AddRecipeGroup(RecipeGroupID.IronBar, 2).AddTile(TileID.HeavyWorkBench).Register();
+
 	public override void SetStaticDefaults()
 	{
 		base.SetStaticDefaults();
