@@ -1,3 +1,4 @@
+using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
@@ -121,6 +122,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 	private static readonly EasyTarget MirrorTarget = new(), FilterTarget = new();
 	private static readonly HashSet<Point16> SpecialPositions = [];
 
+	private static bool _dirty = false;
+
 	public override void Load()
 	{
 		TargetSetup.DrawIntoRendertargets += DrawContent;
@@ -130,6 +133,14 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 
 	private static void DrawContent()
 	{
+		if (!Reflections.Enabled)
+			return;
+
+		if (SpecialPositions.Count == 0)
+			return;
+
+		_dirty = true;
+
 		GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 		SpriteBatch spriteBatch = Main.spriteBatch;
 
@@ -169,13 +180,18 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 
 		static void DrawNoise(SpriteBatch spriteBatch)
 		{
+			if (Reflections.Detail <= 1)
+				return;
+
 			const float scale = 1;
+			const int increment = 2;
 
 			Texture2D noise = AssetLoader.LoadedTextures["MirrorShine"].Value;
 			float scroll = EaseFunction.EaseCubicInOut.Ease((float)Main.timeForVisualEffects / 100f % 1);
 
-			for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x++)
-				for (int y = 0; y < Main.screenHeight / (noise.Height * scale) + 1; y++)
+			for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x += increment)
+			{
+				for (int y = 0; y < Main.screenHeight / (noise.Height * scale) + 1; y += increment)
 				{
 					Vector2 position = new(noise.Width * scale * x, noise.Height * scale * (y - scroll));
 
@@ -183,16 +199,19 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 					spriteBatch.Draw(noise, position + new Vector2(0, 10), null, Color.DarkCyan * 0.2f, 0, Vector2.Zero, scale, default, 0);
 					spriteBatch.Draw(noise, position - new Vector2(0, 8), null, Color.LightCyan * 0.1f, 0, Vector2.Zero, scale, default, 0);
 				}
+			}
 
 			noise = AssetLoader.LoadedTextures["particlenoise"].Value;
 			scroll = (float)Main.timeForVisualEffects / 2000f % 1;
 
-			for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x++)
-				for (int y = 0; y < Main.screenHeight / (noise.Height * scale) + 1; y++)
+			for (int x = 0; x < Main.screenWidth / (noise.Width * scale) + 1; x += increment)
+			{
+				for (int y = 0; y < Main.screenHeight / (noise.Height * scale) + 1; y += increment)
 				{
 					Vector2 position = new(noise.Width * scale * (x - scroll), noise.Height * scale * (y - scroll));
 					spriteBatch.Draw(noise, position, null, Color.DarkCyan * 0.4f, 0, Vector2.Zero, scale, default, 0);
 				}
+			}
 		}
 	}
 
@@ -200,7 +219,7 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 	{
 		orig(self, solidLayer, forRenderTargets, intoRenderTargets);
 
-		if (!solidLayer && !intoRenderTargets && MirrorTarget?.Value != null)
+		if (!solidLayer && !intoRenderTargets && MirrorTarget?.Value != null && _dirty)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			Effect effect = AssetLoader.LoadedShaders["SimpleMultiply"].Value;
@@ -211,6 +230,8 @@ public sealed class EnchantedMirror : ModTile, ILoadItem
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 			spriteBatch.Draw(MirrorTarget.Value, -new Vector2(10, 5), null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 			spriteBatch.End();
+
+			_dirty = false;
 		}
 	}
 

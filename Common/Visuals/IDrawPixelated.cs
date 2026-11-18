@@ -9,6 +9,9 @@ public interface IDrawPixelated
 	{
 		public static readonly EasyTarget PixelTarget = new(new Vector2(0.5f));
 
+		// Reusable collection to avoid allocation & resize allocation while drawing
+		private static readonly List<IDrawPixelated> _elements = new(20);
+
 		void ILoadable.Load(Mod mod)
 		{
 			TargetSetup.DrawIntoRendertargets += SetupPixelTarget;
@@ -22,17 +25,18 @@ public interface IDrawPixelated
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 
-			List<IDrawPixelated> pixelQueue = []; //Setup queue
+			_elements.Clear(); //Setup queue
+
 			foreach (Item item in Main.ActiveItems)
 			{
 				if (item.ModItem is IDrawPixelated iDrawPixelated)
-					pixelQueue.Add(iDrawPixelated);
+					_elements.Add(iDrawPixelated);
 			}
 
 			foreach (Projectile projectile in Main.ActiveProjectiles)
 			{
 				if (projectile.ModProjectile is IDrawPixelated iDrawPixelated)
-					pixelQueue.Add(iDrawPixelated);
+					_elements.Add(iDrawPixelated);
 			}
 
 			foreach (ParticleRenderer renderer in ParticleRenderers.Renderers)
@@ -40,11 +44,11 @@ public interface IDrawPixelated
 				foreach (IParticle particle in renderer.Particles)
 				{
 					if (particle is IDrawPixelated iDrawPixelated)
-						pixelQueue.Add(iDrawPixelated);
+						_elements.Add(iDrawPixelated);
 				}
 			}
 
-			if (pixelQueue.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
+			if (_elements.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
 			{
 				graphics.SetRenderTarget(PixelTarget.Value);
 				graphics.Clear(Color.Transparent);
@@ -53,7 +57,7 @@ public interface IDrawPixelated
 				graphics.BlendState = BlendState.AlphaBlend; //Required for prims
 				DrawingPixelated = true;
 
-				foreach (IDrawPixelated iDrawPixelated in pixelQueue)
+				foreach (IDrawPixelated iDrawPixelated in _elements)
 					iDrawPixelated.DrawPixelated(spriteBatch);
 
 				DrawingPixelated = false;

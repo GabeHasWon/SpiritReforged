@@ -15,6 +15,8 @@ public sealed class Mirror : ModTile, ILoadItem
 	private static readonly EasyTarget MirrorTarget = new(), FilterTarget = new();
 	private static readonly HashSet<Point16> SpecialPositions = [];
 
+	private static bool _dirty = false;
+
 	public override void Load()
 	{
 		TargetSetup.DrawIntoRendertargets += DrawContent;
@@ -24,6 +26,11 @@ public sealed class Mirror : ModTile, ILoadItem
 
 	private static void DrawContent()
 	{
+		if (SpecialPositions.Count == 0)
+			return;
+
+		_dirty = true;
+
 		GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 		SpriteBatch spriteBatch = Main.spriteBatch;
 
@@ -88,7 +95,7 @@ public sealed class Mirror : ModTile, ILoadItem
 	{
 		orig(self, solidLayer, forRenderTargets, intoRenderTargets);
 
-		if (!solidLayer && !intoRenderTargets && MirrorTarget?.Value != null)
+		if (!solidLayer && !intoRenderTargets && MirrorTarget?.Value != null && _dirty)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 			Effect effect = AssetLoader.LoadedShaders["SimpleMultiply"].Value;
@@ -99,6 +106,8 @@ public sealed class Mirror : ModTile, ILoadItem
 			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, effect, Main.Transform);
 			spriteBatch.Draw(MirrorTarget.Value, -new Vector2(10, 5), null, Color.White, 0, Vector2.Zero, 1, 0, 0);
 			spriteBatch.End();
+
+			_dirty = false;
 		}
 	}
 
