@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Subclasses.Shotguns;
 using Terraria.DataStructures;
-using SpiritReforged.Common.Subclasses.Greatshields;
 using Terraria.Audio;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Misc;
@@ -8,6 +7,7 @@ using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
 
 namespace SpiritReforged.Content.Forest.Ammo;
+
 public class Shot : ShotgunAmmoItem
 {
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type)));
@@ -35,10 +35,12 @@ public class Shot : ShotgunAmmoItem
 		return spawnedProjectiles;
 	}
 
-	public Shot() : base(Behavior, 6, .4f, 12.5f) { }
+	public Shot() : base(Behavior, 6, 0.4f, 12.5f) { }
 
-	public override void SafeSetDefaults()
+	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 5;
 		Item.value = Item.buyPrice(copper: 15);
 	}

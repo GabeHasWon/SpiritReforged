@@ -1,16 +1,9 @@
-﻿using SpiritReforged.Common.Subclasses.Greatshields;
-using SpiritReforged.Common.Visuals;
+﻿using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Subclasses.Shotguns;
-
-// Dummy class for Item.ammo
-// this might be silly but feels cleaner to me
-public class ShotgunAmmoType : ModItem
-{
-	public override string Texture => AssetLoader.EmptyTexture;
-}
 
 /// <summary>
 /// The shoot behavior of the ammo item
@@ -36,170 +29,81 @@ public delegate List<Projectile> ShootBehavior(Item item, Player player, EntityS
 /// Implementation of these stat changes are simply handled twice, once in the global item for vanilla / cross mod, and once in the abstract shotgun class, <see cref="ShotgunItem"/>
 /// This is to avoid having to code in the stat changes in every inherited ShotgunAmmoItem.
 /// </summary>
-public abstract class ShotgunAmmoItem : ModItem
+public abstract class ShotgunAmmoItem(ShootBehavior behavior, int shotCount, float spreadAmount, float speed) : ModItem
 {
-	public ShootBehavior _behavior;
+	public readonly ShootBehavior Behaviour = behavior;
 
-	public int _shotCount;
-	public float _spreadAmount;
-	public float _speed;
+	public int shotCount = shotCount;
+	public float spreadAmount = spreadAmount;
+	public float speed = speed;
 
-	public ShotgunAmmoItem(ShootBehavior behavior, int shotCount, float spreadAmount, float speed)
-	{
-		_behavior = behavior;
-		_shotCount = shotCount;
-		_spreadAmount = spreadAmount;
-		_speed = speed;
-	}
-
-	public sealed override void SetDefaults()
+	public override void SetDefaults()
 	{
 		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
-		Item.ammo = ModContent.ItemType<ShotgunAmmoType>();
-
+		Item.ammo = ModContent.ItemType<Shot>();
+		Item.maxStack = Item.CommonMaxStack;
 		Item.consumable = true;
-		Item.maxStack = 9999;
-
-		SafeSetDefaults();
-	}
-
-	public virtual void SafeSetDefaults()
-	{
-
 	}
 }
 
-// TODO: mod call to add things to this
 public class ShotgunGlobalItem : GlobalItem
 {
-	public static List<int> _shotgunIDs = 
-		[ItemID.Boomstick,
-		ItemID.QuadBarrelShotgun,
-		ItemID.OnyxBlaster,
-		ItemID.Shotgun,
-		ItemID.TacticalShotgun,
-		];
+	public static readonly ShotgunStats?[] Shotgun = SpiritSets.ItemFactory.CreateNamedSet(nameof(Shotgun)).Description("Whether this item will be considered a shotgun and use shotgun stats").RegisterCustomSet<ShotgunStats?>(null);
 
-	public Dictionary<int, ShotgunStats> _shotgunStats = [];
-
-	public override void Load()
+	public override void SetStaticDefaults() //Set vanilla shotgun defaults
 	{
-		// default stats
-		_shotgunStats.Add(ItemID.Boomstick, new());
-		// 50% more shots, 50% more spread
-		_shotgunStats.Add(ItemID.QuadBarrelShotgun, new(shotMultiplier: 0.5f, spreadMultiplier: 0.5f));
-		// 25% more speed, 20% less spread
-		_shotgunStats.Add(ItemID.OnyxBlaster, new(speedMultiplier: 0.25f, spreadMultiplier: -0.2f));
-		// default stats
-		_shotgunStats.Add(ItemID.Shotgun, new());
-		// 35% less spread
-		_shotgunStats.Add(ItemID.TacticalShotgun, new(spreadMultiplier: -0.35f));
+		Shotgun[ItemID.Boomstick] = new();
+		Shotgun[ItemID.QuadBarrelShotgun] = new(shotMultiplier: 0.5f, spreadMultiplier: 0.5f);
+		Shotgun[ItemID.OnyxBlaster] = new(speedMultiplier: 0.25f, spreadMultiplier: -0.2f);
+		Shotgun[ItemID.Shotgun] = new();
+		Shotgun[ItemID.TacticalShotgun] = new(spreadMultiplier: -0.35f);
 	}
 
-	public override void Unload() => _shotgunStats = null;
-
-	public override bool AppliesToEntity(Item entity, bool lateInstantiation) => _shotgunIDs.Contains(entity.type);
-
-	public override bool InstancePerEntity => true;
-
-	public override bool? CanChooseAmmo(Item weapon, Item ammo, Player player) // allows shotguns to only use shot
+	public override void SetDefaults(Item entity)
 	{
-		if (ammo.ammo == ModContent.ItemType<ShotgunAmmoType>())
-			return true;
-
-		return false;
+		if (entity.type < ItemID.Count && Shotgun[entity.type] != null) //Force all vanilla shotguns to use the appropriate ammo type
+			entity.useAmmo = ModContent.ItemType<Shot>();
 	}
 
 	public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		Item ammoItem = source.AmmoItemIdUsed > 0 ? ContentSamples.ItemsByType[source.AmmoItemIdUsed] : null;
-
-		if (ammoItem != null && ammoItem.ModItem is ShotgunAmmoItem ammo) // override vanilla behavior
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is ShotgunAmmoItem ammo)
 		{
-			Vector2 direction = Vector2.Zero;
-			if (Main.myPlayer == player.whoAmI)
-				direction = position.DirectionTo(Main.MouseWorld);
+			var direction = Vector2.Normalize(velocity);
+			ShotgunPlayer shotgunPlayer = player.GetModPlayer<ShotgunPlayer>();
+			ShotgunStats stats = Shotgun[item.type].Value;
 
-			var shotgunPlayer = player.GetModPlayer<ShotgunPlayer>();
+			ammo.Behaviour.Invoke(item, player, source, position, direction,
+				shotgunPlayer.ModifyShotCount(ammo.shotCount, stats.additionalShots, stats.shotMultiplier),
+				shotgunPlayer.ModifySpread(ammo.spreadAmount, stats.additionalSpread, stats.spreadMultiplier),
+				shotgunPlayer.ModifySpeed(ammo.speed, stats.additionalSpeed, stats.speedMultiplier), damage, knockback);
 
-			bool found = _shotgunStats.TryGetValue(item.type, out var stats);
-
-			var shotgunStats = found ? stats : new ShotgunStats();
-
-			ammo._behavior.Invoke(item, player, source, position, direction,
-				shotgunPlayer.ModifyShotCount(ammo._shotCount, shotgunStats._additionalShots, shotgunStats._shotMultiplier),
-				shotgunPlayer.ModifySpread(ammo._spreadAmount, shotgunStats._additionalSpread, shotgunStats._spreadMultiplier),
-				shotgunPlayer.ModifySpeed(ammo._speed, shotgunStats._additionalSpeed, shotgunStats._speedMultiplier),
-				damage, knockback);
-
-			Vector2 normalized = velocity.SafeNormalize(Vector2.UnitX);
-			Vector2 shellPos = position + new Vector2(item.width / 2, -8 * player.direction).RotatedBy(velocity.ToRotation());
-
-			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPos,
-				-normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 1f, 60, ammo));
-
-			for (int i = 0; i < 4; i++)
+			if (item.type < ItemID.Count) //Vanilla-only effects
 			{
-				Dust.NewDustPerfect(shellPos, DustID.Torch, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 0, default, Main.rand.NextFloat(2f));
+				Vector2 normalized = velocity.SafeNormalize(Vector2.UnitX);
+				Vector2 shellPos = position + new Vector2(item.width / 2, -8 * player.direction).RotatedBy(velocity.ToRotation());
+
+				ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPos, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 1f, 60, ammo));
+
+				for (int i = 0; i < 4; i++)
+					Dust.NewDustPerfect(shellPos, DustID.Torch, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 0, default, Main.rand.NextFloat(2f));
 			}
-
-			return true;
 		}
 
-		return base.Shoot(item, player, source, position, velocity, type, damage, knockback);
+		return true;
 	}
 }
 
-public class ShotgunGlobalProjectile : GlobalProjectile
+public struct ShotgunStats(int additionalShots = 0, float shotMultiplier = 0, float additionalSpread = 0, float spreadMultiplier = 0, float additionalSpeed = 0, float speedMultiplier = 0)
 {
-	// list of all projectiles used by ammos with the musket ball ammo type
-	// we use this to manually delete shotgun bullets from vanilla as we override them but want to keep additional behavior (such as onyx blaster)
-	public static List<int> musketBallProjectiles = new();
+	public int additionalShots = additionalShots; // can be negative to decrease shots
+	public float shotMultiplier = shotMultiplier;
 
-	public override void SetStaticDefaults()
-	{
-		foreach ((int id, Item item) in ContentSamples.ItemsByType)
-		{
-			if (id == AmmoID.Bullet)
-				musketBallProjectiles.Add(item.shoot);
-		}
+	public float additionalSpread = additionalSpread; // can be negative to decrease spread
+	public float spreadMultiplier = spreadMultiplier;
 
-		musketBallProjectiles.Add(ProjectileID.PurificationPowder);
-	}
-
-	public override void OnSpawn(Projectile projectile, IEntitySource source)
-	{
-		// if we are a (vanilla / modded opt in) shotgun
-		if (source is EntitySource_ItemUse_WithAmmo ammoSource && ShotgunGlobalItem._shotgunIDs.Contains(ammoSource.Item.type))
-		{
-			// Destroy all musket ball projectiles
-			if (musketBallProjectiles.Contains(projectile.type))
-				projectile.Kill();
-		}
-	}
-}
-
-public struct ShotgunStats
-{
-	public ShotgunStats(int additionalShots = 0, float shotMultiplier = 0, float additionalSpread = 0, float spreadMultiplier = 0, float additionalSpeed = 0, float speedMultiplier = 0)
-	{
-		_additionalShots = additionalShots;
-		_shotMultiplier = shotMultiplier;
-		_additionalSpread = additionalSpread;
-		_spreadMultiplier = spreadMultiplier;
-		_additionalSpeed = additionalSpeed;
-		_speedMultiplier = speedMultiplier;
-	}
-
-	// TODO: better naming convention here
-	public int _additionalShots; // can be negative to decrease shots
-	public float _shotMultiplier;
-
-	public float _additionalSpread; // can be negative to decrease spread
-	public float _spreadMultiplier;
-
-	public float _additionalSpeed;
-	public float _speedMultiplier;
+	public float additionalSpeed = additionalSpeed;
+	public float speedMultiplier = speedMultiplier;
 }
 
 public class ShotgunPlayer : ModPlayer
@@ -208,27 +112,30 @@ public class ShotgunPlayer : ModPlayer
 
 	public override void ResetEffects()
 	{
-		shotgunStats._additionalShots = 0;
-		shotgunStats._shotMultiplier = 1;
+		shotgunStats.additionalShots = 0;
+		shotgunStats.shotMultiplier = 1;
 
-		shotgunStats._additionalSpread = 0;
-		shotgunStats._spreadMultiplier = 1;
+		shotgunStats.additionalSpread = 0;
+		shotgunStats.spreadMultiplier = 1;
 
-		shotgunStats._additionalSpeed = 0;
-		shotgunStats._speedMultiplier = 1;
+		shotgunStats.additionalSpeed = 0;
+		shotgunStats.speedMultiplier = 1;
 	}
 
-	/// <summary>
-	/// Calculates the amount of shots the players held shotgun item would shoot when used with <paramref name="ammo"/>, taking bonuses into account.
-	/// </summary>
-	/// <param name="ammo"></param>
+	/// <summary> Calculates the amount of shots <paramref name="item"/> would shoot, taking bonuses into account. </summary>
+	/// <param name="item"></param>
 	/// <returns>-1, if no shotgun item was found, otherwise the amount of shots</returns>
-	public int GetShotCount(ShotgunAmmoItem ammo)
+	public int GetShotCount(Item item)
 	{
-		if (Player.HeldItem.ModItem is not ShotgunItem shotGunItem)
-			return -1;
+		if (ShotgunGlobalItem.Shotgun[item.type] is ShotgunStats stats)
+		{
+			Player.PickAmmo(item, out _, out _, out _, out _, out int ammoType, true);
+			
+			if (ContentSamples.ItemsByType[ammoType].ModItem is ShotgunAmmoItem shotgunAmmo)
+				return ModifyShotCount(shotgunAmmo.shotCount, stats.additionalShots, stats.shotMultiplier);
+		}
 
-		return ModifyShotCount(ammo._shotCount, shotGunItem.shotgunStats._additionalShots, shotGunItem.shotgunStats._shotMultiplier);
+		return -1;
 	}
 
 	/// <summary>
@@ -238,19 +145,22 @@ public class ShotgunPlayer : ModPlayer
 	/// <param name="additionalShots">Additional shots the item should add</param>
 	/// <param name="additionalShotMultiplier">Additional shot multiplier the item should add</param>
 	/// <returns></returns>
-	public int ModifyShotCount(int baseShots, int additionalShots = 0, float additionalShotMultiplier = 0f) => Math.Max(1, (int)((baseShots + shotgunStats._additionalShots + additionalShots) * (shotgunStats._shotMultiplier + additionalShotMultiplier)));
-	
-	/// <summary>
-	/// Calculates the spread amount the players held shotgun item would have when used with <paramref name="ammo"/>, taking bonuses into account.
-	/// </summary>
-	/// <param name="ammo"></param>
-	/// <returns>-1, if no shotgun item was found, otherwise the amount of spread</returns>
-	public float GetSpreadAmount(ShotgunAmmoItem ammo)
-	{
-		if (Player.HeldItem.ModItem is not ShotgunItem shotGunItem)
-			return -1;
+	public int ModifyShotCount(int baseShots, int additionalShots = 0, float additionalShotMultiplier = 0f) => Math.Max(1, (int)((baseShots + shotgunStats.additionalShots + additionalShots) * (shotgunStats.shotMultiplier + additionalShotMultiplier)));
 
-		return ModifySpread(ammo._spreadAmount, shotGunItem.shotgunStats._additionalSpread, shotGunItem.shotgunStats._spreadMultiplier);
+	/// <summary> Calculates the spread amount <paramref name="item"/> would have, taking bonuses into account. </summary>
+	/// <param name="item"></param>
+	/// <returns>-1, if no shotgun item was found, otherwise the amount of spread</returns>
+	public float GetSpreadAmount(Item item)
+	{
+		if (ShotgunGlobalItem.Shotgun[item.type] is ShotgunStats stats)
+		{
+			Player.PickAmmo(item, out _, out _, out _, out _, out int ammoType, true);
+
+			if (ContentSamples.ItemsByType[ammoType].ModItem is ShotgunAmmoItem shotgunAmmo)
+				return ModifySpread(shotgunAmmo.spreadAmount, stats.additionalSpread, stats.spreadMultiplier);
+		}
+
+		return -1;
 	}
 
 	/// <summary>
@@ -260,19 +170,22 @@ public class ShotgunPlayer : ModPlayer
 	/// <param name="additionalSpread">Additional spread the item should add</param>
 	/// <param name="additionalSpreadMultiplier">Additional spread multiplier the item should add</param>
 	/// <returns></returns>
-	public float ModifySpread(float baseSpread, float additionalSpread = 0, float additionalSpreadMultiplier = 0f) => Math.Max(0f, (baseSpread + shotgunStats._additionalSpread + additionalSpread) * (shotgunStats._spreadMultiplier + additionalSpreadMultiplier));
-	
-	/// <summary>
-	/// Calculates the shoot speed the players held shotgun item would have when used with <paramref name="ammo"/>, taking bonuses into account.
-	/// </summary>
-	/// <param name="ammo"></param>
-	/// <returns>-1, if no shotgun item was found, otherwise the amount of spread</returns>
-	public float GetSpeedAmount(ShotgunAmmoItem ammo)
-	{
-		if (Player.HeldItem.ModItem is not ShotgunItem shotGunItem)
-			return -1;
+	public float ModifySpread(float baseSpread, float additionalSpread = 0, float additionalSpreadMultiplier = 0f) => Math.Max(0f, (baseSpread + shotgunStats.additionalSpread + additionalSpread) * (shotgunStats.spreadMultiplier + additionalSpreadMultiplier));
 
-		return ModifySpread(ammo._speed, shotGunItem.shotgunStats._additionalSpeed, shotGunItem.shotgunStats._speedMultiplier);
+	/// <summary> Calculates the shoot speed <paramref name="item"/> would have, taking bonuses into account. </summary>
+	/// <param name="item"></param>
+	/// <returns>-1, if no shotgun item was found, otherwise the amount of spread</returns>
+	public float GetSpeedAmount(Item item)
+	{
+		if (ShotgunGlobalItem.Shotgun[item.type] is ShotgunStats stats)
+		{
+			Player.PickAmmo(item, out _, out _, out _, out _, out int ammoType, true);
+
+			if (ContentSamples.ItemsByType[ammoType].ModItem is ShotgunAmmoItem shotgunAmmo)
+				return ModifySpread(shotgunAmmo.speed, stats.additionalSpeed, stats.speedMultiplier);
+		}
+
+		return -1;
 	}
 
 	/// <summary>
@@ -282,5 +195,5 @@ public class ShotgunPlayer : ModPlayer
 	/// <param name="additionalSpeed">Additional speed the item should add</param>
 	/// <param name="additionalSpeedMultiplier">Additional speed multiplier the item should add</param>
 	/// <returns></returns>
-	public float ModifySpeed(float baseSpeed, float additionalSpeed = 0, float additionalSpeedMultiplier = 0f) => Math.Max(1f, (baseSpeed + shotgunStats._additionalSpeed + additionalSpeed) * (shotgunStats._speedMultiplier + additionalSpeedMultiplier));
+	public float ModifySpeed(float baseSpeed, float additionalSpeed = 0, float additionalSpeedMultiplier = 0f) => Math.Max(1f, (baseSpeed + shotgunStats.additionalSpeed + additionalSpeed) * (shotgunStats.speedMultiplier + additionalSpeedMultiplier));
 }

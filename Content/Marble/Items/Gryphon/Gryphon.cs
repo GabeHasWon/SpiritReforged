@@ -1,25 +1,29 @@
-﻿using SpiritReforged.Common.Subclasses.Shotguns;
-using SpiritReforged.Common.Visuals;
-using Terraria.DataStructures;
-using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.PrimitiveRendering.Trails;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 using SpiritReforged.Common.PrimitiveRendering;
-using Terraria.Audio;
+using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.Subclasses.Shotguns;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
+using Terraria.Audio;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Marble.Items.Gryphon;
 
 // TODO: Obtainment
 // This equates to +150% spread, before any charging, works in favor of the weapon though.
-public class Gryphon() : ShotgunItem(new(spreadMultiplier: 1.5f))
+public class Gryphon : ModItem
 {
-	public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<GryphonHoldout>()] <= 0;
-	public override void SafeSetDefaults()
+	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(spreadMultiplier: 1.5f);
+
+	public override void SetDefaults()
 	{
 		Item.damage = 19;
 		Item.knockBack = 8;
+		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
+		Item.useAmmo = ModContent.ItemType<Shot>();
 		Item.width = 54;
 		Item.height = 26;
 		Item.useTime = Item.useAnimation = 90;
@@ -33,36 +37,41 @@ public class Gryphon() : ShotgunItem(new(spreadMultiplier: 1.5f))
 		Item.autoReuse = true;
 	}
 
+	public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<GryphonHoldout>()] <= 0;
+
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<GryphonHoldout>(), damage, knockback, player.whoAmI);
-
 		return false;
 	}
 }
 
-class GryphonHoldout : ModProjectile, IDrawPixelated
+public class GryphonHoldout : ModProjectile, IDrawPixelated
 {
 	public const int MAX_FLASH_TIMER = 20;
 	public const int MAX_POINTS = 5;
 
 	public static readonly Asset<Texture2D> BaseTexture = DrawHelpers.RequestLocal<Gryphon>("Gryphon", false);
 	public override string Texture => "SpiritReforged/Content/Marble/Items/Gryphon/Gryphon";
+
 	public bool Fired
 	{
 		get => Projectile.ai[0] == 1;
 		set => Projectile.ai[0] = value ? 1 : 0;
 	}
+
 	public int Timer
 	{
 		get => (int)Projectile.ai[1];
 		set => Projectile.ai[1] = value;
 	}
+
 	public int ChargeTime
 	{
 		get => (int)Projectile.ai[2];
 		set => Projectile.ai[2] = value;
 	}
+
 	public int _flashTimer;
 	public bool CanHold => Owner.HeldItem.ModItem is Gryphon && Owner.channel && !Owner.CCed && !Owner.noItems;
 	public float ChargeProgress => Timer / (float)ChargeTime;
@@ -212,18 +221,16 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 		SoundEngine.PlaySound(SoundID.Item36, Owner.Center);
 
-		if (Owner.HeldItem.ModItem is Gryphon gryphon)
+		Item item = Owner.HeldItem;
+		if (ShotgunGlobalItem.Shotgun[item.type] is ShotgunStats stats)
 		{
-			var shotgunStats = gryphon.shotgunStats;
-
 			if (FullyCharged)
 			{
-				shotgunStats._shotMultiplier += 0.2f; // 20% more shots when fully charged
-				shotgunStats._speedMultiplier += 0.25f; // 25% more speed when fully charged
+				stats.shotMultiplier += 0.2f; // 20% more shots when fully charged
+				stats.speedMultiplier += 0.25f; // 25% more speed when fully charged
 			}
 
-			Item ammoItem = Owner.ChooseAmmo(gryphon.Item);
-
+			Item ammoItem = Owner.ChooseAmmo(item);
 			if (ammoItem != null && ammoItem.ModItem is ShotgunAmmoItem ammo)
 			{
 				Vector2 shellPosition = ArmPosition + new Vector2(-16, -8 * Owner.direction).RotatedBy(Projectile.rotation);
@@ -240,10 +247,10 @@ class GryphonHoldout : ModProjectile, IDrawPixelated
 
 				var shotgunPlayer = Owner.GetModPlayer<ShotgunPlayer>();
 
-				List<Projectile> spawnedProjectiles = ammo._behavior.Invoke(gryphon.Item, Owner, new Terraria.DataStructures.EntitySource_ItemUse_WithAmmo(Owner, gryphon.Item, ammoItem.type, "SpiritReforged: Gryphon Shoot"), position, direction,
-					shotgunPlayer.ModifyShotCount(ammo._shotCount, shotgunStats._additionalShots, shotgunStats._shotMultiplier),
-					shotgunPlayer.ModifySpread(MathHelper.Lerp(ammo._spreadAmount, ammo._spreadAmount * 0.2f, ChargeProgress), shotgunStats._additionalSpread, shotgunStats._spreadMultiplier),
-					shotgunPlayer.ModifySpeed(MathHelper.Lerp(ammo._speed, ammo._speed * 1.5f, ChargeProgress), shotgunStats._additionalSpeed, shotgunStats._speedMultiplier),	
+				List<Projectile> spawnedProjectiles = ammo.Behaviour.Invoke(item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, item, ammoItem.type, "SpiritReforged: Gryphon Shoot"), position, direction,
+					shotgunPlayer.ModifyShotCount(ammo.shotCount, stats.additionalShots, stats.shotMultiplier),
+					shotgunPlayer.ModifySpread(MathHelper.Lerp(ammo.spreadAmount, ammo.spreadAmount * 0.2f, ChargeProgress), stats.additionalSpread, stats.spreadMultiplier),
+					shotgunPlayer.ModifySpeed(MathHelper.Lerp(ammo.speed, ammo.speed * 1.5f, ChargeProgress), stats.additionalSpeed, stats.speedMultiplier),
 					Projectile.damage, Projectile.knockBack);
 
 				if (FullyCharged)

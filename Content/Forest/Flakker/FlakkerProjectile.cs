@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.Subclasses.Greatshields;
-using SpiritReforged.Common.Subclasses.Shotguns;
+﻿using SpiritReforged.Common.Subclasses.Shotguns;
 using Terraria.Audio;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Easing;
@@ -10,17 +9,19 @@ namespace SpiritReforged.Content.Forest.Flakker;
 
 public class FlakkerProjectile : ModProjectile
 {
-	public Flakker parent;
 	public int AmmoID => (int)Projectile.ai[0];
-	public ShotgunStats parentStats => parent.shotgunStats;
 
+	public Flakker parent;
 	bool hitTile;
 
-	public override void SetDefaults()
+	public override void SetStaticDefaults()
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 8;
 		ProjectileID.Sets.TrailingMode[Type] = 0;
+	}
 
+	public override void SetDefaults()
+	{
 		Projectile.Size = new(12);
 
 		Projectile.friendly = true;
@@ -49,7 +50,7 @@ public class FlakkerProjectile : ModProjectile
 	{
 		var player = Main.player[Projectile.owner];
 
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/LMG") with { Pitch = 0.2f, PitchVariance = 0.2f }, Projectile.Center);
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/LMG") with { Pitch = 0.2f, PitchVariance = 0.2f }, Projectile.Center); //CACHE ME
 
 		// Airburst
 		if (Projectile.penetrate > 0 && !hitTile)
@@ -61,13 +62,14 @@ public class FlakkerProjectile : ModProjectile
 				Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitX.RotatedBy(Projectile.rotation));
 				var shotgunPlayer = player.GetModPlayer<ShotgunPlayer>();
 
-				var shotgunStats = parentStats;
-
-				ammo._behavior.Invoke(parent.Item, player, new Terraria.DataStructures.EntitySource_ItemUse_WithAmmo(player, parent.Item, AmmoID, "SpiritReforged: Flakker Detonate"), Projectile.Center, direction,
-					shotgunPlayer.ModifyShotCount(ammo._shotCount, shotgunStats._additionalShots, shotgunStats._shotMultiplier),
-					shotgunPlayer.ModifySpread(ammo._spreadAmount, shotgunStats._additionalSpread, shotgunStats._spreadMultiplier),
-					shotgunPlayer.ModifySpeed(ammo._speed, shotgunStats._additionalSpeed, shotgunStats._speedMultiplier),
-					(int)(Projectile.damage * 3f), Projectile.knockBack * 5);
+				if (ShotgunGlobalItem.Shotgun[ModContent.ItemType<Flakker>()] is ShotgunStats stats)
+				{
+					ammo.Behaviour.Invoke(parent.Item, player, new Terraria.DataStructures.EntitySource_ItemUse_WithAmmo(player, parent.Item, AmmoID, "SpiritReforged: Flakker Detonate"), Projectile.Center, direction,
+						shotgunPlayer.ModifyShotCount(ammo.shotCount, stats.additionalShots, stats.shotMultiplier),
+						shotgunPlayer.ModifySpread(ammo.spreadAmount, stats.additionalSpread, stats.spreadMultiplier),
+						shotgunPlayer.ModifySpeed(ammo.speed, stats.additionalSpeed, stats.speedMultiplier),
+						(int)(Projectile.damage * 3f), Projectile.knockBack * 5);
+				}
 			}
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Explosion_01") with { Volume = 0.25f, Pitch = 0.3f, PitchVariance = 0.2f }, Projectile.Center);

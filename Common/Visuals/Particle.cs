@@ -62,7 +62,7 @@ public abstract class Particle : IPooledParticle, IParticle
 	}
 
 	/// <summary>For how long this particle has been active, in a range from 0-1.</summary>
-	public float Progress => (float)TimeActive / MaxTime;
+	public float Progress => TimeActive / (float)MaxTime;
 
 	public bool IsRestingInPool { get; protected set; }
 

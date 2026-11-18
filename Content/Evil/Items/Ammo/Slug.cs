@@ -2,7 +2,6 @@
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.PrimitiveRendering.Trails;
-using SpiritReforged.Common.Subclasses.Greatshields;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
@@ -36,22 +35,17 @@ public class Slug : ShotgunAmmoItem
 		return [Projectile.NewProjectileDirect(source, position, direction.RotatedByRandom(spreadAmount) * speed * Main.rand.NextFloat(1.25f, 1.5f), ModContent.ProjectileType<SlugProjectile>(), damage, knockback, player.whoAmI)];
 	}
 
-	public Slug() : base(Behavior, 1, .05f, 15f) { }
+	public Slug() : base(Behavior, 1, 0.05f, 15f) { }
 
-	public override void SafeSetDefaults()
+	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 57;
 		Item.value = Item.buyPrice(copper: 50);
 	}
 
-	public override void AddRecipes()
-	{
-		CreateRecipe(75).
-			AddIngredient<Shot>(150).
-			AddIngredient(ItemID.TissueSample, 3).
-			AddTile(TileID.Anvils).
-			Register();
-	}
+	public override void AddRecipes() => CreateRecipe(75).AddIngredient<Shot>(150).AddIngredient(ItemID.TissueSample, 3).AddTile(TileID.Anvils).Register();
 }
 
 public class SlugProjectile : ModProjectile

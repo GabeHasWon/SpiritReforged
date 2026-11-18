@@ -1,6 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Subclasses.Greatshields;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
@@ -48,23 +47,22 @@ public class SaltShot : ShotgunAmmoItem
 		return spawnedProjectiles;
 	}
 
-	public SaltShot() : base(Behavior, 4, .55f, 18.5f) { }
+	public SaltShot() : base(Behavior, 4, 0.55f, 18.5f) { }
 
-	public override void SafeSetDefaults()
+	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.rare = ItemRarityID.Blue;
 		Item.damage = 6;
 		Item.knockBack = 1f;
 	}
 
-	public override void AddRecipes()
-	{
-		CreateRecipe(50).
-			AddIngredient<Shot>(50).
-			AddRecipeGroup("Salt", 5).
-			AddTile(TileID.Anvils).
-			Register();
-	}
+	public override void AddRecipes() => CreateRecipe(50)
+		.AddIngredient<Shot>(50)
+		.AddRecipeGroup("Salt", 5)
+		.AddTile(TileID.Anvils)
+		.Register();
 }
 
 public class SaltShotProjectile : ModProjectile

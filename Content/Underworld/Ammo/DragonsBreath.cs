@@ -1,7 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Subclasses.Greatshields;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
@@ -58,23 +57,22 @@ public class DragonsBreath : ShotgunAmmoItem
 		return spawnedProjectiles;
 	}
 
-	public DragonsBreath() : base(Behavior, 7, .6f, 15f) { }
+	public DragonsBreath() : base(Behavior, 7, 0.6f, 15f) { }
 
-	public override void SafeSetDefaults()
+	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 8;
 		Item.rare = ItemRarityID.Orange;
 		Item.value = Item.sellPrice(silver: 1);
 	}
 
-	public override void AddRecipes()
-	{
-		CreateRecipe(50).
-			AddIngredient<Shot>(50).
-			AddIngredient(ItemID.HellstoneBar).
-			AddTile(TileID.Anvils).
-			Register();
-	}
+	public override void AddRecipes() => CreateRecipe(50)
+		.AddIngredient<Shot>(50)
+		.AddIngredient(ItemID.HellstoneBar)
+		.AddTile(TileID.Anvils)
+		.Register();
 }
 
 public class DragonsBreathProjectile : ModProjectile

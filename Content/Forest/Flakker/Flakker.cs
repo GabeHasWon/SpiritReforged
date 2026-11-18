@@ -1,22 +1,38 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Flakker;
 
-public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread: 0.2f, spreadMultiplier: 0.65f))
+public class Flakker : ReloadableItem
 {
-	bool[] reloadEffects;
-	public override void SafeSetDefaults()
+	public static readonly Asset<Texture2D> Handle = DrawHelpers.RequestLocal<Flakker>("Flakker_Handle", false);
+	public static readonly Asset<Texture2D> Barrel = DrawHelpers.RequestLocal<Flakker>("Flakker_Barrel", false);
+	public static readonly Asset<Texture2D> Mag = DrawHelpers.RequestLocal<Flakker>("Flakker_Magazine", false);
+
+	private bool[] _reloadEffects;
+
+	public override IReloadable.MagazineInfo Magazine => new(9, 55);
+
+	public override InterfaceProfile? Profile => new(MagazineInterfacePlayer.StyleID.Shell);
+
+	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(shotMultiplier: -0.2f, additionalSpread: 0.2f, spreadMultiplier: 0.65f);
+
+	public override void SetDefaults()
 	{
 		Item.damage = 25;
 		Item.knockBack = 2f;
+		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
+		Item.useAmmo = ModContent.ItemType<Shot>();
+		Item.shoot = ModContent.ProjectileType<ShotProjectile>();
+		Item.shootSpeed = 1f;
 		Item.width = 66;
 		Item.height = 24;
 		Item.useTime = Item.useAnimation = 75;
@@ -26,16 +42,17 @@ public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread
 		Item.value = Item.buyPrice(0, 3, 50, 0);
 		Item.rare = ItemRarityID.Orange;
 		Item.autoReuse = true;
+		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3) with { PitchVariance = 0.1f };
+	}
 
-		var globalItem = Item.GetGlobalItem<MagazineGlobalItem>();
-		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot_0" + Main.rand.Next(1, 4)) with { Pitch = pitch, Volume = 0.5f, PitchVariance = 0.1f }, position), new(-0.2f, 0.7f, 9, 55), new(62, 26), new(-18, -2), MagazineReloadType.EntireMagazine, MagazineUIType.Shell, true, false, -18, -0.15f);
-		globalItem.SetAnimations(new(0.04f, 0.96f), reloadStyle: ReloadUseStyle, reloadFrame: ReloadUseFrame);
+	public override bool? UseItem(Player player)
+	{
+		_reloadEffects = new bool[5]; //Reset reloadEffects
+		return null;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		reloadEffects = new bool[5];
-
 		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is not ShotgunAmmoItem ammo)
 			return false;
 
@@ -93,67 +110,19 @@ public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread
 	public override ModItem Clone(Item newEntity)
 	{
 		var newItem = newEntity.ModItem as Flakker;
-
-		newItem.reloadEffects = reloadEffects;
+		newItem._reloadEffects = _reloadEffects;
 
 		return newEntity.ModItem;
 	}
 
-	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
+	public override void ItemStyle(Player player, Rectangle heldItemFrame, bool inUse)
 	{
-		if (Item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineWeapon) && magazineWeapon.Reloading)
-		{
-			float animationProgress = magazineWeapon.ReloadProgress(drawInfo.drawPlayer, Item);
+		if (!ReloadInfo.IsReloading(player))
+			return;
 
-			var handle = ModContent.Request<Texture2D>(Texture + "_Handle").Value;
-			var barrel = ModContent.Request<Texture2D>(Texture + "_Barrel").Value;
-			var mag = ModContent.Request<Texture2D>(Texture + "_Magazine").Value;
+		float shootRotation = ReloadInfo.LastRotation;
+		float animProgress = 1f - ReloadInfo.reloadTime / (float)Magazine.ReloadDuration;
 
-			SpriteEffects flip = drawInfo.drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : 0;
-
-			var handleData = new DrawData(handle, drawData.position, drawData.sourceRect, drawData.color, drawData.rotation, drawData.origin, drawData.scale, flip, 0f);
-
-			float barrelOffset;
-
-			if (animationProgress < 0.2f)
-				barrelOffset = MathHelper.Lerp(0, 4, EaseBuilder.EaseCircularOut.Ease(animationProgress / 0.2f));
-			else if (animationProgress < 0.8f)
-				barrelOffset = 4;
-			else
-				barrelOffset = MathHelper.Lerp(4, 0, EaseBuilder.EaseOutBack(6).Ease((animationProgress - 0.8f) / 0.2f));
-
-			var barrelData = new DrawData(barrel, drawData.position + new Vector2((41 + barrelOffset) * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation), null, drawData.color, drawData.rotation, barrel.Size() / 2f, drawData.scale, flip, 0f);
-			
-			var magData = new DrawData(mag, drawData.position + new Vector2(41 * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation), null, drawData.color, drawData.rotation, mag.Size() / 2f, drawData.scale, flip, 0f);
-
-			drawInfo.DrawDataCache.Add(handleData);
-			drawInfo.DrawDataCache.Add(barrelData);
-
-			if (animationProgress is < 0.15f or > 0.65f)
-				drawInfo.DrawDataCache.Add(magData);
-			else if (animationProgress > 0.3f)
-			{
-				float progress = (animationProgress - 0.3f) / 0.35f;
-
-				float fadeIn = 1f;
-				if (progress < 0.5f)
-					fadeIn = progress / 0.5f;
-
-				Vector2 offset = new Vector2(-3 * drawInfo.drawPlayer.direction, 7).RotatedBy(drawData.rotation) * EaseBuilder.EaseOutBack(4).Ease(1f - progress);
-
-				float rotationOffset = 0.45f * EaseBuilder.EaseOutBack(5).Ease(1f - progress) * drawInfo.drawPlayer.direction;
-
-				magData = new DrawData(mag, drawData.position + new Vector2(41 * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation) + offset, null, drawData.color * fadeIn, drawData.rotation + rotationOffset, mag.Size() / 2f, drawData.scale, flip, 0f);
-				drawInfo.DrawDataCache.Add(magData);
-			}
-
-			return false;
-		}
-
-		return true;
-	}
-	public static void ReloadUseStyle(Item item, Player player, Rectangle heldItemFrame, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
-	{
 		float itemRotation = player.compositeFrontArm.rotation + 1.5707964f * player.gravDir;
 		Vector2 itemPosition = player.MountedCenter;
 
@@ -182,109 +151,98 @@ public class Flakker() : ShotgunItem(new(shotMultiplier: -0.2f, additionalSpread
 			itemPosition += itemRotation.ToRotationVector2() * MathHelper.Lerp(0, back, EaseFunction.EaseCircularInOut.Ease(lerper));
 		}
 
-		if (item.ModItem is not null and Flakker flakker)
+		if (animProgress > 0.15f && !_reloadEffects[0])
 		{
-			if (animProgress > 0.15f && !flakker.reloadEffects[0])
-			{
-				Vector2 pos = itemPosition + new Vector2(14f, -4f * player.direction).RotatedBy(itemRotation);
+			Vector2 pos = itemPosition + new Vector2(14f, -4f * player.direction).RotatedBy(itemRotation);
+			Gore.NewGorePerfect(Item.GetSource_FromThis("Spirit Reforged: Flakker Reload"), pos, Vector2.UnitX.RotatedBy(itemRotation) * Main.rand.NextFloat(3f, 5f), Mod.Find<ModGore>("FlakkerMagazineGore").Type, 1f);
 
-				Gore.NewGorePerfect(item.GetSource_FromThis("Spirit Reforged: Flakker Reload"), pos, Vector2.UnitX.RotatedBy(itemRotation) * Main.rand.NextFloat(3f, 5f), flakker.Mod.Find<ModGore>("FlakkerMagazineGore").Type, 1f);
+			SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.33f }, pos);
 
-				SoundEngine.PlaySound(SoundID.DD2_MonkStaffSwing with { Volume = 0.33f }, pos);
+			for (int i = 0; i < 3; i++)
+				Dust.NewDustPerfect(pos, DustID.Smoke, Main.rand.NextVector2Circular(0.5f, 0.5f), 210, default, Main.rand.NextFloat(4f));
 
-				for (int i = 0; i < 3; i++)
-					Dust.NewDustPerfect(pos, DustID.Smoke, Main.rand.NextVector2Circular(0.5f, 0.5f), 210, default, Main.rand.NextFloat(4f));
-
-				flakker.reloadEffects[0] = true;
-			}
-
-			if (animProgress > 0.6f && !flakker.reloadEffects[1])
-			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Eject") with { Volume = 0.5f }, itemPosition);
-
-				flakker.reloadEffects[1] = true;
-			}
-
-			if (animProgress > 0.7f && !flakker.reloadEffects[2])
-			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunPump") with { Volume = 0.65f }, itemPosition);
-
-				flakker.reloadEffects[2] = true;
-			}
-
-			if (animProgress > 0.8f && !flakker.reloadEffects[3])
-			{
-				Vector2 dustPosition = itemPosition + new Vector2(10f, -12f * player.direction).RotatedBy(itemRotation);
-
-				for (int i = 0; i < 5; i++)
-				{
-					Dust.NewDustPerfect(dustPosition, DustID.Smoke, -Vector2.UnitX.RotatedByRandom(0.3f).RotatedBy(itemRotation) * Main.rand.NextFloat(2f), 210, default, Main.rand.NextFloat(4f));
-					
-					Dust.NewDustPerfect(dustPosition, DustID.Torch, -Vector2.UnitX.RotatedByRandom(0.7f).RotatedBy(itemRotation) * Main.rand.NextFloat(5f), 0, default, Main.rand.NextFloat(4f)).noGravity = true;
-				}
-
-				flakker.reloadEffects[3] = true;
-			}
+			_reloadEffects[0] = true;
 		}
 
-			
+		if (animProgress > 0.6f && !_reloadEffects[1])
+		{
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Eject") with { Volume = 0.5f }, itemPosition);
+			_reloadEffects[1] = true;
+		}
 
-		ItemVisualHelpers.CleanHoldStyle(player, itemRotation, itemPosition, itemSize, itemOrigin, true, false, true);
+		if (animProgress > 0.7f && !_reloadEffects[2])
+		{
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunPump") with { Volume = 0.65f }, itemPosition);
+			_reloadEffects[2] = true;
+		}
+
+		if (animProgress > 0.8f && !_reloadEffects[3])
+		{
+			Vector2 dustPosition = itemPosition + new Vector2(10f, -12f * player.direction).RotatedBy(itemRotation);
+
+			for (int i = 0; i < 5; i++)
+			{
+				Dust.NewDustPerfect(dustPosition, DustID.Smoke, -Vector2.UnitX.RotatedByRandom(0.3f).RotatedBy(itemRotation) * Main.rand.NextFloat(2f), 210, default, Main.rand.NextFloat(4f));
+				Dust.NewDustPerfect(dustPosition, DustID.Torch, -Vector2.UnitX.RotatedByRandom(0.7f).RotatedBy(itemRotation) * Main.rand.NextFloat(5f), 0, default, Main.rand.NextFloat(4f)).noGravity = true;
+			}
+
+			_reloadEffects[3] = true;
+		}
 	}
 
-	public static void ReloadUseFrame(Item item, Player player, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
+	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
 	{
-		float rotation = shootRotation * player.gravDir + 1.5707964f;
-		float backArmRotation = shootRotation * player.gravDir + 1.5707964f;
+		Player player = drawInfo.drawPlayer;
+		Vector2 origin = new(8, 18);
 
-		Player.CompositeArmStretchAmount frontStretch = Player.CompositeArmStretchAmount.Full;
+		if (ReloadInfo.IsReloading(drawInfo.drawPlayer))
+		{
+			float progress = 1f - ReloadInfo.reloadTime / (float)Magazine.ReloadDuration;
 
-		float backArmOffset = 0f;
+			Texture2D handle = Handle.Value;
+			Texture2D barrel = Barrel.Value;
+			Texture2D mag = Mag.Value;
+			float barrelOffset;
 
-		if (animProgress < 0.1f)
-		{
-			float lerper = animProgress / 0.1f;
-			rotation += MathHelper.Lerp(0, 0.1f, EaseFunction.EaseQuadInOut.Ease(lerper)) * player.direction;
-		}
-		else if (animProgress < 0.3f)
-		{
-			float lerper = (animProgress - 0.1f) / 0.2f;
-			backArmOffset += MathHelper.Lerp(0f, 0.65f, EaseFunction.EaseOutBack(2.2).Ease(lerper)) * player.direction;
-			rotation += MathHelper.Lerp(0.1f, -0.2f, EaseFunction.EaseOutBack(2.2).Ease(lerper)) * player.direction;
-		}
-		else if (animProgress < 0.45f)
-		{
-			float lerper = (animProgress - 0.3f) / 0.15f;
-			rotation += MathHelper.Lerp(-0.2f, -0.1f, EaseFunction.EaseCircularInOut.Ease(lerper)) * player.direction;
-		}
-		else if (animProgress < 0.6f)
-			rotation += -0.1f * player.direction;
-		else if (animProgress < 0.8f)
-		{
-			float lerper = (animProgress - 0.6f) / 0.2f;
-			rotation += MathHelper.Lerp(-0.1f, -0.3f, EaseFunction.EaseInOutBack(1.2f).Ease(lerper)) * player.direction;
-		}
-		else
-		{
-			float lerper = (animProgress - 0.8f) / 0.2f;
-			rotation += MathHelper.Lerp(-0.3f, 0f, EaseFunction.EaseQuadInOut.Ease(lerper)) * player.direction;
-
-			if (animProgress < 0.85)
-				frontStretch = Player.CompositeArmStretchAmount.ThreeQuarters;
-			else if (animProgress < 0.9)
-				frontStretch = Player.CompositeArmStretchAmount.Quarter;
+			if (progress < 0.2f)
+				barrelOffset = MathHelper.Lerp(0, 4, EaseFunction.EaseCircularOut.Ease(progress / 0.2f));
+			else if (progress < 0.8f)
+				barrelOffset = 4;
 			else
-				frontStretch = Player.CompositeArmStretchAmount.None;
-		}
+				barrelOffset = MathHelper.Lerp(4, 0, EaseFunction.EaseOutBack(6).Ease((progress - 0.8f) / 0.2f));
 
-		if (animProgress is > 0.3f and < 0.65f)
+			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = handle }, drawInfo.drawPlayer, origin, out float armRotation));
+			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = barrel }, drawInfo.drawPlayer, origin, out _, offset: new Vector2(barrelOffset * -player.direction, 0).RotatedBy(drawData.rotation)));
+
+			if (progress is < 0.15f or > 0.65f)
+			{
+				drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = mag }, drawInfo.drawPlayer, origin, out _));
+			}
+			else if (progress > 0.3f)
+			{
+				progress = (progress - 0.3f) / 0.35f;
+
+				float fadeIn = 1f;
+				if (progress < 0.5f)
+					fadeIn = progress / 0.5f;
+
+				Vector2 offset = new Vector2(-3 * drawInfo.drawPlayer.direction, 7).RotatedBy(drawData.rotation) * EaseFunction.EaseOutBack(4).Ease(1f - progress);
+				float rotationOffset = 0.2f * EaseFunction.EaseOutBack(5).Ease(1f - progress) * drawInfo.drawPlayer.direction;
+
+				drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = mag, color = drawData.color * fadeIn, rotation = drawData.rotation + rotationOffset }, drawInfo.drawPlayer, origin, out float magArmRotation, offset: offset));
+				player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, magArmRotation + MathHelper.PiOver4 * player.direction);
+			}
+
+			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+		}
+		else if (player.ItemAnimationActive)
 		{
-			float lerper = (animProgress - 0.3f) / 0.35f;
+			float progress = 1f - player.itemAnimation / (float)player.itemAnimationMax;
 
-			backArmOffset += 0.65f * EaseBuilder.EaseOutBack(3).Ease(1f - lerper) * player.direction;
+			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData, drawInfo.drawPlayer, origin, out float armRotation, new Recoil(EaseFunction.CompoundEase([EaseFunction.EaseCubicOut, EaseFunction.EaseSine]), 3, 1), new Vector2(10 * Math.Min(progress * 4, 1) - 10, 0).RotatedBy(drawData.rotation)));
+			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation + 0.5f * player.direction);
 		}
 
-		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, backArmRotation + backArmOffset);
-		player.SetCompositeArmFront(true, frontStretch, rotation);
+		return false;
 	}
 }

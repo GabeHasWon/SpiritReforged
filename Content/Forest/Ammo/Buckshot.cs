@@ -37,20 +37,15 @@ public class Buckshot : ShotgunAmmoItem
 		return spawnedProjectiles;
 	}
 
-	public Buckshot() : base(Behavior, 4, .3f, 18f) { }
+	public Buckshot() : base(Behavior, 4, 0.3f, 18f) { }
 
-	public override void SafeSetDefaults()
+	public override void SetDefaults()
 	{
+		base.SetDefaults();
+
 		Item.damage = 9;
 		Item.knockBack = 6f;
 	}
 
-	public override void AddRecipes()
-	{
-		CreateRecipe(50).
-			AddIngredient<Shot>(50).
-			AddRecipeGroup(RecipeGroupID.IronBar, 2).
-			AddTile(TileID.Anvils).
-			Register();
-	}
+	public override void AddRecipes() => CreateRecipe(50).AddIngredient<Shot>(50).AddRecipeGroup(RecipeGroupID.IronBar, 2).AddTile(TileID.Anvils).Register();
 }

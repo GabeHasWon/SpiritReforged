@@ -4095,3 +4095,13 @@ C4Item: {
 	// DisplayName: C4
 	// Tooltip: Destroys walls in a radius when interacted with
 }
+
+Mac10: {
+	// DisplayName: Mac-10
+	// Tooltip: "'Stunningly inaccurate'"
+}
+
+Luger: {
+	// DisplayName: Luger
+	// Tooltip: ""
+}

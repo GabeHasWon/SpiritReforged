@@ -127,4 +127,27 @@ public static class ItemVisualHelpers
 
 		player.itemLocation = finalPosition + new Vector2(spriteSize.X * 0.5f, 0f);
 	}
+
+	public static void CleanHoldStyle(Player player, Item item, float rotation, Vector2 position, Vector2? origin)
+	{
+		Texture2D texture = TextureAssets.Item[item.type].Value;
+
+		origin ??= texture.Size() / 2;
+		origin = new Vector2(origin.Value.X * player.direction, origin.Value.Y * player.gravDir);
+
+		player.itemRotation = rotation;
+
+		if (player.direction < 0)
+			player.itemRotation += MathHelper.Pi;
+
+		Vector2 consistentAnchor = player.itemRotation.ToRotationVector2() * (texture.Width / -2f - 10f) * player.direction - origin.Value.RotatedBy(player.itemRotation, default);
+		Vector2 offsetAgain = texture.Size() * -0.5f;
+		Vector2 finalPosition = position + offsetAgain + consistentAnchor;
+
+		int frame = player.bodyFrame.Y / player.bodyFrame.Height; //Apply body frame displacement
+		if (frame is > 6 and < 10 or > 13 and < 17)
+			finalPosition -= Vector2.UnitY * 2f;
+
+		player.itemLocation = finalPosition + new Vector2(texture.Width / 2, 0f);
+	}
 }

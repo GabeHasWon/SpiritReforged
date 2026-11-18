@@ -1,18 +1,20 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underworld.Heirloom;
 
-public class Heirloom() : ShotgunItem(new())
+public class Heirloom : ReloadableItem
 {
-	const int MAX_ARM_PULLBACK_TIMER = 15;
+	private const int MAX_ARM_PULLBACK_TIMER = 15;
 
 	// For reload animation
 	// Each reload animation has 4 "keyframes" in which dust, sound effects, etc are played / spawned
@@ -23,87 +25,68 @@ public class Heirloom() : ShotgunItem(new())
 	/// When greater than zero, it will interpolate from a fully extended arm to a non extended arm, <see cref="MAX_ARM_PULLBACK_TIMER"/>
 	/// </summary>
 	public int armPullbackTimer;
-
 	public ShotgunAmmoItem lastUsedAmmo;
 
-	// Only let the player use the alternate use when at full magazine
-	public override bool AltFunctionUse(Player player) => Item.GetGlobalItem<MagazineGlobalItem>().GetCurrentMagazine().AmmoUsed == 0;
+	public override IReloadable.MagazineInfo Magazine => new(2, 120, false);
 
-	public override void SafeSetDefaults()
+	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new();
+
+	public override void SetDefaults()
 	{
+		Item.DefaultToShotgun(55, 1);
 		Item.damage = 23;
 		Item.knockBack = 10f;
 		Item.width = 62;
 		Item.height = 22;
-		Item.useTime = Item.useAnimation = 55;
-		Item.useStyle = ItemUseStyleID.Shoot;
-		Item.noMelee = true;
-		Item.noUseGraphic = false;
 		Item.value = Item.buyPrice(0, 3, 50, 0);
 		Item.rare = ItemRarityID.Orange;
-		Item.autoReuse = true;
+		Item.UseSound = SoundID.Item36;
+	}
 
-		var globalItem = Item.GetGlobalItem<MagazineGlobalItem>();
+	public override bool AltFunctionUse(Player player) => ReloadInfo.capacity == Magazine.FullCapacity; //Only let the player use the alternate use when at full magazine
 
-		globalItem.ActivateMagazine(Item, (pitch, position) => SoundEngine.PlaySound(SoundID.Item36 with { Pitch = pitch }, position), new(-0.2f, 0.5f, 2, 120), new(62, 22), new(-24, -2), MagazineReloadType.EntireMagazine, MagazineUIType.Shell, true, true, -12, -0.25f);
-		globalItem.SetAnimations(new(0.04f, 0.96f), reloadStyle: ReloadUseStyle, reloadFrame: ReloadUseFrame);
+	public override bool? UseItem(Player player)
+	{
+		playedReloadEffects = new bool[4];
+		return null;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		playedReloadEffects = new bool[4];
-
 		if (player.altFunctionUse == 2)
 		{
 			damage = (int)(damage * 0.94f); // 6% decrease in damage
-
 			player.velocity -= velocity * 5f;
 
 			if (Main.myPlayer == player.whoAmI)
 				ScreenshakeHelper.Shake(player.Center, -velocity, 4, 2, 10);
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Cannon_2"), position);
-			
-			shotgunStats = new(0, 0, 0, 0.1f, 0, 0.5f);
-
-			var mp = player.GetModPlayer<MagazinePlayer>();
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Cannon_2"), position); //CACHE ME
+			//shotgunStats = new(0, 0, 0, 0.1f, 0, 0.5f);
 
 			for (int i = 0; i < 2; i++)
 			{
 				float strength = 1f;
+
 				// if the player has more than two shots, add 20% strength per
-				if (mp.GetMagazineSize() > 2)
-					strength += (mp.GetMagazineSize() - 2) * 0.20f;
+				if (Magazine.FullCapacity > 2)
+					strength += (Magazine.FullCapacity - 2) * 0.20f;
 
 				base.Shoot(player, source, position, velocity, type, (int)(damage * strength), knockback * strength);
 			}
 
-			var magazineWeapon = Item.GetGlobalItem<MagazineGlobalItem>();
-
-			//magazineWeapon.Fire(Item, player);
-
-			// ensure we fire the rest of the magazine
-			// We could just set the ammo used to magazine size, but this works with the UI, and also procs a reload
-			while (magazineWeapon.AmmoRemaining(player, Item) > 0)
+			while (ReloadInfo.capacity > 0)
 			{
-				magazineWeapon.Fire(Item, player);
-
-				// call the ammo function to use the ammo
-				player.PickAmmo(Item, out int projType, out float speed, out int damageToUse, out float knockBack, out int ammoID);
+				player.PickAmmo(Item, out type, out float speed, out damage, out knockback, out _);
+				Projectile.NewProjectile(source, position, Vector2.Normalize(velocity) * speed, type, damage, knockback);
 			}
 
-			shotgunStats = new();
+			//shotgunStats = new();
 
 			return false;
 		}
 
-		return base.Shoot(player, source, position, velocity, type, damage, knockback);
-	}
-
-	public override void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, ShotgunAmmoItem ammo, int damage, float knockback)
-	{
 		Vector2 barrelPosition = position + new Vector2(42, -8 * player.direction).RotatedBy(velocity.ToRotation());
-
 		if (player.altFunctionUse == 2)
 		{
 			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
@@ -130,9 +113,7 @@ public class Heirloom() : ShotgunItem(new())
 		}
 
 		for (int i = 0; i < 6; i++)
-		{
 			Dust.NewDustPerfect(barrelPosition + Main.rand.NextVector2Circular(3, 3), DustID.Torch, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(1f, 5f), 0, default, Main.rand.NextFloat(1f, 2.5f)).noGravity = true;
-		}
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -142,66 +123,33 @@ public class Heirloom() : ShotgunItem(new())
 				PixelDivisor = 3
 			});
 
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.2f, 1f), Color.Black, 50 + Main.rand.Next(30)));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.2f, 1f), Color.Black * 0.4f, 50 + Main.rand.Next(30)));
 			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 5f), new Color(20, 20, 20) * 0.66f, 35 + Main.rand.Next(30), default, SmokeAction)
 			{
 				Variant = CompositeSmoke.SmallVariant
-			});		
+			});
 		}
+
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is ShotgunAmmoItem shotgunAmmo)
+			lastUsedAmmo = shotgunAmmo;
+
+		return true;
 
 		static void SmokeAction(Particle p)
 		{
 			p.Velocity *= 0.97f;
 			p.Velocity.Y -= 0.02f;
 		}
-
-		lastUsedAmmo = ammo;
 	}
 
-	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
+	public override void ItemStyle(Player player, Rectangle heldItemFrame, bool inUse)
 	{
-		if (Item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineWeapon) && magazineWeapon.Reloading)
-		{
-			float animationProgress = magazineWeapon.ReloadProgress(drawInfo.drawPlayer, Item);
+		if (!ReloadInfo.IsReloading(player))
+			return;
 
-			var handle = ModContent.Request<Texture2D>(Texture + "_Handle").Value;
-			var barrel = ModContent.Request<Texture2D>(Texture + "_Barrel").Value;
+		float shootRotation = ReloadInfo.LastRotation;
+		float animProgress = 1f - ReloadInfo.reloadTime / (float)Magazine.ReloadDuration;
 
-			SpriteEffects flip = drawInfo.drawPlayer.direction == -1 ? SpriteEffects.FlipHorizontally : 0;
-
-			var handleData = new DrawData(handle, drawData.position, drawData.sourceRect, drawData.color, drawData.rotation, drawData.origin, drawData.scale, flip, 0f);
-
-			float maxRotation = 1.1f * drawInfo.drawPlayer.direction;
-
-			float barrelRot = drawData.rotation;
-			if (animationProgress is > 0.25f and < 0.35f)
-			{
-				float lerp = EaseBuilder.EaseCircularOut.Ease((animationProgress - 0.25f) / 0.1f);
-
-				barrelRot += MathHelper.Lerp(0, maxRotation, lerp);
-			}
-			else if (animationProgress is >= 0.35f and < 0.75f)
-				barrelRot += maxRotation;
-			else if (animationProgress >= 0.75f)
-			{
-				float lerp = EaseBuilder.EaseInOutBack().Ease((animationProgress - 0.75f) / 0.25f);
-
-				barrelRot += MathHelper.Lerp(maxRotation, 0, lerp);
-			}
-
-			var barrelData = new DrawData(barrel, drawData.position + new Vector2(40 * drawInfo.drawPlayer.direction, 0).RotatedBy(drawData.rotation), null, drawData.color, barrelRot, barrel.Size() / 2f, drawData.scale, flip, 0f);
-
-			drawInfo.DrawDataCache.Add(handleData);
-			drawInfo.DrawDataCache.Add(barrelData);
-
-			return false;
-		}
-
-		return true;
-	}
-
-	public static void ReloadUseStyle(Item item, Player player, Rectangle heldItemFrame, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
-	{
 		float itemRotation = player.compositeBackArm.rotation + 1.5707964f * player.gravDir;
 		Vector2 itemPosition = player.MountedCenter;
 
@@ -226,65 +174,65 @@ public class Heirloom() : ShotgunItem(new())
 		if (animProgress < 0.3f)
 			Dust.NewDustPerfect(itemPosition + new Vector2(42, -8 * player.direction).RotatedBy(itemRotation), DustID.Smoke, -Vector2.UnitY + Main.rand.NextVector2Circular(0.3f, 0.3f), 250, default, 3f);
 
-		if (item.ModItem is Heirloom heirloom)
+		if (animProgress > 0.2f && !playedReloadEffects[0])
 		{
-			if (animProgress > 0.2f && !heirloom.playedReloadEffects[0])
-			{
-				Vector2 breakPosition = itemPosition + new Vector2(12f, 2f).RotatedBy(itemRotation);
-				Vector2 breakVelocity = -Vector2.UnitY - Vector2.UnitX * player.direction;
+			Vector2 breakPosition = itemPosition + new Vector2(12f, 2f).RotatedBy(itemRotation);
+			Vector2 breakVelocity = -Vector2.UnitY - Vector2.UnitX * player.direction;
 
-				for (int i = 0; i < 3; i++)
+			for (int i = 0; i < 3; i++)
+			{
+				Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
+				Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(2f));
+
+				ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.Black * 0.5f, 65)
 				{
-					Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
-					Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(2f));
+					Variant = CompositeSmoke.SmallVariant
+				});
 
-					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.Black * 0.5f, 65)
-					{
-						Variant = CompositeSmoke.SmallVariant
-					});
-
-					ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.DarkGray * 0.5f, 45));
-				}
-
-				for (int i = 0; i < 2; i++)
-					ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(3f, 6f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(1.5f, 3f), 1f, 120, heirloom.lastUsedAmmo));
-
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
-
-				heirloom.playedReloadEffects[0] = true;
+				ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.DarkGray * 0.5f, 45));
 			}
 
-			if (animProgress > 0.55f && !heirloom.playedReloadEffects[1])
-			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f }); //CACHE ME
+			for (int i = 0; i < 2; i++)
+				ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(3f, 6f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(1.5f, 3f), 1f, 120, lastUsedAmmo));
 
-				heirloom.armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
-				heirloom.playedReloadEffects[1] = true;
-			}
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
 
-			if (animProgress > 0.7f && !heirloom.playedReloadEffects[2])
-			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f });
-
-				heirloom.armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
-				heirloom.playedReloadEffects[2] = true;
-			}
-
-			if (animProgress > 0.9f && !heirloom.playedReloadEffects[3])
-			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), player.Center);
-
-				heirloom.playedReloadEffects[3] = true;
-			}
+			playedReloadEffects[0] = true;
 		}
 
-		ItemVisualHelpers.CleanHoldStyle(player, itemRotation, itemPosition, itemSize, itemOrigin, true, false, true);
+		if (animProgress > 0.55f && !playedReloadEffects[1])
+		{
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f }); //CACHE ME
+
+			armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
+			playedReloadEffects[1] = true;
+		}
+
+		if (animProgress > 0.7f && !playedReloadEffects[2])
+		{
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f });
+
+			armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
+			playedReloadEffects[2] = true;
+		}
+
+		if (animProgress > 0.9f && !playedReloadEffects[3])
+		{
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), player.Center);
+			playedReloadEffects[3] = true;
+		}
 	}
 
-	public static void ReloadUseFrame(Item item, Player player, int shootDirection, float shootRotation, Vector2 itemSize, Vector2 itemOrigin, float animProgress)
+	public override void ItemFrame(Player player, bool inUse)
 	{
-		float rotation = shootRotation * player.gravDir + 1.5707964f;
-		float frontArmRotation = shootRotation * player.gravDir + 1.5707964f;
+		if (!ReloadInfo.IsReloading(player))
+			return;
+
+		float shootRotation = ReloadInfo.LastRotation;
+		float animProgress = 1f - ReloadInfo.reloadTime / (float)Magazine.ReloadDuration;
+
+		float rotation = shootRotation * player.gravDir - 1.5707964f;
+		float frontArmRotation = shootRotation * player.gravDir - 1.5707964f;
 
 		Player.CompositeArmStretchAmount frontStretch = Player.CompositeArmStretchAmount.ThreeQuarters;
 
@@ -328,33 +276,78 @@ public class Heirloom() : ShotgunItem(new())
 			}
 		}
 
-		if (item.ModItem is not null and Heirloom heirloom)
+		if (armPullbackTimer > 0)
 		{
-			if (heirloom.armPullbackTimer > 0)
+			float interpolant = 1f - armPullbackTimer / (float)MAX_ARM_PULLBACK_TIMER;
+			int armType = (int)MathHelper.Lerp(0, 3, interpolant);
+
+			// Because why would Player.CompositeArmStretchAmount be in order?
+			switch (armType)
 			{
-				float interpolant = 1f - heirloom.armPullbackTimer / (float)MAX_ARM_PULLBACK_TIMER;
+				case 0:
+					frontStretch = Player.CompositeArmStretchAmount.Full; break;
+				case 1:
+					frontStretch = Player.CompositeArmStretchAmount.ThreeQuarters; break;
+				case 2:
+					frontStretch = Player.CompositeArmStretchAmount.Quarter; break;
+				case 3:
+					frontStretch = Player.CompositeArmStretchAmount.None; break;
+			}
 
-				int armType = (int)MathHelper.Lerp(0, 3, interpolant);
-
-				// Because why would Player.CompositeArmStretchAmount be in order?
-				switch (armType)
-				{
-					case 0:
-						frontStretch = Player.CompositeArmStretchAmount.Full; break;
-					case 1:
-						frontStretch = Player.CompositeArmStretchAmount.ThreeQuarters; break;
-					case 2:
-						frontStretch = Player.CompositeArmStretchAmount.Quarter; break;
-					case 3:
-						frontStretch = Player.CompositeArmStretchAmount.None; break;
-				}
-
-				heirloom.armPullbackTimer--;
-			}	
+			armPullbackTimer--;
 		}
 
 		player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, rotation);
 		player.SetCompositeArmFront(true, frontStretch, frontArmRotation);
+	}
+
+	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
+	{
+		Player player = drawInfo.drawPlayer;
+		Vector2 origin = new(2, 18);
+
+		if (ReloadInfo.IsReloading(drawInfo.drawPlayer))
+		{
+			float animationProgress = 1f - ReloadInfo.reloadTime / (float)Magazine.ReloadDuration;
+
+			var handle = ModContent.Request<Texture2D>(Texture + "_Handle").Value; //CACHE
+			var barrel = ModContent.Request<Texture2D>(Texture + "_Barrel").Value; //CACHE
+
+			float maxRotation = 1.1f * drawInfo.drawPlayer.direction;
+
+			float barrelRot = drawData.rotation;
+			if (animationProgress is > 0.25f and < 0.35f)
+			{
+				float lerp = EaseFunction.EaseCircularOut.Ease((animationProgress - 0.25f) / 0.1f);
+
+				barrelRot += MathHelper.Lerp(0, maxRotation, lerp);
+			}
+			else if (animationProgress is >= 0.35f and < 0.75f)
+			{
+				barrelRot += maxRotation;
+			}
+			else if (animationProgress >= 0.75f)
+			{
+				float lerp = EaseFunction.EaseInOutBack().Ease((animationProgress - 0.75f) / 0.25f);
+
+				barrelRot += MathHelper.Lerp(maxRotation, 0, lerp);
+			}
+
+			Vector2 centerOrigin = new(24, 14);
+			Vector2 offset = new Vector2(22 * player.direction, -4).RotatedBy(drawData.rotation);
+
+			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = handle }, player, origin, out _));
+			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = barrel, rotation = barrelRot }, player, centerOrigin, out _, offset: offset));
+		}
+		else if (player.ItemAnimationActive)
+		{
+			float progress = 1f - player.itemAnimation / (float)player.itemAnimationMax;
+
+			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData, player, origin, out float armRotation, new Recoil(EaseFunction.CompoundEase([EaseFunction.EaseCubicOut, EaseFunction.EaseSine]), 3, 1), new Vector2(10 * Math.Min(progress * 4, 1) - 10, 0).RotatedBy(drawData.rotation)));
+			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
+		}
+
+		return false;
 	}
 
 	public override ModItem Clone(Item newEntity)

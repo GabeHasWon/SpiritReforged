@@ -1,17 +1,19 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using System.Linq;
-using Terraria;
 using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Granite.TotalRecall;
 
-public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultiplier: -0.2f))
+public class TotalRecall : ModItem
 {
 	class TotalRecallShellParticle(Vector2 position, Vector2 velocity, float scale, int maxTime, ShotgunAmmoItem item = null) : ShotgunShellParticle(position, velocity, scale, maxTime, item)
 	{
@@ -56,17 +58,20 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 		}
 	}
 
-	int _shootDirection;
-	float _shootRotation;
-
 	public const int MAX_COOLDOWN = 120;
-	int cooldown;
-	public override bool AltFunctionUse(Player player) => cooldown <= 0 && Main.projectile.Any(p => p.active && p.owner == player.whoAmI && p.TryGetGlobalProjectile<TotalRecallGlobalProjectile>(out var gp) && gp._active && gp._lingerTime > 0);
-	public override void SafeSetDefaults()
+
+	private int _shootDirection;
+	private float _shootRotation;
+	private int _cooldown;
+
+	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(shotMultiplier: 0.33f, spreadMultiplier: -0.2f);
+
+	public override void SetDefaults()
 	{
 		Item.damage = 24;
 		Item.knockBack = 8f;
-
+		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
+		Item.useAmmo = ModContent.ItemType<Shot>();
 		Item.width = 66;
 		Item.height = 26;
 		
@@ -80,21 +85,17 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 		Item.autoReuse = true;
 	}
 
+	public override bool AltFunctionUse(Player player) => _cooldown <= 0 && Main.projectile.Any(p => p.active && p.owner == player.whoAmI && p.TryGetGlobalProjectile<TotalRecallGlobalProjectile>(out var gp) && gp._active && gp._lingerTime > 0);
+
 	public override void UpdateInventory(Player player)
 	{
-		if (cooldown > 0)
-			cooldown--;
+		if (_cooldown > 0)
+			_cooldown--;
 	}
 
-	public override void UseItemFrame(Player player)
-	{
-		ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, -0.25f, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), false, new(0.05f, 0.95f));
-	}
+	public override void UseStyle(Player player, Rectangle heldItemFrame) => ItemVisualHelpers.SetGunUseStyle(player, Item, _shootDirection, -12, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), new Vector2(66, 26), new Vector2(-16, -4), new(0.05f, 0.95f));
 
-	public override void UseStyle(Player player, Rectangle heldItemFrame)
-	{
-		ItemVisualHelpers.SetGunUseStyle(player, Item, _shootDirection, -12, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), new Vector2(66, 26), new Vector2(-16, -4), new(0.05f, 0.95f));
-	}
+	public override void UseItemFrame(Player player) => ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, -0.25f, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), false, new(0.05f, 0.95f));
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
@@ -105,20 +106,17 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 		{
 			TotalRecallGlobalProjectile.Pullback(player);
 
-			cooldown = MAX_COOLDOWN;
+			_cooldown = MAX_COOLDOWN;
 
 			return false;
 		}
 
-		return base.Shoot(player, source, position, velocity, type, damage, knockback);
-	}
-
-	public override void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, ShotgunAmmoItem ammo, int damage, float knockback)
-	{
-		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
 		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
 
-		ParticleRenderers.OverPlayers.Add(new TotalRecallShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is ShotgunAmmoItem shotgunAmmo)
+			ParticleRenderers.OverPlayers.Add(new TotalRecallShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, shotgunAmmo));
+
+		return true;
 	}
 }
 

@@ -1,7 +1,7 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Subclasses.Greatshields;
+using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -73,8 +73,8 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 		if (Main.myPlayer == Projectile.owner)
 			ScreenshakeHelper.Shake(Projectile.Center, -Projectile.velocity * 0.25f, 1.5f, 2, 10);
 
-		SoundEngine.TryGetActiveSound(loopingSound, out var result);
-		result.Stop();
+		if (SoundEngine.TryGetActiveSound(loopingSound, out var result))
+			result.Stop();
 
 		Projectile.velocity *= 0f;
 		Projectile.damage *= 3;
@@ -86,7 +86,7 @@ public class SurvivalistGrenadeProjectile : ModProjectile
 
 		float strength = Main.rand.NextFloat(0.9f, 1.33f);
 
-		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Explosion_0" + Main.rand.Next(1, 3)) { Volume = 0.66f, PitchVariance = 0.1f }, Projectile.Center);
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Explosion_0" + Main.rand.Next(1, 3)) { Volume = 0.66f, PitchVariance = 0.1f }, Projectile.Center); //CACHE ME
 
 		for (int i = 0; i < (int)(12 * strength); i++)
 		{

@@ -1,4 +1,4 @@
-﻿namespace SpiritReforged.Common.Subclasses.Greatshields;
+﻿namespace SpiritReforged.Common.Subclasses.Shotguns;
 
 internal class ShotgunClass : SubclassClass
 {

@@ -1,4 +1,6 @@
-﻿using SpiritReforged.Content.Forest.Relics;
+﻿using SpiritReforged.Common.Subclasses.Shotguns;
+using SpiritReforged.Content.Forest.Ammo;
+using SpiritReforged.Content.Forest.Relics;
 using SpiritReforged.Content.Forest.Trophies;
 using SpiritReforged.Content.Glyphs;
 using Terraria.DataStructures;
@@ -122,6 +124,14 @@ public static class ItemMethods
 		Item.consumable = true;
 		Item.expert = true;
 		Item.rare = -2;
+	}
+
+	public static void DefaultToShotgun(this Item Item, int singleShotTime, float shotVelocity)
+	{
+		Item.DefaultToBow(singleShotTime, shotVelocity, true);
+		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
+		Item.useAmmo = ModContent.ItemType<Shot>();
+		Item.shoot = ModContent.ProjectileType<ShotProjectile>();
 	}
 	#endregion
 }

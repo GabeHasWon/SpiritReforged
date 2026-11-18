@@ -1,13 +1,12 @@
 ﻿using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Items.Blunderbuss;
 
-public class Blunderbuss() : ShotgunItem(new ShotgunStats(spreadMultiplier: 0.15f))
+public class Blunderbuss : ModItem
 {
 	public static readonly SoundStyle Fire = new("SpiritReforged/Assets/SFX/Item/Cannon_1")
 	{
@@ -22,7 +21,7 @@ public class Blunderbuss() : ShotgunItem(new ShotgunStats(spreadMultiplier: 0.15
 
 	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, new("SpiritReforged/Assets/SFX/Item/Ring") { Pitch = -0.5f });
 
-	public override void SafeSetDefaults()
+	public override void SetDefaults()
     {
         Item.width = Item.height = 12;
         Item.damage = 11;
@@ -40,7 +39,7 @@ public class Blunderbuss() : ShotgunItem(new ShotgunStats(spreadMultiplier: 0.15
 			ItemID.Sets.ShimmerTransformToItem[Type] = ItemID.QuadBarrelShotgun;
 	}
 
-	public override void AdditionalShoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, ShotgunAmmoItem ammo, int damage, float knockback)
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
 		velocity *= 10f;
 
@@ -60,6 +59,7 @@ public class Blunderbuss() : ShotgunItem(new ShotgunStats(spreadMultiplier: 0.15
 
 		//Spawn a harmless animated projectile
 		Projectile.NewProjectile(source, position, unit, ModContent.ProjectileType<BlunderbussProj>(), 0, 0, player.whoAmI);
+		return false;
 	}
 }
 
@@ -73,8 +73,8 @@ public class BlunderbussProj : ModProjectile
 
 	private static readonly Asset<Texture2D> FlashTexture = Graphics.Tex("SpiritReforged/Content/Ocean/Items/Blunderbuss/Blunderbuss_Flash");
 
-	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.Blunderbuss.DisplayName");
-	public override string Texture => base.Texture.Replace("Proj", string.Empty);
+	public override LocalizedText DisplayName => ModContent.GetInstance<Blunderbuss>().DisplayName;
+	public override string Texture => ModContent.GetInstance<Blunderbuss>().Texture;
 
 	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 

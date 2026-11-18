@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.ItemCommon.MagazineSystem;
+﻿/*using SpiritReforged.Common.ItemCommon.MagazineSystem;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
@@ -34,5 +34,4 @@ class LeatherSlingGlobalItem : GlobalItem
 			// TODO: drawing logic	
 		}
 	}
-}
-
+}*/
