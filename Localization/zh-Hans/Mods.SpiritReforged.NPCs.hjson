@@ -329,7 +329,7 @@ Cartographer: {
 			}
 
 			FirstPin: 我已将这个图钉加入了“图钉收藏”，你随时可从地图左下角查看。
-			// NoValidPins: Oh, sorry, looks like I can't find any pins. I swear I had some though...did they come off when I fell...?
+			NoValidPins: 哦，抱歉，看起来我找不到任何图钉了。我发誓我明明有一些的……它们在我摔倒的时候弄掉了吗……？
 		}
 	}
 
