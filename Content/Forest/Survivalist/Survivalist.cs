@@ -104,8 +104,8 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 				PixelDivisor = 2,
 			});
 
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray * 0.4f, 10 + Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray * 0.4f, 10 + Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
 			{
 				Variant = CompositeSmoke.SmallVariant
 			});
@@ -273,12 +273,12 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 						Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
 						Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity * Main.rand.NextFloat(2f) + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(2f));
 
-						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.9f, 65)
+						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.4f, 65)
 						{
 							Variant = CompositeSmoke.SmallVariant
 						});
 
-						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.Gray * 0.66f, 45));
+						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.Gray * 0.4f, 45));
 					}
 
 					ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(1f, 3f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(2f, 3.5f), 1f, 120, survivalist.lastUsedAmmo));
@@ -390,7 +390,7 @@ public class Survivalist() : ShotgunItem(new(1, speedMultiplier: 0.33f))
 						Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Torch, breakVelocity + Main.rand.NextVector2Circular(0.5f, 0.5f), 0, default, Main.rand.NextFloat(3f)).noGravity = true;
 						Dust.NewDustPerfect(breakPosition + Main.rand.NextVector2Circular(15, 15), DustID.Smoke, breakVelocity + Main.rand.NextVector2Circular(0.5f, 0.5f), 120, default, Main.rand.NextFloat(4f)).noGravity = true;
 
-						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.5f, 45)
+						ParticleRenderers.OverPlayers.Add(new CompositeSmoke(breakPosition + Main.rand.NextVector2Circular(5, 5), breakVelocity + Main.rand.NextVector2Circular(0.25f, 0.25f), Color.AntiqueWhite * 0.4f, 45)
 						{
 							Variant = CompositeSmoke.SmallVariant
 						});

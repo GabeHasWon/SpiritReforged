@@ -43,7 +43,7 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 		{
 			if (Progress < 0.33f)
 			{
-				var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
+				var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
 
 				float progress = Progress / 0.33f;
 

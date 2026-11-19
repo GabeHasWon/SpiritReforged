@@ -116,11 +116,11 @@ public class SlugProjectile : ModProjectile
 			{
 				if (Main.rand.NextBool(3))
 				{
-					ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center + Projectile.velocity, -Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.4f), Color.Lerp(new(250, 250, 250), new(30, 30, 30), 1 - Projectile.timeLeft / (float)MAX_TIMELEFT) * 0.66f, 15 + Main.rand.Next(30)));
+					ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center + Projectile.velocity, -Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.4f), Color.Lerp(new(250, 250, 250), new(30, 30, 30), 1 - Projectile.timeLeft / (float)MAX_TIMELEFT) * 0.4f, 15 + Main.rand.Next(30)));
 					Dust.NewDustPerfect(Projectile.Center, DustID.Ash, Main.rand.NextVector2Circular(3f, 3f), 200, default, Main.rand.NextFloat(2.5f)).noGravity = true;
 				}
 
-				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center + Projectile.velocity, -Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.2f), Color.Lerp(new(230, 230, 230), new(30, 30, 30), 1 - Projectile.timeLeft / (float)MAX_TIMELEFT) * 0.66f, 5 + Main.rand.Next(30))
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center + Projectile.velocity, -Projectile.velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.2f), Color.Lerp(new(230, 230, 230), new(30, 30, 30), 1 - Projectile.timeLeft / (float)MAX_TIMELEFT) * 0.4f, 5 + Main.rand.Next(30))
 				{
 					Variant = CompositeSmoke.SmallVariant
 				});

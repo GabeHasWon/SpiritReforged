@@ -62,7 +62,7 @@ public abstract class Particle : IPooledParticle, IParticle
 	}
 
 	/// <summary>For how long this particle has been active, in a range from 0-1.</summary>
-	public float Progress => (float)TimeActive / MaxTime;
+	public float Progress => MaxTime > 0 ? (float)TimeActive / MaxTime : 0f;
 
 	public bool IsRestingInPool { get; protected set; }
 
@@ -190,7 +190,7 @@ public sealed class ParticleRenderers : ModSystem
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawParticles(spriteBatch, UnderWalls);
 
@@ -213,7 +213,7 @@ public sealed class ParticleRenderers : ModSystem
 		if (OverSolids.Particles.Count > 0)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawParticles(spriteBatch, OverSolids);
 
@@ -239,7 +239,7 @@ public sealed class ParticleRenderers : ModSystem
 		if (UnderProjectiles.Particles.Count > 0)
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullNone, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawParticles(Main.spriteBatch, UnderProjectiles);
 			spriteBatch.End();
@@ -257,7 +257,7 @@ public sealed class ParticleRenderers : ModSystem
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
 			spriteBatch.End();
-			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, default, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
+			spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, default, RasterizerState.CullCounterClockwise, default, Main.GameViewMatrix.TransformationMatrix);
 
 			DrawParticles(spriteBatch, OverPlayers);
 			spriteBatch.RestartToDefault();

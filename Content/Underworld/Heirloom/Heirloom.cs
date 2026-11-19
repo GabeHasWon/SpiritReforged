@@ -142,8 +142,8 @@ public class Heirloom() : ShotgunItem(new())
 				PixelDivisor = 3
 			});
 
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.2f, 1f), Color.Black, 50 + Main.rand.Next(30)));
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 5f), new Color(20, 20, 20) * 0.66f, 35 + Main.rand.Next(30), default, SmokeAction)
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(0.2f, 1f), Color.Black * 0.4f, 50 + Main.rand.Next(30)));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(barrelPosition + Main.rand.NextVector2Circular(5, 5), velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 5f), new Color(20, 20, 20) * 0.3f, 35 + Main.rand.Next(30), default, SmokeAction)
 			{
 				Variant = CompositeSmoke.SmallVariant
 			});		

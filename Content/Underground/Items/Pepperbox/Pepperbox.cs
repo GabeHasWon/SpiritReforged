@@ -31,6 +31,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 		public override void Update(ref ParticleRendererSettings settings)
 		{
+			base.Update(ref settings);
 			Velocity *= 0.95f;
 		}
 
@@ -88,7 +89,7 @@ public class Pepperbox() : ShotgunItem(new ShotgunStats())
 
 		for (int i = 0; i < 3; i++)
 		{
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity, Color.White, 75, default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity, Color.White * 0.4f, 75, default, (particle) => particle.Velocity.Y -= 0.01f));
 			ParticleRenderers.OverPlayers.Add(new EmberParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
 		}
 

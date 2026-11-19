@@ -7,6 +7,7 @@ namespace SpiritReforged.Content.Particles;
 
 public class BloomParticle : GlowParticle
 {
+	public override string TexturePath => "SpiritReforged/Assets/Textures/Bloom";
 	public BloomParticle(Vector2 position, Vector2 velocity, Color startColor, Color endColor, float scale, int maxTime, int maxTrailLength = 1, Action<Particle> extraUpdateAction = null) : base(position, velocity, startColor, endColor, scale, maxTime, maxTrailLength, extraUpdateAction) { }
 	public BloomParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, int maxTrailLength = 1, Action<Particle> extraUpdateAction = null) : this(position, velocity, color, color, scale, maxTime, maxTrailLength, extraUpdateAction) { }
 
