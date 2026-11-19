@@ -26,6 +26,8 @@ public class Heirloom : ReloadableItem
 
 	public override IReloadable.MagazineInfo Magazine => new(2, 120, false);
 
+	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
+
 	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new();
 
 	public override void SetDefaults()
