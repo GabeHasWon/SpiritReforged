@@ -17,6 +17,8 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 	{
 		public override void Update(ref ParticleRendererSettings settings)
 		{
+			base.Update(ref settings);
+
 			if (Progress < 0.33f)
 			{
 				float progress = Progress / 0.33f;
@@ -34,10 +36,6 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 				Velocity.X *= 0.96f;
 
 				Rotation += Velocity.Length() * 0.02f;
-			}
-			else
-			{
-				base.Update(ref settings);
 			}
 		}
 
