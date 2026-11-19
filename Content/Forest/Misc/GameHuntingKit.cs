@@ -1,5 +1,6 @@
-﻿/*using SpiritReforged.Common.ItemCommon.MagazineSystem;
+﻿using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Subclasses.Shotguns;
+using SpiritReforged.Content.Underground.Items;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
@@ -15,10 +16,10 @@ public class GameHuntingKit : ModItem
 	public override void UpdateEquip(Player player)
 	{
 		player.GetModPlayer<ShotgunPlayer>().shotgunStats.spreadMultiplier -= 0.5f;
-		// If the player is holding a shotgun and it is also a magazine item, increase their magazine size by 40%
-		// Works as expected with weapon swapping
-		if (player.HeldItem.ModItem is not null and ShotgunItem shotgun && shotgun.Item.TryGetGlobalItem<MagazineGlobalItem>(out var result) && result.Active)
-			player.GetModPlayer<MagazinePlayer>().magazineSizeMultiplier += 0.4f;
+		Item item = player.HeldItem;
+
+		if (ShotgunGlobalItem.Shotgun[item.type] != null) //The item is a shotgun
+			player.GetModPlayer<MagazineInterfacePlayer>().magazineScale += 0.4f;
 	}
 
 	public override void AddRecipes()
@@ -29,4 +30,4 @@ public class GameHuntingKit : ModItem
 			AddTile(TileID.TinkerersWorkbench).
 			Register();
 	}
-}*/
+}

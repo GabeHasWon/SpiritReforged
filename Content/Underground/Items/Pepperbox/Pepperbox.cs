@@ -5,7 +5,6 @@ using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -59,11 +58,11 @@ public class Pepperbox : ReloadableItem
 		}
 	}
 
-	private bool _spawnedReloadDust = false;
-
 	public override IReloadable.MagazineInfo Magazine => new(3, 90);
 
 	public override InterfaceProfile? Profile => new(MagazineInterfacePlayer.StyleID.Shell);
+
+	private bool _spawnedReloadDust = false;
 
 	public override void SetStaticDefaults()
 	{

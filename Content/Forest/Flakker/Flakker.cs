@@ -1,10 +1,10 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -27,21 +27,13 @@ public class Flakker : ReloadableItem
 
 	public override void SetDefaults()
 	{
+		Item.DefaultToShotgun(75, 1);
 		Item.damage = 25;
 		Item.knockBack = 2f;
-		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
-		Item.useAmmo = ModContent.ItemType<Shot>();
-		Item.shoot = ModContent.ProjectileType<ShotProjectile>();
-		Item.shootSpeed = 1f;
 		Item.width = 66;
 		Item.height = 24;
-		Item.useTime = Item.useAnimation = 75;
-		Item.useStyle = ItemUseStyleID.Shoot;
-		Item.noMelee = true;
-		Item.noUseGraphic = false;
 		Item.value = Item.buyPrice(0, 3, 50, 0);
 		Item.rare = ItemRarityID.Orange;
-		Item.autoReuse = true;
 		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3) with { PitchVariance = 0.1f };
 	}
 

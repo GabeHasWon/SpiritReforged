@@ -5,7 +5,6 @@ using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -19,11 +18,9 @@ public class Heirloom : ReloadableItem
 	// For reload animation
 	// Each reload animation has 4 "keyframes" in which dust, sound effects, etc are played / spawned
 	// This array keeps track of them and is reset upon firing
-	public bool[] playedReloadEffects = new bool[4];
+	private bool[] _reloadEffects = new bool[4];
 
-	/// <summary>
-	/// When greater than zero, it will interpolate from a fully extended arm to a non extended arm, <see cref="MAX_ARM_PULLBACK_TIMER"/>
-	/// </summary>
+	/// <summary> When greater than zero, it will interpolate from a fully extended arm to a non extended arm, <see cref="MAX_ARM_PULLBACK_TIMER"/> </summary>
 	public int armPullbackTimer;
 	public ShotgunAmmoItem lastUsedAmmo;
 
@@ -47,7 +44,7 @@ public class Heirloom : ReloadableItem
 
 	public override bool? UseItem(Player player)
 	{
-		playedReloadEffects = new bool[4];
+		_reloadEffects = new bool[4];
 		return null;
 	}
 
@@ -174,7 +171,7 @@ public class Heirloom : ReloadableItem
 		if (animProgress < 0.3f)
 			Dust.NewDustPerfect(itemPosition + new Vector2(42, -8 * player.direction).RotatedBy(itemRotation), DustID.Smoke, -Vector2.UnitY + Main.rand.NextVector2Circular(0.3f, 0.3f), 250, default, 3f);
 
-		if (animProgress > 0.2f && !playedReloadEffects[0])
+		if (animProgress > 0.2f && !_reloadEffects[0])
 		{
 			Vector2 breakPosition = itemPosition + new Vector2(12f, 2f).RotatedBy(itemRotation);
 			Vector2 breakVelocity = -Vector2.UnitY - Vector2.UnitX * player.direction;
@@ -197,29 +194,29 @@ public class Heirloom : ReloadableItem
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
 
-			playedReloadEffects[0] = true;
+			_reloadEffects[0] = true;
 		}
 
-		if (animProgress > 0.55f && !playedReloadEffects[1])
+		if (animProgress > 0.55f && !_reloadEffects[1])
 		{
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f }); //CACHE ME
 
 			armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
-			playedReloadEffects[1] = true;
+			_reloadEffects[1] = true;
 		}
 
-		if (animProgress > 0.7f && !playedReloadEffects[2])
+		if (animProgress > 0.7f && !_reloadEffects[2])
 		{
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f });
 
 			armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
-			playedReloadEffects[2] = true;
+			_reloadEffects[2] = true;
 		}
 
-		if (animProgress > 0.9f && !playedReloadEffects[3])
+		if (animProgress > 0.9f && !_reloadEffects[3])
 		{
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), player.Center);
-			playedReloadEffects[3] = true;
+			_reloadEffects[3] = true;
 		}
 	}
 
@@ -354,7 +351,7 @@ public class Heirloom : ReloadableItem
 	{
 		var newItem = newEntity.ModItem as Heirloom;
 
-		newItem.playedReloadEffects = playedReloadEffects;
+		newItem._reloadEffects = _reloadEffects;
 		newItem.lastUsedAmmo = lastUsedAmmo;
 		newItem.armPullbackTimer = armPullbackTimer;
 

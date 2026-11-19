@@ -9,15 +9,29 @@ namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
 /// <summary> Denotes an item that has a magazine and can be reloaded. </summary>
 public interface IReloadable
 {
-	public enum ReloadContext { Started, Ended }
+	public enum ReloadContext { Started, Ended, Running }
 
-	public readonly record struct MagazineInfo(int FullCapacity, int ReloadDuration, bool ManualReload = true);
+	public readonly record struct MagazineInfo(int FullCapacity, int ReloadDuration, bool ManualReload = true)
+	{
+		public readonly int GetFullCapacity(Player player) => (int)player.GetModPlayer<MagazineInterfacePlayer>().magazineScale.ApplyTo(FullCapacity);
+
+		public readonly int GetReloadDuration(Player player) => (int)player.GetModPlayer<MagazineInterfacePlayer>().reloadSpeed.ApplyTo(ReloadDuration);
+	}
 
 	public MagazineInfo Magazine { get; }
 
 	public void DrawInterface(Item item, SpriteBatch spriteBatch) { }
 
-	public void OnReload(Item item, Player player, ReloadContext context) { }
+	/// <summary> Runs while this item is being reloaded. <paramref name="context"/> can be used to check whether the reload process has just started, ended, or otherwise.<para/>
+	/// Default behaviour immediately sets the magazine capacity to full when the reload process is over. </summary>
+	/// <param name="item"> The item being reloaded. </param>
+	/// <param name="player"> The player reloading the item. </param>
+	/// <param name="context"> The phase this reload process is currently in. </param>
+	public void OnReload(Item item, Player player, ReloadContext context)
+	{
+		if (context == ReloadContext.Ended && item.TryGetGlobalItem(out ReloadableGlobalItem global))
+			global.capacity = Magazine.FullCapacity;
+	}
 }
 
 public class ReloadableGlobalItem : GlobalItem
@@ -41,14 +55,6 @@ public class ReloadableGlobalItem : GlobalItem
 	#endregion
 
 	public override bool InstancePerEntity => true;
-
-	/*public float GetAmmoProgress(int itemType)
-	{
-		if (HasMagazine(itemType, out IReloadable iReloadable))
-			return capacity / (float)iReloadable.Magazine.FullCapacity;
-		else
-			return 0;
-	}*/
 
 	public int LastDirection => Math.Sign(LastRotation.ToRotationVector2().X);
 
@@ -80,13 +86,13 @@ public class ReloadableGlobalItem : GlobalItem
 
 	public override bool CanUseItem(Item item, Player player)
 	{
-		if (player.altFunctionUse == 2 && HasMagazine(item.type, out IReloadable iReloadable) && iReloadable.Magazine.ManualReload) //Manually prompted a reload
+		if (player.altFunctionUse == 2 && reloadTime == 0 && HasMagazine(item.type, out IReloadable iReloadable) && iReloadable.Magazine.ManualReload) //Manually prompted a reload
 		{
 			StartReload(player, item);
 			return false;
 		}
 
-		return reloadTime == 0;
+		return capacity > 0; //reloadTime == 0;
 	}
 
 	public override bool? UseItem(Item item, Player player)
@@ -95,6 +101,8 @@ public class ReloadableGlobalItem : GlobalItem
 		Vector2 mouse = PlayerMouseHandler.GetMouse(player.whoAmI);
 
 		LastRotation = player.AngleTo(mouse);
+		reloadTime = 0; //Reset the reload animation in case the item was used
+
 		return null;
 	}
 
@@ -125,10 +133,10 @@ public class ReloadableGlobalItem : GlobalItem
 		{
 			item.holdStyle = ItemHoldStyleID.HoldFront;
 
-			if (--reloadTime <= 0 && item.ModItem is IReloadable iReloadable)
+			if (item.ModItem is IReloadable iReloadable)
 			{
-				capacity = iReloadable.Magazine.FullCapacity;
-				iReloadable.OnReload(item, player, IReloadable.ReloadContext.Ended);
+				IReloadable.ReloadContext context = (--reloadTime <= 0) ? IReloadable.ReloadContext.Ended : IReloadable.ReloadContext.Running;
+				iReloadable.OnReload(item, player, context);
 			}
 		}
 		else
@@ -195,6 +203,9 @@ public class MagazineInterfacePlayer : ModPlayer
 
 	public static bool UIActive => !Main.gameMenu && !Main.LocalPlayer.mouseInterface; //TODO: add config
 
+	public StatModifier magazineScale = StatModifier.Default;
+	public StatModifier reloadSpeed = StatModifier.Default;
+
 	public override void Load() => CustomCursor.DrawCustomCursor += DrawAmmo;
 
 	private static void DrawAmmo(bool thick)
@@ -206,5 +217,11 @@ public class MagazineInterfacePlayer : ModPlayer
 			if (ReloadableGlobalItem.HasMagazine(item.type, out IReloadable iReloadable))
 				iReloadable.DrawInterface(item, Main.spriteBatch);
 		}
+	}
+
+	public override void ResetEffects()
+	{
+		magazineScale = StatModifier.Default;
+		reloadSpeed = StatModifier.Default;
 	}
 }

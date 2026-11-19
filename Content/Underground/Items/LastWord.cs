@@ -1,86 +1,43 @@
-﻿/*using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.PlayerCommon;
-using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using Terraria.ModLoader.IO;
 
 namespace SpiritReforged.Content.Underground.Items;
 
 public class LastWord : ModItem, IFlagged
 {
-	private class LastWordPlayer : ModPlayer
-	{
-		public bool canEmpower;
-
-		public override void PostUpdateEquips()
-		{
-			if (Player.HasFlag<LastWord>() && MagazinePlayer.TryGetMagazineWeapon(Player, out var magazineWeapon))
-			{
-				if (magazineWeapon.AmmoRemaining(Player, Player.HeldItem) == 1 && MagazinePlayer.empoweredCount <= 0 && !magazineWeapon.Reloading && canEmpower)
-				{
-					MagazinePlayer.EmpowerShot();
-					canEmpower = false;
-				}
-				else if (magazineWeapon.AmmoRemaining(Player, Player.HeldItem) == Player.GetModPlayer<MagazinePlayer>().GetMagazineSize())
-				{
-					canEmpower = true;
-				}
-			}
-		}
-	}
-
 	private class LastWordGlobalProjectile : GlobalProjectile
 	{
-		float _damageBonus;
-
 		public override bool InstancePerEntity => true;
 
-		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.DamageType.CountsAsClass(DamageClass.Ranged);
+		private bool _active;
+
+		public override bool AppliesToEntity(Projectile entity, bool lateInstantiation) => entity.friendly;
 
 		public override void OnSpawn(Projectile projectile, IEntitySource source)
 		{
-			Player player = Main.player[projectile.owner];
-
-			if (!player.HasFlag<LastWord>())
-				return;
-
-			if (projectile.DamageType.CountsAsClass(DamageClass.Ranged) && source is EntitySource_ItemUse_WithAmmo ammoSource && MagazinePlayer.TryGetMagazineWeapon(player, out var magazineWeapon) && magazineWeapon.AmmoRemaining(player, ammoSource.Item) == 0)
+			if (source is EntitySource_ItemUse_WithAmmo sourceWithAmmo)
 			{
-				Item ammoItem = ammoSource.AmmoItemIdUsed > 0 ? ContentSamples.ItemsByType[ammoSource.AmmoItemIdUsed] : null;
+				Player player = sourceWithAmmo.Player;
+				Item item = sourceWithAmmo.Item;
 
-				if (ammoItem.ModItem is not null and ShotgunAmmoItem shotItem)
-				{
-					float damageBonusToAdd = Math.Max(MINIMUM_DAMAGE_BONUS, DAMAGE_BONUS / player.GetModPlayer<ShotgunPlayer>().GetShotCount(shotItem));
-
-					_damageBonus += damageBonusToAdd;
-					projectile.netUpdate = true; // unsure if needed since ModifyHitNPC should sync automatically
-				}
+				if (player.HasFlag<LastWord>() && item.TryGetGlobalItem(out ReloadableGlobalItem global) && global.capacity == 0)
+					_active = true;
 			}
-		}
-
-		public override void AI(Projectile projectile)
-		{
-			if (_damageBonus > 0)
-			{
-				// TODO: do something yogurt
-			}
-		}
-
-		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
-		{
-			if (_damageBonus > 0)
-				modifiers.FinalDamage += _damageBonus;
 		}
 
 		public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
 		{
-			if (_damageBonus > 0)
+			if (_active)
 			{
 				SoundEngine.PlaySound(SoundID.NPCHit8 with { Volume = 0.33f, PitchVariance = 0.33f, Pitch = 0.5f }, projectile.Center);
-
 				for (int i = 0; i < 2; i++)
 				{
 					ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(projectile.Center + Main.rand.NextVector2Circular(15f, 15f), -Vector2.UnitY, Color.DarkRed * 0.2f, 0.05f, EaseFunction.EaseQuinticOut, 60)
@@ -94,10 +51,18 @@ public class LastWord : ModItem, IFlagged
 				}
 			}
 		}
+
+		public override void ModifyHitNPC(Projectile projectile, NPC target, ref NPC.HitModifiers modifiers)
+		{
+			if (_active)
+				modifiers.SourceDamage *= 1 + DAMAGE_BONUS;
+		}
+
+		public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter) => bitWriter.WriteBit(_active);
+		public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader) => _active = bitReader.ReadBit();
 	}
 
-	public const float DAMAGE_BONUS = 0.5f; // 50% damage bonus. Will be spread evenly between all pellets of a shotgun.
-	public const float MINIMUM_DAMAGE_BONUS = 0.1f; // Minimum amount of damage to add to a shot. Used so shotguns atleast get 10% damage.
+	public const float DAMAGE_BONUS = 0.5f;
 
 	public override void SetDefaults()
 	{
@@ -105,4 +70,4 @@ public class LastWord : ModItem, IFlagged
 		Item.rare = ItemRarityID.Green;
 		Item.value = Item.sellPrice(gold: 2);
 	}
-}*/
+}

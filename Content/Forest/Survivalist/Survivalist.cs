@@ -5,7 +5,6 @@ using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
-using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -30,25 +29,26 @@ public class Survivalist : ReloadableItem
 
 	public override void SetDefaults()
 	{
+		Item.DefaultToShotgun(65, 1);
 		Item.damage = 19;
 		Item.knockBack = 5f;
-		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
-		Item.useAmmo = ModContent.ItemType<Shot>();
-		Item.shoot = ModContent.ProjectileType<ShotProjectile>();
-		Item.shootSpeed = 5f;
 		Item.width = 66;
 		Item.height = 24;
-		Item.useTime = Item.useAnimation = 65;
-		Item.useStyle = ItemUseStyleID.Shoot;
-		Item.noMelee = true;
-		Item.noUseGraphic = false;
 		Item.value = Item.buyPrice(0, 3, 50, 0);
 		Item.rare = ItemRarityID.Orange;
-		Item.autoReuse = true;
 		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3) with { Volume = 0.66f, PitchVariance = 0.1f };
 	}
 
 	public override bool AltFunctionUse(Player player) => _cooldown <= 0 && !ReloadInfo.IsReloading(player);
+
+	public override void OnReload(Item item, Player player, IReloadable.ReloadContext context)
+	{
+		if (context == IReloadable.ReloadContext.Ended)
+		{
+			if (++ReloadInfo.capacity < Magazine.FullCapacity) //Reload one shot at a time
+				ReloadInfo.StartReload(player, item);
+		}
+	}
 
 	public override bool? UseItem(Player player)
 	{
@@ -210,7 +210,7 @@ public class Survivalist : ReloadableItem
 			}
 		}
 
-		Vector2 centerOrigin = new Vector2(barrel.Width / 2, barrel.Height);
+		Vector2 centerOrigin = new(barrel.Width / 2, barrel.Height);
 
 		drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = handle }, player, origin, out _));
 		drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = barrel, rotation = barrelRot }, player, centerOrigin, out _, offset: new Vector2(25 * player.direction, 6).RotatedBy(drawData.rotation)));
