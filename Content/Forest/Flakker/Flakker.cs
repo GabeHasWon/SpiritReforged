@@ -21,7 +21,7 @@ public class Flakker : ReloadableItem
 
 	public override IReloadable.MagazineInfo Magazine => new(9, 55);
 
-	public override InterfaceProfile? Profile => new(MagazineInterfacePlayer.StyleID.Shell);
+	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
 
 	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(shotMultiplier: -0.2f, additionalSpread: 0.2f, spreadMultiplier: 0.65f);
 

@@ -27,7 +27,7 @@ public class Survivalist : ReloadableItem
 
 	public override IReloadable.MagazineInfo Magazine => new(5, 150, false);
 
-	public override InterfaceProfile? Profile => new(MagazineInterfacePlayer.StyleID.Shell);
+	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
 
 	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(1, speedMultiplier: 0.33f);
 

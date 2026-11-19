@@ -14,7 +14,7 @@ public class Mac10 : ReloadableItem
 
 	public override IReloadable.MagazineInfo Magazine => new(15, Item.useTime * 13);
 
-	public override InterfaceProfile? Profile => new(MagazineInterfacePlayer.StyleID.Bullet);
+	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Bullet);
 
 	public override void SetDefaults()
 	{

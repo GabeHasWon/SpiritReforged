@@ -19,7 +19,7 @@ public class GameHuntingKit : ModItem
 		Item item = player.HeldItem;
 
 		if (ShotgunGlobalItem.Shotgun[item.type] != null) //The item is a shotgun
-			player.GetModPlayer<MagazineInterfacePlayer>().magazineScale += 0.4f;
+			player.GetModPlayer<MagazinePlayer>().magazineScale += 0.4f;
 	}
 
 	public override void AddRecipes()

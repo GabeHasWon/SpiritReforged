@@ -11,7 +11,7 @@ public class Luger : ReloadableItem
 {
 	public override IReloadable.MagazineInfo Magazine => new(6, 60);
 
-	public override InterfaceProfile? Profile => new(MagazineInterfacePlayer.StyleID.Bullet);
+	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Bullet);
 
 	public override void SetDefaults()
 	{

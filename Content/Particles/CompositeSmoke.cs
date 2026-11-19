@@ -87,16 +87,16 @@ public class CompositeRenderer : ModSystem
 		{
 			SpriteBatch spriteBatch = Main.spriteBatch;
 
-			//spriteBatch.End();
-			//spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.Transform);
+			spriteBatch.End(); //Restart the spritebatch for every layer
+			spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullNone, null, Main.Transform);
 
 			int index = Array.FindIndex(ParticleRenderers.Renderers, x => x == renderer);
 			Rectangle crop = CompositeTarget.Value.Frame(1, RendererCount, 0, index);
 
 			spriteBatch.Draw(CompositeTarget.Value, Vector2.Zero, crop, Color.White, 0f, Vector2.Zero, 2f, 0f, 0f);
 
-			//spriteBatch.End();
-			//spriteBatch.BeginDefault();
+			spriteBatch.End();
+			spriteBatch.BeginDefault();
 		}
 	}
 }

@@ -13,9 +13,11 @@ public interface IReloadable
 
 	public readonly record struct MagazineInfo(int FullCapacity, int ReloadDuration, bool ManualReload = true)
 	{
-		public readonly int GetFullCapacity(Player player) => (int)player.GetModPlayer<MagazineInterfacePlayer>().magazineScale.ApplyTo(FullCapacity);
+		/// <summary> Gets <see cref="FullCapacity"/> with respect to player buffs. </summary>
+		public readonly int GetFullCapacity(Player player) => (int)player.GetModPlayer<MagazinePlayer>().magazineScale.ApplyTo(FullCapacity);
 
-		public readonly int GetReloadDuration(Player player) => (int)player.GetModPlayer<MagazineInterfacePlayer>().reloadSpeed.ApplyTo(ReloadDuration);
+		/// <summary> Gets <see cref="ReloadDuration"/> with respect to player buffs. </summary>
+		public readonly int GetReloadDuration(Player player) => (int)player.GetModPlayer<MagazinePlayer>().reloadLength.ApplyTo(ReloadDuration);
 	}
 
 	public MagazineInfo Magazine { get; }
@@ -157,7 +159,7 @@ public class ReloadableGlobalItem : GlobalItem
 	}
 }
 
-public class MagazineInterfacePlayer : ModPlayer
+public class MagazinePlayer : ModPlayer
 {
 	public enum StyleID { Arrow, Bullet, Dart, Rocket, Shell }
 
@@ -185,7 +187,7 @@ public class MagazineInterfacePlayer : ModPlayer
 
 		public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spritebatch)
 		{
-			Scale = 1f / Main.GameViewMatrix.Zoom.X;
+			Scale = 1f / Main.GameViewMatrix.Zoom.X; //Cursor scale
 
 			Texture2D texture = Texture;
 			Vector2 anchor = settings.AnchorPosition;
@@ -196,17 +198,17 @@ public class MagazineInterfacePlayer : ModPlayer
 				float lerp = (1f - Progress - 0.5f) / 0.5f;
 
 				DrawHelpers.DrawOutline((offset) =>
-				spritebatch.Draw(texture, Position + anchor + offset * Scale, source, Color.Lerp(Color.Orange, Main.MouseBorderColor, 1 - lerp) * lerp, Rotation, source.Size() / 2f, Scale, 0f, 0f));
+				spritebatch.Draw(texture, Position + anchor + offset * Scale, source, Color.Lerp(Color.Orange, Main.MouseBorderColor, 1 - lerp) * lerp, Rotation, source.Size() / 2f, Scale, 0, 0));
 			}
 
-			spritebatch.Draw(texture, Position + anchor, source, Main.mouseColor * (1f - Progress), Rotation, source.Size() / 2f, Scale, 0f, 0f);
+			spritebatch.Draw(texture, Position + anchor, source, Main.mouseColor * (1f - Progress), Rotation, source.Size() / 2f, Scale, 0, 0);
 		}
 	}
 
 	public static bool UIActive => !Main.gameMenu && !Main.LocalPlayer.mouseInterface; //TODO: add config
 
 	public StatModifier magazineScale = StatModifier.Default;
-	public StatModifier reloadSpeed = StatModifier.Default;
+	public StatModifier reloadLength = StatModifier.Default;
 
 	public override void Load() => CustomCursor.DrawCustomCursor += DrawAmmo;
 
@@ -224,6 +226,6 @@ public class MagazineInterfacePlayer : ModPlayer
 	public override void ResetEffects()
 	{
 		magazineScale = StatModifier.Default;
-		reloadSpeed = StatModifier.Default;
+		reloadLength = StatModifier.Default;
 	}
 }

@@ -60,7 +60,7 @@ public class Pepperbox : ReloadableItem
 
 	public override IReloadable.MagazineInfo Magazine => new(3, 90);
 
-	public override InterfaceProfile? Profile => new(MagazineInterfacePlayer.StyleID.Shell);
+	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
 
 	private bool _spawnedReloadDust = false;
 

@@ -13,10 +13,10 @@ public class SuperExtendoMags : ModItem
 
 	public override void UpdateEquip(Player player)
 	{
-		if (player.TryGetModPlayer(out MagazineInterfacePlayer mPlayer))
+		if (player.TryGetModPlayer(out MagazinePlayer mPlayer))
 		{
 			mPlayer.magazineScale += 1;
-			mPlayer.reloadSpeed += 0.3f;
+			mPlayer.reloadLength += 0.3f;
 		}
 	}
 }
