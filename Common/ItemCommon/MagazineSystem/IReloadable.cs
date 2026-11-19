@@ -30,7 +30,7 @@ public interface IReloadable
 	public void OnReload(Item item, Player player, ReloadContext context)
 	{
 		if (context == ReloadContext.Ended && item.TryGetGlobalItem(out ReloadableGlobalItem global))
-			global.capacity = Magazine.FullCapacity;
+			global.capacity = Magazine.GetFullCapacity(player);
 	}
 }
 
@@ -82,7 +82,7 @@ public class ReloadableGlobalItem : GlobalItem
 			capacity = iReloadable.Magazine.FullCapacity;
 	}
 
-	public override bool AltFunctionUse(Item item, Player player) => capacity < (item.ModItem as IReloadable).Magazine.FullCapacity;
+	public override bool AltFunctionUse(Item item, Player player) => capacity < (item.ModItem as IReloadable).Magazine.GetFullCapacity(player);
 
 	public override bool CanUseItem(Item item, Player player)
 	{
@@ -92,16 +92,18 @@ public class ReloadableGlobalItem : GlobalItem
 			return false;
 		}
 
-		return capacity > 0; //reloadTime == 0;
+		return capacity > 0;
 	}
 
 	public override bool? UseItem(Item item, Player player)
 	{
-		SoundEngine.PlaySound(item.UseSound.Value with { Pitch = 1f - capacity / (float)(item.ModItem as IReloadable).Magazine.FullCapacity }, player.Center);
+		SoundEngine.PlaySound(item.UseSound.Value with { Pitch = 1f - capacity / (float)(item.ModItem as IReloadable).Magazine.GetFullCapacity(player) }, player.Center);
 		Vector2 mouse = PlayerMouseHandler.GetMouse(player.whoAmI);
 
 		LastRotation = player.AngleTo(mouse);
-		reloadTime = 0; //Reset the reload animation in case the item was used
+
+		if (capacity > 0)
+			reloadTime = 0; //Reset the reload animation in case the item was used
 
 		return null;
 	}
@@ -149,7 +151,7 @@ public class ReloadableGlobalItem : GlobalItem
 	{
 		if (item.ModItem is IReloadable iReloadable)
 		{
-			reloadTime = iReloadable.Magazine.ReloadDuration;
+			reloadTime = iReloadable.Magazine.GetReloadDuration(player);
 			iReloadable.OnReload(item, player, IReloadable.ReloadContext.Started);
 		}
 	}

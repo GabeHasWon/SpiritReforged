@@ -120,6 +120,8 @@ public abstract class ReloadableItem : ModItem, IReloadable
 	{
 		if (context == IReloadable.ReloadContext.Started)
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), player.Center);
+		else if (context == IReloadable.ReloadContext.Ended && item.TryGetGlobalItem(out ReloadableGlobalItem global))
+			global.capacity = Magazine.GetFullCapacity(player);
 	}
 
 	public override void OnConsumeAmmo(Item ammo, Player player) => Profile?.OnConsumeAmmo();

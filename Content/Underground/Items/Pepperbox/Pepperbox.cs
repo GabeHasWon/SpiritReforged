@@ -176,7 +176,7 @@ public class Pepperbox : ReloadableItem
 				barrelRot += MathHelper.Lerp(maxRotation, 0, lerp);
 			}
 
-			Vector2 offset = new Vector2(18, -7).RotatedBy(drawData.rotation);
+			Vector2 offset = new Vector2(18 * player.direction, -7).RotatedBy(drawData.rotation);
 
 			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = handle }, player, origin, out float armRotation));
 			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { texture = barrel, rotation = barrelRot }, player, barrel.Size() / 2, out _, offset: offset));

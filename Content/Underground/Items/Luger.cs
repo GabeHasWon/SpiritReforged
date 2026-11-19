@@ -44,7 +44,7 @@ public class Luger : ReloadableItem
 
 		if (ReloadInfo.IsReloading(player) && Item.TryGetGlobalItem(out ReloadableGlobalItem global)) //Draw reload visuals
 		{
-			float progress = 1f - global.reloadTime / (float)Magazine.ReloadDuration;
+			float progress = 1f - global.reloadTime / (float)Magazine.GetReloadDuration(player);
 			float rotation = drawData.rotation + EaseFunction.EaseCubicInOut.Ease(progress * 3f) * player.direction;
 
 			if (progress > 0.8f)

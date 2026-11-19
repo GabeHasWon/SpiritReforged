@@ -15,6 +15,10 @@ public class Survivalist : ReloadableItem
 {
 	public const int MAX_COOLDOWN = 300;
 
+	public static readonly Asset<Texture2D> Handle = DrawHelpers.RequestLocal<Survivalist>("Survivalist_Handle", false);
+	public static readonly Asset<Texture2D> Barrel = DrawHelpers.RequestLocal<Survivalist>("Survivalist_Barrel", false);
+	public static readonly Asset<Texture2D> Underbarrel = DrawHelpers.RequestLocal<Survivalist>("Survivalist_Underbarrel", false);
+
 	public ShotgunAmmoItem lastUsedAmmo;
 
 	private bool[] _reloadEffects;
@@ -46,7 +50,12 @@ public class Survivalist : ReloadableItem
 		if (context == IReloadable.ReloadContext.Ended)
 		{
 			if (++ReloadInfo.capacity < Magazine.FullCapacity) //Reload one shot at a time
+			{
 				ReloadInfo.StartReload(player, item);
+
+				_reloadEffects = new bool[5];
+				_spawnedEffects = false;
+			}
 		}
 	}
 
@@ -152,9 +161,9 @@ public class Survivalist : ReloadableItem
 		Player player = drawInfo.drawPlayer;
 		Vector2 origin = new(8, 18);
 
-		var handle = ModContent.Request<Texture2D>(Texture + "_Handle").Value; //CACHE
-		var barrel = ModContent.Request<Texture2D>(Texture + "_Barrel").Value; //CACHE
-		var underBarrel = ModContent.Request<Texture2D>(Texture + "_Underbarrel").Value; //CACHE
+		Texture2D handle = Handle.Value;
+		Texture2D barrel = Barrel.Value;
+		Texture2D underBarrel = Underbarrel.Value;
 
 		float maxRotation = 0.6f * player.direction;
 		float barrelRot = drawData.rotation;

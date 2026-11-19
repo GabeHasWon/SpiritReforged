@@ -16,7 +16,7 @@ public class SuperExtendoMags : ModItem
 		if (player.TryGetModPlayer(out MagazineInterfacePlayer mPlayer))
 		{
 			mPlayer.magazineScale += 1;
-			mp.reloadTimeMultiplier += 0.3f;
+			mPlayer.reloadSpeed += 0.3f;
 		}
 	}
 }
