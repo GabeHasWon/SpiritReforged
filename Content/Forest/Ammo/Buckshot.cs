@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Ammo;
+
 public class Buckshot : ShotgunAmmoItem
 {
 	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)

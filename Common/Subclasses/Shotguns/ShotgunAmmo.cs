@@ -5,23 +5,7 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Common.Subclasses.Shotguns;
 
-/// <summary>
-/// The shoot behavior of the ammo item
-/// </summary>
-/// <param name="item">The item using the ammo</param>
-/// <param name="player">The player using the ammo</param>
-/// <param name="source">Passed in from ModItem.Shoot</param>
-/// <param name="position">Where the projectiles will be spawned</param>
-/// <param name="direction">The direction of the projectiles velocity</param>
-/// <param name="shotCount">The amount of shots to shoot</param>
-/// <param name="spreadAmount">The max spread of the shots</param>
-/// <param name="speed">The speed of the shots</param>
-/// <param name="damage">The damage of the shots</param>
-/// <param name="knockback">The knockback of the shots</param>
-/// <returns>A list of the projectiles spawned</returns>
-public delegate List<Projectile> ShootBehavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback);
-
-/// <summary>
+/*/// <summary>
 /// The behavior of shotgun shell ammo is completely contained in the ammo class, so any shotgun that uses the ammo does the same thing.
 /// Different weapons can effect the behavior through addition and multiplication of stats, but there is general parity between them.
 /// Furthermore <see cref="ShotgunPlayer"/> handles additional shotgun related stat boosts.
@@ -35,7 +19,6 @@ public abstract class ShotgunAmmoItem(ShootBehavior behavior, int shotCount, flo
 
 	public int shotCount = shotCount;
 	public float spreadAmount = spreadAmount;
-	public float speed = speed;
 
 	public override void SetDefaults()
 	{
@@ -44,19 +27,44 @@ public abstract class ShotgunAmmoItem(ShootBehavior behavior, int shotCount, flo
 		Item.maxStack = Item.CommonMaxStack;
 		Item.consumable = true;
 	}
+}*/
+
+public interface IShotgunAmmo
+{
+	public readonly record struct ShotgunStats(int ShotCount, float ShotSpread)
+	{
+		public readonly int GetShotCount(Player player) => (int)player.GetModPlayer<ShotgunPlayer>().shotCount.ApplyTo(ShotCount);
+
+		public readonly float GetShotSpread(Player player) => player.GetModPlayer<ShotgunPlayer>().shotSpread.ApplyTo(ShotSpread);
+	}
+
+	public ShotgunStats Stats { get; }
+
+	/// <summary> Called for <b>EVERY</b> shot according to <see cref="Stats"/> when <paramref name="item"/> is fired.<para/>
+	/// Can be used to create shoot effects unique to this ammo item. <see cref="Stats"/> should be used to retrieve shot counts and spread if needed. </summary>
+	/// <param name="item"> The item that created the projectile. </param>
+	/// <param name="player"> The player who created the projectile. </param>
+	/// <param name="source"> The entity source. </param>
+	/// <param name="position"> The spawn position. </param>
+	/// <param name="velocity"> The velocity of the projectile, automatically adjusted by spread. </param>
+	/// <param name="type"> The type of projectile. </param>
+	/// <param name="damage"> The projectile damage. </param>
+	/// <param name="knockback"> The projectile knockback. </param>
+	/// <param name="index"> The index of projectile created (by zero) relative to <see cref="ShotgunStats.GetShotCount"/>. </param>
+	public void OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index);
 }
 
 public class ShotgunGlobalItem : GlobalItem
 {
-	public static readonly ShotgunPlayer.ShotgunStats?[] Shotgun = SpiritSets.ItemFactory.CreateNamedSet(nameof(Shotgun)).Description("Whether this item will be considered a shotgun and use shotgun stats").RegisterCustomSet<ShotgunPlayer.ShotgunStats?>(null);
+	public static readonly IShotgunAmmo.ShotgunStats?[] Shotgun = SpiritSets.ItemFactory.CreateNamedSet(nameof(Shotgun)).Description("Whether this item will be considered a shotgun and use shotgun stats").RegisterCustomSet<IShotgunAmmo.ShotgunStats?>(null);
 
 	public override void SetStaticDefaults() //Set vanilla shotgun defaults
 	{
 		Shotgun[ItemID.Boomstick] = new();
-		Shotgun[ItemID.QuadBarrelShotgun] = new(shotMultiplier: 0.5f, spreadMultiplier: 0.5f);
-		Shotgun[ItemID.OnyxBlaster] = new(speedMultiplier: 0.25f, spreadMultiplier: -0.2f);
+		Shotgun[ItemID.QuadBarrelShotgun] = new(3, 0.5f);
+		Shotgun[ItemID.OnyxBlaster] = new(0, -0.2f); //Projectile speed mult = +0.25f
 		Shotgun[ItemID.Shotgun] = new();
-		Shotgun[ItemID.TacticalShotgun] = new(spreadMultiplier: -0.35f);
+		Shotgun[ItemID.TacticalShotgun] = new(0, -0.35f);
 	}
 
 	public override void SetDefaults(Item entity)
@@ -67,16 +75,13 @@ public class ShotgunGlobalItem : GlobalItem
 
 	public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is ShotgunAmmoItem ammo)
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo ammo)
 		{
-			var direction = Vector2.Normalize(velocity);
-			ShotgunPlayer shotgunPlayer = player.GetModPlayer<ShotgunPlayer>();
-			ShotgunPlayer.ShotgunStats stats = Shotgun[item.type].Value;
+			IShotgunAmmo.ShotgunStats ammoStats = ammo.Stats;
+			IShotgunAmmo.ShotgunStats itemStats = Shotgun[item.type].Value;
 
-			ammo.Behaviour.Invoke(item, player, source, position, direction,
-				(int)shotgunPlayer.shotgunStats.ShotCount.ApplyTo(1),
-				shotgunPlayer.shotgunStats.ShotSpread.ApplyTo(1),
-				shotgunPlayer.shotgunStats.ShotSpeed.ApplyTo(1), damage, knockback);
+			for (int i = 0; i < ammoStats.GetShotCount(player) + itemStats.GetShotCount(player); i++)
+				ammo.OnShoot(item, player, source, position, velocity.RotatedByRandom(ammoStats.GetShotSpread(player) + itemStats.GetShotSpread(player)), type, damage, knockback, i);
 
 			if (item.type < ItemID.Count) //Vanilla-only effects
 			{
@@ -98,10 +103,12 @@ public class ShotgunGlobalItem : GlobalItem
 
 public class ShotgunPlayer : ModPlayer
 {
-	public readonly record struct ShotgunStats(StatModifier ShotCount, StatModifier ShotSpread, StatModifier ShotSpeed);
+	public StatModifier shotCount = StatModifier.Default;
+	public StatModifier shotSpread = StatModifier.Default;
 
-	public static readonly ShotgunStats Default = new(StatModifier.Default, StatModifier.Default, StatModifier.Default);
-	public ShotgunStats shotgunStats = new();
-
-	public override void ResetEffects() => shotgunStats = Default;
+	public override void ResetEffects()
+	{
+		shotCount = StatModifier.Default;
+		shotSpread = StatModifier.Default;
+	}
 }

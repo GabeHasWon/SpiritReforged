@@ -8,22 +8,18 @@ namespace SpiritReforged.Content.Particles;
 
 public class ShotgunShellParticle : Particle
 {
-	internal ShotgunAmmoItem _ammo;
-	internal bool HitTile;
+	private readonly IShotgunAmmo _ammo;
+	private bool _hitTile;
 
-	public ShotgunShellParticle(Vector2 position, Vector2 velocity, float scale, int maxTime, ShotgunAmmoItem ammo = null)
+	public ShotgunShellParticle(Vector2 position, Vector2 velocity, float scale, int maxTime, IShotgunAmmo ammo = null)
 	{
-		if (ammo is null)
-			_ammo = ModContent.GetInstance<Shot>(); // default to shot shell texture
-		else
-			_ammo = ammo;
+		_ammo ??= ModContent.GetInstance<Shot>(); //Default to shot if null
 
 		Position = position;
 		Color = Color.White;
 		Scale = scale;
 		MaxTime = maxTime;
 		Velocity = velocity;
-		HitTile = false;
 		Rotation = Main.rand.NextFloat(6.28f);
 	}
 
@@ -32,7 +28,7 @@ public class ShotgunShellParticle : Particle
 		base.Update(ref settings);
 		Tile tile = Framing.GetTileSafely((int)Position.X / 16, (int)Position.Y / 16);
 
-		if (HitTile)
+		if (_hitTile)
 		{
 			if (!tile.HasTile)
 				Velocity.Y += 0.08f;
@@ -58,21 +54,23 @@ public class ShotgunShellParticle : Particle
 
 		Rotation += Velocity.Length() * 0.03f;
 
-		if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType] && !HitTile)
+		if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType] && !_hitTile)
 		{
 			Velocity.X *= 0.75f;
 			Velocity.Y *= -0.75f;
-			HitTile = true;
+			_hitTile = true;
 		}
 	}
 
 	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		var texture = ModContent.Request<Texture2D>(_ammo.Texture + "_Shell").Value;
-		var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
+		if (_ammo is not ModTexturedType textured)
+			return;
+
+		Texture2D texture = ModContent.Request<Texture2D>(textured.Texture + "_Shell").Value;
+		Texture2D bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
 
 		float rotation = Rotation;
-
 		float fade;
 
 		if (Progress < 0.1f)

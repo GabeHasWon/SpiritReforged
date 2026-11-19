@@ -5,12 +5,37 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
+using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Forest.Ammo;
 
-public class Shot : ShotgunAmmoItem
+public class Shot : ModItem, IShotgunAmmo
 {
+	public IShotgunAmmo.ShotgunStats Stats => new(6, 0.4f);
+
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type)));
+
+	public override void SetDefaults()
+	{
+		base.SetDefaults();
+
+		Item.shootSpeed = 12.5f;
+		Item.damage = 5;
+		Item.value = Item.buyPrice(copper: 15);
+	}
+
+	void IShotgunAmmo.OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
+	{
+		if (index == 0)
+			velocity = position.DirectionTo(Main.MouseWorld) * velocity.Length(); //Remove all spread for the first shot
+
+		Projectile.NewProjectile(source, position, velocity * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI);
+		
+		for (int x = 0; x < 3; x++)
+			Dust.NewDustPerfect(position, DustID.Torch, velocity.RotatedByRandom(Stats.GetShotSpread(player) * 1.25f) * Main.rand.NextFloat(1f, 3f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
+		
+		Dust.NewDustPerfect(position + velocity, DustID.Smoke, Vector2.Normalize(velocity).RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
+	}
 
 	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
 	{
@@ -33,16 +58,6 @@ public class Shot : ShotgunAmmoItem
 		}
 
 		return spawnedProjectiles;
-	}
-
-	public Shot() : base(Behavior, 6, 0.4f, 12.5f) { }
-
-	public override void SetDefaults()
-	{
-		base.SetDefaults();
-
-		Item.damage = 5;
-		Item.value = Item.buyPrice(copper: 15);
 	}
 }
 
