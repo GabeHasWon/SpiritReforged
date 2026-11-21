@@ -11,38 +11,38 @@ using Terraria.DataStructures;
 using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Evil.Items.Ammo;
-public class Slug : ShotgunAmmoItem
+
+public class Slug : ModItem, IShotgunAmmo
 {
+	public ShotgunStats Stats => new(ShotgunStats.Additive(1), ShotgunStats.Multiple(0.05f));
+
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type, Condition.DownedBrainOfCthulhu)));
 
-	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
+	public override void SetDefaults()
 	{
-		float damageIncrease = 1f;
+		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
+		Item.ammo = ModContent.ItemType<Shot>();
+		Item.maxStack = Item.CommonMaxStack;
+		Item.consumable = true;
+		Item.damage = 57;
+		Item.shootSpeed = 15;
+		Item.value = Item.buyPrice(copper: 50);
+	}
 
-		// 10% damage increase per shot count after 1
-		// Only happens with accessories and such
-		for (int i = 1; i < shotCount; i++)
-			damageIncrease += 0.1f;
+	public void OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
+	{
+		damage = (int)(damage * (1f + (Stats.GetShotCount(player) - 1) * 0.1f)); //Provide a 10% damage increase for every shot after the first
+		float spread = Stats.GetShotSpread(player);
 
 		for (int i = 0; i < 5; i++)
 		{
 			for (int x = 0; x < 2; x++)
-				Dust.NewDustPerfect(position, DustID.Torch, direction.RotatedByRandom(spreadAmount) * Main.rand.NextFloat(speed, speed * 2f), 0, default, Main.rand.NextFloat(3.5f)).noGravity = true;
+				Dust.NewDustPerfect(position, DustID.Torch, velocity.RotatedByRandom(spread) * Main.rand.NextFloat(1, 2), 0, default, Main.rand.NextFloat(3.5f)).noGravity = true;
 
-			Dust.NewDustPerfect(position + direction * speed, DustID.Smoke, direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
+			Dust.NewDustPerfect(position + velocity, DustID.Smoke, Vector2.Normalize(velocity).RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
 		}
 
-		return [Projectile.NewProjectileDirect(source, position, direction.RotatedByRandom(spreadAmount) * speed * Main.rand.NextFloat(1.25f, 1.5f), ModContent.ProjectileType<SlugProjectile>(), damage, knockback, player.whoAmI)];
-	}
-
-	public Slug() : base(Behavior, 1, 0.05f, 15f) { }
-
-	public override void SetDefaults()
-	{
-		base.SetDefaults();
-
-		Item.damage = 57;
-		Item.value = Item.buyPrice(copper: 50);
+		Projectile.NewProjectileDirect(source, position, velocity.RotatedByRandom(spread) * Main.rand.NextFloat(1.25f, 1.5f), ModContent.ProjectileType<SlugProjectile>(), damage, knockback, player.whoAmI);
 	}
 
 	public override void AddRecipes() => CreateRecipe(75).AddIngredient<Shot>(150).AddIngredient(ItemID.TissueSample, 3).AddTile(TileID.Anvils).Register();

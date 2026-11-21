@@ -22,7 +22,7 @@ public class Heirloom : ReloadableItem
 
 	/// <summary> When greater than zero, it will interpolate from a fully extended arm to a non extended arm, <see cref="MAX_ARM_PULLBACK_TIMER"/> </summary>
 	public int armPullbackTimer;
-	public ShotgunAmmoItem lastUsedAmmo;
+	public IShotgunAmmo lastUsedAmmo;
 
 	public override IReloadable.MagazineInfo Magazine => new(2, 120, false);
 
@@ -129,7 +129,7 @@ public class Heirloom : ReloadableItem
 			});
 		}
 
-		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is ShotgunAmmoItem shotgunAmmo)
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
 			lastUsedAmmo = shotgunAmmo;
 
 		return true;

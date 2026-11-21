@@ -19,7 +19,7 @@ public class Survivalist : ReloadableItem
 	public static readonly Asset<Texture2D> Barrel = DrawHelpers.RequestLocal<Survivalist>("Survivalist_Barrel", false);
 	public static readonly Asset<Texture2D> Underbarrel = DrawHelpers.RequestLocal<Survivalist>("Survivalist_Underbarrel", false);
 
-	public ShotgunAmmoItem lastUsedAmmo;
+	public IShotgunAmmo lastUsedAmmo;
 
 	private bool[] _reloadEffects;
 	private bool _spawnedEffects = false;
@@ -29,7 +29,7 @@ public class Survivalist : ReloadableItem
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
 
-	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(1, speedMultiplier: 0.33f);
+	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(StatModifier.Default, ShotgunStats.Multiple(1.33f));
 
 	public override void SetDefaults()
 	{
@@ -134,7 +134,7 @@ public class Survivalist : ReloadableItem
 			}
 		}
 
-		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is ShotgunAmmoItem shotgunAmmo)
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
 			lastUsedAmmo = shotgunAmmo;
 
 		return true;

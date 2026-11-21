@@ -9,63 +9,53 @@ using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Underworld.Ammo;
-public class DragonsBreath : ShotgunAmmoItem
+public class DragonsBreath : ModItem, IShotgunAmmo
 {
+	public ShotgunStats Stats => new(ShotgunStats.Additive(7), ShotgunStats.Multiple(0.6f));
+
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type)));
-
-	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
-	{
-		var spawnedProjectiles = new List<Projectile>();
-
-		for (int i = 0; i < shotCount; i++)
-		{
-			Vector2 spreadDir = direction;
-
-			if (spreadAmount > 0f && i != 0) // no spread on first shot
-				spreadDir = direction.RotatedByRandom(spreadAmount);
-
-			var p = Projectile.NewProjectileDirect(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<DragonsBreathProjectile>(), damage, knockback, player.whoAmI);
-
-			spawnedProjectiles.Add(p);
-
-			for (int x = 0; x < 6; x++)
-				Dust.NewDustPerfect(position, DustID.Torch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 2f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
-
-			Dust.NewDustPerfect(position + direction * speed, DustID.Smoke, direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
-
-			for (int x = 0; x < 2; x++)
-			{
-				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(speed * 0.5f), Color.DarkGray * 0.25f, Main.rand.NextFloat(0.02f, 0.09f), EaseFunction.EaseCubicOut, 90)
-				{
-					Pixellate = true,
-					PixelDivisor = 2,
-				});
-
-				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, direction.RotatedByRandom(0.25f) * Main.rand.NextFloat(speed * 0.65f), Color.Black * 0.15f, Main.rand.NextFloat(0.03f, 0.12f), EaseFunction.EaseCubicOut, 40)
-				{
-					Pixellate = true,
-					PixelDivisor = 3,
-				});
-
-				Vector2 velo = direction.RotatedByRandom(0.5f) * Main.rand.NextFloat(speed / 2);
-
-				ParticleRenderers.UnderProjectiles.Add(new BloomParticle(position, velo, Color.DarkOrange, 0.2f, 30, 1, (particle) => particle.Velocity *= 0.935f));
-				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, velo, Color.Orange, 0.3f, 30, 1, (particle) => particle.Velocity *= 0.935f));
-			}
-		}
-
-		return spawnedProjectiles;
-	}
-
-	public DragonsBreath() : base(Behavior, 7, 0.6f, 15f) { }
 
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 
+		Item.shootSpeed = 15f;
 		Item.damage = 8;
 		Item.rare = ItemRarityID.Orange;
 		Item.value = Item.sellPrice(silver: 1);
+	}
+
+	public void OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
+	{
+		if (index == 0)
+			velocity = position.DirectionTo(Main.MouseWorld) * velocity.Length(); //Remove all spread from the first shot
+
+		Projectile.NewProjectileDirect(source, position, velocity * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<DragonsBreathProjectile>(), damage, knockback, player.whoAmI);
+
+		for (int x = 0; x < 6; x++)
+			Dust.NewDustPerfect(position, DustID.Torch, velocity.RotatedByRandom(Stats.GetShotSpread(player) * 1.25f) * Main.rand.NextFloat(1f, 2f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
+
+		Dust.NewDustPerfect(position + velocity, DustID.Smoke, velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
+
+		for (int x = 0; x < 2; x++)
+		{
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.5f), Color.DarkGray * 0.25f, Main.rand.NextFloat(0.02f, 0.09f), EaseFunction.EaseCubicOut, 90)
+			{
+				Pixellate = true,
+				PixelDivisor = 2,
+			});
+
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.65f), Color.Black * 0.15f, Main.rand.NextFloat(0.03f, 0.12f), EaseFunction.EaseCubicOut, 40)
+			{
+				Pixellate = true,
+				PixelDivisor = 3,
+			});
+
+			Vector2 velo = velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.5f);
+
+			ParticleRenderers.UnderProjectiles.Add(new BloomParticle(position, velo, Color.DarkOrange, 0.2f, 30, 1, (particle) => particle.Velocity *= 0.935f));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, velo, Color.Orange, 0.3f, 30, 1, (particle) => particle.Velocity *= 0.935f));
+		}
 	}
 
 	public override void AddRecipes() => CreateRecipe(50)

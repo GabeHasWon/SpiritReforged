@@ -9,53 +9,45 @@ using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.SaltFlats.Items.Ammo;
 
-public class SaltShot : ShotgunAmmoItem
+public class SaltShot : ModItem, IShotgunAmmo
 {
-	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
-	{
-		var spawnedProjectiles = new List<Projectile>();
-
-		for (int i = 0; i < shotCount; i++)
-		{
-			Vector2 spreadDir = direction;
-
-			if (spreadAmount > 0f && i != 0) // no spread on first shot
-				spreadDir = direction.RotatedByRandom(spreadAmount);
-
-			var p = Projectile.NewProjectileDirect(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<SaltShotProjectile>(), damage, knockback, player.whoAmI);
-
-			spawnedProjectiles.Add(p);
-
-			for (int x = 0; x < 2; x++)
-			{
-				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(speed * 0.5f), Color.LightPink * 0.2f, Main.rand.NextFloat(0.01f, 0.04f), EaseFunction.EaseCubicOut, 60)
-				{
-					Pixellate = true,
-					PixelDivisor = 2,
-				});
-
-				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, direction.RotatedByRandom(0.25f) * Main.rand.NextFloat(speed * 0.65f), Color.WhiteSmoke * 0.1f, Main.rand.NextFloat(0.02f, 0.06f), EaseFunction.EaseCubicOut, 85)
-				{
-					Pixellate = true,
-					PixelDivisor = 3,
-				});
-
-				Dust.NewDustPerfect(position, DustID.WhiteTorch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 2f), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
-			}
-		}
-
-		return spawnedProjectiles;
-	}
-
-	public SaltShot() : base(Behavior, 4, 0.55f, 18.5f) { }
+	public ShotgunStats Stats => new(ShotgunStats.Additive(4), ShotgunStats.Multiple(0.55f));
 
 	public override void SetDefaults()
 	{
-		base.SetDefaults();
-
+		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
+		Item.ammo = ModContent.ItemType<Shot>();
+		Item.maxStack = Item.CommonMaxStack;
+		Item.consumable = true;
+		Item.shootSpeed = 18.5f;
 		Item.rare = ItemRarityID.Blue;
 		Item.damage = 6;
 		Item.knockBack = 1f;
+	}
+
+	public void OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
+	{
+		if (index == 0)
+			velocity = position.DirectionTo(Main.MouseWorld) * velocity.Length(); //Remove all spread from the first shot
+
+		Projectile.NewProjectileDirect(source, position, velocity * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<SaltShotProjectile>(), damage, knockback, player.whoAmI);
+
+		for (int x = 0; x < 2; x++)
+		{
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(0.5f), Color.LightPink * 0.2f, Main.rand.NextFloat(0.01f, 0.04f), EaseFunction.EaseCubicOut, 60)
+			{
+				Pixellate = true,
+				PixelDivisor = 2,
+			});
+
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, velocity.RotatedByRandom(0.25f) * Main.rand.NextFloat(0.65f), Color.WhiteSmoke * 0.1f, Main.rand.NextFloat(0.02f, 0.06f), EaseFunction.EaseCubicOut, 85)
+			{
+				Pixellate = true,
+				PixelDivisor = 3,
+			});
+
+			Dust.NewDustPerfect(position, DustID.WhiteTorch, velocity.RotatedByRandom(Stats.GetShotSpread(player) * 1.25f) * Main.rand.NextFloat(1f, 2f), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
+		}
 	}
 
 	public override void AddRecipes() => CreateRecipe(50)

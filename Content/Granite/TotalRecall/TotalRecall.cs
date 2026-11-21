@@ -1,7 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Abstract;
-using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
@@ -15,7 +13,7 @@ namespace SpiritReforged.Content.Granite.TotalRecall;
 
 public class TotalRecall : ModItem
 {
-	class TotalRecallShellParticle(Vector2 position, Vector2 velocity, float scale, int maxTime, ShotgunAmmoItem item = null) : ShotgunShellParticle(position, velocity, scale, maxTime, item)
+	private class TotalRecallShellParticle(Vector2 position, Vector2 velocity, float scale, int maxTime, IShotgunAmmo item = null) : ShotgunShellParticle(position, velocity, scale, maxTime, item)
 	{
 		public override void Update(ref ParticleRendererSettings settings)
 		{
@@ -47,8 +45,7 @@ public class TotalRecall : ModItem
 		{
 			if (Progress < 0.33f)
 			{
-				var bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
-
+				Texture2D bloom = AssetLoader.LoadedTextures["BloomNonPremult"].Value;
 				float progress = Progress / 0.33f;
 
 				spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.LightCyan.Additive(), 0f, bloom.Size() / 2f, Scale * 0.2f, 0f, 0f);
@@ -64,7 +61,7 @@ public class TotalRecall : ModItem
 	private float _shootRotation;
 	private int _cooldown;
 
-	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(shotMultiplier: 0.33f, spreadMultiplier: -0.2f);
+	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(ShotgunStats.Multiple(0.33f), ShotgunStats.Multiple(0.8f));
 
 	public override void SetDefaults()
 	{
@@ -113,7 +110,7 @@ public class TotalRecall : ModItem
 
 		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
 
-		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is ShotgunAmmoItem shotgunAmmo)
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
 			ParticleRenderers.OverPlayers.Add(new TotalRecallShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, shotgunAmmo));
 
 		return true;

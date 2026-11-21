@@ -5,20 +5,21 @@ using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Visuals;
-using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Forest.Ammo;
 
 public class Shot : ModItem, IShotgunAmmo
 {
-	public IShotgunAmmo.ShotgunStats Stats => new(6, 0.4f);
+	public ShotgunStats Stats => new(ShotgunStats.Additive(6), ShotgunStats.Multiple(0.4f));
 
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type)));
 
 	public override void SetDefaults()
 	{
-		base.SetDefaults();
-
+		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
+		Item.ammo = ModContent.ItemType<Shot>();
+		Item.maxStack = Item.CommonMaxStack;
+		Item.consumable = true;
 		Item.shootSpeed = 12.5f;
 		Item.damage = 5;
 		Item.value = Item.buyPrice(copper: 15);
@@ -27,7 +28,7 @@ public class Shot : ModItem, IShotgunAmmo
 	void IShotgunAmmo.OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
 	{
 		if (index == 0)
-			velocity = position.DirectionTo(Main.MouseWorld) * velocity.Length(); //Remove all spread for the first shot
+			velocity = position.DirectionTo(Main.MouseWorld) * velocity.Length(); //Remove all spread from the first shot
 
 		Projectile.NewProjectile(source, position, velocity * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI);
 		
@@ -35,29 +36,6 @@ public class Shot : ModItem, IShotgunAmmo
 			Dust.NewDustPerfect(position, DustID.Torch, velocity.RotatedByRandom(Stats.GetShotSpread(player) * 1.25f) * Main.rand.NextFloat(1f, 3f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
 		
 		Dust.NewDustPerfect(position + velocity, DustID.Smoke, Vector2.Normalize(velocity).RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
-	}
-
-	static List<Projectile> Behavior(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 direction, int shotCount, float spreadAmount, float speed, int damage, float knockback)
-	{
-		var spawnedProjectiles = new List<Projectile>();
-
-		for (int i = 0; i < shotCount; i++)
-		{
-			Vector2 spreadDir = direction;
-
-			if (spreadAmount > 0f && i != 0) // no spread on first shot
-				spreadDir = direction.RotatedByRandom(spreadAmount);
-
-			var p = Projectile.NewProjectileDirect(source, position, spreadDir * speed * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<ShotProjectile>(), damage, knockback, player.whoAmI);
-			spawnedProjectiles.Add(p);
-
-			for (int x = 0; x < 3; x++)
-				Dust.NewDustPerfect(position, DustID.Torch, direction.RotatedByRandom(spreadAmount * 1.25f) * Main.rand.NextFloat(speed, speed * 3f), 0, default, Main.rand.NextFloat(1.5f)).noGravity = true;
-
-			Dust.NewDustPerfect(position + direction * speed, DustID.Smoke, direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
-		}
-
-		return spawnedProjectiles;
 	}
 }
 

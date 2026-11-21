@@ -29,15 +29,19 @@ public abstract class ShotgunAmmoItem(ShootBehavior behavior, int shotCount, flo
 	}
 }*/
 
+public readonly record struct ShotgunStats(StatModifier ShotCount, StatModifier ShotSpread)
+{
+	public static StatModifier Additive(float value) => new(value, 1);
+
+	public static StatModifier Multiple(float value) => new(1, value);
+
+	public readonly int GetShotCount(Player player) => (int)player.GetModPlayer<ShotgunPlayer>().shotCount.CombineWith(ShotCount).ApplyTo(1);
+
+	public readonly float GetShotSpread(Player player) => player.GetModPlayer<ShotgunPlayer>().shotSpread.CombineWith(ShotSpread).ApplyTo(1);
+}
+
 public interface IShotgunAmmo
 {
-	public readonly record struct ShotgunStats(int ShotCount, float ShotSpread)
-	{
-		public readonly int GetShotCount(Player player) => (int)player.GetModPlayer<ShotgunPlayer>().shotCount.ApplyTo(ShotCount);
-
-		public readonly float GetShotSpread(Player player) => player.GetModPlayer<ShotgunPlayer>().shotSpread.ApplyTo(ShotSpread);
-	}
-
 	public ShotgunStats Stats { get; }
 
 	/// <summary> Called for <b>EVERY</b> shot according to <see cref="Stats"/> when <paramref name="item"/> is fired.<para/>
@@ -56,15 +60,15 @@ public interface IShotgunAmmo
 
 public class ShotgunGlobalItem : GlobalItem
 {
-	public static readonly IShotgunAmmo.ShotgunStats?[] Shotgun = SpiritSets.ItemFactory.CreateNamedSet(nameof(Shotgun)).Description("Whether this item will be considered a shotgun and use shotgun stats").RegisterCustomSet<IShotgunAmmo.ShotgunStats?>(null);
+	public static readonly ShotgunStats?[] Shotgun = SpiritSets.ItemFactory.CreateNamedSet(nameof(Shotgun)).Description("Whether this item will be considered a shotgun and use shotgun stats").RegisterCustomSet<ShotgunStats?>(null);
 
 	public override void SetStaticDefaults() //Set vanilla shotgun defaults
 	{
 		Shotgun[ItemID.Boomstick] = new();
-		Shotgun[ItemID.QuadBarrelShotgun] = new(3, 0.5f);
-		Shotgun[ItemID.OnyxBlaster] = new(0, -0.2f); //Projectile speed mult = +0.25f
+		Shotgun[ItemID.QuadBarrelShotgun] = new(ShotgunStats.Multiple(1.5f), ShotgunStats.Multiple(1.5f));
+		Shotgun[ItemID.OnyxBlaster] = new(StatModifier.Default, ShotgunStats.Multiple(0.8f)); //Projectile speed mult = +0.25f
 		Shotgun[ItemID.Shotgun] = new();
-		Shotgun[ItemID.TacticalShotgun] = new(0, -0.35f);
+		Shotgun[ItemID.TacticalShotgun] = new(StatModifier.Default, ShotgunStats.Multiple(0.65f));
 	}
 
 	public override void SetDefaults(Item entity)
@@ -77,8 +81,8 @@ public class ShotgunGlobalItem : GlobalItem
 	{
 		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo ammo)
 		{
-			IShotgunAmmo.ShotgunStats ammoStats = ammo.Stats;
-			IShotgunAmmo.ShotgunStats itemStats = Shotgun[item.type].Value;
+			ShotgunStats ammoStats = ammo.Stats;
+			ShotgunStats itemStats = Shotgun[item.type].Value;
 
 			for (int i = 0; i < ammoStats.GetShotCount(player) + itemStats.GetShotCount(player); i++)
 				ammo.OnShoot(item, player, source, position, velocity.RotatedByRandom(ammoStats.GetShotSpread(player) + itemStats.GetShotSpread(player)), type, damage, knockback, i);
