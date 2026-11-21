@@ -9,6 +9,7 @@ namespace SpiritReforged.Content.Particles;
 
 public class LightningBoltParticle : Particle, IDrawPixelated
 {
+	public override string TexturePath => "SpiritReforged/Assets/Textures/Bloom";
 	private VertexTrail[] _trails;
 
 	Color _startColor;

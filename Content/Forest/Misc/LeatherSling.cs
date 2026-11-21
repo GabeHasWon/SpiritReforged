@@ -2,15 +2,21 @@
 
 namespace SpiritReforged.Content.Forest.Misc;
 
+[AutoloadEquip(EquipType.Body)]
 public class LeatherSling : ModItem
 {
-	// TODO: Texture
-	public override string Texture => AssetLoader.EmptyTexture;
-
 	public override void SetDefaults()
 	{
 		Item.DefaultToAccessory();
 		Item.rare = ItemRarityID.Green;
+	}
+
+	public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
+	{
+		if (equippedItem.ModItem is not null and Bandolier && incomingItem.ModItem is not null and LeatherSling || equippedItem.ModItem is not null and LeatherSling && incomingItem.ModItem is not null and Bandolier)
+			return false;
+
+		return true;
 	}
 
 	public override void UpdateEquip(Player player)
@@ -22,16 +28,3 @@ public class LeatherSling : ModItem
 	}
 }
 
-class LeatherSlingGlobalItem : GlobalItem
-{
-	public override void PostDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
-	{
-		var magazinePlayer = Main.LocalPlayer.GetModPlayer<MagazinePlayer>();
-
-		if (item.TryGetGlobalItem<MagazineGlobalItem>(out var magazineItem) && magazineItem.Active)
-		{
-
-			// TODO: drawing logic	
-		}
-	}
-}*/

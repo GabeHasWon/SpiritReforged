@@ -132,6 +132,11 @@ public class Survivalist : ReloadableItem
 				{
 					Variant = CompositeSmoke.SmallVariant
 				});
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray * 0.4f, 10 + Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray * 0.4f, 10 + Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+			{
+				Variant = CompositeSmoke.SmallVariant
+			});
 
 				for (int x = 0; x < 2; x++)
 				{

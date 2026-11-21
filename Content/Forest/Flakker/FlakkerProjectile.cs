@@ -93,8 +93,8 @@ public class FlakkerProjectile : ModProjectile
 
 		}
 
-		ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY * Main.rand.NextFloat(), new(120, 120, 120), 50, default, p => p.Velocity *= 0.95f));
-		ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY * Main.rand.NextFloat(), new(200, 200, 200), 30, default, p => p.Velocity *= 0.95f)
+		ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY * Main.rand.NextFloat(), new Color(120, 120, 120) * 0.4f, 50, default, p => p.Velocity *= 0.95f));
+		ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(Projectile.Center, -Vector2.UnitY * Main.rand.NextFloat(), new Color(200, 200, 200) * 0.4f, 30, default, p => p.Velocity *= 0.95f)
 		{
 			Variant = CompositeSmoke.SmallVariant
 		});

@@ -26,6 +26,7 @@ public class ShotgunShellParticle : Particle
 	public override void Update(ref ParticleRendererSettings settings)
 	{
 		base.Update(ref settings);
+
 		Tile tile = Framing.GetTileSafely((int)Position.X / 16, (int)Position.Y / 16);
 
 		if (_hitTile)

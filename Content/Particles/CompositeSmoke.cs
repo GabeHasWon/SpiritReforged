@@ -15,7 +15,6 @@ public class CompositeRenderer : ModSystem
 	{
 		public void TargetDraw(SpriteBatch spriteBatch, int layer);
 	}
-
 	public static int RendererCount => ParticleRenderers.Renderers.Length;
 
 	private readonly static BlendState Max = new()
@@ -118,6 +117,9 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 
 	public CompositeSmoke(Vector2 position, Vector2 velocity, Color color, int maxTime, RenderSettings settings = default, Action<Particle> extraUpdateAction = null)
 	{
+		if (maxTime <= 0)
+			maxTime = 60;
+
 		Position = position;
 		Velocity = velocity;
 		Rotation = 0f;

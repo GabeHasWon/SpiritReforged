@@ -114,35 +114,7 @@ public class DragonsBreathProjectile : ModProjectile
 			Tile tile = Framing.GetTileSafely((int)Projectile.Center.X / 16, (int)Projectile.Center.Y / 16);
 			if (tile.HasTile && tile.BlockType == BlockType.Solid && Main.tileSolid[tile.TileType] && !TileID.Sets.Platforms[tile.TileType])
 			{
-				for (int i = 0; i < 2; i++)
-				{
-					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
-					Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f);
-
-					ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1.35f, Main.rand.Next(30, 60), SparkUpdate, tileCollide: false));
-				}
-
-				for (int i = 0; i < 6; i++)
-				{
-					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
-					Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f);
-
-					ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1f, Main.rand.Next(45, 75), (p) => p.Velocity *= 0.95f, tileCollide: false));
-				}
-
-				for (int i = 0; i < 6; i++)
-				{
-					Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
-					Vector2 velocity = Main.rand.NextVector2Circular(12f, 12f);
-
-					ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, false, false));
-				}
-
-				static void SparkUpdate(Particle p)
-				{
-					p.Velocity *= 0.95f;
-					p.Velocity.Y += 0.5f;
-				}
+				
 
 				Projectile.penetrate -= 2;
 				Projectile.damage /= 2;
@@ -150,6 +122,41 @@ public class DragonsBreathProjectile : ModProjectile
 				_hitTile = true;
 			}
 		}*/
+	}
+
+	public override bool OnTileCollide(Vector2 oldVelocity)
+	{
+		for (int i = 0; i < 2; i++)
+		{
+			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
+			Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f);
+
+			ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1.35f, Main.rand.Next(30, 60), SparkUpdate, tileCollide: false));
+		}
+
+		for (int i = 0; i < 6; i++)
+		{
+			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
+			Vector2 velocity = Projectile.velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(0.75f, 1f);
+
+			ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 1f, Main.rand.Next(45, 75), (p) => p.Velocity *= 0.95f, tileCollide: false));
+		}
+
+		for (int i = 0; i < 6; i++)
+		{
+			Vector2 pos = Projectile.Center + Main.rand.NextVector2Circular(32f, 32f);
+			Vector2 velocity = Main.rand.NextVector2Circular(12f, 12f);
+
+			ParticleRenderers.UnderProjectiles.Add(new SparkParticle(pos, velocity, Color.Lerp(Color.DarkOrange, Color.OrangeRed, Main.rand.NextFloat()), 0.5f, Main.rand.Next(80, 150), SparkUpdate, false, false));
+		}
+
+		static void SparkUpdate(Particle p)
+		{
+			p.Velocity *= 0.95f;
+			p.Velocity.Y += 0.5f;
+		}
+
+		return true;
 	}
 
 	public override bool PreDraw(ref Color lightColor)

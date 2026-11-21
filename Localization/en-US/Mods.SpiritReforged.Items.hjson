@@ -4088,6 +4088,11 @@ C4Item: {
 	Tooltip: Destroys walls in a radius when interacted with
 }
 
+Bandolier: {
+	DisplayName: Bandolier
+	Tooltip: ""
+}
+
 Mac10: {
 	DisplayName: Mac-10
 	Tooltip: "'Stunningly inaccurate'"
