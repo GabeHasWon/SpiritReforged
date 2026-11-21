@@ -1,4 +1,4 @@
-﻿/*using SpiritReforged.Common.ItemCommon.MagazineSystem;
+﻿using SpiritReforged.Common.ItemCommon.MagazineSystem;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
@@ -13,7 +13,7 @@ public class LeatherSling : ModItem
 
 	public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
 	{
-		if (equippedItem.ModItem is not null and Bandolier && incomingItem.ModItem is not null and LeatherSling || equippedItem.ModItem is not null and LeatherSling && incomingItem.ModItem is not null and Bandolier)
+		if (equippedItem.ModItem is Bandolier && incomingItem.ModItem is LeatherSling || equippedItem.ModItem is LeatherSling && incomingItem.ModItem is not null and Bandolier)
 			return false;
 
 		return true;
@@ -23,8 +23,7 @@ public class LeatherSling : ModItem
 	{
 		var modPlayer = player.GetModPlayer<MagazinePlayer>();
 
-		modPlayer.inventoryReload = true;
-		modPlayer.inventoryReloadTimerMax = 3;
+		//modPlayer.inventoryReload = true;
+		//modPlayer.inventoryReloadTimerMax = 3;
 	}
 }
-
