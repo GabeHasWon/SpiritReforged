@@ -1,7 +1,11 @@
-﻿using SpiritReforged.Common.Visuals;
+﻿using Mono.Cecil;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
+using Terraria;
 using Terraria.DataStructures;
+using Terraria.WorldBuilding;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Common.Subclasses.Shotguns;
 
@@ -29,23 +33,52 @@ public abstract class ShotgunAmmoItem(ShootBehavior behavior, int shotCount, flo
 	}
 }*/
 
-public readonly record struct ShotgunStats(StatModifier ShotCount, StatModifier ShotSpread)
+public readonly record struct StatModifiers
 {
-	public static StatModifier Additive(float value) => new(value, 1);
+	public readonly StatModifier ShotCount;
+	public readonly StatModifier ShotSpread;
 
-	public static StatModifier Multiple(float value) => new(1, value);
+	/// <summary> Creates a new instance designed for modifying existing stats. </summary>
+	public StatModifiers(StatModifier ShotCount, StatModifier ShotSpread)
+	{
+		this.ShotCount = ShotCount;
+		this.ShotSpread = ShotSpread;
+	}
 
-	public readonly int GetShotCount(Player player) => (int)player.GetModPlayer<ShotgunPlayer>().shotCount.CombineWith(ShotCount).ApplyTo(1);
+	/// <summary> Creates a new instance designed for initializing base stats. </summary>
+	public StatModifiers(int ShotCount, float ShotSpread)
+	{
+		this.ShotCount = new StatModifier(1, 1, 0, ShotCount);
+		this.ShotSpread = new StatModifier(1, 1, 0, ShotSpread);
+	}
 
-	public readonly float GetShotSpread(Player player) => player.GetModPlayer<ShotgunPlayer>().shotSpread.CombineWith(ShotSpread).ApplyTo(1);
+	public readonly int GetShotCount(Player player, params StatModifiers[] additionalModifiers)
+	{
+		StatModifier initial = ShotCount;
+
+		for (int i = 0; i < additionalModifiers.Length; i++)
+			initial = initial.CombineWith(additionalModifiers[i].ShotCount);
+
+		return (int)player.GetModPlayer<ShotgunStatsPlayer>().shotCount.CombineWith(initial).ApplyTo(1);
+	}
+
+	public readonly float GetShotSpread(Player player, params StatModifiers[] additionalModifiers)
+	{
+		StatModifier initial = ShotSpread;
+
+		for (int i = 0; i < additionalModifiers.Length; i++)
+			initial = initial.CombineWith(additionalModifiers[i].ShotSpread);
+
+		return player.GetModPlayer<ShotgunStatsPlayer>().shotSpread.CombineWith(initial).ApplyTo(1);
+	}
 }
 
 public interface IShotgunAmmo
 {
-	public ShotgunStats Stats { get; }
+	public StatModifiers Modifiers { get; }
 
-	/// <summary> Called for <b>EVERY</b> shot according to <see cref="Stats"/> when <paramref name="item"/> is fired.<para/>
-	/// Can be used to create shoot effects unique to this ammo item. <see cref="Stats"/> should be used to retrieve shot counts and spread if needed. </summary>
+	/// <summary> Called for <b>EVERY</b> shot according to <see cref="Modifiers"/> when <paramref name="item"/> is fired.<para/>
+	/// Can be used to create shoot effects unique to this ammo item. <see cref="Modifiers"/> should be used to retrieve shot counts and spread if needed. </summary>
 	/// <param name="item"> The item that created the projectile. </param>
 	/// <param name="player"> The player who created the projectile. </param>
 	/// <param name="source"> The entity source. </param>
@@ -54,38 +87,77 @@ public interface IShotgunAmmo
 	/// <param name="type"> The type of projectile. </param>
 	/// <param name="damage"> The projectile damage. </param>
 	/// <param name="knockback"> The projectile knockback. </param>
-	/// <param name="index"> The index of projectile created (by zero) relative to <see cref="ShotgunStats.GetShotCount"/>. </param>
-	public void OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index);
+	/// <param name="index"> The index of projectile created (by zero) relative to <see cref="StatModifiers.GetShotCount"/>. </param>
+	public Projectile OnShoot(Item item, Player player, IEntitySource source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index);
 }
 
+[ReinitializeDuringResizeArrays]
 public class ShotgunGlobalItem : GlobalItem
 {
-	public static readonly ShotgunStats?[] Shotgun = SpiritSets.ItemFactory.CreateNamedSet(nameof(Shotgun)).Description("Whether this item will be considered a shotgun and use shotgun stats").RegisterCustomSet<ShotgunStats?>(null);
+	/// <summary> The shotgun stats of this item.<para/>Only necessary for vanilla types to exhibit shotgun behaviour.<br/>Modded items may dynamically call <see cref="ShotgunShoot"/> instead.</summary>
+	public static readonly StatModifiers?[] Shotgun = SpiritSets.ItemFactory.CreateNamedSet(nameof(Shotgun)).Description("Whether this item will be considered a shotgun and use shotgun stats").RegisterCustomSet<StatModifiers?>(null);
 
 	public override void SetStaticDefaults() //Set vanilla shotgun defaults
 	{
 		Shotgun[ItemID.Boomstick] = new();
-		Shotgun[ItemID.QuadBarrelShotgun] = new(ShotgunStats.Multiple(1.5f), ShotgunStats.Multiple(1.5f));
-		Shotgun[ItemID.OnyxBlaster] = new(StatModifier.Default, ShotgunStats.Multiple(0.8f)); //Projectile speed mult = +0.25f
+		Shotgun[ItemID.QuadBarrelShotgun] = new(new StatModifier(1.5f, 1), new StatModifier(1.5f, 1));
+		Shotgun[ItemID.OnyxBlaster] = new(StatModifier.Default, new StatModifier(0.8f, 1)); //Projectile speed mult = +0.25f
 		Shotgun[ItemID.Shotgun] = new();
-		Shotgun[ItemID.TacticalShotgun] = new(StatModifier.Default, ShotgunStats.Multiple(0.65f));
+		Shotgun[ItemID.TacticalShotgun] = new(StatModifier.Default, new StatModifier(0.65f, 1));
 	}
 
 	public override void SetDefaults(Item entity)
 	{
 		if (entity.type < ItemID.Count && Shotgun[entity.type] != null) //Force all vanilla shotguns to use the appropriate ammo type
+		{
+			entity.DamageType = ModContent.GetInstance<ShotgunClass>();
 			entity.useAmmo = ModContent.ItemType<Shot>();
+		}
 	}
 
 	public override bool Shoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (item.type < ItemID.Count && Shotgun[item.type] != null)
+		{
+			StatModifiers itemStats = Shotgun[item.type].Value;
+			Projectile[] projectiles = ShotgunShoot(itemStats, source,  position, velocity, type, damage, knockback);
+
+			if (projectiles.Length > 0 && ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo ammo)
+			{
+				Vector2 normalized = velocity.SafeNormalize(Vector2.UnitX);
+				Vector2 shellPos = position + new Vector2(item.width / 2, -8 * player.direction).RotatedBy(velocity.ToRotation());
+
+				ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPos, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 1f, 60, ammo));
+
+				for (int i = 0; i < 4; i++)
+					Dust.NewDustPerfect(shellPos, DustID.Torch, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 0, default, Main.rand.NextFloat(2f));
+			}
+		}
+
+		return true;
+	}
+
+	/// <summary> Shoots a spread of projectile indicated by the provided <paramref name="itemStats"/>. </summary>
+	/// <param name="itemStats"></param>
+	/// <param name="source"></param>
+	/// <param name="position"></param>
+	/// <param name="velocity"></param>
+	/// <param name="type"></param>
+	/// <param name="damage"></param>
+	/// <param name="knockback"></param>
+	/// <returns></returns>
+	public static Projectile[] ShotgunShoot(StatModifiers itemStats, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		Player player = source.Player;
+		Item item = source.Item;
+		List<Projectile> projectiles = [];
+
 		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo ammo)
 		{
-			ShotgunStats ammoStats = ammo.Stats;
-			ShotgunStats itemStats = Shotgun[item.type].Value;
+			StatModifiers ammoStats = ammo.Modifiers;
 
-			for (int i = 0; i < ammoStats.GetShotCount(player) + itemStats.GetShotCount(player); i++)
-				ammo.OnShoot(item, player, source, position, velocity.RotatedByRandom(ammoStats.GetShotSpread(player) + itemStats.GetShotSpread(player)), type, damage, knockback, i);
+			for (int i = 0; i < ammoStats.GetShotCount(player, itemStats); i++)
+				projectiles.Add(ammo.OnShoot(item, player, source, position, velocity.RotatedByRandom(ammoStats.GetShotSpread(player, itemStats)), type, damage, knockback, i));
 
 			if (item.type < ItemID.Count) //Vanilla-only effects
 			{
@@ -97,15 +169,13 @@ public class ShotgunGlobalItem : GlobalItem
 				for (int i = 0; i < 4; i++)
 					Dust.NewDustPerfect(shellPos, DustID.Torch, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 0, default, Main.rand.NextFloat(2f));
 			}
-
-			return false;
 		}
 
-		return true;
+		return projectiles.ToArray();
 	}
 }
 
-public class ShotgunPlayer : ModPlayer
+public class ShotgunStatsPlayer : ModPlayer
 {
 	public StatModifier shotCount = StatModifier.Default;
 	public StatModifier shotSpread = StatModifier.Default;

@@ -5,6 +5,8 @@ using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Survivalist;
+using SpiritReforged.Content.Ocean.Items.Blunderbuss;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -14,6 +16,11 @@ namespace SpiritReforged.Content.Underworld.Heirloom;
 public class Heirloom : ReloadableItem
 {
 	private const int MAX_ARM_PULLBACK_TIMER = 15;
+
+	public static readonly SoundStyle ShellLoad = new("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad");
+
+	public static readonly Asset<Texture2D> Handle = DrawHelpers.RequestLocal<Heirloom>("Heirloom_Handle", false);
+	public static readonly Asset<Texture2D> Barrel = DrawHelpers.RequestLocal<Heirloom>("Heirloom_Barrel", false);
 
 	// For reload animation
 	// Each reload animation has 4 "keyframes" in which dust, sound effects, etc are played / spawned
@@ -27,8 +34,6 @@ public class Heirloom : ReloadableItem
 	public override IReloadable.MagazineInfo Magazine => new(2, 120, false);
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
-
-	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new();
 
 	public override void SetDefaults()
 	{
@@ -60,7 +65,7 @@ public class Heirloom : ReloadableItem
 			if (Main.myPlayer == player.whoAmI)
 				ScreenshakeHelper.Shake(player.Center, -velocity, 4, 2, 10);
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Cannon_2"), position); //CACHE ME
+			SoundEngine.PlaySound(Blunderbuss.Fire2, position);
 			//shotgunStats = new(0, 0, 0, 0.1f, 0, 0.5f);
 
 			for (int i = 0; i < 2; i++)
@@ -71,7 +76,7 @@ public class Heirloom : ReloadableItem
 				if (Magazine.FullCapacity > 2)
 					strength += (Magazine.FullCapacity - 2) * 0.20f;
 
-				base.Shoot(player, source, position, velocity, type, (int)(damage * strength), knockback * strength);
+				//base.Shoot(player, source, position, velocity, type, (int)(damage * strength), knockback * strength);
 			}
 
 			while (ReloadInfo.capacity > 0)
@@ -83,6 +88,14 @@ public class Heirloom : ReloadableItem
 			//shotgunStats = new();
 
 			return false;
+		}
+		else
+		{
+			StatModifiers modifiers = new(
+				StatModifier.Default,
+				StatModifier.Default);
+
+			ShotgunGlobalItem.ShotgunShoot(modifiers, source, position, velocity, type, damage, knockback);
 		}
 
 		Vector2 barrelPosition = position + new Vector2(42, -8 * player.direction).RotatedBy(velocity.ToRotation());
@@ -132,7 +145,7 @@ public class Heirloom : ReloadableItem
 		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
 			lastUsedAmmo = shotgunAmmo;
 
-		return true;
+		return false;
 
 		static void SmokeAction(Particle p)
 		{
@@ -194,14 +207,14 @@ public class Heirloom : ReloadableItem
 			for (int i = 0; i < 2; i++)
 				ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(3f, 6f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(1.5f, 3f), 1f, 120, lastUsedAmmo));
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
+			SoundEngine.PlaySound(Survivalist.BreakOpen, breakPosition);
 
 			_reloadEffects[0] = true;
 		}
 
 		if (animProgress > 0.55f && !_reloadEffects[1])
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f }); //CACHE ME
+			SoundEngine.PlaySound(ShellLoad with { Volume = 1f });
 
 			armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
 			_reloadEffects[1] = true;
@@ -209,7 +222,7 @@ public class Heirloom : ReloadableItem
 
 		if (animProgress > 0.7f && !_reloadEffects[2])
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/UI/Magazine/ShellLoad") with { Volume = 1f });
+			SoundEngine.PlaySound(ShellLoad with { Volume = 1f });
 
 			armPullbackTimer = MAX_ARM_PULLBACK_TIMER;
 			_reloadEffects[2] = true;
@@ -217,7 +230,7 @@ public class Heirloom : ReloadableItem
 
 		if (animProgress > 0.9f && !_reloadEffects[3])
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), player.Center);
+			SoundEngine.PlaySound(Survivalist.EmptyMagazine, player.Center);
 			_reloadEffects[3] = true;
 		}
 	}
@@ -268,9 +281,7 @@ public class Heirloom : ReloadableItem
 			else
 			{
 				frontStretch = Player.CompositeArmStretchAmount.Quarter;
-
 				frontArmRotation -= 0.15f * player.direction;
-
 				rotation += lowerRotation * player.direction;
 			}
 		}
@@ -307,18 +318,16 @@ public class Heirloom : ReloadableItem
 
 		if (ReloadInfo.IsReloading(drawInfo.drawPlayer))
 		{
+			Texture2D handle = Handle.Value;
+			Texture2D barrel = Barrel.Value;
+
 			float animationProgress = 1f - ReloadInfo.reloadTime / (float)Magazine.ReloadDuration;
-
-			var handle = ModContent.Request<Texture2D>(Texture + "_Handle").Value; //CACHE
-			var barrel = ModContent.Request<Texture2D>(Texture + "_Barrel").Value; //CACHE
-
 			float maxRotation = 1.1f * drawInfo.drawPlayer.direction;
-
 			float barrelRot = drawData.rotation;
+
 			if (animationProgress is > 0.25f and < 0.35f)
 			{
 				float lerp = EaseFunction.EaseCircularOut.Ease((animationProgress - 0.25f) / 0.1f);
-
 				barrelRot += MathHelper.Lerp(0, maxRotation, lerp);
 			}
 			else if (animationProgress is >= 0.35f and < 0.75f)
@@ -328,7 +337,6 @@ public class Heirloom : ReloadableItem
 			else if (animationProgress >= 0.75f)
 			{
 				float lerp = EaseFunction.EaseInOutBack().Ease((animationProgress - 0.75f) / 0.25f);
-
 				barrelRot += MathHelper.Lerp(maxRotation, 0, lerp);
 			}
 

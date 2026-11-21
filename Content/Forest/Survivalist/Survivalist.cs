@@ -15,6 +15,12 @@ public class Survivalist : ReloadableItem
 {
 	public const int MAX_COOLDOWN = 300;
 
+	public static readonly SoundStyle GrenadeShot = new("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/SurvivalistGrenadeShot", 2);
+	public static readonly SoundStyle Pump = new("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunPump");
+	public static readonly SoundStyle BreakOpen = new("SpiritReforged/Assets/SFX/Item/ShotgunOpen");
+	public static readonly SoundStyle EmptyMagazine = new("SpiritReforged/Assets/SFX/Item/EmptyMagazine");
+	public static readonly SoundStyle Eject = new("SpiritReforged/Assets/SFX/Item/Eject");
+
 	public static readonly Asset<Texture2D> Handle = DrawHelpers.RequestLocal<Survivalist>("Survivalist_Handle", false);
 	public static readonly Asset<Texture2D> Barrel = DrawHelpers.RequestLocal<Survivalist>("Survivalist_Barrel", false);
 	public static readonly Asset<Texture2D> Underbarrel = DrawHelpers.RequestLocal<Survivalist>("Survivalist_Underbarrel", false);
@@ -28,8 +34,6 @@ public class Survivalist : ReloadableItem
 	public override IReloadable.MagazineInfo Magazine => new(5, 150, false);
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
-
-	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(StatModifier.Default, ShotgunStats.Multiple(1.33f));
 
 	public override void SetDefaults()
 	{
@@ -97,47 +101,52 @@ public class Survivalist : ReloadableItem
 				new Vector2(2, 3),
 				EaseFunction.EaseCubicOut).WithSkew(0.9f, velocity.ToRotation()).UsesLightColor());
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/SurvivalistGrenadeShot_0" + Main.rand.Next(1, 3)) with { Volume = 0.5f, PitchVariance = 0.1f}, position); //CACHE ME
+			SoundEngine.PlaySound(GrenadeShot with { Volume = 0.5f, PitchVariance = 0.1f }, position);
 			Projectile.NewProjectile(source, position, velocity * 11f, ModContent.ProjectileType<SurvivalistGrenadeProjectile>(), 30 + damage / 3, knockback * 2, player.whoAmI);
-
-			return false;
 		}
-
-		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
-
-		for (int i = 0; i < 5; i++)
+		else
 		{
-			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(2f), Color.LightGray * 0.2f, 0.15f, EaseFunction.EaseQuadOut, 90)
-			{
-				Pixellate = true,
-				PixelDivisor = 2,
-			});
+			StatModifiers modifiers = new(
+				StatModifier.Default,
+				new StatModifier(0.33f, 1));
 
-			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(5f), Color.DimGray * 0.3f, 0.1f, EaseFunction.EaseQuadOut, 60)
-			{
-				Pixellate = true,
-				PixelDivisor = 2,
-			});
+			ShotgunGlobalItem.ShotgunShoot(modifiers, source, position, velocity, type, damage, knockback);
+			Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
 
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+			for (int i = 0; i < 5; i++)
 			{
-				Variant = CompositeSmoke.SmallVariant
-			});
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(2f), Color.LightGray * 0.2f, 0.15f, EaseFunction.EaseQuadOut, 90)
+				{
+					Pixellate = true,
+					PixelDivisor = 2,
+				});
 
-			for (int x = 0; x < 2; x++)
-			{
-				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkOrange, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
-				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, Main.rand.NextVector2Circular(3, 3), Color.Orange, 0.2f, 40, 2, p => p.Velocity *= 0.9f));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(5f), Color.DimGray * 0.3f, 0.1f, EaseFunction.EaseQuadOut, 60)
+				{
+					Pixellate = true,
+					PixelDivisor = 2,
+				});
 
-				Dust.NewDustPerfect(muzzlePosition, DustID.Torch, Main.rand.NextVector2Circular(4, 4), 0, default, Main.rand.NextFloat(1f, 3f)).noGravity = true;
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+				{
+					Variant = CompositeSmoke.SmallVariant
+				});
+
+				for (int x = 0; x < 2; x++)
+				{
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkOrange, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, Main.rand.NextVector2Circular(3, 3), Color.Orange, 0.2f, 40, 2, p => p.Velocity *= 0.9f));
+
+					Dust.NewDustPerfect(muzzlePosition, DustID.Torch, Main.rand.NextVector2Circular(4, 4), 0, default, Main.rand.NextFloat(1f, 3f)).noGravity = true;
+				}
 			}
+
+			if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
+				lastUsedAmmo = shotgunAmmo;
 		}
 
-		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
-			lastUsedAmmo = shotgunAmmo;
-
-		return true;
+		return false;
 	}
 
 	public override void UpdateInventory(Player player)
@@ -284,7 +293,7 @@ public class Survivalist : ReloadableItem
 						}
 
 						ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(breakPosition, -Vector2.UnitY * Main.rand.NextFloat(1f, 3f) - Vector2.UnitX * player.direction * Main.rand.NextFloat(2f, 3.5f), 1f, 120, lastUsedAmmo));
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunPump") with { Volume = 0.75f }, breakPosition); //CACHE
+						SoundEngine.PlaySound(Pump with { Volume = 0.75f }, breakPosition); //CACHE
 					}
 
 					float lerper = (interpolant - 0.5f) / 0.2f;
@@ -340,7 +349,7 @@ public class Survivalist : ReloadableItem
 							});
 						}
 
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
+						SoundEngine.PlaySound(BreakOpen, breakPosition); //CACHE ME
 
 						_reloadEffects[0] = true;
 					}
@@ -354,7 +363,7 @@ public class Survivalist : ReloadableItem
 
 					if (lerper > 0.77f && !_reloadEffects[1])
 					{
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), player.Center); //CACHE ME
+						SoundEngine.PlaySound(EmptyMagazine, player.Center); //CACHE ME
 						_reloadEffects[1] = true;
 					}
 				}
@@ -365,7 +374,7 @@ public class Survivalist : ReloadableItem
 
 					if (!_reloadEffects[2])
 					{
-						SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunPump") with { Volume = 0.75f }, player.Center); //CACHE
+						SoundEngine.PlaySound(Pump with { Volume = 0.75f }, player.Center); //CACHE
 						_reloadEffects[2] = true;
 					}
 				}

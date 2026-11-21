@@ -5,6 +5,7 @@ using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.NPCCommon;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Survivalist;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -58,17 +59,16 @@ public class Pepperbox : ReloadableItem
 		}
 	}
 
+	public static readonly Asset<Texture2D> Handle = DrawHelpers.RequestLocal<Pepperbox>("Pepperbox_Handle", false);
+	public static readonly Asset<Texture2D> Barrel = DrawHelpers.RequestLocal<Pepperbox>("Pepperbox_Barrel", false);
+
 	public override IReloadable.MagazineInfo Magazine => new(3, 90);
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
 
 	private bool _spawnedReloadDust = false;
 
-	public override void SetStaticDefaults()
-	{
-		NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type, Condition.DownedEyeOfCthulhu)));
-		ShotgunGlobalItem.Shotgun[Type] = new();
-	}
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type, Condition.DownedEyeOfCthulhu)));
 
 	public override void SetDefaults()
 	{
@@ -84,10 +84,16 @@ public class Pepperbox : ReloadableItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		StatModifiers modifiers = new(
+			StatModifier.Default,
+			StatModifier.Default);
+
+		ShotgunGlobalItem.ShotgunShoot(modifiers, source, position, velocity, type, damage, knockback);
+
 		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
 		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
 
-		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is ShotgunAmmoItem shotgunAmmo)
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
 			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, shotgunAmmo));
 		
 		ParticleRenderers.OverPlayers.Add(new PepperboxFlash(muzzlePosition, velocity, Main.rand.NextFloat(0.9f, 1.1f), 20 + Main.rand.Next(5, 10)));
@@ -99,7 +105,7 @@ public class Pepperbox : ReloadableItem
 		}
 
 		_spawnedReloadDust = false;
-		return true;
+		return false;
 	}
 
 	public override void ItemStyle(Player player, Rectangle heldItemFrame, bool inUse)
@@ -142,7 +148,7 @@ public class Pepperbox : ReloadableItem
 				{ Variant = CompositeSmoke.SmallVariant });
 			}
 
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ShotgunOpen"), breakPosition); //CACHE ME
+			SoundEngine.PlaySound(Survivalist.BreakOpen, breakPosition);
 			_spawnedReloadDust = true;
 		}
 	}
@@ -154,25 +160,25 @@ public class Pepperbox : ReloadableItem
 
 		if (ReloadInfo.IsReloading(drawInfo.drawPlayer))
 		{
-			float animationProgress = 1f - ReloadInfo.reloadTime / (float)Magazine.ReloadDuration;
+			float progress = 1f - ReloadInfo.reloadTime / (float)Magazine.ReloadDuration;
 
-			var handle = ModContent.Request<Texture2D>(Texture + "_Handle").Value; //CACHE
-			var barrel = ModContent.Request<Texture2D>(Texture + "_Barrel").Value; //CACHE
+			Texture2D handle = Handle.Value;
+			Texture2D barrel = Barrel.Value;
 			float maxRotation = 0.9f * drawInfo.drawPlayer.direction;
-
 			float barrelRot = drawData.rotation;
-			if (animationProgress is > 0.1f and < 0.4f)
+
+			if (progress is > 0.1f and < 0.4f)
 			{
-				float lerp = EaseFunction.EaseCircularOut.Ease((animationProgress - 0.1f) / 0.3f);
+				float lerp = EaseFunction.EaseCircularOut.Ease((progress - 0.1f) / 0.3f);
 				barrelRot += MathHelper.Lerp(0, maxRotation, lerp);
 			}
-			else if (animationProgress is >= 0.4f and < 0.7f)
+			else if (progress is >= 0.4f and < 0.7f)
 			{
 				barrelRot += maxRotation;
 			}
-			else if (animationProgress >= 0.7f)
+			else if (progress >= 0.7f)
 			{
-				float lerp = EaseFunction.EaseInOutBack().Ease((animationProgress - 0.7f) / 0.3f);
+				float lerp = EaseFunction.EaseInOutBack().Ease((progress - 0.7f) / 0.3f);
 				barrelRot += MathHelper.Lerp(maxRotation, 0, lerp);
 			}
 

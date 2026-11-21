@@ -23,8 +23,6 @@ public class Flakker : ReloadableItem
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Shell);
 
-	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(shotMultiplier: -0.2f, additionalSpread: 0.2f, spreadMultiplier: 0.65f);
-
 	public override void SetDefaults()
 	{
 		Item.DefaultToShotgun(75, 1);
@@ -45,54 +43,53 @@ public class Flakker : ReloadableItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is not ShotgunAmmoItem ammo)
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is not IShotgunAmmo ammo)
 			return false;
 
-		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
-		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
+		Vector2 direction = Vector2.Normalize(velocity);
+		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(direction.ToRotation());
+		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(direction.ToRotation());
 
-		for (int i = 0; i < player.GetModPlayer<ShotgunPlayer>().ModifyShotCount(3); i++)
+		for (int i = 0; i < player.GetModPlayer<ShotgunStatsPlayer>().shotCount.ApplyTo(3); i++)
 		{
-			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
-
+			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
 			float baseSpread = i == 0 ? 0 : 0.25f;
 
-			PreNewProjectile.New(source, position, velocity.RotatedByRandom(player.GetModPlayer<ShotgunPlayer>().ModifySpread(baseSpread)) * Main.rand.NextFloat(10, 15),
+			PreNewProjectile.New(source, position, direction.RotatedByRandom(player.GetModPlayer<ShotgunStatsPlayer>().shotSpread.ApplyTo(baseSpread)) * Main.rand.NextFloat(10, 15),
 				ModContent.ProjectileType<FlakkerProjectile>(), damage / 3, knockback, player.whoAmI, source.AmmoItemIdUsed, preSpawnAction: p => (p.ModProjectile as FlakkerProjectile).parent = Item.ModItem as Flakker);
 		}
 
 		for (int i = 0; i < 5; i++)
 		{
-			Dust.NewDustPerfect(shellPosition, DustID.Torch, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 0, default, Main.rand.NextFloat(1f, 2f));
-
-			ParticleRenderers.OverPlayers.Add(new SmokeCloud(shellPosition, -velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(2f), Color.DarkGray * 0.3f, 0.05f, EaseFunction.EaseQuadOut, 90)
+			Dust.NewDustPerfect(shellPosition, DustID.Torch, -direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 0, default, Main.rand.NextFloat(1f, 2f));
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(shellPosition, -direction.RotatedByRandom(0.2f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(2f), Color.DarkGray * 0.3f, 0.05f, EaseFunction.EaseQuadOut, 90)
 			{
 				Pixellate = true,
 				PixelDivisor = 3,
 			});
 
-			ParticleRenderers.OverPlayers.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(2f), Color.DarkGray * 0.2f, 0.15f, EaseFunction.EaseQuadOut, 90)
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(muzzlePosition, direction.RotatedByRandom(0.1f) * Main.rand.NextFloat(2f), Color.DarkGray * 0.2f, 0.15f, EaseFunction.EaseQuadOut, 90)
 			{
 				Pixellate = true,
 				PixelDivisor = 2,
 			});
 
-			ParticleRenderers.OverPlayers.Add(new SmokeCloud(muzzlePosition, velocity.RotatedByRandom(0.1f) * Main.rand.NextFloat(5f), Color.Black * 0.3f, 0.1f, EaseFunction.EaseQuadOut, 60)
+			ParticleRenderers.OverPlayers.Add(new SmokeCloud(muzzlePosition, direction.RotatedByRandom(0.1f) * Main.rand.NextFloat(5f), Color.Black * 0.3f, 0.1f, EaseFunction.EaseQuadOut, 60)
 			{
 				Pixellate = true,
 				PixelDivisor = 2,
 			});
 
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightYellow * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), direction * Main.rand.NextFloat(2f), Color.Gray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), direction * Main.rand.NextFloat(2f), Color.LightYellow * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
 			{
 				Variant = CompositeSmoke.SmallVariant
 			});
 
 			for (int x = 0; x < 3; x++)
 			{
-				ParticleRenderers.OverPlayers.Add(new GlowParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.OrangeRed, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
-				Dust.NewDustPerfect(muzzlePosition, DustID.Torch, velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 9f), 0, default, Main.rand.NextFloat(1f, 4f)).noGravity = true;
+				ParticleRenderers.OverPlayers.Add(new GlowParticle(muzzlePosition, direction.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.OrangeRed, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
+				Dust.NewDustPerfect(muzzlePosition, DustID.Torch, direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 9f), 0, default, Main.rand.NextFloat(1f, 4f)).noGravity = true;
 			}
 		}
 
@@ -158,13 +155,13 @@ public class Flakker : ReloadableItem
 
 		if (animProgress > 0.6f && !_reloadEffects[1])
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Eject") with { Volume = 0.5f }, itemPosition);
+			SoundEngine.PlaySound(Survivalist.Survivalist.Eject with { Volume = 0.5f }, itemPosition);
 			_reloadEffects[1] = true;
 		}
 
 		if (animProgress > 0.7f && !_reloadEffects[2])
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunPump") with { Volume = 0.65f }, itemPosition);
+			SoundEngine.PlaySound(Survivalist.Survivalist.Pump with { Volume = 0.65f }, itemPosition);
 			_reloadEffects[2] = true;
 		}
 

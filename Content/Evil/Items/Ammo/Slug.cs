@@ -14,7 +14,7 @@ namespace SpiritReforged.Content.Evil.Items.Ammo;
 
 public class Slug : ModItem, IShotgunAmmo
 {
-	public ShotgunStats Stats => new(ShotgunStats.Additive(1), ShotgunStats.Multiple(0.05f));
+	public StatModifiers Modifiers => new(1, 0.05f);
 
 	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(NPCShopHelper.ConditionalEntry.FromNPC(NPCID.ArmsDealer, new NPCShop.Entry(Type, Condition.DownedBrainOfCthulhu)));
 
@@ -29,10 +29,10 @@ public class Slug : ModItem, IShotgunAmmo
 		Item.value = Item.buyPrice(copper: 50);
 	}
 
-	public void OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
+	public Projectile OnShoot(Item item, Player player, IEntitySource source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
 	{
-		damage = (int)(damage * (1f + (Stats.GetShotCount(player) - 1) * 0.1f)); //Provide a 10% damage increase for every shot after the first
-		float spread = Stats.GetShotSpread(player);
+		damage = (int)(damage * (1f + (Modifiers.GetShotCount(player) - 1) * 0.1f)); //Provide a 10% damage increase for every shot after the first
+		float spread = Modifiers.GetShotSpread(player);
 
 		for (int i = 0; i < 5; i++)
 		{
@@ -42,7 +42,7 @@ public class Slug : ModItem, IShotgunAmmo
 			Dust.NewDustPerfect(position + velocity, DustID.Smoke, Vector2.Normalize(velocity).RotatedByRandom(0.4f) * Main.rand.NextFloat(3f), 240, default, Main.rand.NextFloat(3f, 6f));
 		}
 
-		Projectile.NewProjectileDirect(source, position, velocity.RotatedByRandom(spread) * Main.rand.NextFloat(1.25f, 1.5f), ModContent.ProjectileType<SlugProjectile>(), damage, knockback, player.whoAmI);
+		return Projectile.NewProjectileDirect(source, position, velocity.RotatedByRandom(spread) * Main.rand.NextFloat(1.25f, 1.5f), ModContent.ProjectileType<SlugProjectile>(), damage, knockback, player.whoAmI);
 	}
 
 	public override void AddRecipes() => CreateRecipe(75).AddIngredient<Shot>(150).AddIngredient(ItemID.TissueSample, 3).AddTile(TileID.Anvils).Register();

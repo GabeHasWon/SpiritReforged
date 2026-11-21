@@ -13,11 +13,8 @@ using Terraria.DataStructures;
 namespace SpiritReforged.Content.Marble.Items.Gryphon;
 
 // TODO: Obtainment
-// This equates to +150% spread, before any charging, works in favor of the weapon though.
 public class Gryphon : ModItem
 {
-	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(spreadMultiplier: 1.5f);
-
 	public override void SetDefaults()
 	{
 		Item.damage = 19;
@@ -51,8 +48,9 @@ public class GryphonHoldout : ModProjectile, IDrawPixelated
 	public const int MAX_FLASH_TIMER = 20;
 	public const int MAX_POINTS = 5;
 
-	public static readonly Asset<Texture2D> BaseTexture = DrawHelpers.RequestLocal<Gryphon>("Gryphon", false);
-	public override string Texture => "SpiritReforged/Content/Marble/Items/Gryphon/Gryphon";
+	public static readonly SoundStyle StrongShot = new("SpiritReforged/Assets/SFX/Item/GryphonEmpoweredShot");
+
+	public override string Texture => ModContent.GetInstance<Gryphon>().Texture;
 
 	public bool Fired
 	{
@@ -178,7 +176,7 @@ public class GryphonHoldout : ModProjectile, IDrawPixelated
 
 		if (FullyCharged)
 		{
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/GryphonEmpoweredShot") with { Volume = 0.66f }, Owner.Center); //CACHE ME
+			SoundEngine.PlaySound(StrongShot with { Volume = 0.66f }, Owner.Center);
 
 			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
 				muzzlePosition,
@@ -222,54 +220,43 @@ public class GryphonHoldout : ModProjectile, IDrawPixelated
 		SoundEngine.PlaySound(SoundID.Item36, Owner.Center);
 
 		Item item = Owner.HeldItem;
-		if (ShotgunGlobalItem.Shotgun[item.type] is ShotgunStats stats)
+		StatModifiers modifiers = new(
+			new StatModifier(FullyCharged ? 1.2f : 1f, 1f),
+			new StatModifier(1.5f, 1));
+
+		Item ammoItem = Owner.ChooseAmmo(item);
+		if (ammoItem != null && ammoItem.ModItem is IShotgunAmmo ammo)
 		{
-			if (FullyCharged)
+			Vector2 shellPosition = ArmPosition + new Vector2(-16, -8 * Owner.direction).RotatedBy(Projectile.rotation);
+			ParticleRenderers.UnderProjectiles.Add(new ShotgunShellParticle(shellPosition, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 6f) * ChargeProgress - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
+
+			for (int i = 0; i < 4; i++)
+				Dust.NewDustPerfect(shellPosition + Main.rand.NextVector2Circular(6f, 6f), DustID.Torch, -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f), 50, default, Main.rand.NextFloat(2f));
+
+			Vector2 position = ArmPosition;
+			Vector2 velocity = position.DirectionTo(Main.MouseWorld) * (FullyCharged ? 12.5f : 10f);
+			StatModifiers ammoModifiers = ammo.Modifiers;
+
+			for (int i = 0; i < ammoModifiers.GetShotCount(Owner, modifiers); i++)
 			{
-				stats.shotMultiplier += 0.2f; // 20% more shots when fully charged
-				stats.speedMultiplier += 0.25f; // 25% more speed when fully charged
-			}
-
-			Item ammoItem = Owner.ChooseAmmo(item);
-			if (ammoItem != null && ammoItem.ModItem is ShotgunAmmoItem ammo)
-			{
-				Vector2 shellPosition = ArmPosition + new Vector2(-16, -8 * Owner.direction).RotatedBy(Projectile.rotation);
-
-				ParticleRenderers.UnderProjectiles.Add(new ShotgunShellParticle(shellPosition, -Projectile.velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 6f) * ChargeProgress - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
-
-				for (int i = 0; i < 4; i++)
-					Dust.NewDustPerfect(shellPosition + Main.rand.NextVector2Circular(6f, 6f), DustID.Torch, -Projectile.velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(5f), 50, default, Main.rand.NextFloat(2f));
-
-				Vector2 position = ArmPosition;
-				Vector2 direction = Vector2.Zero;
-				if (Main.myPlayer == Owner.whoAmI)
-					direction = position.DirectionTo(Main.MouseWorld);
-
-				var shotgunPlayer = Owner.GetModPlayer<ShotgunPlayer>();
-
-				List<Projectile> spawnedProjectiles = ammo.Behaviour.Invoke(item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, item, ammoItem.type, "SpiritReforged: Gryphon Shoot"), position, direction,
-					shotgunPlayer.ModifyShotCount(ammo.shotCount, stats.additionalShots, stats.shotMultiplier),
-					shotgunPlayer.ModifySpread(MathHelper.Lerp(ammo.spreadAmount, ammo.spreadAmount * 0.2f, ChargeProgress), stats.additionalSpread, stats.spreadMultiplier),
-					shotgunPlayer.ModifySpeed(MathHelper.Lerp(ammo.speed, ammo.speed * 1.5f, ChargeProgress), stats.additionalSpeed, stats.speedMultiplier),
-					Projectile.damage, Projectile.knockBack);
-
+				Projectile newProjectile = ammo.OnShoot(item, Owner, new EntitySource_ItemUse_WithAmmo(Owner, item, ammoItem.type), position, velocity.RotatedByRandom(ammoModifiers.GetShotSpread(Owner, modifiers)), ammoItem.shoot, Projectile.damage, Projectile.knockBack, i);
 				if (FullyCharged)
-					foreach (Projectile p in spawnedProjectiles)
-					{
-						p.usesLocalNPCImmunity = true;
-						p.localNPCHitCooldown = 20;
+				{
+					newProjectile.usesLocalNPCImmunity = true;
+					newProjectile.localNPCHitCooldown = 20;
 
-						p.GetGlobalProjectile<GryphonGlobalProjectile>().active = true;
-					}
+					newProjectile.GetGlobalProjectile<GryphonGlobalProjectile>().active = true;
+				}
 			}
 		}
 	}
+
 	protected void FiredAI()
 	{
 		float progress = 1f - Projectile.timeLeft / 30f;
 
-		_armOffset = Vector2.Lerp(new(-16f, 0), Vector2.Zero, EaseBuilder.EaseQuinticOut.Ease(progress));
-		_rotationOffset = MathHelper.Lerp(-0.5f, 0f, EaseBuilder.EaseOutBack().Ease(progress));
+		_armOffset = Vector2.Lerp(new(-16f, 0), Vector2.Zero, EaseFunction.EaseQuinticOut.Ease(progress));
+		_rotationOffset = MathHelper.Lerp(-0.5f, 0f, EaseFunction.EaseOutBack().Ease(progress));
 		
 		UpdateHeldProjectile(false, false);
 	}
@@ -284,8 +271,7 @@ public class GryphonHoldout : ModProjectile, IDrawPixelated
 
 			if (Timer == ChargeTime)
 			{
-				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ClubReady") with { Pitch = 0.3f}, Owner.Center);
-
+				SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/ClubReady") with { Pitch = 0.3f }, Owner.Center); //CACHE ME
 				_flashTimer = MAX_FLASH_TIMER;
 			}
 		}		
@@ -327,35 +313,33 @@ public class GryphonHoldout : ModProjectile, IDrawPixelated
 
 	public override bool PreDraw(ref Color lightColor)
 	{
-		var tex = BaseTexture.Value;
-		var texWhite = TextureColorCache.ColorSolid(tex, Color.White);
-		var starTexture = AssetLoader.LoadedTextures["Star"].Value;
-		var bloomTexture = AssetLoader.LoadedTextures["Bloom"].Value;
+		Texture2D tex = TextureAssets.Projectile[Type].Value;
+		Texture2D texWhite = TextureColorCache.ColorSolid(tex, Color.White);
+		Texture2D starTexture = AssetLoader.LoadedTextures["Star"].Value;
+		Texture2D bloomTexture = AssetLoader.LoadedTextures["Bloom"].Value;
 
 		SpriteEffects spriteEffects = Projectile.spriteDirection == -1 ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-
 		Vector2 position = ArmPosition - Main.screenPosition;
 
 		float rotation = Projectile.rotation + (spriteEffects == SpriteEffects.FlipHorizontally ? MathHelper.Pi : 0f) * Projectile.spriteDirection;
-
 		float fadeIn = 1f;
 
 		if (Timer < 10f)
 			fadeIn = Timer / 10f;
 
-		Main.spriteBatch.Draw(tex, position, null, lightColor * fadeIn, rotation, tex.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+		Main.EntitySpriteDraw(tex, position, null, lightColor * fadeIn, rotation, tex.Size() / 2f, Projectile.scale, spriteEffects);
 
 		if (_flashTimer > 0)
 		{
 			float progress = _flashTimer / (float)MAX_FLASH_TIMER;
-			Main.spriteBatch.Draw(texWhite, position, null, Color.White * progress, rotation, texWhite.Size() / 2f, Projectile.scale, spriteEffects, 0f);
+			Main.EntitySpriteDraw(texWhite, position, null, Color.White * progress, rotation, texWhite.Size() / 2f, Projectile.scale, spriteEffects);
 			
 			Vector2 starPosition = ArmPosition + new Vector2(16f, -8f * Owner.direction).RotatedBy(Projectile.rotation);
-			
-			Main.spriteBatch.Draw(bloomTexture, starPosition - Main.screenPosition, null, Color.Cyan.Additive() * progress * 0.33f, 0, bloomTexture.Size() / 2f, Projectile.scale * 0.15f, 0f, 0f);
 
-			Main.spriteBatch.Draw(starTexture, starPosition - Main.screenPosition, null, Color.Cyan.Additive() * progress, 0, starTexture.Size() / 2f, Projectile.scale * 0.1f, 0f, 0f);
-			Main.spriteBatch.Draw(starTexture, starPosition - Main.screenPosition, null, Color.White.Additive() * progress, 0, starTexture.Size() / 2f, Projectile.scale * 0.07f, 0f, 0f);
+			Main.EntitySpriteDraw(bloomTexture, starPosition - Main.screenPosition, null, Color.Cyan.Additive() * progress * 0.33f, 0, bloomTexture.Size() / 2f, Projectile.scale * 0.15f, 0f);
+
+			Main.EntitySpriteDraw(starTexture, starPosition - Main.screenPosition, null, Color.Cyan.Additive() * progress, 0, starTexture.Size() / 2f, Projectile.scale * 0.1f, 0f);
+			Main.EntitySpriteDraw(starTexture, starPosition - Main.screenPosition, null, Color.White.Additive() * progress, 0, starTexture.Size() / 2f, Projectile.scale * 0.07f, 0f);
 		}
 
 		return false;

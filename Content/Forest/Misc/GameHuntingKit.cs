@@ -15,19 +15,15 @@ public class GameHuntingKit : ModItem
 
 	public override void UpdateEquip(Player player)
 	{
-		player.GetModPlayer<ShotgunPlayer>().shotgunStats.spreadMultiplier -= 0.5f;
-		Item item = player.HeldItem;
+		player.GetModPlayer<ShotgunStatsPlayer>().shotSpread *= 0.5f;
 
-		if (ShotgunGlobalItem.Shotgun[item.type] != null) //The item is a shotgun
+		if (player.HeldItem.CountsAsClass<ShotgunClass>()) //The item is a shotgun
 			player.GetModPlayer<MagazinePlayer>().magazineScale += 0.4f;
 	}
 
-	public override void AddRecipes()
-	{
-		CreateRecipe().
-			AddIngredient<ChokeTube>().
-			AddIngredient<SuperExtendoMags>().
-			AddTile(TileID.TinkerersWorkbench).
-			Register();
-	}
+	public override void AddRecipes() => CreateRecipe()
+		.AddIngredient<ChokeTube>()
+		.AddIngredient<SuperExtendoMags>()
+		.AddTile(TileID.TinkerersWorkbench)
+		.Register();
 }

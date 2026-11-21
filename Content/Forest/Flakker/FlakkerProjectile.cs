@@ -1,9 +1,13 @@
-﻿using SpiritReforged.Common.Subclasses.Shotguns;
-using Terraria.Audio;
-using SpiritReforged.Content.Particles;
+﻿using Mono.Cecil;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
+using Terraria;
+using Terraria.Audio;
+using Terraria.DataStructures;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Content.Forest.Flakker;
 
@@ -48,31 +52,20 @@ public class FlakkerProjectile : ModProjectile
 
 	public override void OnKill(int timeLeft)
 	{
-		var player = Main.player[Projectile.owner];
-
+		Player player = Main.player[Projectile.owner];
 		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/LMG") with { Pitch = 0.2f, PitchVariance = 0.2f }, Projectile.Center); //CACHE ME
 
 		// Airburst
 		if (Projectile.penetrate > 0 && !hitTile)
 		{
 			Item ammoItem = AmmoID > 0 ? ContentSamples.ItemsByType[AmmoID] : null;
+			StatModifiers modifiers = new(
+				new StatModifier(0.8f, 1),
+				new StatModifier(0.35f, 1, @base: 0.2f));
 
-			if (ammoItem != null && ammoItem.ModItem is ShotgunAmmoItem ammo)
-			{
-				Vector2 direction = Projectile.velocity.SafeNormalize(Vector2.UnitX.RotatedBy(Projectile.rotation));
-				var shotgunPlayer = player.GetModPlayer<ShotgunPlayer>();
+			ShotgunGlobalItem.ShotgunShoot(modifiers, new EntitySource_ItemUse_WithAmmo(player, parent.Item, AmmoID), Projectile.Center, Projectile.velocity, ammoItem.shoot, Projectile.damage * 3, Projectile.knockBack * 5);
 
-				if (ShotgunGlobalItem.Shotgun[ModContent.ItemType<Flakker>()] is ShotgunStats stats)
-				{
-					ammo.Behaviour.Invoke(parent.Item, player, new Terraria.DataStructures.EntitySource_ItemUse_WithAmmo(player, parent.Item, AmmoID, "SpiritReforged: Flakker Detonate"), Projectile.Center, direction,
-						shotgunPlayer.ModifyShotCount(ammo.shotCount, stats.additionalShots, stats.shotMultiplier),
-						shotgunPlayer.ModifySpread(ammo.spreadAmount, stats.additionalSpread, stats.spreadMultiplier),
-						shotgunPlayer.ModifySpeed(ammo.speed, stats.additionalSpeed, stats.speedMultiplier),
-						(int)(Projectile.damage * 3f), Projectile.knockBack * 5);
-				}
-			}
-
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Explosion_01") with { Volume = 0.25f, Pitch = 0.3f, PitchVariance = 0.2f }, Projectile.Center);
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Explosion_01") with { Volume = 0.25f, Pitch = 0.3f, PitchVariance = 0.2f }, Projectile.Center); //CACHE
 
 			Vector2 glowPos = Projectile.Center;
 			Vector2 stretch = Vector2.One;

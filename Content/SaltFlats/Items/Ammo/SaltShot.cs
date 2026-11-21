@@ -11,7 +11,7 @@ namespace SpiritReforged.Content.SaltFlats.Items.Ammo;
 
 public class SaltShot : ModItem, IShotgunAmmo
 {
-	public ShotgunStats Stats => new(ShotgunStats.Additive(4), ShotgunStats.Multiple(0.55f));
+	public StatModifiers Modifiers => new(4, 0.55f);
 
 	public override void SetDefaults()
 	{
@@ -25,12 +25,10 @@ public class SaltShot : ModItem, IShotgunAmmo
 		Item.knockBack = 1f;
 	}
 
-	public void OnShoot(Item item, Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
+	public Projectile OnShoot(Item item, Player player, IEntitySource source, Vector2 position, Vector2 velocity, int type, int damage, float knockback, int index)
 	{
 		if (index == 0)
 			velocity = position.DirectionTo(Main.MouseWorld) * velocity.Length(); //Remove all spread from the first shot
-
-		Projectile.NewProjectileDirect(source, position, velocity * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<SaltShotProjectile>(), damage, knockback, player.whoAmI);
 
 		for (int x = 0; x < 2; x++)
 		{
@@ -46,8 +44,10 @@ public class SaltShot : ModItem, IShotgunAmmo
 				PixelDivisor = 3,
 			});
 
-			Dust.NewDustPerfect(position, DustID.WhiteTorch, velocity.RotatedByRandom(Stats.GetShotSpread(player) * 1.25f) * Main.rand.NextFloat(1f, 2f), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
+			Dust.NewDustPerfect(position, DustID.WhiteTorch, velocity.RotatedByRandom(Modifiers.GetShotSpread(player) * 1.25f) * Main.rand.NextFloat(1f, 2f), 0, default, Main.rand.NextFloat(2f)).noGravity = true;
 		}
+
+		return Projectile.NewProjectileDirect(source, position, velocity * Main.rand.NextFloat(0.75f, 1.5f), ModContent.ProjectileType<SaltShotProjectile>(), damage, knockback, player.whoAmI);
 	}
 
 	public override void AddRecipes() => CreateRecipe(50)

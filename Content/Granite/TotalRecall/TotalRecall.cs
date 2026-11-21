@@ -61,8 +61,6 @@ public class TotalRecall : ModItem
 	private float _shootRotation;
 	private int _cooldown;
 
-	public override void SetStaticDefaults() => ShotgunGlobalItem.Shotgun[Type] = new(ShotgunStats.Multiple(0.33f), ShotgunStats.Multiple(0.8f));
-
 	public override void SetDefaults()
 	{
 		Item.damage = 24;
@@ -102,10 +100,17 @@ public class TotalRecall : ModItem
 		if (player.altFunctionUse == 2)
 		{
 			TotalRecallGlobalProjectile.Pullback(player);
-
 			_cooldown = MAX_COOLDOWN;
 
 			return false;
+		}
+		else
+		{
+			StatModifiers modifiers = new(
+				new StatModifier(0.33f, 1),
+				new StatModifier(0.8f, 1));
+
+			ShotgunGlobalItem.ShotgunShoot(modifiers, source, position, velocity, type, damage, knockback);
 		}
 
 		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
