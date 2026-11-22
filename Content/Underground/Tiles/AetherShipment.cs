@@ -1,40 +1,34 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
-using static SpiritReforged.Common.WorldGeneration.WorldMethods;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
+public class AetherShipment : PotTile, WindTileRenderer.IDrawInWind, ILootable, ICutAttempt
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1, 2] } };
 
 	private const int FullHeight = 36;
-	private static Color GlowColor => Main.DiscoColor;//Color.Lerp(Color.Magenta, Color.CadetBlue, (float)(Math.Sin(Main.timeForVisualEffects / 40f) / 2f) + .5f);
+	private static Color GlowColor => Main.DiscoColor;
 
-	public override void AddRecord(int type, StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
-		var desc = Language.GetText("Mods.SpiritReforged.Tiles.Records.Aether");
-		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(6));
+		var desc = Language.GetText(TileRecord.DescKey + ".Aether");
+		return new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(6);
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
-	{
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.StoneBlock, 5).AddIngredient(ItemID.ShimmerTorch)
-			.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
-	}
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition) => modItem.CreateRecipe()
+		.AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.StoneBlock, 5).AddIngredient(ItemID.ShimmerTorch)
+		.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
@@ -59,7 +53,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 	{
 		const int distance = 200;
 
-		if (!closer || Main.gamePaused || !TileObjectData.IsTopLeft(i, j) || Autoloader.IsRubble(Type))
+		if (!closer || Main.gamePaused || !TileObjectData.IsTopLeft(i, j) || IsRubble)
 			return;
 
 		var world = new Vector2(i, j) * 16;
@@ -72,19 +66,19 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 			var velocity = -Vector2.UnitY * Main.rand.NextFloat();
 			float rotation = Main.rand.NextFloat();
 
-			ParticleHandler.SpawnParticle(new ShimmerStar(spawn, GlowColor * (1f - strength), scale, 60, velocity) { Rotation = rotation });
-			ParticleHandler.SpawnParticle(new ShimmerStar(spawn, Color.White * (1f - strength), scale * .8f, 60, velocity) { Rotation = rotation });
+			ParticleRenderers.UnderProjectiles.Add(new ShimmerStar(spawn, GlowColor * (1f - strength), scale, 60, velocity) { Rotation = rotation });
+			ParticleRenderers.UnderProjectiles.Add(new ShimmerStar(spawn, Color.White * (1f - strength), scale * 0.8f, 60, velocity) { Rotation = rotation });
 		}
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || !fail || Autoloader.IsRubble(Type) || Generating)
+		if (effectOnly || !fail || IsRubble || WorldMethods.Generating)
 			return;
 
 		fail = AdjustFrame(i, j);
-		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
+		WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-4, 4));
 	}
 
 	public override void AnimateTile(ref int frame, ref int frameCounter)
@@ -102,7 +96,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 			return true;
 
 		bool fail = AdjustFrame(i, j);
-		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
+		WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-4, 4));
 
 		var cache = Main.tile[i, j];
 		WorldGen.KillTile_MakeTileDust(i, j, cache);
@@ -113,7 +107,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 
 	public override bool KillSound(int i, int j, bool fail)
 	{
-		if (Autoloader.IsRubble(Type))
+		if (IsRubble)
 			return true;
 
 		var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);
@@ -135,7 +129,7 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 	{
 		const int fullWidth = FullHeight;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		if (Main.tile[i, j].TileFrameX > fullWidth)
 			return false; //Frame has already been adjusted
@@ -172,36 +166,37 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 		}
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		var tile = Main.tile[i, j];
-		var data = TileObjectData.GetTileData(tile);
-
-		var drawPos = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y);
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY + Main.tileFrame[Type] * FullHeight, data.CoordinateWidth, data.CoordinateHeights[tile.TileFrameY / 18]);
-		var dataOffset = new Vector2(data.DrawXOffset, data.DrawYOffset);
-
-        var color = Lighting.GetColor(i, j);
-
-        if (Main.LocalPlayer.findTreasure)
-            color = TileExtensions.GetSpelunkerTint(color);
-
-        spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, drawPos + origin + dataOffset, source, color, rotation, origin, 1, SpriteEffects.None, 0);
-
-		if (tile.TileFrameX % 36 == 18 && tile.TileFrameY % 36 == 18) //Bottom right frame
+		Tile tile = Main.tile[i, j];
+		if (TileObjectData.GetTileData(tile) is TileObjectData tileObjectData)
 		{
-			var bloom = TextureAssets.Extra[60].Value;
+			Rectangle source = new(tile.TileFrameX, tile.TileFrameY + Main.tileFrame[Type] * FullHeight, tileObjectData.CoordinateWidth, tileObjectData.CoordinateHeights[tile.TileFrameY / 18]);
+			Color color = Lighting.GetColor(i, j);
 
-			float value = Main.LocalPlayer.DistanceSQ(new Vector2(i, j) * 16) / (200 * 200);
-			Color glow = GlowColor.Additive() * (1f - value) * .5f;
+			if (Main.LocalPlayer.findTreasure)
+				color = TileMethods.GetSpelunkerTint(color);
 
-			spriteBatch.Draw(bloom, drawPos + new Vector2(0, 16), null, glow, rotation, bloom.Size() / 2, new Vector2(1, .5f) * .4f, SpriteEffects.None, 0);
+			spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, position, source, color, rotation, origin, 1, SpriteEffects.None, 0);
+
+			if (tile.TileFrameX % 36 == 18 && tile.TileFrameY % 36 == 18) //Bottom right frame
+			{
+				Texture2D bloom = TextureAssets.Extra[ExtrasID.PortalGateHalo2].Value;
+
+				float value = Main.LocalPlayer.DistanceSQ(new Vector2(i, j) * 16) / (200 * 200);
+				Color glow = GlowColor.Additive() * (1f - value) * .5f;
+
+				spriteBatch.Draw(bloom, position + new Vector2(0, 16), null, glow, rotation, bloom.Size() / 2, new Vector2(1, .5f) * .4f, SpriteEffects.None, 0);
+			}
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
-		loot.AddOneFromOptions(1, ItemID.AegisCrystal, ItemID.ArcaneCrystal, ItemID.AegisFruit, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
+		if (!Main.hardMode)
+			loot.AddOneFromOptions(1, ItemID.AegisCrystal, ItemID.ArcaneCrystal, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
+		else
+			loot.AddOneFromOptions(1, ItemID.AegisFruit, ItemID.ArcaneCrystal, ItemID.AegisCrystal, ItemID.Ambrosia, ItemID.GummyWorm, ItemID.GalaxyPearl);
 
 		if (Main.expertMode || Main.masterMode)
 			loot.AddCommon(ItemID.ShimmerTorch, 1, 5, 18);
@@ -214,7 +209,6 @@ public class AetherShipment : PotTile, ISwayTile, ILootTile, ICutAttempt
 		{
 			if (CrossMod.Thorium.TryFind("InspirationGem", out ModItem inspirationGem) && CrossMod.Thorium.TryFind("AstralWave", out ModItem astralWave))
 				loot.AddOneFromOptions(1, inspirationGem.Type, astralWave.Type);
-
 		}
 	}
 }

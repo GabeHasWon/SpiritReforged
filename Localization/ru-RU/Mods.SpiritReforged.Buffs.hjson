@@ -1,36 +1,36 @@
 EmpoweredSwim: {
-	DisplayName: Водная грация
-	Description: Теперь вода эта ваша стихия
+	DisplayName: Усиленное плавание
+	Description: Вы чувствуете себя гораздо быстрее в воде
 }
 
 MantarayBuff: {
-	DisplayName: Спасательный скат
-	Description: Быстрый, как морской бриз!
+	DisplayName: Скат-спасатель
+	Description: Стремительный, как волна!
 }
 
 JellyfishMinion_Buff: {
 	DisplayName: Медуза
-	Description: Миленькая, упругая медуза сражается за вас!
+	Description: За вас сражается милая и упругая медуза!
 }
 
 JellyfishPet_Buff: {
 	DisplayName: Дружелюбная медуза
-	Description: Эта медуза просто обожает путешествовать вместе с вами!
+	Description: Эта энергичная медуза обожает следовать за вами!
 }
 
 DoubleJumpPotionBuff: {
-	DisplayName: Зефирный прыжок
-	Description: Временно даёт двойной прыжок
+	DisplayName: Бризовый прыжок
+	Description: Вы можете совершать дополнительный прыжок
 }
 
 FlightPotionBuff: {
 	DisplayName: Парение
-	Description: Увеличивает время полёта на 25%
+	Description: Время полёта увеличено на 25%
 }
 
 BottleMountBuff: {
 	DisplayName: Плот
-	Description: Посылаем сигнал бедствия...
+	Description: Посылаем сигнал бедствия
 }
 
 FairyMinion_Buff: {
@@ -40,62 +40,62 @@ FairyMinion_Buff: {
 
 Impaled: {
 	DisplayName: Пронзён
-	Description: Ай.. больно в ноге!
+	Description: Вас пронзили пикой. Ай!
 }
 
 KoiTotemBuff: {
 	DisplayName: Тотем кои
-	Description: Увеличивает мастерство рыбалки
+	Description: Навык рыбной ловли увеличен
 }
 
 ButterflyMinion_Buff: {
 	DisplayName: Эфирная бабочка
-	Description: Эфирная бабочка сражается за вас
+	Description: За вас сражается эфирная бабочка
 }
 
 ToucanMinion_Buff: {
 	DisplayName: Тукан
-	Description: Тукан сражается за вас
+	Description: За вас сражается тукан
 }
 
 QuenchPotion_Buff: {
-	DisplayName: Жажда
-	Description: Другие зелья длятся на 25% дольше
+	DisplayName: Пресыщение
+	Description: Длительность эффектов остальных зелий увеличена на 25%
 }
 
 TumblerPet_Buff: {
-	DisplayName: Дружелюбное перекати-поле
-	Description: Это игривое перекати-поле не отстаёт ни на шаг!
+	DisplayName: Сомнительное перекати-поле
+	Description: За вами следует дружелюбное перекати-поле
 }
 
 Frozen: {
-	DisplayName: Обморожение
-	Description: Снижает скорость передвижения врагов
+	DisplayName: "{$BuffName.Frozen}"
+	Description: Скорость передвижения врагов снижена
 }
 
 GildedScarabBuff: {
-	DisplayName: Золотой скарабей
-	Description: Увеличивает защиту на {0}
+	DisplayName: Скарабейный щит
+	Description: Защита увеличена на {0} ед.
 }
 
-PoolNoodleBubbleBuff: {
-	DisplayName: Пузырьковая тайна
-	Description: Древний кодекс знаний Spirit раскрылся перед вами... Грядёт битва с Тёмной Звездой, но готовы ли вы к ней?
+Bubbled: {
+	DisplayName: Запузыренный
+	Description: Вы познали древнюю тайну истории Spirit... Ждите встречи с нашим супербоссом — Темносталью, Падшей звездой!
 }
 
 ExplorerSpeed: {
 	DisplayName: Скорость исследователя
-	Description: Ваша скорость значительно увеличена
+	Description: Мобильность значительно увеличена
 }
 
 RemedyPotionBuff: {
-	DisplayName: Целебный эффект
-	Description: Дает иммунитет к некоторым вредным эффектам
+	DisplayName: Иммунитет
+	Description: Невосприимчивость к некоторым дебаффам
 }
 
 OpenWounds: {
 	DisplayName: Открытые раны
-	Description: Вы уязвимы к кровотечению
+	Description: Вы подвержены кровотечению
 }
 
 ExplorerPot: {
@@ -104,11 +104,81 @@ ExplorerPot: {
 }
 
 ExplorerMine: {
-	DisplayName: Силы исследователя
+	DisplayName: Сила исследователя
 	Description: Продолжайте копать!
 }
 
 JinxMark: {
-	// DisplayName: Jinx Mark
-	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+	DisplayName: Метка сглаза
+	Description: Вы отмечены луком сглаза
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: Смазанное оружие: Заморозка
+	Description: Атаки хлыстов и оружия ближнего боя накладывают дебафф «{$Buffs.Frozen.DisplayName}»
+}
+
+Slowed: {
+	DisplayName: Замедленный
+	Description: Ваши движения становятся вялыми
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: Туканотрость
+	Description: За вас сражается туканотрость?
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: Дракоша
+	Description: За вами следует маленький дракон
+}
+
+EnlilBuff: {
+	DisplayName: Благословение Энлиля
+	Description: Вертикальная мобильность увеличена
+}
+
+ScarabLightPetBuff: {
+	DisplayName: Скарабейчик
+	Description: «Он что-то замышляет...»
+}
+
+ScarabMountBuff: {
+	DisplayName: Ездовой жук-пилюльщик
+	Description: «Держитесь!»
+}
+
+DivineStrike: {
+	DisplayName: Божественный удар
+	Description: Ваша следующая атака нанесёт больше урона
+}
+
+RotDebuff: {
+	DisplayName: Гниение [{0}]
+	Description: «Ваша кожа зеленеет»
+}
+
+SanguineStackingBuff: {
+	DisplayName: Кровяная энергия [{0}]
+	Description: Урон увеличен на {0}%
+}
+
+BlazeDebuff: {
+	DisplayName: Пылающий
+	Description: This is fine!
+}
+
+RageGlyphBuff: {
+	DisplayName: Мстительный урон [{0}]
+	Description: Накоплено {0} ед. урона
+}
+
+ColumbatBuff: {
+	DisplayName: Комышь
+	Description: Существо летучей мыши
+}
+
+ColumbaldBuff: {
+	DisplayName: Колысик
+	Description: Существо лысого
 }

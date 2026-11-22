@@ -1,4 +1,4 @@
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -83,6 +83,9 @@ public class OreCarts : ModTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
+		if (Main.dedServ)
+			return;
+
 		int style = frameX / FrameWidth;
 		EffectsByStyle(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 48, 32), Vector2.Zero, style);
 	}
@@ -112,12 +115,15 @@ public class OreCarts : ModTile
 		SoundEngine.PlaySound(SoundID.Item89 with { Pitch = .5f }, area.Center());
 		SoundEngine.PlaySound(Break, area.Center());
 
-		ParticleHandler.SpawnParticle(new Particles.SmokeCloud(area.Bottom(), Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
+		ParticleRenderers.UnderProjectiles.Add(new Particles.SmokeCloud(area.Bottom(), Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .15f, Common.Easing.EaseFunction.EaseQuarticInOut, 150));
 
 		for (int i = 0; i < 20; i++)
 		{
 			var vel = new Vector2(0, -Main.rand.NextFloat(2f)).RotatedByRandom(.25f);
-			Dust.NewDustDirect(area.BottomLeft(), area.Width, 4, DustID.WoodFurniture, vel.X, vel.Y, Scale: Main.rand.NextFloat() + .25f);
+			Dust.NewDustDirect(area.BottomLeft(), area.Width, 4, DustID.WoodFurniture, vel.X, vel.Y, Scale: Main.rand.NextFloat() + 0.25f);
+			
+			int sparks = Dust.NewDust(area.BottomLeft(), area.Width, area.Height, DustID.MinecartSpark, vel.X * 1.2f, vel.Y * 1.2f, Scale: Main.rand.NextFloat() + 2.5f);
+			Main.dust[sparks].fadeIn = 0.5f;
 		}
 
 		int dustType = style switch

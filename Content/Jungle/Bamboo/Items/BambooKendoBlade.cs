@@ -1,3 +1,4 @@
+using SpiritReforged.Common;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
@@ -14,7 +15,11 @@ public class BambooKendoBlade : ModItem, IDashSword
 	private float swingArc;
 	private static Asset<Texture2D> HeldTexture;
 
-	public override void SetStaticDefaults() => HeldTexture = ModContent.Request<Texture2D>(Texture + "Proj");
+	public override void SetStaticDefaults()
+	{
+		HeldTexture = ModContent.Request<Texture2D>(Texture + "Proj");
+		SpiritSets.IsSword[Type] = true;
+	}
 
 	public override void SetDefaults()
 	{
@@ -97,7 +102,11 @@ public class KendoBladeSwing : ModProjectile
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.BambooKendoBlade.DisplayName");
 
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 5;
+		HeldProjectileSet.HeldProjectile[Type] = true;
+	}
 
 	public override void SetDefaults()
 	{
@@ -208,7 +217,12 @@ public class KendoBladeLunge : ModProjectile
 	public override string Texture => "SpiritReforged/Content/Jungle/Bamboo/Items/BambooKendoBladeProj";
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.BambooKendoBlade.DisplayName");
 
-	public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
+	public override void SetStaticDefaults()
+	{
+		Main.projFrames[Type] = 5;
+		HeldProjectileSet.HeldProjectile[Type] = true;
+	}
+
 	public override void SetDefaults()
 	{
 		Projectile.Size = new Vector2(38);

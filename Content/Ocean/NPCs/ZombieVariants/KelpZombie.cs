@@ -1,19 +1,19 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Content.Vanilla.Food;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 
-public class KelpZombie : ReplaceNPC
+public class KelpZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.BaldZombie,
-		NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	public int[] TypesToReplace => [NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Skeleton;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Skeleton;
 
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
@@ -30,8 +30,8 @@ public class KelpZombie : ReplaceNPC
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath2;
 		NPC.value = 40f;
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 3;
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.Fighter;
 		AIType = NPCID.Zombie;
 		AnimationType = NPCID.Zombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);
@@ -71,10 +71,11 @@ public class KelpZombie : ReplaceNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
+		npcLoot.AddCommon(ModContent.ItemType<FishChips>(), 30);
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ModContent.ItemType<Items.Kelp>(), 7, 1, 3);
 	}
 
-	public override bool CanSpawn(Player player) => player.ZoneBeach;
+	public bool CanSubstitute(Player player) => player.ZoneBeach;
 }

@@ -1,14 +1,16 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Content.Ocean.NPCs.SandPiper;
 using SpiritReforged.Content.Savanna.NPCs.Sparrow;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
-public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileItem
+public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, ILoadItem
 {
 	internal static HashSet<int> BirdTypes;
 
@@ -25,8 +27,10 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 
 	public override void SetStaticDefaults()
 	{
+		base.SetStaticDefaults();
+
 		BirdTypes = [ItemID.Cardinal, ItemID.BlueJay, ItemID.GoldBird, ItemID.Bird, ItemID.Seagull, 
-			ItemID.BlueMacaw, ItemID.GrayCockatiel, AutoContent.ItemType<Sparrow>()];
+			ItemID.BlueMacaw, ItemID.GrayCockatiel, AutoContent.ItemType<Sparrow>(), AutoContent.ItemType<SandPiper>()];
 
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoAttach[Type] = true;
@@ -41,8 +45,7 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 		TileObjectData.newTile.Height = 3;
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 18];
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidSide, 2, 0);
-		ModTileEntity tileEntity = ModContent.GetInstance<BambooBirdCageSlot>();
-		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(tileEntity.Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 		TileObjectData.newTile.StyleHorizontal = true;
 
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
@@ -51,8 +54,7 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
-		LocalizedText name = CreateMapEntryName();
-		AddMapEntry(new Color(100, 100, 60), name);
+		AddMapEntry(new Color(100, 100, 60), Language.GetText("Mods.SpiritReforged.Items.BambooBirdCageItem.DisplayName"));
 		DustType = -1;
 		RegisterItemDrop(ItemType);
 	}
@@ -77,7 +79,7 @@ public class BambooBirdCage : SingleSlotTile<BambooBirdCageSlot>, IAutoloadTileI
 		if (TileObjectData.IsTopLeft(i, j) && Entity(i, j) is BambooBirdCageSlot slot && !slot.item.IsAir)
 		{
 			var bird = TextureAssets.Item[slot.item.type];
-			var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset;
+			var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset;
 
 			position += new Vector2(16, tile.TileFrameX >= 18 * 2 ? 42 : 50);
 

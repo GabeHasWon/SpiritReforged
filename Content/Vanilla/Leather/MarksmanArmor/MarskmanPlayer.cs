@@ -1,6 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
@@ -36,9 +36,9 @@ internal class MarksmanPlayer : ModPlayer
 				SoundEngine.PlaySound(SoundID.DD2_DarkMageCastHeal with { Pitch = 1.5f }, Player.Center);
 
 				for (int i = 0; i < 12; i++)
-					ParticleHandler.SpawnParticle(new GlowParticle(Player.Center, Main.rand.NextVector2CircularEdge(1, 1) * Main.rand.NextFloat(1f, 3f), newCol, Main.rand.NextFloat(0.3f, 0.5f), Main.rand.Next(30, 50), 12, delegate (Particle p) { p.Velocity *= 0.9f; }));
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Player.Center, Main.rand.NextVector2CircularEdge(1, 1) * Main.rand.NextFloat(1f, 3f), newCol, Main.rand.NextFloat(0.3f, 0.5f), Main.rand.Next(30, 50), 12, delegate (Particle p) { p.Velocity *= 0.9f; }));
 
-				ParticleHandler.SpawnParticle(new TexturedPulseCircle(Player.Center, Color.White * .15f, .5f, 120, 15, "Extra_49", new Vector2(1), EaseFunction.EaseCubicIn, true));
+				ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Player.Center, Color.White * .15f, .5f, 120, 15, "Extra_49", new Vector2(1), EaseFunction.EaseCubicIn, true));
 			}
 
 			if (Main.rand.NextBool(12))
@@ -47,7 +47,7 @@ internal class MarksmanPlayer : ModPlayer
 				var headRect = new Rectangle(rect.X, rect.Y, rect.Width, rect.Height / 3);
 				var position = Main.rand.NextVector2FromRectangle(headRect);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(position, Vector2.UnitY * -Main.rand.NextFloat(.5f), newCol, Main.rand.NextFloat(.2f, .3f), 80, 12));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, Vector2.UnitY * -Main.rand.NextFloat(.5f), newCol, Main.rand.NextFloat(.2f, .3f), 80, 12));
 			}
 		}
 	}
@@ -63,7 +63,7 @@ internal class MarksmanPlayer : ModPlayer
 			SoundEngine.PlaySound(SoundID.Item98 with { Volume = .5f }, Player.Center);
 		}
 
-		concentratedCooldown = 360;
+		concentratedCooldown = 500;
 	}
 
 	public override void ModifyHitNPCWithItem(Item item, NPC target, ref NPC.HitModifiers modifiers)
@@ -82,9 +82,9 @@ internal class MarksmanPlayer : ModPlayer
 
 		if (TryDoImpact(position))
 		{
-			var scale = new Vector2(.5f, 1.5f);
-			ParticleHandler.SpawnParticle(new ImpactLine(position, Vector2.Normalize(-proj.velocity), Color.White, scale, 8));
-			ParticleHandler.SpawnParticle(new ImpactLine(position, Vector2.Normalize(-proj.velocity), Color.Orange, scale * 1.25f, 8));
+			var scale = new Vector2(0.5f, 1.5f);
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, Vector2.Normalize(-proj.velocity), Color.White, scale, 8));
+			ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, Vector2.Normalize(-proj.velocity), Color.Orange, scale * 1.25f, 8));
 
 			modifiers.FinalDamage *= 1.2f;
 			modifiers.SetCrit();
@@ -109,15 +109,26 @@ internal class MarksmanPlayer : ModPlayer
 			Dust.NewDustPerfect(position + unit * Main.rand.NextFloat(10f), DustID.AmberBolt, unit * Main.rand.NextFloat(2f), Scale: .75f).noGravity = true;
 
 			if (i < 6)
-				ParticleHandler.SpawnParticle(new GlowParticle(position, Main.rand.NextVector2Unit() * Main.rand.NextFloat(.5f, 2), newCol, Main.rand.NextFloat(.15f, .3f), Main.rand.Next(30, 50), 12, delegate (Particle p) { p.Velocity *= .96f; }));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(position, Main.rand.NextVector2Unit() * Main.rand.NextFloat(.5f, 2), newCol, Main.rand.NextFloat(.15f, .3f), Main.rand.Next(30, 50), 12, delegate (Particle p) { p.Velocity *= .96f; }));
 		}
 
-		ParticleHandler.SpawnParticle(new DissipatingImage(position, Color.Goldenrod.Additive(), Main.rand.NextFloat(MathHelper.TwoPi), .1f, Main.rand.NextFloat(-.5f, .5f), "Fire", new(.4f), new(5, 1), 50));
+		for(int i = 0; i < 4; i++)
+		{
+			Color[] fireColors = [Color.LightGoldenrodYellow.Additive(), Color.Goldenrod.Additive(), Color.Orange.Additive()];
+			float scale = Main.rand.NextFloat(0.07f, 0.12f);
+			Vector2 velocity = Main.rand.NextVector2Circular(2, 2);
+			int maxTime = Main.rand.Next(20, 40);
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.White, .5f, 80, 20, "Extra_49",
+			ParticleRenderers.UnderProjectiles.Add(new FireParticle(position, velocity, fireColors, 1.5f, scale, EaseFunction.EaseQuadIn, maxTime) 
+			{ 
+				FinalScaleMod = 0.25f 
+			});
+		}
+
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(position, Color.White, .5f, 80, 20, "Extra_49",
 				new Vector2(1), EaseFunction.EaseCubicOut));
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, Color.LightGoldenrodYellow * .4f, .6f, 90, 50, "Bloom",
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(position, Color.LightGoldenrodYellow * .4f, .6f, 90, 50, "Bloom",
 			new Vector2(2), EaseFunction.EaseCubicOut));
 
 		return true;

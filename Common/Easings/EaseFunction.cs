@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace SpiritReforged.Common.Easing;
+﻿namespace SpiritReforged.Common.Easing;
 
 public abstract class EaseFunction
 {

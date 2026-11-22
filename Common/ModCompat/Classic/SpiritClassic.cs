@@ -1,6 +1,6 @@
-﻿using SpiritReforged.Content.Desert.GildedScarab;
-using SpiritReforged.Content.Forest.ArcaneNecklace;
+﻿using SpiritReforged.Content.Forest.ArcaneNecklace;
 using SpiritReforged.Content.Underground.WayfarerSet;
+using SpiritReforged.Content.Ziggurat.Scarab;
 
 namespace SpiritReforged.Common.ModCompat.Classic;
 

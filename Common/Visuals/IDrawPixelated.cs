@@ -1,0 +1,97 @@
+using SpiritReforged.Common.Visuals.RenderTargets;
+using Terraria.Graphics.Renderers;
+
+namespace SpiritReforged.Common.Visuals;
+
+public interface IDrawPixelated
+{
+	public sealed class PixelatedDrawLoader : ILoadable
+	{
+		public static readonly EasyTarget PixelTarget = new(new Vector2(0.5f));
+
+		// Reusable collection to avoid allocation & resize allocation while drawing
+		private static readonly List<IDrawPixelated> _elements = new(20);
+
+		void ILoadable.Load(Mod mod)
+		{
+			TargetSetup.DrawIntoRendertargets += SetupPixelTarget;
+			On_Main.DrawItems += DrawPixelTarget;
+		}
+
+		void ILoadable.Unload() { }
+
+		private static void SetupPixelTarget()
+		{
+			SpriteBatch spriteBatch = Main.spriteBatch;
+			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
+
+			_elements.Clear(); //Setup queue
+
+			foreach (Item item in Main.ActiveItems)
+			{
+				if (item.ModItem is IDrawPixelated iDrawPixelated)
+					_elements.Add(iDrawPixelated);
+			}
+
+			foreach (Projectile projectile in Main.ActiveProjectiles)
+			{
+				if (projectile.ModProjectile is IDrawPixelated iDrawPixelated)
+					_elements.Add(iDrawPixelated);
+			}
+
+			foreach (ParticleRenderer renderer in ParticleRenderers.Renderers)
+			{
+				foreach (IParticle particle in renderer.Particles)
+				{
+					if (particle is IDrawPixelated iDrawPixelated)
+						_elements.Add(iDrawPixelated);
+				}
+			}
+
+			if (_elements.Count > 0) //Avoid restarting the spritebatch if there is nothing in queue
+			{
+				graphics.SetRenderTarget(PixelTarget.Value);
+				graphics.Clear(Color.Transparent);
+				spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null);
+
+				graphics.BlendState = BlendState.AlphaBlend; //Required for prims
+				DrawingPixelated = true;
+
+				foreach (IDrawPixelated iDrawPixelated in _elements)
+					iDrawPixelated.DrawPixelated(spriteBatch);
+
+				DrawingPixelated = false;
+				spriteBatch.End();
+				graphics.SetRenderTarget(null);
+			}
+		}
+
+		private static void DrawPixelTarget(On_Main.orig_DrawItems orig, Main self)
+		{
+			if (PixelTarget.Value != null)
+			{
+				Vector2 offset = Main.screenPosition;
+
+				offset.X %= 2;
+				offset.Y %= 2;
+
+				Main.spriteBatch.Draw(PixelTarget.Value, -offset, null, Color.White, 0, Vector2.Zero, 2, 0, 0);
+			}
+
+			orig(self);
+		}
+	}
+
+	/// <summary> Whether pixelated effects are currently being drawn via <see cref="DrawPixelated"/>. </summary>
+	public static bool DrawingPixelated { get; private set; }
+
+	public void DrawPixelated(SpriteBatch spriteBatch);
+
+	public static void PixelateDrawPosition(ref Vector2 position)
+	{
+		position += Main.screenPosition;
+		position /= 2f;
+		position.X -= (int)Main.screenPosition.X / 2;
+		position.Y -= (int)Main.screenPosition.Y / 2;
+	}
+}

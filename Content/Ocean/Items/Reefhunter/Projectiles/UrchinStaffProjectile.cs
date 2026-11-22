@@ -13,6 +13,8 @@ public class UrchinStaffProjectile : ModProjectile
 
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.UrchinStaff.DisplayName");
 
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
+
 	public override void SetDefaults()
 	{
 		Projectile.width = 2;

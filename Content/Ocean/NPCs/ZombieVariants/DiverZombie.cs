@@ -1,19 +1,19 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Content.Vanilla.Food;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 
-public class DiverZombie : ReplaceNPC
+public class DiverZombie : ModNPC, ISubstitute
 {
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie,
-		NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SwampZombie, NPCID.TwiggyZombie];
 
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 4;
 		NPCID.Sets.Zombies[Type] = true;
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Skeleton;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Skeleton;
 
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Undead);
 		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Humanoid);
@@ -31,7 +31,7 @@ public class DiverZombie : ReplaceNPC
 		NPC.DeathSound = SoundID.NPCDeath2;
 		NPC.value = 40f;
 		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 3;
+		NPC.aiStyle = NPCAIStyleID.Fighter;
 		AIType = NPCID.Zombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);
 		BannerItem = Item.BannerToItem(Banner);
@@ -108,6 +108,7 @@ public class DiverZombie : ReplaceNPC
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
+		npcLoot.AddCommon(ModContent.ItemType<FishChips>(), 30);
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ItemID.Flipper, 100);
@@ -115,5 +116,5 @@ public class DiverZombie : ReplaceNPC
 			ModContent.ItemType<Items.Vanity.DiverSet.DiverHead>(), ModContent.ItemType<Items.Vanity.DiverSet.DiverBody>());
 	}
 
-	public override bool CanSpawn(Player player) => player.ZoneBeach;
+	public bool CanSubstitute(Player player) => player.ZoneBeach;
 }

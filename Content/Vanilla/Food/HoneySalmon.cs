@@ -1,4 +1,7 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Content.Savanna.NPCs.Gar;
+using SpiritReforged.Content.Savanna.NPCs.Killifish;
 
 namespace SpiritReforged.Content.Vanilla.Food;
 
@@ -19,7 +22,15 @@ public class HoneySalmon : FoodItem
 		Item.buffTime = 9 * 60 * 60;
 	}
 
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<RawFish>(), 2)
-		.AddIngredient(ItemID.BottledHoney).AddTile(TileID.CookingPots).Register();
-}
+	public override void AddRecipes()
+	{
+		AddRecipe(ItemID.RedSnapper);
+		AddRecipe(ItemID.Salmon);
+		AddRecipe(ItemID.Trout);
+		AddRecipe(ItemID.AtlanticCod);
+		AddRecipe(AutoContent.ItemType<Killifish>());
+		AddRecipe(AutoContent.ItemType<Gar>());
 
+		void AddRecipe(int ingredient) => CreateRecipe().AddIngredient(ItemID.BottledHoney).AddIngredient(ingredient).AddTile(TileID.CookingPots).Register();
+	}
+}

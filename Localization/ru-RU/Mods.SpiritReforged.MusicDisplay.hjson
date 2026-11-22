@@ -2,39 +2,75 @@ ModName: Spirit Reforged
 Salvati: Salvati
 Sbubby: Sbubby
 Moonbird: Moonbird
+By: от
 BySalvati: "{$By} {$Salvati}"
 
 Duststorm: {
-	DisplayName: Колыхающаяся прерия (Тема пыльной бури)
+	DisplayName: Пыльная буря: Drifting Prairie
 	Author: "{$By} {$Sbubby}"
 }
 
 Savanna: {
-	DisplayName: Саванна
-	Author: "{$BySalvati}, {$Sbubby}"
+	DisplayName: Дневная саванна: Fever Trees
+	Author: "{$BySalvati} и {$Sbubby}"
 }
 
 SavannaNight: {
-	DisplayName: Ночь в саванне
+	DisplayName: Ночная саванна: Moonlit Meadow
 	Author: "{$BySalvati}"
 }
 
 DeepOcean: {
-	DisplayName: Глубокий океан
+	DisplayName: Океанические глубины: Undersea Adventure
 	Author: "{$BySalvati}"
 }
 
 SavannaOtherworld: {
-	DisplayName: Тема дневной саванны
+	DisplayName: Иная дневная саванна: Otherworldly Savanna Day
 	Author: "{$By} {$Moonbird}"
 }
 
 SavannaOtherworldNight: {
-	DisplayName: Тема ночной саванны
+	DisplayName: Иная ночная саванна: Otherworldly Savanna Night
 	Author: "{$By} soundbin"
 }
 
 DuststormOtherworld: {
-	DisplayName: Тема пыльной бури
+	DisplayName: Иная пыльная буря: Otherworldly Duststorm
 	Author: "{$By} jakedastardly"
+}
+
+Ziggurat: {
+	DisplayName: Зиккурат: Ziggurat
+	Author: "{$By} {$Moonbird}, {$Salvati}"
+}
+
+Salt: {
+	DisplayName: Солончаковые равнины: Reflected Skies
+	Author: "{$By} {$Sbubby}"
+}
+
+SaltNight: {
+	DisplayName: Ночные солончаковые равнины: Refracted Stars
+	Author: "{$By} {$Sbubby}"
+}
+
+Scarabeus: {
+	DisplayName: Скарабеус: Soaring Complications
+	Author: "{$By} {$Sbubby}"
+}
+
+ScarabeusP2: {
+	DisplayName: Скарабеус, 2 фаза: Soaring Complications
+	Author: "{$By} {$Sbubby}"
+}
+
+RadioScarab: {
+	DisplayName: Soaring Complications (радио-версия)
+	Author: "{$By} {$Sbubby}"
+}
+
+TitleTheme: {
+	DisplayName: Заглавная тема Spirit: Another Journey
+	Author: "{$By} {$Salvati}"
 }

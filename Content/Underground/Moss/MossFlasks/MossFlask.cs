@@ -91,11 +91,11 @@ public abstract class MossFlaskProjectile : ModProjectile
 			var pt = Projectile.Center.ToTileCoordinates();
 			ShapeData data = new();
 
-			WorldUtils.Gen(pt, new Shapes.Circle(area), Actions.Chain(new Modifiers.OnlyTiles(StoneTypes), new Modifiers.SkipTiles(Conversion.Stone), new SolidIsTouchingAir(true), new ReplaceType(Conversion.Stone).Output(data)));
-			WorldUtils.Gen(pt, new Shapes.Circle(area), Actions.Chain(new Modifiers.OnlyTiles(BrickTypes), new Modifiers.SkipTiles(Conversion.Brick), new SolidIsTouchingAir(true), new ReplaceType(Conversion.Brick).Output(data)));
-			WorldUtils.Gen(pt, new Shapes.Circle(area), Actions.Chain(new Modifiers.OnlyTiles(PlantTypes), new Modifiers.SkipTiles(Conversion.Plant), new ReplaceType(Conversion.Plant).Output(data)));
+			WorldUtils.Gen(pt, new Shapes.Circle(area), Actions.Chain(new Modifiers.OnlyTiles(StoneTypes), new Modifiers.SkipTiles(Conversion.Stone), new GenTypes.SolidIsTouchingAir(true), new GenTypes.ReplaceType(Conversion.Stone).Output(data)));
+			WorldUtils.Gen(pt, new Shapes.Circle(area), Actions.Chain(new Modifiers.OnlyTiles(BrickTypes), new Modifiers.SkipTiles(Conversion.Brick), new GenTypes.SolidIsTouchingAir(true), new GenTypes.ReplaceType(Conversion.Brick).Output(data)));
+			WorldUtils.Gen(pt, new Shapes.Circle(area), Actions.Chain(new Modifiers.OnlyTiles(PlantTypes), new Modifiers.SkipTiles(Conversion.Plant), new GenTypes.ReplaceType(Conversion.Plant).Output(data)));
 
-			WorldUtils.Gen(pt, new ModShapes.All(data), Actions.Chain(new Actions.SetFrames(true), new Send()));
+			WorldUtils.Gen(pt, new ModShapes.All(data), Actions.Chain(new Actions.SetFrames(true), new GenTypes.Send()));
 		}
 
 		SoundEngine.PlaySound(SoundID.Shatter, Projectile.Center);

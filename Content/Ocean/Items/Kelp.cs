@@ -10,9 +10,13 @@ public class Kelp : FloatingItem
 	public override float Weight => base.Weight * 0.9f;
 	public override float Bouyancy => base.Bouyancy * 1.15f;
 
+	public override string Texture => base.Texture + "0";
+
 	public override void SetStaticDefaults()
 	{
-		VariantGlobalItem.AddVariants(Type, [new Point(24, 18), new Point(20, 24), new Point(22, 22), new Point(20, 22)]);
+		VariantItemRenderer.VariantCounts[Type] = 4;
+		ItemID.Sets.ShimmerTransformToItem[Type] = AutoContent.ItemType<Driftwood>();
+
 		Item.ResearchUnlockCount = 25;
 	}
 

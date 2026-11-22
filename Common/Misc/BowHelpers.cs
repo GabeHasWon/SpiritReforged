@@ -5,26 +5,32 @@ namespace SpiritReforged.Common.Misc;
 
 public static class BowHelpers
 {
-	public static void FindAmmo(Player owner, int ammoID, out int? projToFire, out int? ammoDamage, out float? ammoKB, out float? ammoVel)
+	public static void FindAmmo(Player owner, int ammoID, out int projType, out int ammoDamage, out float ammoKB, out float ammoSpeed, int skipAmount = 0)
 	{
-		const int ammoInventoryStart = 54;
-		const int ammoInventoryEnd = 58;
+		const int ammoInventoryStart = Main.InventoryAmmoSlotsStart;
+		const int ammoInventoryEnd = Main.InventoryAmmoSlotsStart + Main.InventoryAmmoSlotsCount;
 
-		projToFire = null;
-		ammoDamage = null;
-		ammoKB = null;
-		ammoVel = null;
+		projType = ProjectileID.None;
+		ammoDamage = 0;
+		ammoKB = 0;
+		ammoSpeed = 0;
+
+		int trySkip = 0;
 
 		for (int i = ammoInventoryStart; i < ammoInventoryEnd; i++)
 		{
 			Item selectedItem = owner.inventory[i];
 			if (selectedItem.ammo == ammoID && selectedItem.stack > 0)
 			{
-				projToFire = selectedItem.shoot;
+				projType = selectedItem.shoot;
 				ammoDamage = selectedItem.damage;
 				ammoKB = selectedItem.knockBack;
-				ammoVel = selectedItem.shootSpeed;
-				return;
+				ammoSpeed = selectedItem.shootSpeed;
+
+				if (trySkip >= skipAmount)
+					return;
+
+				trySkip++;
 			}
 		}
 
@@ -33,11 +39,15 @@ public static class BowHelpers
 			Item selectedItem = owner.inventory[i];
 			if (selectedItem.ammo == ammoID && selectedItem.stack > 0)
 			{
-				projToFire = selectedItem.shoot;
+				projType = selectedItem.shoot;
 				ammoDamage = selectedItem.damage;
 				ammoKB = selectedItem.knockBack;
-				ammoVel = selectedItem.shootSpeed;
-				return;
+				ammoSpeed = selectedItem.shootSpeed;
+
+				if (trySkip >= skipAmount)
+					return;
+
+				trySkip++;
 			}
 		}
 	}

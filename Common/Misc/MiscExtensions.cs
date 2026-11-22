@@ -33,22 +33,20 @@ internal static class MiscExtensions
 		return new Vector2((float)(x * cos - y * sin) * halfWidth, (float)(x * sin + y * cos) * halfHeight);
 	}
 
+	public static bool HasInfinities(this Vector2 vector) => float.IsInfinity(vector.X) || float.IsInfinity(vector.Y);
+
 	public static Vector2 TurnRight(this Vector2 vec) => new(-vec.Y, vec.X);
 
 	public static Vector2 TurnLeft(this Vector2 vec) => new(vec.Y, -vec.X);
 
-	/// <summary>
-	/// Ends & restarts the spriteBatch with default vanilla parameters.
-	/// </summary>
+	/// <summary> Ends and restarts the spriteBatch with default vanilla parameters. </summary>
 	public static void RestartToDefault(this SpriteBatch batch)
 	{
 		batch.End();
 		batch.BeginDefault();
 	}
 
-	/// <summary>
-	/// Begins the spriteBatch with default vanilla parameters.
-	/// </summary>
+	/// <summary> Begins the spriteBatch with default vanilla parameters. </summary>
 	/// <param name="batch"></param>
 	public static void BeginDefault(this SpriteBatch batch) => batch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
 
@@ -85,4 +83,41 @@ internal static class MiscExtensions
 
 	public static void AccelFlyingMovement(this Entity ent, Vector2 desiredPosition, float accelSpeed, float deccelSpeed, float maxSpeed = -1) => AccelFlyingMovement(ent, desiredPosition, new Vector2(accelSpeed), new Vector2(deccelSpeed), (maxSpeed >= 0) ? new Vector2(maxSpeed) : null);
 
+	/// <summary> Adds <paramref name="options"/> and distributes <paramref name="weight"/> evenly. </summary>
+	public static void AddRange<T>(this WeightedRandom<T> r, double weight = 1, params T[] options)
+	{
+		double finalWeight = weight / options.Length;
+
+		foreach (var type in options)
+			r.Add(type, finalWeight);
+	}
+
+	/// <summary> Whether common NPC spawn conditions related to invasions and events are satisfied. </summary>
+	public static bool EventSafe(this NPCSpawnInfo info) => !info.Invasion && (!Main.bloodMoon && !Main.pumpkinMoon && !Main.snowMoon || Main.dayTime) && (!Main.eclipse || !Main.dayTime) && !info.Player.ZoneOldOneArmy;
+
+	public static float Modulo(this float dividend, float divisor)
+	{
+		return (dividend % divisor + divisor) % divisor;
+	}
+
+	public static float AngleLerpDirectional(this float from, float to, float progress, bool clockwise)
+	{
+		from = from.Modulo(MathHelper.TwoPi);
+		to = to.Modulo(MathHelper.TwoPi);
+
+		if (clockwise)
+		{
+			// Clockwise
+			if (from < to)
+				to -= MathHelper.TwoPi;
+		}
+		else
+		{
+			// Counter-clockwise
+			if (from > to)
+				to += MathHelper.TwoPi;
+		}
+
+		return from + (to - from) * progress;
+	}
 }

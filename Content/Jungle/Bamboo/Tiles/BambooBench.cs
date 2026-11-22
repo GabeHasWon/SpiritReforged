@@ -1,9 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon.PresetTiles;
+using TileHelper.Common;
+using TileHelper.Content.Tiles;
 
 namespace SpiritReforged.Content.Jungle.Bamboo.Tiles;
 
-public class BambooBench : SofaTile
+public class BambooBench : BenchTile, ILoadItem
 {
-	public override int CoreMaterial => AutoContent.ItemType<StrippedBamboo>();
+	public void AddItemRecipes(ModItem modItem) => DataStructures.Recipes[FurnitureName]?.Invoke(modItem, AutoContent.ItemType<StrippedBamboo>());
 }

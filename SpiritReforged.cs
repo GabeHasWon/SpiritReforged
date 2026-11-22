@@ -12,11 +12,8 @@ global using Terraria.ObjectData;
 global using System.Collections.Generic;
 global using NPCUtils;
 
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon.PresetTiles;
 using SpiritReforged.Common.ModCompat;
-using System.Runtime.CompilerServices;
+using Terraria.UI.Chat;
 
 namespace SpiritReforged;
 
@@ -26,47 +23,37 @@ public partial class SpiritReforgedMod : Mod
 
 	public static SpiritReforgedMod Instance { get; private set; }
 
-	/// <summary>
-	/// Gets if Otherworld Music is turned on. <see cref="Main.swapMusic"/> is private for some reason.
-	/// </summary>
-	public static bool SwapMusic => GetSwapMusic(null);
-
-	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "swapMusic")]
-	private static extern ref bool GetSwapMusic(Main main);
-
 	public SpiritReforgedMod()
 	{
-		GoreAutoloadingEnabled = true;
 		Instance = this;
-
 		PreAddContent.AddContentHook(this);
 	}
 
 	public override void Load()
 	{
-		CustomSapling.Autoload(this);
 		RubbleAutoloader.Autoloader.Load(this);
+		TileHelper.Autoloader.Load(this);
+
 		NPCUtils.NPCUtils.AutoloadModBannersAndCritters(this);
-		NPCUtils.NPCUtils.TryLoadBestiaryHelper();
+        NPCUtils.NPCUtils.TryLoadBestiaryHelper(this);
 
-		TrailDetours.Initialize();
-
-		AssetLoader.Load(this);
-
-		ParticleHandler.RegisterParticles();
-		ParticleDetours.Initialize();
+#if DEBUG
+		On_Main.DrawMenu += AddDebugInfo;
 	}
 
-	public override void Unload()
+	private void AddDebugInfo(On_Main.orig_DrawMenu orig, Main self, GameTime gameTime)
 	{
-		NPCUtils.NPCUtils.UnloadMod(this);
-		NPCUtils.NPCUtils.UnloadBestiaryHelper();
-		AssetLoader.Unload();
-		TrailDetours.Unload();
+		orig(self, gameTime);
 
-		ParticleHandler.Unload();
-		ParticleDetours.Unload();
+		Main.spriteBatch.Begin();
+
+		// Used for clarifying when this was built and what branch it's for
+		string text = $"Spirit Reforged v{Version} dev ({ThisAssembly.Git.Branch}) built ({ThisAssembly.Git.CommitDate})";
+		ChatManager.DrawColorCodedStringWithShadow(Main.spriteBatch, FontAssets.MouseText.Value, text, new Vector2(10), Color.White, Color.Black * 0.4f, 0f, Vector2.Zero, Vector2.One, -1, 2);
+
+		Main.spriteBatch.End();
+#endif
 	}
 
-	public override void HandlePacket(System.IO.BinaryReader reader, int whoAmI) => Common.Multiplayer.MultiplayerHandler.HandlePacket(reader, whoAmI);
+	public override void HandlePacket(System.IO.BinaryReader reader, int whoAmI) => Common.Multiplayer.MultiplayerLoader.HandlePacket(reader, whoAmI);
 }

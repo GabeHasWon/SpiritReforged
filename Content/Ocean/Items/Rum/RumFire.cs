@@ -1,9 +1,8 @@
+using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
-using SpiritReforged.Content.Forest.MagicPowder;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
-using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Content.Ocean.Items.Rum;
 
@@ -17,7 +16,7 @@ public class RumFire : ModProjectile
 	public override void SetStaticDefaults() => Main.projFrames[Type] = 5;
 	public override void SetDefaults()
 	{
-		Projectile.Size = new(20, 34);
+		Projectile.Size = new(16, 16);
 		Projectile.friendly = true;
 		Projectile.tileCollide = false;
 		Projectile.aiStyle = -1;
@@ -25,12 +24,18 @@ public class RumFire : ModProjectile
 		Projectile.timeLeft = TimeLeftMax;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
+		Projectile.Opacity = 0;
 	}
 
 	public override void AI()
 	{
-		if (Projectile.timeLeft == TimeLeftMax) //Just spawned
-			Surface();
+		if (!Projectile.Surface() || Projectile.wet)
+		{
+			Projectile.Kill();
+			return;
+		}
+
+		Projectile.Opacity = Math.Min(Projectile.Opacity + 0.1f, 1);
 
 		if (Main.rand.NextBool(5))
 		{
@@ -52,7 +57,24 @@ public class RumFire : ModProjectile
 			var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f);
 			var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.25f);
 
-			ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 5));
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 5));
+		}
+		 
+		if (Main.rand.NextBool(6))
+		{
+			var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f);
+			var velocity = (Vector2.UnitY * -Main.rand.NextFloat(2, 4.5f)).RotatedByRandom(0.25f);
+
+			Color[] fireColors = [Color.Yellow.Additive(150), Color.Orange.Additive(150), Color.Red.Additive(150) * 0.85f];
+			float intensity = 1.5f * Projectile.Opacity;
+			float scale = Main.rand.NextFloat(0.05f, 0.1f);
+			int maxTime = Main.rand.Next(20, 60);
+
+			ParticleRenderers.UnderProjectiles.Add(new FireParticle(position, velocity, fireColors, intensity, scale, EaseFunction.EaseCircularOut, maxTime)
+			{
+				ColorLerpExponent = 2.5f,
+				PixelDivisor = 2
+			});
 		}
 
 		if (Main.myPlayer == Projectile.owner && Projectile.timeLeft == (int)(TimeLeftMax * 0.75f) && CanSplit)
@@ -67,38 +89,6 @@ public class RumFire : ModProjectile
 		Lighting.AddLight(Projectile.Center, GlowColor);
 	}
 
-	private void Surface()
-	{
-		int surfaceDuration = 0;
-		while (Collision.SolidCollision(Projectile.position, Projectile.width, Projectile.height, true))
-		{
-			Projectile.position.Y--; //Move up out of solid tiles
-
-			if (TryKill())
-				return;
-		}
-
-		surfaceDuration = 0;
-		while (!Collision.SolidCollision(Projectile.position + Vector2.UnitY, Projectile.width, Projectile.height, true))
-		{
-			Projectile.position.Y++; //Move down onto solid tiles
-
-			if (TryKill())
-				return;
-		}
-
-		bool TryKill()
-		{
-			if (++surfaceDuration > 40)
-			{
-				Projectile.Kill();
-				return true;
-			}
-
-			return false;
-		}
-	}
-
 	public override bool ShouldUpdatePosition() => false;
 	public override bool PreDraw(ref Color lightColor)
 	{
@@ -107,7 +97,7 @@ public class RumFire : ModProjectile
 		var frame = texture.Frame(1, Main.projFrames[Type], 0, Projectile.frame, sizeOffsetY: -2);
 
 		Vector2 position = Projectile.Bottom - Main.screenPosition + new Vector2(0, Projectile.gfxOffY + 2);
-		Main.EntitySpriteDraw(texture, position, frame, Color.White * 0.6f, Projectile.rotation, new Vector2(frame.Width / 2, frame.Height), Projectile.scale, effect, 0);
+		Main.EntitySpriteDraw(texture, position, frame, Projectile.GetAlpha(Color.White), Projectile.rotation, new Vector2(frame.Width / 2, frame.Height), Projectile.scale, effect, 0);
 		return false;
 	}
 
@@ -147,11 +137,13 @@ public class RumExplosion : ModProjectile
 				var position = Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(5f);
 				var velocity = (Vector2.UnitY * -Main.rand.NextFloat(1.5f)).RotatedByRandom(0.25f);
 
-				ParticleHandler.SpawnParticle(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 2));
-				ParticleHandler.SpawnParticle(new SmokeCloud(position, velocity, Color.DarkGray * .3f, Main.rand.NextFloat(.25f), Common.Easing.EaseFunction.EaseCircularOut, 60));
+				ParticleRenderers.UnderProjectiles.Add(new EmberParticle(position, velocity, Color.OrangeRed, Main.rand.NextFloat(0.4f), 120, 2));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(position, velocity, Color.DarkGray * .3f, Main.rand.NextFloat(.25f), Common.Easing.EaseFunction.EaseCircularOut, 60));
 			}
 		}
 	}
+
+	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone) => target.AddBuff(BuffID.OnFire, 120);
 
 	public override bool PreDraw(ref Color lightColor)
 	{

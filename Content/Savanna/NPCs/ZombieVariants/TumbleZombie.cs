@@ -6,13 +6,12 @@ using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Savanna.NPCs.ZombieVariants;
 
-public class TumbleZombie : ReplaceNPC
+public class TumbleZombie : ModNPC, ISubstitute
 {
-	private float frameCounter;
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie];
+	private float _frameCounter;
 
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.BaldZombie, NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie];
-
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
@@ -32,8 +31,8 @@ public class TumbleZombie : ReplaceNPC
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath2;
 		NPC.value = 50f;
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 3;
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.Fighter;
 		AIType = NPCID.Zombie;
 		AnimationType = NPCID.Zombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);
@@ -67,9 +66,9 @@ public class TumbleZombie : ReplaceNPC
 	{
 		if (NPC.IsABestiaryIconDummy)
 		{
-			frameCounter += .1f;
-			frameCounter %= Main.npcFrameCount[Type];
-			NPC.frame.Y = frameHeight * (int)frameCounter;
+			_frameCounter += .1f;
+			_frameCounter %= Main.npcFrameCount[Type];
+			NPC.frame.Y = frameHeight * (int)_frameCounter;
 		}
 	}
 
@@ -78,8 +77,8 @@ public class TumbleZombie : ReplaceNPC
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ModContent.ItemType<Items.WrithingSticks.WrithingSticks>(), 800);
-		npcLoot.AddCommon(ModContent.ItemType<HuntingRifle>(), 300);
+		npcLoot.AddCommon(ModContent.ItemType<HuntingRifle>(), 100);
 	}
 
-	public override bool CanSpawn(Player player) => player.InModBiome<SavannaBiome>();
+	public bool CanSubstitute(Player player) => player.InModBiome<SavannaBiome>();
 }

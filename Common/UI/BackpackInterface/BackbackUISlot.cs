@@ -9,7 +9,7 @@ namespace SpiritReforged.Common.UI.BackpackInterface;
 public class BackpackUISlot : UIElement
 {
 	public const int Context = ItemSlot.Context.ChestItem;
-	public const float Scale = .85f;
+	public const float Scale = 0.85f;
 
 	private static Asset<Texture2D> icon;
 
@@ -29,7 +29,7 @@ public class BackpackUISlot : UIElement
 	protected override void DrawSelf(SpriteBatch spriteBatch)
 	{
 		var mPlayer = Main.LocalPlayer.GetModPlayer<BackpackPlayer>();
-		var item = _isDye ? mPlayer.packDye : _isVanity ? mPlayer.vanityBackpack : mPlayer.backpack; //Bind the player's backpack item
+		var item = _isDye ? mPlayer.packDye : (_isVanity ? mPlayer.vanityBackpack : mPlayer.backpack); //Bind the player's backpack item
 
 		if (Main.EquipPage != 2 || item is null)
 			return;
@@ -48,7 +48,7 @@ public class BackpackUISlot : UIElement
 
 			if (_isVanity || _isDye)
 			{
-				texture = TextureAssets.Extra[54].Value;
+				texture = TextureAssets.Extra[ExtrasID.EquipIcons].Value;
 				source = texture.Frame(3, 6, _isDye ? 1 : 2, 0, -2, -2);
 			}
 			else
@@ -108,9 +108,9 @@ public class BackpackUISlot : UIElement
 		else if (vanity)
 		{
 			if (currentItem.IsAir)
-				return plr.HeldItem.ModItem is BackpackItem vanityPack && !vanityPack.items.Any(x => !x.IsAir);
+				return plr.HeldItem.ModItem is BackpackItem vanityPack && !vanityPack.Items.Any(x => !x.IsAir);
 		}
-		else if (!currentItem.IsAir && currentItem.ModItem is BackpackItem backpack && backpack.items.Any(x => !x.IsAir))
+		else if (!currentItem.IsAir && currentItem.ModItem is BackpackItem backpack && backpack.Items.Any(x => !x.IsAir))
 		{
 			if (currentItem.TryGetGlobalItem(out BackpackGlobal anim))
 				anim.StartAnimation();
@@ -149,8 +149,7 @@ public class BackpackUISlot : UIElement
 				SoundEngine.PlaySound(SoundID.MenuTick);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
-					new BackpackPlayerData(mPlayer.packVisible, (byte)Main.myPlayer).Send();
-				//NetMessage.SendData(MessageID.SyncPlayer, -1, -1, null, Main.myPlayer);
+					new BackpackPlayerData(mPlayer.packVisible, mPlayer.packPickup, (byte)Main.myPlayer).Send();
 			}
 
 			Main.HoverItem = new Item();

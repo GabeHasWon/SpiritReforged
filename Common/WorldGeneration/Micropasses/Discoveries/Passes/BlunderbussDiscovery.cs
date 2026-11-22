@@ -34,7 +34,7 @@ internal class BlunderbussDiscovery : Discovery
 			y = (int)Main.worldSurface - WorldGen.genRand.Next(300, 200);
 
 		int type = ModContent.TileType<BlunderbussTile>();
-		bool foundGround = WorldMethods.SafeFindGround(x, ref y);
+		bool foundGround = WorldMethods.FindGround(x, ref y);
 
 		if (!foundGround || Main.tile[x, y - 1].LiquidAmount == 255)
 			goto retry;

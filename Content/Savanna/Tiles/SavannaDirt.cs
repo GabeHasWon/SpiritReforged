@@ -1,11 +1,10 @@
-using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.CheckItemUse;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
+public class SavannaDirt : ModTile, ILoadItem, ICheckItemUse
 {
 	public void AddItemRecipes(ModItem item)
 	{
@@ -22,11 +21,9 @@ public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 		TileID.Sets.ChecksForMerge[Type] = true;
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 
-		this.Merge(TileID.Stone, TileID.Dirt, TileID.Mud, TileID.ClayBlock, ModContent.TileType<Drywood>());
+		TileMethods.Merge(Type, TileID.Stone, TileID.Dirt, TileID.Mud, TileID.ClayBlock, ModContent.TileType<Drywood>());
 		AddMapEntry(new Color(138, 79, 45));
-		MineResist = .5f;
-
-		this.AutoItem().ResearchUnlockCount = 100;
+		MineResist = 0.5f;
 	}
 
 	public override void ModifyFrameMerge(int i, int j, ref int up, ref int down, ref int left, ref int right, ref int upLeft, ref int upRight, ref int downLeft, ref int downRight)
@@ -47,27 +44,32 @@ public class SavannaDirt : ModTile, IAutoloadTileItem, ICheckItemUse
 		}
 	}
 
-	public bool? CheckItemUse(int type, int i, int j)
+	public bool? CheckItemUse(int type, Player player, int i, int j)
 	{
-		switch (type)
+		if (player.whoAmI == Main.myPlayer)
 		{
-			case ItemID.StaffofRegrowth:
-				WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrass>(), forced: true);
-				break;
-			case ItemID.CorruptSeeds:
-				WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassCorrupt>(), forced: true);
-				break;
-			case ItemID.CrimsonSeeds:
-				WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassCrimson>(), forced: true);
-				break;
-			case ItemID.HallowedSeeds:
-				WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassHallow>(), forced: true);
-				break;
-			default:
-				return null;
+			switch (type)
+			{
+				case ItemID.StaffofRegrowth:
+				case ItemID.AcornAxe:
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrass>(), forced: true);
+					break;
+				case ItemID.CorruptSeeds:
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassCorrupt>(), forced: true);
+					break;
+				case ItemID.CrimsonSeeds:
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassCrimson>(), forced: true);
+					break;
+				case ItemID.HallowedSeeds:
+					WorldGen.PlaceTile(i, j, ModContent.TileType<SavannaGrassHallow>(), forced: true);
+					break;
+				default:
+					return null;
+			}
+
+			NetMessage.SendTileSquare(-1, i, j);
 		}
 
-		NetMessage.SendTileSquare(-1, i, j);
 		return true;
 	}
 }

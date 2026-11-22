@@ -1,19 +1,19 @@
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon.Abstract;
+using SpiritReforged.Content.Vanilla.Food;
 using Terraria.GameContent.Bestiary;
 
 namespace SpiritReforged.Content.Ocean.NPCs.ZombieVariants;
 
-public class TridentZombie : ReplaceNPC
+public class TridentZombie : ModNPC, ISubstitute
 {
-	float frameCounter;
+	public int[] TypesToReplace => [NPCID.ArmedZombie, NPCID.ArmedZombieCenx];
+	private float _frameCounter;
 
-	public override int[] TypesToReplace => [NPCID.ArmedZombie, NPCID.ArmedZombieCenx];
-
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
-		Main.npcFrameCount[NPC.type] = Main.npcFrameCount[NPCID.ArmedZombie];
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.BoneThrowingSkeleton;
+		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.ArmedZombie];
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.BoneThrowingSkeleton;
 		NPCID.Sets.Zombies[Type] = true;
 
 		MoRHelper.AddElement(NPC, MoRHelper.Water);
@@ -33,8 +33,8 @@ public class TridentZombie : ReplaceNPC
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath2;
 		NPC.value = 60f;
-		NPC.knockBackResist = .55f;
-		NPC.aiStyle = 3;
+		NPC.knockBackResist = 0.55f;
+		NPC.aiStyle = NPCAIStyleID.Fighter;
 		AIType = NPCID.ArmedZombie;
 		AnimationType = NPCID.ArmedZombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);
@@ -62,20 +62,21 @@ public class TridentZombie : ReplaceNPC
 	{
 		if (NPC.IsABestiaryIconDummy)
 		{
-			frameCounter += .1f;
-			frameCounter %= Main.npcFrameCount[Type];
+			_frameCounter += .1f;
+			_frameCounter %= Main.npcFrameCount[Type];
 
-			NPC.frame.Y = frameHeight * (int)frameCounter;
+			NPC.frame.Y = frameHeight * (int)_frameCounter;
 		}
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
+		npcLoot.AddCommon(ModContent.ItemType<FishChips>(), 30);
 		npcLoot.AddCommon(ItemID.Shackle, 50);
 		npcLoot.AddCommon(ItemID.ZombieArm, 250);
 		npcLoot.AddCommon(ModContent.ItemType<Items.Kelp>(), 10, 1, 2);
 		npcLoot.AddCommon(ItemID.Trident, 120);
 	}
 
-	public override bool CanSpawn(Player player) => player.ZoneBeach;
+	public bool CanSubstitute(Player player) => player.ZoneBeach;
 }

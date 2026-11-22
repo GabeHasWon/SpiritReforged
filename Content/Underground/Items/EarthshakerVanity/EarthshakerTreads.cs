@@ -8,7 +8,7 @@ public class EarthshakerTreads : ModItem
 		Item.width = 22;
 		Item.height = 18;
 		Item.value = Item.sellPrice(silver: 80);
-		Item.rare = ItemRarityID.White;
+		Item.rare = ItemRarityID.Blue;
 		Item.vanity = true;
 	}
 }

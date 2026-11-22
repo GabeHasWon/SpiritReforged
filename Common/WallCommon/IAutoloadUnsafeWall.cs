@@ -27,6 +27,7 @@ public class AutoloadedUnsafeWall(string name, string texture) : ModWall
 	{
 		AssociatedWall.SetStaticDefaults();
 		Main.wallHouse[Type] = false;
+		Main.wallBlend[Type] = AssociatedWall.Type;
 	}
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => AssociatedWall.NumDust(i, j, fail, ref num);

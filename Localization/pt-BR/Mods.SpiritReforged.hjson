@@ -1,7 +1,17 @@
 Biomes: {
 	SavannaBiome: {
 		DisplayName: Savana
-		TownNPCDialogueName: a Savana
+		TownNPCDialogueName: A Savana
+	}
+
+	SaltBiome: {
+		DisplayName: Salinas
+		TownNPCDialogueName: As Salinas
+	}
+
+	ZigguratBiome: {
+		DisplayName: Zigurate
+		TownNPCDialogueName: O Zigurate
 	}
 }
 
@@ -9,9 +19,14 @@ SlotContexts.Backpack: Mochila
 
 Conditions: {
 	InSavanna: Na Savana
-	// PeevedTumbler: When sparkling
-	// Discovered: Discovery
-	// Submerged: Submerged
+	PeevedTumbler: Enquanto brilha
+	Discovered: Descoberto
+	Submerged: Submerso
+	InSaltFlats: Nas Salinas
+	IsPrickly: Caso seja Espinhento
+	InZiggurat: No Zigurate
+	InSpace: No Espaço
+	NotSnow: Fora da Neve
 }
 
 Misc: {
@@ -21,11 +36,27 @@ Misc: {
 		UseItem: Clique direito para adicionar este alfinete à sua coleção
 	}
 
+	Enchantment: {
+		PlaceToEnchant: Coloque um item para encantar
+		Enchant: Encantar
+		Cost: "{0} [c/{1}:Cera Cromática]"
+		Clear: Remover encantamento
+		Random: Randomizar encantamento
+	}
+
+	TombText: {
+		// 0: Here rests {0}.
+		// 1: Here lies {0}, loved by many.
+		// 2: Here lies {0} AND {1}.
+		// 3: The grave is empty.
+	}
+
 	NoStock: Fora de estoque
 	GraveText: <wavy>O texto é antigo e desbotado; você não consegue distinguir o que está escrito.
 	MenuButton: Usar estilo de menu
-	// ShareMap: Map has been shared.
-	// ShareAndUpdateMap: Map has been shared & updated.
+	UnchangedMap: Mapa não teve mudanças.
+	ShareMap: Mapa foi compartilhado.
+	ShareAndUpdateMap: Mapa foi compartilhado e atualizado.
 }
 
 DamageSources: {
@@ -36,6 +67,7 @@ DamageSources: {
 }
 
 GameTips: {
+	# Release
 	ReforgedTip0: Sempre leve comida consigo. Você nunca sabe quando pode ser útil!
 	ReforgedTip1: Raramente, sabe-se que borboletas se escondem em bosques subterrâneos.
 	ReforgedTip2: Alfinetes são úteis! Verifique seu inventário de alfinetes no canto inferior esquerdo do mapa.
@@ -46,9 +78,57 @@ GameTips: {
 	ReforgedTip7: Talos Nuvem sempre crescem sob nuvens.
 	ReforgedTip8: O topo das árvores de acácia pode ser usado como apoio se você precisar de altura.
 	ReforgedTip9: Itens flutuam aleatoriamente no oceano; verifique de vez em quando!
+	# Caves & Clubs
+	ReforgedTip10: Muitos vasos estão espalhadas pelas cavernas sob seus pés! Fique de olho!
+	ReforgedTip11: Os porretes oferecem dano forte e concentrado em um único alvo.
+	# Sunscorched
+	ReforgedTip12: As lendas falam de uma oferenda de joias sobre um altar antigo...
+	ReforgedTip13: Cuidado ao explorar o antigo Zigurate! Surpresas se escondem em cada cantinho.
+	ReforgedTip14: Os oásis encontrados sob as areias do deserto podem oferecer um pouco de tranquilidade bem-vinda.
+	ReforgedTip15: Âmbar esconde segredos! Talvez você encontre algumas recompensas dentro dele...
+	ReforgedTip16: Cuidado ao caminhar pelas ruínas do deserto! Alguns pisos podem ser menos sólidos do que você imagina.
+	# Spellbound
+	ReforgedTip17: Glifos irão dar poderosos efeitos a suas armas, que mudam como elas serão usadas!
+	ReforgedTip18: Cera Cromática pode ser achada em baús, em vasos, em caixas, e até ao derrotar certo inimigos.
+	ReforgedTip19: Encantadore irá alterar suas armas com um certo alcance de efeitos de glifos. Teste todos eles!
 }
 
 Emotes: {
-	// CartographerEmote.Command: cartographer
-	// HikerEmote.Command: hikeremote
+	CartographerEmote.Command: cartografo
+	HikerEmote.Command: caminhante
+	EnchanterEmote.Command: encantadore
 }
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: Livro-Razão
+		Description: Informação de venda
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: Visão Brilhante
+		Description: Transmutações de Item
+	}
+}
+
+Ecotones: {
+	SaltFlatsEcotone: Salinas
+	SavannaEcotone: Savana
+}
+
+EcotoneEdges: {
+	Forest: Floresta
+	Desert: Deserto
+	Ocean: Oceano
+	Snow: Neve
+	Jungle: Selva
+	Corruption: Corrupção
+	Crimson: Carmim
+	Hallow: Consagração
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+}
+
+DamageClasses.HybridDamageClass.DisplayName: Classe de Dano Hibrido
+// BackpackPickupEnabled: Direct pickup: Enabled
+// BackpackPickupDisabled: Direct pickup: Disabled

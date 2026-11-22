@@ -1,20 +1,8 @@
-﻿using System.Linq;
-
-namespace SpiritReforged.Common.TileCommon.PresetTiles;
+﻿namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
 public abstract class GrassTile : ModTile
 {
 	protected virtual int DirtType => TileID.Dirt;
-
-	protected void AllowAnchor(params int[] types)
-	{
-		foreach (int type in types)
-		{
-			var data = TileObjectData.GetTileData(type, 0);
-			if (data != null)
-				data.AnchorValidTiles = data.AnchorValidTiles.Concat([Type]).ToArray();
-		}
-	}
 
 	/// <summary><inheritdoc/>
 	/// <para/>Also automatically controls common grass tile settings. </summary>
@@ -24,12 +12,14 @@ public abstract class GrassTile : ModTile
 		Main.tileBlockLight[Type] = true;
 		Main.tileBlendAll[Type] = true;
 
-		this.Merge(DirtType, TileID.Grass);
-		AllowAnchor(TileID.Sunflower);
 		TileID.Sets.Grass[Type] = true;
 		TileID.Sets.CanBeDugByShovel[Type] = true;
 		TileID.Sets.NeedsGrassFramingDirt[Type] = DirtType;
 		TileID.Sets.NeedsGrassFraming[Type] = true;
+
+		TileMethods.Merge(DirtType, TileID.Grass);
+		if (TileObjectData.GetTileData(TileID.Sunflower, 0) is TileObjectData data && data.AnchorValidTiles != null)
+			data.AnchorValidTiles = [.. data.AnchorValidTiles, Type]; //Allow sunflowers to anchor to this type
 	}
 
 	public override bool CanExplode(int i, int j)

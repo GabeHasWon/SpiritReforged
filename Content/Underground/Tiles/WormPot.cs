@@ -1,38 +1,34 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Savanna.NPCs;
 using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
 using Terraria.Utilities;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
-using static SpiritReforged.Common.WorldGeneration.WorldMethods;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
+public class WormPot : PotTile, WindTileRenderer.IDrawInWind, ILootable, ICutAttempt
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0, 1] } };
 
-	public override void AddRecord(int type, StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
 		var desc = Language.GetText(TileRecord.DescKey + ".Worm");
-		RecordHandler.Records.Add(new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3));
+		return new TileRecord(group.name, type, group.styles).AddDescription(desc).AddRating(3);
 	}
 
-	public override void AddItemRecipes(ModItem modItem, StyleGroup group)
-	{
-		LocalizedText dicovered = AutoloadedPotItem.Discovered;
-		var function = (modItem as AutoloadedPotItem).RecordedPot;
-
-		modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3).AddIngredient(ItemID.DirtBlock, 5).AddIngredient(ItemID.Worm)
-			.AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(dicovered, function).Register();
-	}
+	public override void AddItemRecipes(ModItem modItem, NamedStyles.StyleGroup group, Condition condition) => modItem.CreateRecipe().AddRecipeGroup("ClayAndMud", 3)
+		.AddIngredient(ItemID.DirtBlock, 5).AddIngredient(ItemID.Worm).AddTile(ModContent.TileType<PotteryWheel>()).AddCondition(condition).Register();
 
 	public override void AddObjectData()
 	{
@@ -47,19 +43,20 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
-		DustType = DustID.Plantera_Pink;
+		DustType = IsRubble ? -1 : DustID.Plantera_Pink;
 	}
 
 	public override void AddMapData() => AddMapEntry(Color.MediumVioletRed, Language.GetText("Mods.SpiritReforged.Items.WormPotItem.DisplayName"));
 
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
+
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (effectOnly || !fail || Autoloader.IsRubble(Type) || Generating)
+		if (effectOnly || !fail || IsRubble || WorldMethods.Generating)
 			return;
 
 		fail = AdjustFrame(i, j);
-		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
+		WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-4, 4));
 	}
 
 	public bool OnCutAttempt(int i, int j)
@@ -68,7 +65,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 			return true;
 
 		bool fail = AdjustFrame(i, j);
-		ISwayTile.SetInstancedRotation(i, j, Main.rand.NextFloat(-1f, 1f) * 4f, fail);
+		WindTileRenderer.WindGrid.SetWind(i, j, Main.rand.NextFloat(-4, 4));
 
 		var cache = Main.tile[i, j];
 		WorldGen.KillTile_MakeTileDust(i, j, cache);
@@ -79,7 +76,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 
 	public override bool KillSound(int i, int j, bool fail)
 	{
-		if (Autoloader.IsRubble(Type))
+		if (IsRubble)
 			return true;
 
 		var pos = new Vector2(i, j).ToWorldCoordinates(16, 16);
@@ -93,9 +90,9 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 
 	private static bool AdjustFrame(int i, int j)
 	{
-		const int fullWidth = 36;
+		const int full_width = 36;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 
 		if (Main.tile[i, j].TileFrameX != 0)
 			return false; //Frame has already been adjusted
@@ -105,7 +102,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 			for (int y = j; y < j + 2; y++)
 			{
 				var t = Main.tile[x, y];
-				t.TileFrameX += fullWidth;
+				t.TileFrameX += full_width;
 			}
 		}
 
@@ -114,7 +111,7 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Autoloader.IsRubble(Type) || Generating)
+		if (IsRubble || WorldMethods.Generating)
 			return;
 
 		if (Main.netMode != NetmodeID.MultiplayerClient)
@@ -126,20 +123,27 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 			type.Add(NPCID.EnchantedNightcrawler, .25);
 			type.Add(NPCID.GoldWorm, .05);
 
-			int wormCount = Main.rand.Next(3, 7);
-
-			for (int w = 0; w < wormCount; w++)
-			{
-				var npc = NPC.NewNPCDirect(new EntitySource_TileBreak(i, j), position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f), (int)type);
-				npc.velocity = (Vector2.UnitY * -Main.rand.NextFloat(.5f, 2f)).RotatedByRandom(2f);
-			}
-
 			ItemMethods.SplitCoins(Main.rand.Next(30000, 50000), delegate (int type, int stack)
 			{
 				Item.NewItem(new EntitySource_TileBreak(i, j), position, new Item(type, stack), noGrabDelay: true);
 			});
 
-			LootTable.Resolve(i, j, Type, frameX, frameY);
+			if (Main.rand.NextFloat() < 0.0001f)
+			{
+				SimpleEntitySystem.NewEntity(SimpleEntitySystem.Types[typeof(DevourerOfSoil)], new Vector2(i, j).ToWorldCoordinates(8));
+			}
+			else
+			{
+				int wormCount = Main.rand.Next(3, 7);
+
+				for (int w = 0; w < wormCount; w++)
+				{
+					var npc = NPC.NewNPCDirect(new EntitySource_TileBreak(i, j), position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(10f), (int)type);
+					npc.velocity = (Vector2.UnitY * -Main.rand.NextFloat(0.5f, 2f)).RotatedByRandom(2f);
+				}
+			}
+
+			TileLootSystem.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)
@@ -153,30 +157,27 @@ public class WormPot : PotTile, ISwayTile, ILootTile, ICutAttempt
 				Gore.NewGore(source, position, Vector2.Zero, goreType);
 			}
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(new Vector2(i, j).ToWorldCoordinates(16, 16),
-				-Vector2.UnitY, Color.LightSeaGreen, .2f, Common.Easing.EaseFunction.EaseSine, 60));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(new Vector2(i, j).ToWorldCoordinates(16, 16),
+				-Vector2.UnitY, Color.LightSeaGreen, 0.2f, Common.Easing.EaseFunction.EaseSine, 60));
 		}
 	}
 
-	public void DrawSway(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin)
+	void WindTileRenderer.IDrawInWind.DrawInWind(SpriteBatch spriteBatch, int i, int j, float rotation, Vector2 position, Vector2 origin)
 	{
-		var tile = Main.tile[i, j];
-		var data = TileObjectData.GetTileData(tile);
+		Tile tile = Main.tile[i, j];
+		if (TileObjectData.GetTileData(tile) is TileObjectData data)
+		{
+			Rectangle source = new(tile.TileFrameX, tile.TileFrameY, data.CoordinateWidth, data.CoordinateHeights[tile.TileFrameY / 18]);
+			Color color = Lighting.GetColor(i, j);
 
-		var drawPos = new Vector2(i * 16 - (int)Main.screenPosition.X, j * 16 - (int)Main.screenPosition.Y);
-		var source = new Rectangle(tile.TileFrameX, tile.TileFrameY, data.CoordinateWidth, data.CoordinateHeights[tile.TileFrameY / 18]);
-		var dataOffset = new Vector2(data.DrawXOffset, data.DrawYOffset);
+			if (Main.LocalPlayer.findTreasure)
+				color = TileMethods.GetSpelunkerTint(color);
 
-		var color = Lighting.GetColor(i, j);
-
-		if (Main.LocalPlayer.findTreasure)
-			color = TileExtensions.GetSpelunkerTint(color);
-
-		spriteBatch.Draw(TextureAssets.Tile[tile.TileType].Value, drawPos + origin + dataOffset,
-			source, color, rotation, origin, 1, SpriteEffects.None, 0);
+			spriteBatch.Draw(Helpers.GetTileTextureValue(tile), position, source, color, rotation, origin, 1, SpriteEffects.None, 0);
+		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot)
+	public void AddLoot(ILoot loot)
 	{
 		loot.Add(ItemDropRule.NotScalingWithLuckWithNumerator(ItemID.WhoopieCushion, 100, 15));
 		loot.AddCommon(ItemID.CanOfWorms, 1, 1, 2);

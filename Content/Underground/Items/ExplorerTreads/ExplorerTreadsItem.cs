@@ -1,5 +1,5 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.ModCompat.Classic;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -9,12 +9,21 @@ namespace SpiritReforged.Content.Underground.Items.ExplorerTreads;
 
 [AutoloadEquip(EquipType.Shoes)]
 [FromClassic("ExplorerTreads")]
-public class ExplorerTreadsItem : EquippableItem
+public class ExplorerTreadsItem : ModItem, IFlagged
 {
 	public override void SetStaticDefaults()
 	{
 		ItemLootDatabase.AddItemRule(ItemID.GoldenCrate, ItemDropRule.Common(Type, 10));
 		ItemLootDatabase.AddItemRule(ItemID.GoldenCrateHard, ItemDropRule.Common(Type, 10));
+
+		if (CrossMod.Thorium.Enabled)
+		{
+			if (CrossMod.Thorium.TryFind("DriftBoots", out ModItem driftBoots))
+			{
+				ItemID.Sets.ShimmerTransformToItem[Type] = driftBoots.Type;
+				ItemID.Sets.ShimmerTransformToItem[driftBoots.Type] = Type;
+			}
+		}
 	}
 
 	public override void SetDefaults()

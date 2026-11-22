@@ -69,13 +69,13 @@ public class BambooPike : ModTile
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 			return false;
 
 		var t = Main.tile[i, j];
 		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 16, 16);
 		var naturalOffset = new Vector2(t.TileFrameX / 18 * 2, 2);
-		var drawPos = new Vector2(i, j) * 16 - Main.screenPosition + naturalOffset + TileExtensions.TileOffset;
+		var drawPos = new Vector2(i, j) * 16 - Main.screenPosition + naturalOffset + TileMethods.TileOffset;
 
 		spriteBatch.Draw(texture, drawPos, source, color, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
 		return false;

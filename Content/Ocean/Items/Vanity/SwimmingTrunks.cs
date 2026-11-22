@@ -3,6 +3,8 @@ namespace SpiritReforged.Content.Ocean.Items.Vanity;
 [AutoloadEquip(EquipType.Legs)]
 public class SwimmingTrunks : ModItem
 {
+	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<BeachTowel>();
+
 	public override void SetDefaults()
 	{
 		Item.width = 28;

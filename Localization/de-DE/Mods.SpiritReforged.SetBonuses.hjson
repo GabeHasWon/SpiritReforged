@@ -1,0 +1,40 @@
+Cascade:
+	'''
+	Schaden an Gegnern zu verursachen baut einen Blasenschild auf,
+	der bei voller Größe hohe Schadensresistenz gegen den nächsten Angriff gewährt
+	und dabei nahe Gegner beschädigt und zurückstößt
+	'''
+Driftwood:
+	'''
+	Erlaubt es dem Träger, auf Wasser zu schweben
+	Erhöhte Angelkraft
+	'''
+Drywood: Erhöhte Bewegungsgeschwindigkeit an der Oberfläche
+Botanist:
+	'''
+	Du erhältst erhöhte Erträge von allen Arten von Kräutern
+	Du hast ein geschultes Auge zum Aufspüren von Kräutern
+	'''
+Marksman:
+	'''
+	Das Tragen der Schützen-Rüstung baut Konzentration auf
+	Bei voller Konzentration ist dein nächster Treffer ein kritischer Treffer und verursacht mehr Schaden
+	Konzentration wird durch Verletzungen gestört, lädt aber schneller auf, während du still stehst
+	'''
+Wayfarer:
+	'''
+	Erschlagene Gegner lassen mehr Münzen fallen
+	Das Zerschlagen von Töpfen gewährt einen Bewegungsgeschwindigkeits-Buff
+	Erzabbau gewährt einen Abbaugeschwindigkeits-Buff
+	'''
+Granite:
+	'''
+	Doppeltipp {0} zum Stampfen
+	Das Auftreffen auf den Boden setzt eine Schockwelle frei, die mit der Höhe skaliert
+	'''
+Sundancer:
+	'''
+	Ein Nachbild folgt dir mit einer halben Sekunde Verzögerung
+	Nach dem Verbrauch von 30 Mana kostet dein nächster Magieangriff 0 Mana und wird von deinem Nachbild verdoppelt
+	'''
+Bedouin: Doppeltipp einer Richtung, um dich in einen Tornado zu hüllen und einen Sprint auszuführen, der Angriffen ausweicht

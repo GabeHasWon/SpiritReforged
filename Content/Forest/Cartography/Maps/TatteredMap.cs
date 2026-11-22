@@ -28,5 +28,5 @@ public class TatteredMap : ModItem
 	}
 
 	public override void SetDefaults() => Item.DefaultToPlaceableTile(ModContent.TileType<TatteredMapWall>());
-	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<TornMapPiece>(), 2).AddTile(TileID.WorkBenches).Register();
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<TornMapPiece>(), 2).Register();
 }

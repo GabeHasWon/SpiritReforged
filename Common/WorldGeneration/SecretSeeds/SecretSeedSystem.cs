@@ -2,6 +2,7 @@
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using System.Linq;
+using System.Reflection;
 using Terraria.GameContent.UI.Elements;
 using Terraria.GameContent.UI.States;
 using Terraria.IO;
@@ -21,7 +22,6 @@ internal class SecretSeedSystem : ModSystem
 
 	private static readonly Dictionary<string, SecretSeed> SecretSeeds = [];
 
-	public static SecretSeed GetSeed<T>() where T : SecretSeed => SecretSeeds.Values.Where(x => x is T).FirstOrDefault();
 	public static void RegisterSeed(SecretSeed seed) => SecretSeeds.Add(seed.Name, seed);
 
 	public override void Load()
@@ -41,11 +41,13 @@ internal class SecretSeedSystem : ModSystem
 		WorldSecretSeed = null;
 
 		foreach (string key in SecretSeeds.Keys)
+		{
 			if (CompareFromArray(SecretSeeds[key]))
 			{
 				WorldSecretSeed = SecretSeeds[key];
 				break;
 			}
+		}
 
 		bool CompareFromArray(SecretSeed s)
 		{
@@ -72,10 +74,16 @@ internal class SecretSeedSystem : ModSystem
 
 		if (!c.TryGotoNext(MoveType.After, x => x.MatchStsfld<Main>("zenithWorld")))
 		{
-			SpiritReforgedMod.Instance.LogIL("Custom World Seeds", "Member 'zenithWorld' not found.");
-			Failed = true;
+			SpiritReforgedMod.Instance.LogIL("Custom World Seeds", "Member 'zenithWorld' not found. Trying failsafe.");
 
-			return;
+			if (!c.TryGotoNext(x => x.MatchCall(typeof(Utils).GetMethod(nameof(Utils.LogAndConsoleInfoMessageFormat), BindingFlags.Static | BindingFlags.Public))))
+			{
+				SpiritReforgedMod.Instance.LogIL("Custom World Seeds", "Member 'zenithWorld' not found, and method 'Utils.LogAndConsoleInfoMessageFormat' not found. " +
+					"Spirit Reforged's custom seeds will not work properyl.");
+				Failed = true;
+
+				return;
+			}
 		}
 
 		c.EmitLdarg0(); //seed
@@ -89,7 +97,7 @@ internal class SecretSeedSystem : ModSystem
 		if (HasSecretSeed)
 		{
 			Main.rand = new UnifiedRandom();
-			seed = Main.rand.Next(999999999);
+			seed = Main.rand.Next(int.MaxValue);
 		}
 
 		return seed;

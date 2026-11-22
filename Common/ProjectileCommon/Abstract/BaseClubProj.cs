@@ -37,6 +37,7 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	protected int _flickerTime;
 	protected ClubParameters _parameters;
 
+	private bool _startedSwing = false;
 	private bool _hasFlickered = false;
 
 	/// <summary><inheritdoc cref="ModProjectile.DisplayName"/><para/>
@@ -62,6 +63,8 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 	{
 		ProjectileID.Sets.TrailCacheLength[Type] = 6;
 		ProjectileID.Sets.TrailingMode[Type] = 2;
+
+		HeldProjectileSet.HeldProjectile[Type] = true;
 
 		SafeSetStaticDefaults();
 	}
@@ -186,7 +189,13 @@ public abstract partial class BaseClubProj(Vector2 textureSize) : ModProjectile
 		if (!Owner.controlUseItem && _windupTimer >= WindupTime && CheckAIState(AIStates.CHARGING) && AllowRelease)
 		{
 			SetAIState(AIStates.SWINGING);
+			_startedSwing = false;
+		}
+
+		if (AiState == (float)AIStates.SWINGING && !_startedSwing)
+		{
 			OnSwingStart();
+			_startedSwing = true;
 
 			if (!Main.dedServ)
 				SoundEngine.PlaySound(DefaultSwing, Owner.Center);

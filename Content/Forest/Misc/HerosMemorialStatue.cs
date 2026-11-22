@@ -1,23 +1,22 @@
-using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ModCompat.Classic;
 using Terraria.DataStructures;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-public class HerosMemorialStatue : ModTile, IAutoloadTileItem
+public class HerosMemorialStatue : ModTile, ILoadItem
 {
-	void IAutoloadTileItem.SetItemDefaults(ModItem item)
+	public void SetItemDefaults(ModItem modItem)
 	{
-		item.Item.rare = ItemRarityID.Orange;
-		item.Item.Size = new Vector2(30, 48);
+		modItem.Item.rare = ItemRarityID.Orange;
+		modItem.Item.Size = new Vector2(30, 48);
 	}
 
-	void IAutoloadTileItem.AddItemRecipes(ModItem item)
-	{
-		item.CreateRecipe()
+	public void AddItemRecipes(ModItem modItem) => modItem.CreateRecipe()
 			.AddIngredient(ItemID.StoneBlock, 50)
 			.AddTile(TileID.HeavyWorkBench)
 			.Register();
-	}
 
 	public override void SetStaticDefaults()
 	{
@@ -34,13 +33,15 @@ public class HerosMemorialStatue : ModTile, IAutoloadTileItem
 		TileObjectData.newTile.StyleWrapLimit = 2;
 		TileObjectData.newTile.StyleMultiplier = 2;
 		TileObjectData.newTile.StyleHorizontal = true;
+
 		TileObjectData.newAlternate.CopyFrom(TileObjectData.newTile);
 		TileObjectData.newAlternate.Direction = TileObjectDirection.PlaceRight;
+
 		TileObjectData.addAlternate(1);
 		TileObjectData.addTile(Type);
 
-		LocalizedText name = CreateMapEntryName();
-		AddMapEntry(new Color(216, 216, 216), name);
+		AddMapEntry(new Color(216, 216, 216), Language.GetText("Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName"));
+		SpiritClassic.AddItemReplacement("HerosMemorialStatue", AutoContent.ItemType<HerosMemorialStatue>()); //Register a Classic item replacement
 
 		DustType = DustID.Stone;
 	}

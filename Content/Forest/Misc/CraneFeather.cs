@@ -1,10 +1,18 @@
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat.Classic;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
 [FromClassic("SwiftRune")]
 public class CraneFeather : ModItem
 {
+	public override void SetStaticDefaults()
+	{
+		ItemLootDatabase.AddItemRule(ItemID.WoodenCrate, ItemDropRule.Common(Type, 20));
+		ItemLootDatabase.AddItemRule(ItemID.WoodenCrateHard, ItemDropRule.Common(Type, 20));
+	}
+
 	public override void SetDefaults()
 	{
 		Item.width = 30;

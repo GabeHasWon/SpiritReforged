@@ -1,5 +1,6 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.TileCommon;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -22,8 +23,8 @@ public class TermiteMoundLarge : ModTile
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16, 16];
 		TileObjectData.newTile.Origin = new(2, 4);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, TileObjectData.newTile.Width, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(), 
-			ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaGrassMowed>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(),	ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>(), 
+			ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaGrassMowed>()];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.addTile(Type);
 
@@ -38,7 +39,7 @@ public class TermiteMoundLarge : ModTile
 		if (!Main.dedServ)
 		{
 			for (int x = 0; x < 3; x++)
-				ParticleHandler.SpawnParticle(new Particles.SmokeCloud(new Vector2(i, j) * 16 + new Vector2(24, 70), Vector2.UnitY * -.5f, Color.SandyBrown, .2f, Common.Easing.EaseFunction.EaseQuarticInOut, 120));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(new Vector2(i, j) * 16 + new Vector2(24, 70), Vector2.UnitY * -0.5f, Color.SandyBrown, 0.2f, Common.Easing.EaseFunction.EaseQuarticInOut, 120));
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -77,7 +78,7 @@ public class TermiteMoundLarge : ModTile
 
 		var frame = new Point(tile.TileFrameX + 18 * frameXOffset, tile.TileFrameY + 18 * frameYOffset);
 		var source = new Rectangle(frame.X, frame.Y, 16, 16);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + new Vector2(0, 2);
+		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + new Vector2(0, 2);
 
 		spriteBatch.Draw(texture, position, source, Lighting.GetColor(i, j), 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 	}
@@ -100,8 +101,8 @@ public class TermiteMoundMedium : ModTile
 		TileObjectData.newTile.CoordinateHeights = [16, 16, 16, 16];
 		TileObjectData.newTile.Origin = new(2, 3);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 3, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(),
-			ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaGrassMowed>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(),	ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>(), 
+			ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaGrassMowed>()];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 2;
 		TileObjectData.addTile(Type);
@@ -117,7 +118,7 @@ public class TermiteMoundMedium : ModTile
 		if (!Main.dedServ)
 		{
 			for (int x = 0; x < 2; x++)
-				ParticleHandler.SpawnParticle(new Particles.SmokeCloud(new Vector2(i, j) * 16 + new Vector2(24, 54), Vector2.UnitY * -.5f, Color.SandyBrown, .2f, Common.Easing.EaseFunction.EaseQuarticInOut, Main.rand.Next(80, 140)));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(new Vector2(i, j) * 16 + new Vector2(24, 54), Vector2.UnitY * -.5f, Color.SandyBrown, .2f, Common.Easing.EaseFunction.EaseQuarticInOut, Main.rand.Next(80, 140)));
 		}
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
@@ -137,7 +138,7 @@ public class TermiteMoundMedium : ModTile
 	public override bool KillSound(int i, int j, bool fail)
 	{
 		if (!fail)
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/StoneCrack2") { Pitch = .5f, PitchVariance = .4f }, new Vector2(i, j) * 16 + new Vector2(24));
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Tile/StoneCrack2") { Pitch = 0.5f, PitchVariance = 0.4f }, new Vector2(i, j) * 16 + new Vector2(24));
 
 		return true;
 	}
@@ -165,8 +166,8 @@ public class TermiteMoundSmall : ModTile
 		TileObjectData.newTile.CoordinateHeights = [16];
 		TileObjectData.newTile.Origin = new(1, 0);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 2, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<SavannaGrassCrimson>(),
-			ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>(), ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaGrassMowed>()];
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<SavannaDirt>(), 
+			ModContent.TileType<SavannaGrassHallowMowed>(), ModContent.TileType<SavannaGrassMowed>()];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.addTile(Type);
@@ -180,7 +181,7 @@ public class TermiteMoundSmall : ModTile
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
 		if (!Main.dedServ)
-			ParticleHandler.SpawnParticle(new Particles.SmokeCloud(new Vector2(i, j) * 16 + new Vector2(16, 16), Vector2.UnitY * -.25f, Color.SandyBrown, .12f, Common.Easing.EaseFunction.EaseQuarticInOut, Main.rand.Next(80, 140)));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(new Vector2(i, j) * 16 + new Vector2(16, 16), Vector2.UnitY * -0.25f, Color.SandyBrown, 0.12f, Common.Easing.EaseFunction.EaseQuarticInOut, Main.rand.Next(80, 140)));
 
 		if (Main.netMode == NetmodeID.MultiplayerClient)
 			return;

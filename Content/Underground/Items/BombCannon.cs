@@ -4,10 +4,10 @@ using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
@@ -34,7 +34,12 @@ public class BombCannon : ModItem
 
 	public override void SetStaticDefaults()
 	{
-		ItemEvents.CreateItemDefaults(item => item.ammo = ItemID.Bomb, AmmoBombIDs);
+		ItemEvents.CreateItemDefaults(item =>
+		{
+			item.ammo = ItemID.Bomb;
+			item.notAmmo = true;
+		}, AmmoBombIDs);
+
 		NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Demolitionist, new NPCShop.Entry(Type, Condition.DownedEarlygameBoss)));
 		MoRHelper.AddElement(Item, MoRHelper.Explosive, true);
 	}
@@ -61,7 +66,7 @@ public class BombCannon : ModItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		if (player.HasEquip<BoomShroom>())
+		if (player.HasFlag<BoomShroom>())
 			type = BoomShroomPlayer.MakeLarge(type);
 
 		Projectile.NewProjectile(source, position, velocity, Item.shoot, damage, knockback, player.whoAmI, type, 0, velocity.Length());
@@ -101,6 +106,8 @@ internal class BombCannonHeld : ModProjectile
 	public override LocalizedText DisplayName => Language.GetText("Mods.SpiritReforged.Items.BombCannon.DisplayName");
 
 	private bool _released;
+
+	public override void SetStaticDefaults() => HeldProjectileSet.HeldProjectile[Type] = true;
 
 	public override void SetDefaults()
 	{
@@ -143,10 +150,10 @@ internal class BombCannonHeld : ModProjectile
 				SoundEngine.PlaySound(SoundID.MenuTick with { Pitch = Progress * .5f }, Projectile.Center);
 				var start = Projectile.Center + new Vector2(8, 10 * Projectile.direction).RotatedBy(Projectile.rotation);
 
-				ParticleHandler.SpawnParticle(new ImpactLine(start, Vector2.Zero, Red.Additive(), new Vector2(1, 2), 10, Projectile));
-				ParticleHandler.SpawnParticle(new ImpactLine(start, Vector2.Zero, (White * .3f).Additive(), new Vector2(1, 2) * .7f, 10, Projectile));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(start, Vector2.Zero, Red.Additive(), new Vector2(1, 2), 10, Projectile));
+				ParticleRenderers.UnderProjectiles.Add(new ImpactLine(start, Vector2.Zero, (White * .3f).Additive(), new Vector2(1, 2) * .7f, 10, Projectile));
 
-				ParticleHandler.SpawnParticle(new PulseCircle(start, Red, 0.1f, 50, 15, EaseQuadOut).Attach(Projectile));
+				ParticleRenderers.UnderProjectiles.Add(new PulseCircle(start, Red, 0.1f, 50, 15, EaseQuadOut).Attach(Projectile));
 			}
 
 			Charge = Math.Min(Charge + 1, ChargeTimeMax);
@@ -188,7 +195,7 @@ internal class BombCannonHeld : ModProjectile
 		if (Projectile.owner == Main.myPlayer)
 		{
 			var velocity = Projectile.velocity * Progress;
-			bool boomShroom = owner.HasEquip<BoomShroom>();
+			bool boomShroom = owner.HasFlag<BoomShroom>();
 			int type = boomShroom ? ModContent.ProjectileType<BigCannonBomb>() : ModContent.ProjectileType<CannonBomb>();
 
 			PreNewProjectile.New(Projectile.GetSource_FromAI(), Projectile.Center, Projectile.velocity, type, (int)(Projectile.damage * BombCannon.ContactDamagePercentage), Projectile.knockBack, Projectile.owner, ShootType, 1, preSpawnAction: delegate (Projectile p)
@@ -213,8 +220,8 @@ internal class BombCannonHeld : ModProjectile
 				float scale = Main.rand.NextFloat(.5f, 1f);
 				var velocity = (unit * Main.rand.NextFloat(3f)).RotatedByRandom(.5f);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(muzzle, velocity, Red, scale, 20, 5));
-				ParticleHandler.SpawnParticle(new GlowParticle(muzzle, velocity, White, scale * .5f, 20, 5));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzle, velocity, Red, scale, 20, 5));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzle, velocity, White, scale * .5f, 20, 5));
 			}
 		}
 
@@ -243,7 +250,7 @@ internal class BombCannonHeld : ModProjectile
 	}
 }
 
-internal class CannonBomb : BombProjectile, ITrailProjectile
+internal class CannonBomb : BombProjectile
 {
 	/// <summary> The original projectile this one is mimicking the sprite and behavior of. </summary>
 	public int CopyProj
@@ -257,26 +264,27 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 	private bool _justSpawned;
 	private int _lastTimeLeft;
 
+	public override void SetStaticDefaults() => HeldProjectileSet.SkipAutoHeldCheck[Type] = true;
+
 	public override void SetDefaults()
 	{
 		base.SetDefaults();
 		Projectile.DamageType = DamageClass.Ranged;
 	}
 
-	public virtual void DoTrailCreation(TrailManager tM)
+	public virtual void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float baseWidth = 40;
 		float baseLength = 240;
 
 		ITrailCap tCap = new RoundCap();
-		ITrailPosition tPos = new DefaultTrailPosition();
+		ITrailPosition tPos = new EntityTrailPosition(Projectile);
 		ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One);
 
-		tM.CreateTrail(Projectile, new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 2, baseLength, tShader);
-		tM.CreateTrail(Projectile, new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 1.5f, baseLength, tShader);
-		tM.CreateTrail(Projectile, new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, baseWidth, baseLength, tShader); 
-
-		tM.CreateTrail(Projectile, new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, baseWidth, baseLength, new DefaultShader());
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth * 2, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth * 1.5f, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, new DefaultShader(), baseWidth, baseLength));
 	}
 
 	public override void AI()
@@ -286,6 +294,9 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 			bouncy = BombCannon.BouncyBombProjIDs.Contains(CopyProj);
 			sticky = BombCannon.StickyBombProjIDs.Contains(CopyProj);
 
+			if (!Main.dedServ)
+				CreateTrail(TrailSystem.ProjectileRenderer);
+
 			_justSpawned = true;
 		}
 
@@ -293,7 +304,7 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 		base.AI();
 
 		if (Projectile.velocity == Vector2.Zero && Projectile.oldVelocity == Vector2.Zero)
-			TrailManager.TryTrailKill(Projectile);
+			TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 	}
 
 	public override void StartExplosion() => Projectile.ResetLocalNPCHitImmunity();
@@ -332,10 +343,10 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 			//Create a new trail to prevent the vertex strip from freaking out over movements in opposite directions
 			if (rotationDifference > PiOver2 * 1.5f)
 			{
-				TrailManager.TryTrailKill(Projectile);
+				TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 
 				if (Projectile.velocity.Length() > 1)
-					TrailManager.ManualTrailSpawn(Projectile);
+					CreateTrail(TrailSystem.ProjectileRenderer);
 			}
 
 			return false;
@@ -361,12 +372,12 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 		var ease = new PolynomialEase(x => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
 		var stretch = new Vector2(2, 1);
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.25f).Additive(150), Red, 1f, 30 * area, 20, "Star2", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.25f).Additive(150), Red, 1f, 30 * area, 20, "Star2", stretch, ease)
 		{
 			Angle = Main.rand.NextFloatDirection()
 		});
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.5f).Additive(150), Red, .5f, 40 * area, 20, "Star2", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Lerp(Pink, Red, 0.5f).Additive(150), Red, .5f, 40 * area, 20, "Star2", stretch, ease)
 		{
 			Angle = Main.rand.NextFloatDirection()
 		});
@@ -374,11 +385,11 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 		//Burst of light in the center
 		float lightburstRotation = Main.rand.NextFloatDirection();
 		for(int i = 0; i < 3; i++)
-			ParticleHandler.SpawnParticle(new DissipatingImage(Projectile.Center, Lerp(Pink, Red, 0.5f).Additive(), Main.rand.NextFloatDirection(), 0.02f * area, 0, "GodrayCircle", 15));
+			ParticleRenderers.UnderProjectiles.Add(new DissipatingImage(Projectile.Center, Lerp(Pink, Red, 0.5f).Additive(), Main.rand.NextFloatDirection(), 0.02f * area, 0, "GodrayCircle", 15));
 
 		const int time = 5;
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center, Vector2.Zero, Red.Additive(), new Vector2(0.2f, 1f) * area, time, 1));
-		ParticleHandler.SpawnParticle(new ImpactLinePrim(Projectile.Center, Vector2.Zero, Pink.Additive(), new Vector2(0.1f, 1f) * area, time, 1));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(Projectile.Center, Vector2.Zero, Red.Additive(), new Vector2(0.2f, 1f) * area, time, 1));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLinePrim(Projectile.Center, Vector2.Zero, Pink.Additive(), new Vector2(0.1f, 1f) * area, time, 1));
 
 		//Glowy particles coming from the center
 		for (int i = 0; i < area * 2; i++)
@@ -392,8 +403,8 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 
 			static void DelegateAction(Particle p) => p.Velocity *= 0.97f;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 30, 3, DelegateAction));
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, White.Additive(), scale * .5f, lifeTime, 3, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 30, 3, DelegateAction));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + velocity * 10, velocity, White.Additive(), scale * .5f, lifeTime, 3, DelegateAction));
 
 			var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(16f * area), DustID.GemRuby, Scale: Main.rand.NextFloat() + .5f);
 			d.noGravity = true;
@@ -447,20 +458,19 @@ internal class CannonBomb : BombProjectile, ITrailProjectile
 
 internal class BigCannonBomb : CannonBomb
 {
-	public override void DoTrailCreation(TrailManager tM)
+	public override void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float baseWidth = 60;
 		float baseLength = 360;
 
 		ITrailCap tCap = new RoundCap();
-		ITrailPosition tPos = new DefaultTrailPosition();
+		ITrailPosition tPos = new EntityTrailPosition(Projectile);
 		ITrailShader tShader = new ImageShader(AssetLoader.LoadedTextures["GlowTrail"].Value, Vector2.One);
 
-		tM.CreateTrail(Projectile, new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 2, baseLength, tShader);
-		tM.CreateTrail(Projectile, new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, baseWidth * 1.5f, baseLength, tShader);
-		tM.CreateTrail(Projectile, new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, baseWidth, baseLength, tShader);
-
-		tM.CreateTrail(Projectile, new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, baseWidth, baseLength, new DefaultShader());
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Red.Additive(150) * 0.5f, Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth * 2, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Lerp(Red, Pink, 0.25f).Additive(150) * 0.75f, Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth * 1.5f, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new GradientTrail(Pink.Additive(), Transparent, EaseQuarticOut), tCap, tPos, tShader, baseWidth, baseLength));
+		renderer.CreateTrail(Projectile, new VertexTrail(new LightColorTrail(White.Additive() * 0.25f, Transparent), tCap, tPos, new DefaultShader(), baseWidth, baseLength));
 	}
 
 	public override void SetDefaults()

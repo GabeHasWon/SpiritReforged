@@ -1,66 +1,23 @@
-﻿using SpiritReforged.Common.TileCommon.Corruption;
-using SpiritReforged.Common.TileCommon.TileSway;
-using Terraria.DataStructures;
-using static Terraria.GameContent.Drawing.TileDrawing;
+﻿using SpiritReforged.Common.TileCommon.PresetTiles;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class SavannaVine : ModTile, ISwayTile, IConvertibleTile
+public class SavannaVine : VineTile
 {
-	public int Style => (int)TileCounterType.Vine;
-
-	public override void SetStaticDefaults()
+	public override void PreAddObjectData()
 	{
-		Main.tileBlockLight[Type] = true;
-		Main.tileCut[Type] = true;
-		Main.tileNoFail[Type] = true;
-		Main.tileLavaDeath[Type] = true;
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
 
-		TileID.Sets.IsVine[Type] = true;
-		TileID.Sets.VineThreads[Type] = true;
-		TileID.Sets.ReplaceTileBreakDown[Type] = true;
-
-		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
-		TileObjectData.newTile.AnchorBottom = AnchorData.Empty;
-		TileObjectData.newTile.AnchorTop = new AnchorData(AnchorType.SolidTile | AnchorType.AlternateTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>(), ModContent.TileType<SavannaGrassCorrupt>(),
-			ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<SavannaGrassHallow>()];
-		TileObjectData.newTile.AnchorAlternateTiles = [Type];
-		TileObjectData.addTile(Type);
-
-		if (Type == ModContent.TileType<SavannaVine>())
-			AddMapEntry(new Color(24, 135, 28)); //Don't set on inheriting tiles
-
+		AddMapEntry(new Color(24, 135, 28));
 		DustType = DustID.JunglePlants;
-		HitSound = SoundID.Grass;
-	}
-
-	public override void NumDust(int i, int j, bool fail, ref int num) => num = 3;
-
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
-	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false;
-
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(type switch
-		{
-			ConversionType.Hallow => ModContent.TileType<SavannaVineHallow>(),
-			ConversionType.Crimson => ModContent.TileType<SavannaVineCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<SavannaVineCorrupt>(),
-			_ => ModContent.TileType<SavannaVine>(),
-		});
-
-		return true;
 	}
 }
 
 public class SavannaVineCorrupt : SavannaVine
 {
-	public override void SetStaticDefaults()
+	public override void PreAddObjectData()
 	{
-		base.SetStaticDefaults();
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
 
 		TileID.Sets.AddCorruptionTile(Type);
 		TileID.Sets.Corrupt[Type] = true;
@@ -72,9 +29,9 @@ public class SavannaVineCorrupt : SavannaVine
 
 public class SavannaVineCrimson : SavannaVine
 {
-	public override void SetStaticDefaults()
+	public override void PreAddObjectData()
 	{
-		base.SetStaticDefaults();
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
 
 		TileID.Sets.AddCrimsonTile(Type);
 		TileID.Sets.Crimson[Type] = true;
@@ -86,9 +43,9 @@ public class SavannaVineCrimson : SavannaVine
 
 public class SavannaVineHallow : SavannaVine
 {
-	public override void SetStaticDefaults()
+	public override void PreAddObjectData()
 	{
-		base.SetStaticDefaults();
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
 
 		TileID.Sets.Hallow[Type] = true;
 		TileID.Sets.HallowBiome[Type] = 1;

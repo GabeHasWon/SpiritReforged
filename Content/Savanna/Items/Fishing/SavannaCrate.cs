@@ -7,7 +7,7 @@ namespace SpiritReforged.Content.Savanna.Items.Fishing;
 
 public class SavannaCrate : ModItem
 {
-	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 10;
+	public override void SetStaticDefaults() => Item.ResearchUnlockCount = 5;
 
 	public override void SetDefaults()
 	{

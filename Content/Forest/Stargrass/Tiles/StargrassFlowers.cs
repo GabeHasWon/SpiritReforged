@@ -1,32 +1,18 @@
-using SpiritReforged.Common.Visuals.Glowmasks;
+using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.GameContent.Metadata;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-[AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassFlowers Glow")]
 public class StargrassFlowers : ModTile
 {
 	public const int StyleRange = 27;
+	public const int TileHeight = 24;
 
-	public static Color Glow(object obj)
-	{
-		const float MinBrightness = 0.4f;
-		const float MaxDist = 140 * 140;
-
-		var pos = (Point)obj;
-		float dist = Main.player[Player.FindClosest(new Vector2(pos.X, pos.Y) * 16, 16, 16)].DistanceSQ(new Vector2(pos.X, pos.Y) * 16 + new Vector2(8));
-		float strength = MinBrightness;
-
-		if (dist < MaxDist)
-			strength = MathHelper.Lerp(MinBrightness, 1f, 1 - dist / MaxDist);
-
-		return StargrassTile.Glow(pos) * strength;
-	}
+	protected virtual bool HasGlowmask => true;
 
 	public override void SetStaticDefaults()
 	{
-		const int TileHeight = 24;
-
 		Main.tileSolid[Type] = false;
 		Main.tileFrameImportant[Type] = true;
 		Main.tileNoFail[Type] = true;
@@ -35,6 +21,19 @@ public class StargrassFlowers : ModTile
 
 		TileID.Sets.SwaysInWindBasic[Type] = true;
 		TileMaterials.SetForTileId(Type, TileMaterials._materialsByName["Plant"]);
+
+		if (HasGlowmask)
+		{
+			TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, static (i, j) =>
+			{
+				const float max_distance = 140;
+
+				Point coords = new(i, j);
+				float distance = Main.player[Player.FindClosest(coords.ToWorldCoordinates(0, 0), 16, 16)].DistanceSQ(coords.ToWorldCoordinates());
+
+				return StargrassTile.GetGlowColor(coords.X, coords.Y) * MathHelper.Clamp(1f - distance / (max_distance * max_distance), 0.4f, 1f);
+			});
+		}
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.LavaDeath = true;
@@ -47,6 +46,8 @@ public class StargrassFlowers : ModTile
 		TileObjectData.newTile.RandomStyleRange = StyleRange;
 		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<StargrassTile>()];
 		TileObjectData.newTile.AnchorAlternateTiles = [TileID.ClayPot, TileID.PlanterBox];
+
+		ModifyObjectData(TileObjectData.newTile);
 		TileObjectData.addTile(Type);
 
 		AddMapEntry(new Color(20, 190, 130));
@@ -54,11 +55,13 @@ public class StargrassFlowers : ModTile
 		HitSound = SoundID.Grass;
 	}
 
-	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
+	protected virtual void ModifyObjectData(TileObjectData newTile) { }
 
+	public override void NumDust(int i, int j, bool fail, ref int num) => num = 2;
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b)
 	{
 		int frame = Main.tile[i, j].TileFrameX / 18;
+
 		if (frame >= 6)
 			(r, g, b) = (0.025f, 0.1f, 0.25f);
 	}
@@ -70,5 +73,11 @@ public class StargrassFlowers : ModTile
 
 		if (Main.player[Player.FindClosest(new Vector2(i, j).ToWorldCoordinates(0, 0), 16, 16)].HasItem(ItemID.Blowpipe))
 			yield return new Item(ItemID.Seed, Main.rand.Next(2, 4));
+	}
+
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		ConversionHandler.CommonPlants(i, j, Type);
+		return true;
 	}
 }

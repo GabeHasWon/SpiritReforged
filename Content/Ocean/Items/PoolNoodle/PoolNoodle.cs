@@ -1,5 +1,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.GameContent.ItemDropRules;
@@ -9,14 +11,60 @@ namespace SpiritReforged.Content.Ocean.Items.PoolNoodle;
 
 public class PoolNoodle : ModItem
 {
-	protected override bool CloneNewInstances => true;
+	public sealed class PoolNoodleProj : BaseWhipProj
+	{
+		private int Style
+		{
+			get => (int)Projectile.ai[1];
+			set => Projectile.ai[1] = value;
+		}
 
-	public const int NumStyles = 3;
-	public byte style = NumStyles;
+		public override LocalizedText DisplayName => ModContent.GetInstance<PoolNoodle>().DisplayName;
+
+		public override void StaticDefaults() => Main.projFrames[Type] = 7;
+
+		public override void Defaults()
+		{
+			Projectile.WhipSettings.RangeMultiplier = 0.8f;
+			Projectile.WhipSettings.Segments = 16;
+		}
+
+		public override void ModifyDraw(int segment, int numSegments, ref Rectangle frame)
+		{
+			Texture2D texture = TextureAssets.Projectile[Type].Value;
+			frame.Width = texture.Width / 3;
+			frame.X = 16 * Style;
+		}
+
+		public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
+		{
+			base.OnHitNPC(target, hit, damageDone);
+
+			target.ApplySummonTag(3);
+			target.AddBuff(ModContent.BuffType<BubbledGlobalNPC.Bubbled>(), 600);
+		}
+	}
+
+	public const int NUM_STYLES = 3;
+
+	public byte Style
+	{
+		get => _style;
+		set
+		{
+			_style = value;
+
+			if (!Main.dedServ && Item.TryGetGlobalItem(out VariantItemRenderer global))
+				global.subID = value;
+		}
+	}
+	private byte _style;
+
+	public override string Texture => base.Texture + "0";
 
 	public override void SetStaticDefaults()
 	{
-		VariantGlobalItem.AddVariants(Type, NumStyles, false);
+		VariantItemRenderer.VariantCounts[Type] = NUM_STYLES;
 
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrate, ItemDropRule.Common(Type, 8));
 		ItemLootDatabase.AddItemRule(ItemID.OceanCrateHard, ItemDropRule.Common(Type, 8));
@@ -31,40 +79,20 @@ public class PoolNoodle : ModItem
 		Item.rare = ItemRarityID.Blue;
 		Item.value = Item.sellPrice(silver: 45);
 
-		style = (byte)Main.rand.Next(NumStyles);
-	}
-
-	public override ModItem Clone(Item itemClone)
-	{
-		var myClone = (PoolNoodle)base.Clone(itemClone);
-		myClone.style = style;
-		return myClone;
+		Style = (byte)Main.rand.Next(NUM_STYLES);
 	}
 
 	public override bool MeleePrefix() => true;
+
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
-		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai1: style);
+		Projectile.NewProjectile(source, position, velocity, type, damage, knockback, player.whoAmI, ai1: Style);
 		return false;
 	}
 
-	public override void SaveData(TagCompound tag) => tag[nameof(style)] = style;
-	public override void LoadData(TagCompound tag)
-	{
-		style = tag.Get<byte>(nameof(style));
-		SetVisualStyle();
-	}
+	public override void SaveData(TagCompound tag) => tag[nameof(Style)] = Style;
+	public override void LoadData(TagCompound tag) => Style = tag.Get<byte>(nameof(Style));
 
-	public override void NetSend(BinaryWriter writer) => writer.Write(style);
-	public override void NetReceive(BinaryReader reader)
-	{
-		style = reader.ReadByte();
-		SetVisualStyle();
-	}
-
-	private void SetVisualStyle()
-	{
-		if (!Main.dedServ && Item.TryGetGlobalItem(out VariantGlobalItem v))
-			v.subID = style;
-	}
+	public override void NetSend(BinaryWriter writer) => writer.Write(Style);
+	public override void NetReceive(BinaryReader reader) => Style = reader.ReadByte();
 }

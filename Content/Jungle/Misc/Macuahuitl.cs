@@ -1,21 +1,21 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.ProjectileCommon.Abstract;
-using SpiritReforged.Content.Particles;
-using SpiritReforged.Common.BuffCommon.Stacking;
-using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.ModCompat;
-using Terraria.Audio;
+﻿using SpiritReforged.Common.BuffCommon.Stacking;
 using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
+using Terraria.Audio;
 using static SpiritReforged.Common.Easing.EaseFunction;
 
 namespace SpiritReforged.Content.Jungle.Misc;
 
 public class Macuahuitl : ClubItem
 {
-	internal override float DamageScaling => 4f;
-	internal override float KnockbackScaling => 5f;
+	internal override float DamageScaling => 4.5f;
+	internal override float KnockbackScaling => 7f;
 
 	public override void SetStaticDefaults()
 	{
@@ -25,8 +25,8 @@ public class Macuahuitl : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 16;
-		Item.knockBack = 2;
+		Item.damage = 26;
+		Item.knockBack = 2.8f;
 		ChargeTime = 40;
 		SwingTime = 24;
 		Item.width = 60;
@@ -38,7 +38,7 @@ public class Macuahuitl : ClubItem
 	}
 }
 
-class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
+class MacuahuitlProj : BaseClubProj
 {
 	public MacuahuitlProj() : base(new Vector2(82)) { }
 
@@ -46,7 +46,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 
 	public override float WindupTimeRatio => 0.8f;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 76 * MeleeSizeModifier;
 		float trailWidth = 30 * MeleeSizeModifier;
@@ -71,7 +71,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 				Intensity = 0.5f,
 			};
 
-			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 		}
 		else //The trail created when ChargeComplete is called
 		{
@@ -84,7 +84,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 				DissolveThreshold = 1f
 			};
 
-			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, s => SwingTrail.NoiseSwingShaderParams(s, "vnoise", new Vector2(1f)), TrailLayer.UnderProjectile));
+			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, s => SwingTrail.NoiseSwingShaderParams(s, "vnoise", new Vector2(1f))));
 		}
 	}
 
@@ -103,10 +103,12 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 		_parameters.ChargeColor = Color.Pink;
 	}
 
-	internal override void ChargeComplete(Player owner) => TrailManager.ManualTrailSpawn(Projectile);
+	internal override void ChargeComplete(Player owner) => CreateTrail(TrailSystem.ProjectileRenderer);
 	public override void OnSwingStart()
 	{
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+
 		Projectile.ResetLocalNPCHitImmunity();
 	}
 
@@ -121,7 +123,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		if (FullCharge)
@@ -188,14 +190,14 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
 			var p = new ImpactLine(position, particleVel, Color.White * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.OverPlayers.Add(p);
 
 			if (!Main.rand.NextBool(3))
 				Dust.NewDustPerfect(position, DustID.t_LivingWood, particleVel / 3, Scale: 0.5f);
 		}
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseCubicOut, 30));
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseCubicOut, 30));
+		ParticleRenderers.OverPlayers.Add(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseCubicOut, 30));
+		ParticleRenderers.OverPlayers.Add(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseCubicOut, 30));
 
 		if (ChargeStrike)
 		{
@@ -204,8 +206,8 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 
 			float dirUnit = target.AngleFrom(Owner.Center);
 
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, Color.DarkRed, 0, 0.3f, Main.rand.NextFloat(-0.5f, 0.5f), "Fire", new(0.4f, 0.4f), new(3, 1.5f), 25) { UseLightColor = true });
-			ParticleHandler.SpawnParticle(new DissipatingImage(basePosition, Color.Red, 0, 0.15f, Main.rand.NextFloat(-0.5f, 0.5f), "Fire", new(0.4f, 0.4f), new(3, 1.5f), 25) { UseLightColor = true });
+			ParticleRenderers.OverPlayers.Add(new DissipatingImage(basePosition, Color.DarkRed, 0, 0.3f, Main.rand.NextFloat(-0.3f, 0.3f), "Fire2", new(0.6f, 0.6f), new(3, 1.5f), 25) { UseLightColor = true });
+			ParticleRenderers.OverPlayers.Add(new DissipatingImage(basePosition, Color.Red, 0, 0.15f, Main.rand.NextFloat(-0.3f, 0.3f), "Fire2", new(0.6f, 0.6f), new(3, 1.5f), 25) { UseLightColor = true });
 
 			for (int i = 0; i < 3; i++)
 			{
@@ -217,7 +219,7 @@ class MacuahuitlProj : BaseClubProj, IManualTrailProjectile
 				p.UseLightColor = true;
 				p.WithSkew(Main.rand.NextFloat(0.8f, 0.9f), newRotation + MathHelper.PiOver2);
 
-				ParticleHandler.SpawnParticle(p);
+				ParticleRenderers.OverPlayers.Add(p);
 			}
 		}
 		else

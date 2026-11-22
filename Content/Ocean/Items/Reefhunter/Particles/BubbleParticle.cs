@@ -1,5 +1,7 @@
 using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 
@@ -12,17 +14,17 @@ public class BubbleParticle : Particle
 	{
 		Position = position;
 		Scale = scale;
+		Color = Color.White.Additive();
 		_maxScale = scale;
 		MaxTime = lifetime;
 		Velocity = velocity;
 		_initialVel = velocity;
-		Color = Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y) * 0.8f;
 	}
 
-	public override ParticleDrawType DrawType => ParticleDrawType.BatchedAdditiveBlend;
-
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		Scale = MathHelper.Lerp(_maxScale, 0, EaseFunction.EaseCircularIn.Ease(Progress));
 		Velocity = Vector2.Lerp(_initialVel, new Vector2(Main.windSpeedCurrent, -1), EaseFunction.EaseQuadOut.Ease(Progress) / 2) * (1 - EaseFunction.EaseCubicOut.Ease(Progress) / 4);
 	}

@@ -6,6 +6,7 @@ internal class SavannaMenuTheme : ModMenu
 {
 	public override ModSurfaceBackgroundStyle MenuBackgroundStyle => ModContent.GetInstance<SavannaBGStyle>();
 	public override int Music => MusicLoader.GetMusicSlot(Mod, "Assets/Music/TitleTheme");
+	public override string DisplayName => Language.GetTextValue("Mods.SpiritReforged.Biomes.SavannaBiome.DisplayName");
 
 	public override void OnSelected() => SpiritLogo.Reset();
 

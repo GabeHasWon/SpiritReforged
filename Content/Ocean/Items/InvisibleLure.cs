@@ -4,7 +4,6 @@ namespace SpiritReforged.Content.Ocean.Items;
 
 public class InvisibleLure : ModItem
 {
-	public override void SetStaticDefaults() => ItemID.Sets.ShimmerTransformToItem[Type] = ModContent.ItemType<FishLure>();
 	public override void SetDefaults()
 	{
 		Item.width = Item.height = 14;
@@ -39,6 +38,8 @@ public class InvisibleLure : ModItem
 
 		return null;
 	}
+
+	public override void AddRecipes() => CreateRecipe().AddIngredient(ModContent.ItemType<FishLure>()).AddTile(TileID.WorkBenches).AddCondition(Condition.InGraveyard).Register();
 }
 
 public class InvisibleLureEntity : FishLureEntity

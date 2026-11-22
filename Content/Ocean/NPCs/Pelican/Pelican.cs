@@ -47,7 +47,7 @@ public class Pelican : ModNPC
 
 		Main.npcFrameCount[Type] = 8; //Rows
 		NPCID.Sets.CountsAsCritter[Type] = true;
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Shimmerfly;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry)
@@ -318,7 +318,7 @@ public class Pelican : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Player.ZoneBeach && Main.dayTime && !spawnInfo.Water)
+		if (spawnInfo.Player.ZoneBeach && Main.dayTime && !spawnInfo.Water && spawnInfo.SpawnTileY > Main.worldSurface * 0.35f)
 			return spawnInfo.PlayerInTown ? 2 : 1;
 
 		return 0;

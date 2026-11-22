@@ -1,5 +1,4 @@
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.CheckItemUse;
 using SpiritReforged.Content.Dusts;
 using System.Linq;
 using Terraria.DataStructures;
@@ -70,7 +69,7 @@ public class OganessonPlants : ModTile, ICheckItemUse
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = Main.rand.Next(1, 3);
 	public override void ModifyLight(int i, int j, ref float r, ref float g, ref float b) => (r, g, b) = (0.3f, 0.3f, 0.3f);
 
-	public virtual bool? CheckItemUse(int type, int i, int j)
+	public virtual bool? CheckItemUse(int type, Player player, int i, int j)
 	{
 		if (type is ItemID.PaintScraper or ItemID.SpectrePaintScraper || type == ModContent.ItemType<LandscapingShears>())
 		{
@@ -163,7 +162,7 @@ public class OganessonPlants : ModTile, ICheckItemUse
 
 		var texture = TextureAssets.Tile[Type].Value;
 		var source = new Rectangle(t.TileFrameX, t.TileFrameY, 18, 18);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset;
+		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset;
 
 		position += (t.TileFrameX / 18 / StyleRange) switch
 		{

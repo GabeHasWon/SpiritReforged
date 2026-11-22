@@ -1,11 +1,10 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Dusts;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Moss.Oganesson;
 
-[AutoloadGlowmask("255,255,255")]
 public class OganessonMoss : GrassTile
 {
 	protected override int DirtType => TileID.Stone;
@@ -18,20 +17,25 @@ public class OganessonMoss : GrassTile
 		Main.tileLighted[Type] = true;
 		Main.tileMoss[Type] = true;
 
-		this.Merge(DirtType, TileID.GrayBrick);
 		TileID.Sets.Conversion.Moss[Type] = true;
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this);
 
+		TileMethods.Merge(Type, DirtType, TileID.GrayBrick);
 		SetEntry();
 	}
 
 	public virtual void SetEntry()
 	{
 		RegisterItemDrop(ModContent.ItemType<OganessonMossItem>());
-		AddMapEntry(new Color(220, 220, 220));
+
+		AddMapEntry(new Color(220, 220, 220), this.GetLocalization("MapEntry"));
+		AddMapEntry(new Color(220, 220, 220), LocalizedText.Empty); // Register two map entries & only use 1 in GetMapOption for Recipe Browser functionality w/o in-game changes
 
 		DustType = ModContent.DustType<OganessonMossDust>();
 		HitSound = SoundID.Grass;
 	}
+
+	public override ushort GetMapOption(int i, int j) => 1;
 
 	public override void RandomUpdate(int i, int j)
 	{

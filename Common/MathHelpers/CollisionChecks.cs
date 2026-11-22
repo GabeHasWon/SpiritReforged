@@ -4,59 +4,54 @@ public static class CollisionChecks
 {
 	public delegate bool TilesDelegate(int i, int j);
 
-	/// <summary> Used by <see cref="Tiles(int, int, int, int, TilesDelegate)"/>. </summary>
-	public static bool AnySolid(int i, int j)
+	/// <summary> Any solid or solid top tile. Used by <see cref="Tiles(int, int, int, int, TilesDelegate)"/>. </summary>
+	public static bool AnySurface(int i, int j)
 	{
 		int type = Main.tile[i, j].TileType;
 		return Main.tileSolid[type] || Main.tileSolidTop[type];
 	}
 
+	/// <summary> Any solid tile, excluding slopes, but including platforms. Used by <see cref="Tiles(int, int, int, int, TilesDelegate)"/>. </summary>
+	public static bool SolidOrPlatform(int i, int j)
+	{
+		int type = Main.tile[i, j].TileType;
+		return WorldGen.SolidTile(Main.tile[i, j]) || TileID.Sets.Platforms[type];
+	}
+	public static bool SolidOnly(int i, int j)
+	{
+		Tile t = Main.tile[i, j];
+		return t.HasUnactuatedTile && Main.tileSolid[t.TileType] && !Main.tileSolidTop[t.TileType] && !TileID.Sets.Platforms[t.TileType];
+	}
+
+	public static bool OnlySlopes(int i, int j)
+	{
+		Tile tile = Main.tile[i, j];
+		return tile.HasTile && tile.Slope != SlopeType.Solid;
+	}
+
 	/// <inheritdoc cref="Tiles(int, int, int, int, TilesDelegate)"/>
-	public static bool Tiles(Rectangle area, TilesDelegate action) => Tiles(area.X / 16, area.Y / 16, (area.X + area.Width) / 16, (area.Y + area.Height) / 16, action);
+	public static bool Tiles(Rectangle area, TilesDelegate action) => Tiles(area.X / 16, area.Y / 16, (int)((area.X + (float)area.Width) / 16f), (int)((area.Y + (float)area.Height) / 16f), action);
 
 	/// <summary> Performs a tile check controlled by the provided delegate. Similar to <see cref="Collision.SolidCollision"/>. </summary>
 	public static bool Tiles(int startX, int startY, int endX, int endY, TilesDelegate action)
 	{
 		if (startX < 0)
-			return true;
+			return false;
 
 		if (endX >= Main.maxTilesX)
-			return true;
+			return false;
 
 		if (startY < 0)
-			return true;
+			return false;
 
 		if (endY >= Main.maxTilesY)
-			return true;
+			return false;
 
 		for (int i = startX; i < endX + 1; i++)
 		{
 			for (int j = startY; j < endY + 1; j++)
 			{
 				if (Main.tile[i, j] is Tile t && t.HasTile && action.Invoke(i, j))
-					return true;
-			}
-		}
-
-		return false;
-	}
-
-	public static bool CheckSolidTilesAndPlatforms(Rectangle range)
-	{
-		int startX = range.X;
-		int endX = range.X + range.Width;
-
-		int startY = range.Y;
-		int endY = range.Y + range.Height;
-
-		if (Collision.SolidTiles(startX, endX, startY, endY))
-			return true;
-
-		for (int x = startX; x <= endX; x++)
-		{
-			for (int y = startY; y <= endY; y++)
-			{
-				if (TileID.Sets.Platforms[Framing.GetTileSafely(new Point(x, y)).TileType])
 					return true;
 			}
 		}

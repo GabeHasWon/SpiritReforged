@@ -1,9 +1,9 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WallCommon;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Moss.Radon;
 
-public class RadonMossBrickWall : ModWall, IAutoloadWallItem
+public class RadonMossBrickWall : ModWall, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{

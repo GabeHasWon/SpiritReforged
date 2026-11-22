@@ -1,14 +1,16 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
+using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
+using Terraria.GameContent.UI;
 
 namespace SpiritReforged.Content.Forest.Misc.ChairClub;
 
-class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
+class BreakawayChairProj : BaseClubProj
 {
 	public BreakawayChairProj() : base(new Vector2(30, 34)) { }
 
@@ -24,11 +26,16 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 	public override void SafeSetDefaults()
 	{
 		Projectile.penetrate = 1;
-		Projectile.hostile = true;
 		_parameters.HasIndicator = false;
 	}
 
-	public void DoTrailCreation(TrailManager tM)
+	public override void OnSwingStart()
+	{
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+	}
+
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 30 * MeleeSizeModifier;
 		float trailWidth = 20 * MeleeSizeModifier;
@@ -43,12 +50,10 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 			Intensity = 0.5f,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 	}
 
-	public override void OnSwingStart() => TrailManager.ManualTrailSpawn(Projectile);
-
-	public override bool CanHitPlayer(Player target) => target.whoAmI != Projectile.owner;
+	public override bool? CanHitNPC(NPC target) => target.isLikeATownNPC ? true : null;
 	internal override bool CanCollide(float progress) => false;
 
 	public override void OnHitNPC(NPC target, NPC.HitInfo hit, int damageDone)
@@ -75,17 +80,20 @@ class BreakawayChairProj : BaseClubProj, IManualTrailProjectile
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
 			var p = new ImpactLine(position, particleVel, Color.White * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 
 			if (!Main.rand.NextBool(3))
 				Dust.NewDustPerfect(position, DustID.t_LivingWood, particleVel / 3, Scale: 0.5f);
 		}
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
+
+		if (target.isLikeATownNPC)
+			EmoteHelper.SyncedEmote(target, 60, EmoteID.EmoteAnger);
 
 		Projectile.Kill();
-		Main.player[Projectile.owner].HeldItem.stack--; //"Break" a stack of the chair
+		Main.player[Projectile.owner].HeldItem.stack--; // "Break" a stack of the chair
 
 		SoundEngine.PlaySound(SoundID.Dig, Projectile.Center);
 

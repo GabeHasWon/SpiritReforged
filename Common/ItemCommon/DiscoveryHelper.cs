@@ -1,7 +1,11 @@
 ﻿using ILLogger;
 using MonoMod.Cil;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Forest.Graveyard;
+using SpiritReforged.Content.Ocean.Items.Blunderbuss;
+using SpiritReforged.Content.Ocean.Items.Pearl;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 using System.Reflection;
@@ -28,8 +32,8 @@ internal class DiscoveryHelper : ModPlayer
 			TypeToSound.Add(type, sound);
 	}
 
+	#region il edit
 	public override void Load() => IL_Main.DrawItemTextPopups += OnDrawPopup;
-
 	private static void OnDrawPopup(ILContext il)
 	{
 		ILCursor c = new(il);
@@ -77,13 +81,26 @@ internal class DiscoveryHelper : ModPlayer
 			var center = position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(pixelScale.Y / 3);
 			float pScale = Main.rand.NextFloat(.25f, .75f) * progress;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(center, vel, popup.color, pScale, 50));
-			ParticleHandler.SpawnParticle(new GlowParticle(center, vel, popup.color * 3, pScale * .5f, 50));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(center, vel, popup.color, pScale, 50));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(center, vel, popup.color * 3, pScale * 0.5f, 50));
 		}
 
 		if (popup.lifeTime <= 1)
 			TrackedIndex = -1; //Clear index
 	}
+	#endregion
+
+	public override void SetStaticDefaults() => NPCShopHelper.AddTravelEntry(static (int[] shopTypes, out int type) =>
+	{
+		type = ItemID.None;
+		if (Main.rand.NextBool())
+		{
+			type = WorldGen.genRand.Next([ModContent.ItemType<Blunderbuss>(), ModContent.ItemType<SafekeeperRing>(), ModContent.ItemType<PearlString>()]);
+			return true;
+		}
+
+		return false;
+	}); //Set up the discovery travel shop
 
 	public override bool OnPickup(Item item)
 	{

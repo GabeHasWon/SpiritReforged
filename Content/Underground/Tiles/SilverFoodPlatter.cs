@@ -3,10 +3,11 @@ using SpiritReforged.Common.TileCommon.PresetTiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
 using Terraria.UI;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, IAutoloadTileItem
+public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, ILoadItem
 {
 	public override void SetStaticDefaults()
 	{
@@ -17,11 +18,13 @@ public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, IAutoloadTileItem
 		Main.tileBlockLight[Type] = false;
 		Main.tileFrameImportant[Type] = true;
 
+		TileID.Sets.PreventsTileRemovalIfOnTopOfIt[Type] = false; // This causes a stack overflow since this can be placed on multitiles
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2x1);
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile | AnchorType.SolidWithTop | AnchorType.Table, TileObjectData.newTile.Width, 0);
-		TileObjectData.newTile.HookPostPlaceMyPlayer = new PlacementHook(entity.Hook_AfterPlacement, -1, 0, false);
+		TileObjectData.newTile.HookPostPlaceMyPlayer = Hook;
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.addTile(Type);
 
@@ -54,7 +57,7 @@ public class SilverFoodPlatter : SingleSlotTile<PlatterSlot>, IAutoloadTileItem
 
 			int yOffset = 18 - t.TileFrameX / 36 * 2;
 
-			var position = new Vector2(i * 16 - (int)Main.screenPosition.X + 16, j * 16 - (int)Main.screenPosition.Y + yOffset) + TileExtensions.TileOffset;
+			var position = new Vector2(i * 16 - (int)Main.screenPosition.X + 16, j * 16 - (int)Main.screenPosition.Y + yOffset) + TileMethods.TileOffset;
 			spriteBatch.Draw(texture, position, source, currentColor, 0f, origin, scale, default, 0);
 
 			if (slot.item.color != default)

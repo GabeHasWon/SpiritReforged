@@ -1,7 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Particles;
 using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
 using Terraria.Audio;
 
 namespace SpiritReforged.Content.Underground.Items.BoulderClub;
@@ -67,7 +67,7 @@ class RollingBowlder : ModProjectile
 			Dust.NewDust(Projectile.position, Projectile.width, Projectile.height, DustID.Stone, random.X, random.Y);
 		}
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, velocity * 0.3f, Color.DarkGray, Projectile.scale * 0.15f, EaseFunction.EaseCircularOut, 40));
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Projectile.Center, velocity * 0.3f, Color.DarkGray, Projectile.scale * 0.15f, EaseFunction.EaseCircularOut, 40));
 
 		SoundEngine.PlaySound(Hit, Projectile.Center);
 		SoundEngine.PlaySound(Break, Projectile.Center);
@@ -85,7 +85,7 @@ class RollingBowlder : ModProjectile
 		{
 			SoundEngine.PlaySound(Hit.WithVolumeScale(0.5f), Projectile.Center);
 
-			ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, oldVelocity * 0.3f, Color.Gray, Projectile.scale * 0.15f, EaseFunction.EaseCircularOut, 40));
+			ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Projectile.Center, oldVelocity * 0.3f, Color.Gray, Projectile.scale * 0.15f, EaseFunction.EaseCircularOut, 40));
 			Collision.HitTiles(Projectile.position, Projectile.velocity, Projectile.width, Projectile.height);
 
 			Projectile.velocity.Y = oldVelocity.Y * -0.5f;

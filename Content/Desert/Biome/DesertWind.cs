@@ -1,0 +1,111 @@
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
+using Terraria.GameContent.Events;
+using Terraria.Graphics.Renderers;
+
+namespace SpiritReforged.Content.Desert.Biome;
+
+[Autoload(Side = ModSide.Client)]
+public class DesertWind : ILoadable
+{
+	public static readonly HashSet<int> SandTypes = [TileID.Sand, TileID.Ebonstone, TileID.Crimsand, TileID.Pearlsand];
+
+	public void Load(Mod mod) => TileEvents.OnNearby += SpawnWind;
+	public void Unload() { }
+
+	private static void SpawnWind(int i, int j, int type, bool closer)
+	{
+		if (!closer || Main.gamePaused || !Main.LocalPlayer.ZoneDesert || j > Main.worldSurface || Math.Abs(Main.windSpeedCurrent) < 0.3f || !WorldGen.InWorld(i, j, 4) || SubworldUtils.InSubworld())
+			return;
+
+		Tile tileAbove = Main.tile[i, j - 1];
+		if (SandTypes.Contains(type) && !WorldGen.SolidTile(tileAbove) && tileAbove.LiquidAmount == 0 && tileAbove.WallType == WallID.None)
+		{
+			float odds = MathHelper.Lerp(1, 0.25f, Math.Abs(Main.windSpeedCurrent));
+			int chance = (int)(2000 * odds);
+
+			if (chance <= 0)
+				return;
+			
+			if (Main.rand.NextBool(chance))
+			{
+				Vector2 position = new Vector2(i, j + 2) * 16;
+				Vector2 velocity = new Vector2(Main.windSpeedCurrent * Main.rand.NextFloat(2, 4), 0.2f);
+
+				if (Sandstorm.Happening)
+					velocity *= 2;
+
+				int timeLeft = Main.rand.Next(250, 500);
+				Color color = Color.Beige * 0.6f;
+
+				ParticleRenderers.UnderWalls.Add(new DesertCloud(position, velocity, Color.Beige * 0.6f, 0.5f, EaseFunction.EaseCircularOut, timeLeft + 10)
+				{
+					SecondaryColor = Color.SaddleBrown.Additive(20) * 0.3f,
+					TertiaryColor = Color.Transparent,
+				});
+
+				for (int x = 0; x < 3; x++)
+				{
+					ParticleRenderers.UnderWalls.Add(new DesertCloud(position + Main.rand.NextVector2Unit() * Main.rand.NextFloat(30f), velocity * Main.rand.NextFloat(), color * 0.4f, Main.rand.NextFloat(0.8f, 1f), EaseFunction.EaseCircularOut, timeLeft)
+					{
+						SecondaryColor = Color.SaddleBrown.Additive(20) * 0.2f,
+						TertiaryColor = Color.Transparent
+					});
+				}
+			}
+
+			if (Main.rand.NextBool((int)(800 * odds)))
+			{
+				var velocity = new Vector2(Math.Sign(Main.windSpeedCurrent) * Main.rand.NextFloat(2, 4), -0.2f);
+
+				var dust = Dust.NewDustPerfect(new Vector2(i, j) * 16, DustID.Sand, velocity, 100);
+				dust.noGravity = true;
+				dust.scale = Main.rand.NextFloat(0.5f, 1f);
+			}
+		}
+	}
+}
+
+public class DesertCloud : DissipatingImage
+{
+	private readonly EaseFunction _acceleration;
+	private readonly Vector2 _initialVel;
+
+	public DesertCloud(Vector2 position, Vector2 velocity, Color color, float scale, EaseFunction acceleration, int maxTime) : base(position, color, Main.rand.NextFloatDirection(), scale, 0.15f, GetCloudTexture(), new(0.33f, 0.33f), new(2, 1), maxTime)
+	{
+		Velocity = velocity;
+		_initialVel = velocity;
+		_acceleration = acceleration;
+
+		DissolveAmount = 1;
+		Pixellate = true;
+		PixelDivisor = 3;
+		Rotation = Main.rand.NextFloat(-0.1f, 0.1f);
+	}
+
+	private static Texture2D GetCloudTexture() => TextureAssets.Cloud[Main.rand.Next([0, 1, 2, 3, 14, 15, 16, 17])].Value;
+
+	public override void Update(ref ParticleRendererSettings settings)
+	{
+		Position += Velocity; //Base update logic
+
+		if (MaxTime > 0 && ++TimeActive >= MaxTime)
+			ShouldBeRemovedFromRenderer = true;
+
+		_opacity = EaseFunction.EaseCircularOut.Ease(Progress);
+		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
+
+		Velocity = (1 - _acceleration.Ease(Progress)) * _initialVel;
+		Velocity.Y -= 0.1f;
+
+		var size = new Vector2(50, 25) * Scale;
+		if (Collision.SolidCollision(Position - size / 2, (int)size.X, (int)size.Y))
+			Velocity.Y -= 0.15f;
+	}
+
+	public override Color GetLightColor() => Lighting.GetColor((int)Position.X / 16, (int)(Position.Y - 400 * Scale) / 16) * _opacity;
+}

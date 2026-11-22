@@ -1,6 +1,4 @@
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
@@ -10,10 +8,11 @@ using Terraria.Audio;
 using static SpiritReforged.Common.Easing.EaseFunction;
 using static Microsoft.Xna.Framework.MathHelper;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
 
 namespace SpiritReforged.Content.Ocean.Items.BassClub;
 
-class BassSlapperProj : BaseClubProj, IManualTrailProjectile
+class BassSlapperProj : BaseClubProj
 {
 	private const int MAX_SLAMS = 3;
 
@@ -29,7 +28,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 	public override float SwingPhaseThreshold => 0.3f;
 	public override float SwingShrinkThreshold => 0.6f;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 64 * MeleeSizeModifier;
 		float trailWidth = 50 * MeleeSizeModifier;
@@ -51,7 +50,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 			Intensity = 0.75f,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 
 		parameters = new(AngleRange * angleRangeMod, -HoldAngle_Final + rotOffset, trailDist * 0.8f, trailWidth)
 		{
@@ -61,12 +60,14 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 			Intensity = 1f,
 		};
 
-		tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+		renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 	}
 
 	public override void OnSwingStart()
 	{
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+
 		if (_numSlams == 0)
 			for (int i = 0; i < 6; i++)
 				Projectile.oldRot[i] = Projectile.rotation;
@@ -99,7 +100,8 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 	public override void OnSmash(Vector2 position)
 	{
 		++_numSlams;
-		TrailManager.TryTrailKill(Projectile);
+
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		DustClouds(6);
@@ -114,7 +116,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 			if (FullCharge)
 				velocity *= 1.33f;
 
-			ParticleHandler.SpawnParticle(new BubbleParticle(dustPos, velocity * -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 40)));
+			ParticleRenderers.UnderProjectiles.Add(new BubbleParticle(dustPos, velocity * -Vector2.UnitY, Main.rand.NextFloat(0.2f, 0.4f), Main.rand.Next(20, 40)));
 
 			for (int j = 0; j < 2; j++)
 				Dust.NewDustPerfect(dustPos + Main.rand.NextVector2Circular(4, 4), DustID.Water, velocity * -Vector2.UnitY * Main.rand.NextFloat(), Scale: Main.rand.NextFloat(2));
@@ -136,7 +138,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 		var basePosition = Vector2.Lerp(Projectile.Center, target.Center, 0.6f);
 		Vector2 directionUnit = basePosition.DirectionFrom(Owner.MountedCenter) * TotalScale;
 
-		ParticleHandler.SpawnParticle(new SlapperHit(basePosition, FullCharge ? 1 : 0.75f, hit.Crit));
+		ParticleRenderers.UnderProjectiles.Add(new SlapperHit(basePosition, FullCharge ? 1 : 0.75f, hit.Crit));
 
 		int numParticles = FullCharge ? 12 : 6;
 		Color particleColor = hit.Crit ? Color.Red : Color.Goldenrod;
@@ -155,7 +157,7 @@ class BassSlapperProj : BaseClubProj, IManualTrailProjectile
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
 			var p = new ImpactLine(position, particleVel, particleColor.Additive(160) * 0.75f, new Vector2(0.4f, 0.8f) * TotalScale, Main.rand.Next(12, 16), 0.8f);
 			p.UseLightColor = false;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 		}
 	}
 

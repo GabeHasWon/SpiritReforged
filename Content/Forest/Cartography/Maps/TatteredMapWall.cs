@@ -1,4 +1,5 @@
 using System.Linq;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Cartography.Maps;
 
@@ -18,7 +19,7 @@ public class TatteredMapWall : ModTile
 		TileObjectData.newTile.RandomStyleRange = 3;
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(23, 23, 23), Language.GetText("MapObject.Painting"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("MapObject.Painting"));
 		RegisterItemDrop(ModContent.ItemType<TatteredMap>());
 		DustType = -1;
 	}
@@ -40,8 +41,9 @@ public class TatteredMapWallSmall : ModTile
 		TileObjectData.newTile.CoordinateHeights = Enumerable.Repeat(16, 2).ToArray();
 		TileObjectData.addTile(Type);
 
-		AddMapEntry(new Color(23, 23, 23), Language.GetText("MapObject.Painting"));
+		AddMapEntry(FurnitureTile.MapColor, Language.GetText("MapObject.Painting"));
 		RegisterItemDrop(ModContent.ItemType<TatteredMap>());
+
 		DustType = -1;
 	}
 }

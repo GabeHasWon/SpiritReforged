@@ -8,19 +8,75 @@ using Terraria.GameContent.Metadata;
 
 namespace SpiritReforged.Common.TileCommon.Tree;
 
-/// <summary> Follows palm tree logic by default. </summary>
+/// <summary> Facilitates building a tree with more flexibility than <see cref="ModTree"/>. </summary>
 public abstract class CustomTree : ModTile, IModifySmartTarget
 {
+	private class Detours : ILoadable
+	{
+		public void Load(Mod mod)
+		{
+			if (!Main.dedServ)
+			{
+				On_TileDrawing.DrawTrees += DrawAllFoliage;
+				TileEvents.AddPreDrawAction(false, static () => Segments.Clear());
+			}
+
+			On_WorldGen.IsTileTypeFitForTree += MakeUnfit;
+			On_Player.IsBottomOfTreeTrunkNoRoots += ConfirmTreeTrunk;
+		}
+
+		private static void DrawAllFoliage(On_TileDrawing.orig_DrawTrees orig, TileDrawing self)
+		{
+			orig(self);
+
+			foreach (Point16 p in Segments)
+			{
+				if (TileLoader.GetTile(Framing.GetTileSafely(p).TileType) is CustomTree custom)
+					custom.DrawTreeFoliage(p.X, p.Y, Main.spriteBatch);
+			}
+		}
+
+		/// <summary> Forces <see cref="CustomModTree"/>s to be unfit for gen. </summary>
+		private static bool MakeUnfit(On_WorldGen.orig_IsTileTypeFitForTree orig, ushort type)
+		{
+			if (CustomSapling.CustomAnchorTypes.Contains(type))
+				return false;
+
+			return orig(type);
+		}
+
+		/// <summary> Allows custom trees to work with the Axe of Regrowth. </summary>
+		private static bool ConfirmTreeTrunk(On_Player.orig_IsBottomOfTreeTrunkNoRoots orig, Player self, int x, int y)
+		{
+			var t = Main.tile[x, y];
+			if (t.HasTile && TileLoader.GetTile(t.TileType) is CustomTree && t.TileType != Main.tile[x, y + 1].TileType)
+				return true; //Skips orig
+
+			return orig(self, x, y);
+		}
+
+		public void Unload() { }
+	}
+
+	public enum SegmentType
+	{
+		Default,
+		Bare,
+		LeafyTop
+	}
+
+	public virtual HashSet<SegmentType> ShakeableTreetops => [SegmentType.LeafyTop];
+
 	/// <summary> Common frame size for tree tiles. </summary>
 	public const int FrameSize = 22;
 
 	/// <summary> Controls growth height without the need to override <see cref="CreateTree"/>. </summary>
 	public virtual int TreeHeight => WorldGen.genRand.Next(10, 21);
 
-	private static readonly HashSet<Point16> drawPoints = [];
-	private static readonly HashSet<Point16> treeShakes = [];
+	private static readonly HashSet<Point16> Segments = [];
 
-	private static bool AppliedDetours = false;
+	/// <summary> Gets a pseudo-random value based on the provided coordinates. </summary>
+	public static int Random(int i, int j, int minValue, int maxValue) => new Terraria.Utilities.FastRandom(i * j).Next(minValue, maxValue);
 
 	#region grow methods
 	/// <summary> Attempts to grow a custom tree from a sapling at the given coordinates. </summary>
@@ -36,7 +92,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		return GrowTreeFromInstance(i, j, instance);
 	}
 
-	/// <summary> Attempts to grow a custom tree of <see cref="{T}"/> at the given coordinates. </summary>
+	/// <summary> Attempts to grow a custom tree of <typeparamref name="T"/> at the given coordinates. </summary>
 	/// <returns> Whether the tree was successfully grown. </returns>
 	public static bool GrowTree<T>(int i, int j) where T : CustomTree
 	{
@@ -61,61 +117,6 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		}
 
 		return Framing.GetTileSafely(i, j).TileType == instance.Type;
-	}
-	#endregion
-
-	#region detours
-	/// <summary> <inheritdoc/><para/> Includes detours for tree drawing and logic. </summary>
-	public override void Load()
-	{
-		if (Main.dedServ || AppliedDetours)
-			return;
-
-		On_TileDrawing.DrawTrees += DrawAllFoliage;
-		On_TileDrawing.PreDrawTiles += ResetPoints;
-
-		On_WorldGen.IsTileTypeFitForTree += MakeUnfit;
-		On_Player.IsBottomOfTreeTrunkNoRoots += ConfirmTreeTrunk;
-
-		AppliedDetours = true;
-	}
-
-	private static void DrawAllFoliage(On_TileDrawing.orig_DrawTrees orig, TileDrawing self)
-	{
-		orig(self);
-
-		foreach (Point16 p in drawPoints)
-		{
-			if (TileLoader.GetTile(Main.tile[p.X, p.Y].TileType) is CustomTree custom)
-				custom.DrawTreeFoliage(p.X, p.Y, Main.spriteBatch);
-		}
-	}
-
-	private static void ResetPoints(On_TileDrawing.orig_PreDrawTiles orig, TileDrawing self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets)
-	{
-		orig(self, solidLayer, forRenderTargets, intoRenderTargets);
-
-		if ((intoRenderTargets || Lighting.UpdateEveryFrame) && !solidLayer)
-			drawPoints.Clear();
-	}
-
-	/// <summary> Forces <see cref="CustomModTree"/>s to be unfit for gen. </summary>
-	private static bool MakeUnfit(On_WorldGen.orig_IsTileTypeFitForTree orig, ushort type)
-	{
-		if (CustomSapling.CustomAnchorTypes.Contains(type))
-			return false;
-
-		return orig(type);
-	}
-
-	/// <summary> Allows custom trees to work with the Axe of Regrowth. </summary>
-	private static bool ConfirmTreeTrunk(On_Player.orig_IsBottomOfTreeTrunkNoRoots orig, Player self, int x, int y)
-	{
-		var t = Main.tile[x, y];
-		if (t.HasTile && TileLoader.GetTile(t.TileType) is CustomTree && t.TileType != Main.tile[x, y + 1].TileType)
-			return true; //Skips orig
-
-		return orig(self, x, y);
 	}
 	#endregion
 
@@ -152,27 +153,30 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 	/// <summary> Called during SetStaticDefaults before <see cref="TileObjectData.addTile"/> is called. </summary>
 	public virtual void PreAddObjectData() { }
 
-	/// <summary> Used for pseudo random logic, like branch positions. </summary>
-	protected virtual float Noise(Vector2 position) => NoiseSystem.PerlinStatic(position.X, position.Y * 3f) * 10f;
-
-	/// <returns> Whether the given tile has a treetop. </returns>
-	public virtual bool IsTreeTop(int i, int j) => Framing.GetTileSafely(i, j - 1).TileType != Type;
+	/// <returns> Finds the <see cref="SegmentType"/> of the tile at the given coordinates. </returns>
+	public virtual SegmentType FindSegment(int i, int j)
+	{
+		int type = Framing.GetTileSafely(i, j - 1).TileType;
+		return (type != Type) ? SegmentType.LeafyTop : SegmentType.Default;
+	}
 
 	public void ShakeTree(int i, int j)
 	{
-		while (Framing.GetTileSafely(i, j - 1).TileType == Type)
-			j--; //Move to the top of the tree
+		while (Framing.GetTileSafely(i, j + 1).TileType == Type)
+			j++; //Move to the base of the tree
 
-		var pt = new Point16(i, j);
-		if (!treeShakes.Contains(pt) && IsTreeTop(i, j))
+		if (ShakeableTreetops.Contains(FindSegment(i, j)) && TileMethods.ShakeTree(i, j))
+		{
+			while (Framing.GetTileSafely(i, j - 1).TileType == Type)
+				j--;
+
 			OnShakeTree(i, j);
-
-		treeShakes.Add(pt); //Prevent this tree from being shook again
+		}
 	}
 
 	protected virtual void OnShakeTree(int i, int j) => GrowEffects(i, j, true);
 
-	public void GrowEffects(int i, int j, bool shake = false)
+	public void GrowEffects(int i, int j, bool shake = false, int goreType = GoreID.TreeLeaf_Normal)
 	{
 		int height = 1;
 		while (Framing.GetTileSafely(i, j - height).TileType == Type)
@@ -181,54 +185,58 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 		if (shake)
 			height = 1;
 
-		OnGrowEffects(i, j - (height - 1), height);
+		OnGrowEffects(i, j - (height - 1), height, goreType);
 	}
 
 	/// <summary> Used to create effects when the tree is grown, such as leaves. Doubles for shake effects by default. </summary>
-	protected virtual void OnGrowEffects(int i, int j, int height) { }
+	protected virtual void OnGrowEffects(int i, int j, int height, int goreType = GoreID.TreeLeaf_Normal) { }
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
 	{
 		var drops = base.GetItemDrops(i, j);
 
-		if (IsTreeTop(i, j))
-			drops = drops.Concat([new Item(ItemID.Acorn)]);
+		if (FindSegment(i, j) == SegmentType.LeafyTop)
+			drops = drops?.Concat([new Item(ItemID.Acorn)]);
 
 		return drops;
 	}
 
 	public override void KillTile(int i, int j, ref bool fail, ref bool effectOnly, ref bool noItem)
 	{
-		if (!fail) //Switch to the 'chopped' frame
-			Framing.GetTileSafely(i, j + 1).TileFrameX = (short)(WorldGen.genRand.Next(9, 12) * FrameSize);
-		else
-			ShakeTree(i, j);
+		if (!effectOnly)
+		{
+			if (!fail) //Switch to the 'chopped' frame
+				Framing.GetTileSafely(i, j + 1).TileFrameX = (short)(WorldGen.genRand.Next(9, 12) * FrameSize);
+			else
+				ShakeTree(i, j);
+		}
 	}
 
 	public sealed override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{
 		DrawTreeBody(i, j, spriteBatch);
+		SegmentType segment = FindSegment(i, j);
 
-		if (IsTreeTop(i, j) || (int)Noise(new Vector2(i, j)) == 0)
-			drawPoints.Add(new Point16(i, j));
+		if (segment is SegmentType.LeafyTop || segment is SegmentType.Default && Random(i, j, 0, 5) == 0)
+			Segments.Add(new Point16(i, j));
 
 		return false;
 	}
 
 	public virtual void DrawTreeBody(int i, int j, SpriteBatch spriteBatch)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out Color color, out Texture2D texture))
+		if (!TileMethods.GetVisualInfo(i, j, out Color color, out Texture2D texture))
 			return;
 
-		var t = Main.tile[i, j];
-		var source = new Rectangle(t.TileFrameX % (FrameSize * 12), 0, FrameSize - 2, FrameSize - 2);
-		var position = new Vector2(i, j) * 16 - Main.screenPosition + TileExtensions.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
+		Tile tile = Main.tile[i, j];
+		Rectangle source = new(tile.TileFrameX, 0, FrameSize - 2, FrameSize - 4);
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + TileMethods.TileOffset + TreeExtensions.GetPalmTreeOffset(i, j);
 
-		spriteBatch.Draw(texture, position, source, color, 0f, new Vector2(0, 0), 1f, SpriteEffects.None, 0f);
+		spriteBatch.Draw(texture, position, source, color, 0, Vector2.Zero, 1, SpriteEffects.None, 0);
 		return;
 	}
 
-	/// <summary> Used to draw treetops and tree branches based on coordinates resulting from <see cref="Noise"/>. </summary>
+	/// <summary> Used to draw treetops and tree branches based on coordinates resulting from <see cref="NoiseSystem._noise"/>. </summary>
 	public virtual void DrawTreeFoliage(int i, int j, SpriteBatch spriteBatch) { }
 
 	protected virtual void CreateTree(int i, int j, int height)
@@ -246,7 +254,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 				frameX = WorldGen.genRand.Next(4, 7);
 
 			WorldGen.PlaceTile(i, j - h, Type, true);
-			var tile = Framing.GetTileSafely(i, j - h);
+			Tile tile = Framing.GetTileSafely(i, j - h);
 
 			if (tile.HasTile && tile.TileType == Type)
 			{
@@ -261,7 +269,7 @@ public abstract class CustomTree : ModTile, IModifySmartTarget
 
 	public void ModifyTarget(ref int x, ref int y)
 	{
-		while (Main.tile[x, y + 1].HasTile && Main.tile[x, y + 1].TileType == Type && WorldGen.InWorld(x, y + 1))
+		while (WorldGen.InWorld(x, y + 1) && Main.tile[x, y + 1].HasTile && Main.tile[x, y + 1].TileType == Type)
 			y++;
 	}
 }

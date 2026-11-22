@@ -52,12 +52,12 @@ internal class UndergroundMannequinInventory : MannequinInventory
 		}
 	}
 
-	public override void SetMannequin(Point16 position)
+	public override void SetMannequin(int whoAmI)
 	{
 		Item[] inv = [new(ModContent.ItemType<WayfarerHead>()), new(ModContent.ItemType<WayfarerBody>()), new(ModContent.ItemType<WayfarerLegs>()),
 			new(), new(), new(), new(), new()];
 
-		float chance = Main.rand.NextFloat();
+		float chance = WorldGen.genRand.NextFloat();
 
 		if (chance < .10f)
 		{
@@ -76,7 +76,7 @@ internal class UndergroundMannequinInventory : MannequinInventory
 		{
 			if (chance < .1f)
 			{
-				if (Main.rand.NextBool(2))
+				if (WorldGen.genRand.NextBool(2))
 				{
 					if (CrossMod.Redemption.TryFind("CommonGuardHelm1", out ModItem commonHelm1))
 						inv[0] = new(commonHelm1.Type);
@@ -94,14 +94,9 @@ internal class UndergroundMannequinInventory : MannequinInventory
 			}
 		}
 
-		if (!TileEntity.ByPosition.TryGetValue(position, out TileEntity te) || te is not TEDisplayDoll mannequin)
-		{
-			int id = TEDisplayDoll.Place(position.X, position.Y);
-			mannequin = TileEntity.ByID[id] as TEDisplayDoll;
-		}
+		var mannequin = TileEntity.ByID[whoAmI] as TEDisplayDoll;
+		inv[WorldGen.genRand.Next(5) + 3] = new Item(AccType);
 
-		int slot = WorldGen.genRand.Next(5) + 3;
-		inv[slot] = new Item(AccType);
-		UndergroundHouseMicropass.teDollInventory.SetValue(mannequin, inv);
+		HouseLoader.DisplayDollItems.SetValue(mannequin, inv);
 	}
 }

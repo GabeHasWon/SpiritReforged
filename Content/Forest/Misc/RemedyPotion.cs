@@ -1,9 +1,9 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Underground.Tiles;
 using Terraria.Audio;
-using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Misc;
 
@@ -18,26 +18,18 @@ public class RemedyPotion : ModItem
 	public override void SetStaticDefaults()
 	{
 		Item.ResearchUnlockCount = 20;
-		TileEvents.AddKillTileAction(TileID.Pots, AddPotLoot);
-	}
 
-	/// <summary> Drops <see cref="RemedyPotion"/>s from all pots in addition to normal items. Odds vary by depth. </summary>
-	private static void AddPotLoot(int i, int j, int type, ref bool fail, ref bool effectOnly)
-	{
-		if (fail || effectOnly || Main.netMode == NetmodeID.MultiplayerClient || !IsTopLeft())
-			return;
-
-		int chance = (i >= Main.UnderworldLayer) ? 33 : ((i >= Main.rockLayer) ? 38 : ((i >= Main.worldSurface) ? 31 : 0));
-		if (chance > 0 && Main.rand.NextBool(chance))
+		TileLootSystem.RegisterLoot(static (loot) =>
 		{
-			Item.NewItem(new EntitySource_TileBreak(i, j), new Rectangle(i * 16, j * 16, 32, 32), ModContent.ItemType<RemedyPotion>());
-		}
+			if (loot is TileLootTable t)
+			{
+				int y = t.Coordinates.Y;
+				int chance = (y >= Main.UnderworldLayer || t.Simulated) ? 33 : ((y >= Main.rockLayer) ? 38 : ((y >= Main.worldSurface) ? 31 : 0));
 
-		bool IsTopLeft()
-		{
-			var tile = Main.tile[i, j];
-			return tile.TileFrameX % 36 == 0 && tile.TileFrameY % 36 == 0;
-		}
+				if (chance > 0)
+					loot.AddCommon(ModContent.ItemType<RemedyPotion>(), chance);
+			}
+		}, TileID.Pots, ModContent.TileType<Pots>());
 	}
 
 	public override void SetDefaults()
@@ -80,7 +72,7 @@ public class RemedyPotion : ModItem
 
 			var ring = new TexturedPulseCircle(player.Bottom + Vector2.UnitY * i * -1.5f, startColor, Color.Green, 20, 80, 30, "supPerlin", new Vector2(1), EaseFunction.EaseCircularOut).WithSkew(.75f, -MathHelper.PiOver2);
 			ring.Velocity = Vector2.UnitY * -1.2f;
-			ParticleHandler.SpawnParticle(ring);
+			ParticleRenderers.OverPlayers.Add(ring);
 		}
 
 		var rect = new Rectangle((int)player.BottomLeft.X, (int)player.BottomLeft.Y, player.width, 2);
@@ -98,10 +90,10 @@ public class RemedyPotion : ModItem
 				if (l == 1)
 					scale *= .75f;
 
-				ParticleHandler.SpawnParticle(new GlowParticle(pos, vel, color, scale, (int)(scale * 120), 5, delegate (Particle p)
+				ParticleRenderers.OverPlayers.Add(new GlowParticle(pos, vel, color, scale, (int)(scale * 120), 5, delegate (Particle p)
 				{
-					p.Velocity *= .95f;
-				}).OverrideDrawLayer(ParticleLayer.AbovePlayer));
+					p.Velocity *= 0.95f;
+				}));
 			}
 		}
 	}
@@ -110,20 +102,22 @@ public class RemedyPotion : ModItem
 	{
 		const float iconScale = 1.3f;
 
-		if (line.Mod != "Terraria" || line.Name != "Tooltip1")
-			return true;
-
-		int counter = 0;
-		foreach (int buff in RemedyPotionBuff.ImmuneTypes)
+		if (line.Mod == "Terraria" && line.Name == "Tooltip1")
 		{
-			var texture = TextureAssets.Buff[buff].Value;
-			var origin = new Vector2(0, texture.Height / 2);
+			int counter = 0;
+			foreach (int buff in RemedyPotionBuff.ImmuneTypes)
+			{
+				var texture = TextureAssets.Buff[buff].Value;
+				var origin = new Vector2(0, texture.Height / 2);
 
-			Main.spriteBatch.Draw(texture, new Vector2(line.X + 24 * iconScale * counter, line.Y + 12), null, Color.White, 0, origin, Main.inventoryScale * iconScale, default, 0);
-			counter++;
+				Main.spriteBatch.Draw(texture, new Vector2(line.X + 24 * iconScale * counter, line.Y + 12), null, Color.White, 0, origin, Main.inventoryScale * iconScale, default, 0);
+				counter++;
+			}
+
+			return false;
 		}
 
-		return false;
+		return true;
 	}
 
 	public override void AddRecipes() => CreateRecipe().AddIngredient(ItemID.BottledWater).AddIngredient(ItemID.Waterleaf)

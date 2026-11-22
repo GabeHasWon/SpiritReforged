@@ -1,5 +1,5 @@
 ﻿using SpiritReforged.Common.Multiplayer;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using System.IO;
 using Terraria.Audio;
@@ -35,7 +35,7 @@ public class CascadeArmorPlayer : ModPlayer
 			maxResist = 50;
 		else if (Main.expertMode)
 			maxResist = 35;
-
+		
 		return (maxResist + Main.rand.NextFloat(-variance, variance)) * bubbleStrength;
 	}
 
@@ -142,7 +142,7 @@ public class CascadeArmorPlayer : ModPlayer
 
 		if (!Main.dedServ)
 		{
-			ParticleHandler.SpawnParticle(new BubblePop(Player.Center, GetBaseBubbleScale, 0.8f * _bubbleVisual, 30));
+			ParticleRenderers.OverPlayers.Add(new BubblePop(Player.Center, GetBaseBubbleScale, 0.8f * _bubbleVisual, 30));
 
 			SoundEngine.PlaySound(SoundID.Item54 with { PitchVariance = 0.2f }, Player.Center);
 			SoundEngine.PlaySound(SoundID.NPCHit3 with { PitchVariance = 0.2f, Pitch = -.5f }, Player.Center);
@@ -190,13 +190,13 @@ public class CascadeArmorPlayer : ModPlayer
 
 	private void DrawBubble(SpriteBatch sB, bool outline = false)
 	{
-		if (_bubbleVisual > 0f)
+		if (!Player.invis && _bubbleVisual > 0f)
 		{
 			Texture2D texture = (outline ? OutlineTexture : ShieldTexture).Value;
 
 			Vector2 drawPos = Player.Center - Main.screenPosition + new Vector2(0, Player.gfxOffY);
 
-			float opacity = outline ? .25f : 0.8f;
+			float opacity = outline ? 0.25f : 0.8f;
 			Color lightColor = Lighting.GetColor((int)(Player.Center.X / 16), (int)(Player.Center.Y / 16));
 
 			sB.Draw(texture, drawPos, null, lightColor * _bubbleVisual * opacity, 0f, texture.Size() / 2f, _bubbleSquish * GetBaseBubbleScale, SpriteEffects.None, 0);

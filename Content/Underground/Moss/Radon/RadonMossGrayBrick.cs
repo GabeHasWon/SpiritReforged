@@ -1,11 +1,10 @@
 using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Dusts;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Moss.Radon;
 
-[AutoloadGlowmask("224,232,70")]
 public class RadonMossGrayBrick : GrassTile
 {
 	protected override int DirtType => TileID.GrayBrick;
@@ -15,10 +14,11 @@ public class RadonMossGrayBrick : GrassTile
 		base.SetStaticDefaults();
 
 		Main.tileLighted[Type] = true;
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, (i, j) => new Color(244, 232, 70));
 
 		RegisterItemDrop(ItemID.GrayBrick);
 		AddMapEntry(new Color(252, 248, 3));
-		this.Merge(TileID.Stone, TileID.GrayBrick);
+		TileMethods.Merge(Type, TileID.Stone, TileID.GrayBrick);
 		
 		HitSound = SoundID.Grass;
 		DustType = ModContent.DustType<RadonMossDust>();

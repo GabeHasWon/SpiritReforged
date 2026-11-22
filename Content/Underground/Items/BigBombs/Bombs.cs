@@ -1,8 +1,8 @@
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Savanna.Tiles;
@@ -13,6 +13,13 @@ namespace SpiritReforged.Content.Underground.Items.BigBombs;
 public class Bomb : BombProjectile, ILargeExplosive
 {
 	public const int CommonSize = 32;
+	public static readonly PolynomialEase EffectEase = new(static (x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
+
+	public static readonly SoundStyle Explosion = new("SpiritReforged/Assets/SFX/Projectile/Explosion_Shrapnel")
+	{
+		Volume = 0.7f,
+		PitchVariance = 0.1f
+	};
 
 	public virtual int OriginalType => ProjectileID.Bomb;
 	public override LocalizedText DisplayName => Language.GetText("ProjectileName.Bomb");
@@ -36,15 +43,18 @@ public class Bomb : BombProjectile, ILargeExplosive
 		base.AI();
 
 		if (!DealingDamage)
-		{
-			float oldScale = Projectile.scale; //Resize logic
-			Projectile.scale = Math.Min(Projectile.scale + .1f, 1);
+			Rescale(Math.Min(Projectile.scale + 0.1f, 1)); //Resize logic
+	}
 
-			if (Projectile.scale != oldScale)
-			{
-				int size = (int)Math.Max(CommonSize * Projectile.scale, 2);
-				Projectile.Resize(size, size);
-			}
+	public void Rescale(float value)
+	{
+		float oldScale = Projectile.scale;
+		Projectile.scale = value;
+
+		if (Projectile.scale != oldScale)
+		{
+			int size = (int)Math.Max(CommonSize * Projectile.scale, 2);
+			Projectile.Resize(size, size);
 		}
 	}
 
@@ -55,26 +65,25 @@ public class Bomb : BombProjectile, ILargeExplosive
 		if (Main.dedServ)
 			return;
 
-		SoundEngine.PlaySound(SoundID.Item14, Projectile.Center);
-		SoundEngine.PlaySound(SoundID.DD2_ExplosiveTrapExplode, Projectile.Center);
-		var ease = new PolynomialEase((float x) => (float)(0.5 + 0.5 * Math.Pow(x, 0.5)));
+		SoundEngine.PlaySound(Explosion, Projectile.Center);
+		var ease = EffectEase;
 		var stretch = Vector2.One;
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * area, 20, "Smoke", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Color.Goldenrod.Additive(), Color.OrangeRed.Additive(), 1f, 30 * area, 20, "Smoke", stretch, ease)
 		{
 			Angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi)
 		});
 
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 30 * area, 20, "Smoke", stretch, ease)
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Color.White.Additive(), Color.OrangeRed.Additive(), .5f, 30 * area, 20, "Smoke", stretch, ease)
 		{
 			Angle = Main.rand.NextFloat(-MathHelper.TwoPi, MathHelper.TwoPi)
 		});
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(Projectile.Center, Vector2.Zero, Color.Gray, .04f * area, EaseFunction.EaseCubicOut, 40));
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(Projectile.Center, Vector2.Zero, Color.Gray, .04f * area, EaseFunction.EaseCubicOut, 40));
 
 		const int time = 5;
-		ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Vector2.Zero, Color.Orange.Additive(), new Vector2(0.2f, 1f) * area, time));
-		ParticleHandler.SpawnParticle(new ImpactLine(Projectile.Center, Vector2.Zero, Color.White.Additive(), new Vector2(0.1f, 1f) * area, time));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Vector2.Zero, Color.Orange.Additive(), new Vector2(0.2f, 1f) * area, time));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLine(Projectile.Center, Vector2.Zero, Color.White.Additive(), new Vector2(0.1f, 1f) * area, time));
 
 		for (int i = 0; i < area * 2; i++)
 		{
@@ -84,8 +93,8 @@ public class Bomb : BombProjectile, ILargeExplosive
 			var velocity = Main.rand.NextVector2Unit() * magnitude * 10f;
 			float scale = (1f - magnitude) * 0.08f * area;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 10, 3));
-			ParticleHandler.SpawnParticle(new GlowParticle(Projectile.Center + velocity * 10, velocity, Color.White.Additive(), scale * .5f, 10, 3));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + velocity * 10, velocity, color, scale, 10, 3));
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(Projectile.Center + velocity * 10, velocity, Color.White.Additive(), scale * .5f, 10, 3));
 
 			var d = Dust.NewDustPerfect(Projectile.Center + Main.rand.NextVector2Unit() * Main.rand.NextFloat(16f * area), DustID.Torch, Scale: Main.rand.NextFloat() + .5f);
 			d.noGravity = true;
@@ -291,6 +300,9 @@ public class BombScarab : Bomb
 	{
 		if (CheckStuck(Projectile.getRect()))
 		{
+			if (Projectile.scale < 1)
+				Rescale(1);
+
 			Projectile.velocity = Vector2.Zero;
 			Projectile.rotation = Projectile.AngleFrom(Main.player[Projectile.owner].Center) - MathHelper.PiOver2;
 
@@ -395,7 +407,7 @@ public class BombScarab : Bomb
 					float f6 = (float)Math.PI * 2f * num943 + num942;
 					Vector2 value13 = f6.ToRotationVector2();
 					value13 *= new Vector2(0.7f, 0.3f);
-					var dust = Dust.NewDustPerfect(Projectile.Center, 59, value13);
+					var dust = Dust.NewDustPerfect(Projectile.Center, DustID.BlueTorch, value13);
 					dust.fadeIn = 2f;
 					dust.noGravity = true;
 					Dust dust2 = dust;
@@ -432,8 +444,8 @@ public class BombScarab : Bomb
 
 			Projectile.Resize(10, 10);
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.Cyan, Color.Orange * .3f, .4f, 200, 20, "SmokeSimple", Vector2.One, Common.Easing.EaseFunction.EaseCircularOut));
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(Projectile.Center, Color.White, Color.Orange * .3f, .2f, 200, 20, "SmokeSimple", Vector2.One, Common.Easing.EaseFunction.EaseCircularOut));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Color.Cyan, Color.Orange * .3f, .4f, 200, 20, "SmokeSimple", Vector2.One, Common.Easing.EaseFunction.EaseCircularOut));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(Projectile.Center, Color.White, Color.Orange * .3f, .2f, 200, 20, "SmokeSimple", Vector2.One, Common.Easing.EaseFunction.EaseCircularOut));
 		}
 
 		if (Projectile.owner == Main.myPlayer)

@@ -16,7 +16,7 @@ public class OganessonMossDust : ModDust
 	{
 		dust.position += dust.velocity;
 		dust.velocity *= 0.88f;
-		dust.velocity.Y -= .2f;
+		dust.velocity.Y -= 0.2f;
 
 		dust.rotation = dust.velocity.ToRotation();
 

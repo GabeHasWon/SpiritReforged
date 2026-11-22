@@ -1,13 +1,27 @@
-﻿using Terraria.WorldBuilding;
+﻿using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
+using Terraria.ModLoader.Config;
+using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
 
-internal class NewStatuesMicropass : Micropass
+internal class NewStatuesMicropass : Micropass, IGenerationPage
 {
 	/// <summary> The list of statues to generate in this micropass. </summary>
 	public static readonly List<int> Statues = [];
 
+	[GenConfigurable(0f, 5f, 0.1f)]
+	[Slider]
+	private static float StatueCountModifier = 1f;
+
 	public override string WorldGenName => "New Statues";
+
+	PageInfo IGenerationPage.Info => new()
+	{
+		CopiedPage = new HouseLoader(),
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
 
 	public override int GetWorldGenIndexInsert(List<GenPass> passes, ref bool afterIndex)
 	{
@@ -22,7 +36,7 @@ internal class NewStatuesMicropass : Micropass
 
 		progress.Message = Lang.gen[29].Value; //Localization for `Statues`
 
-		int maxStatues = Main.maxTilesX / WorldGen.WorldSizeSmallX * numPerType * Statues.Count;
+		int maxStatues = (int)(Main.maxTilesX / WorldGen.WorldSizeSmallX * numPerType * Statues.Count * StatueCountModifier);
 		int statues = 0;
 
 		for (int t = 0; t < maxTries; t++)
@@ -31,19 +45,14 @@ internal class NewStatuesMicropass : Micropass
 			int y = WorldGen.genRand.Next((int)Main.worldSurface, Main.UnderworldLayer - 20);
 
 			WorldMethods.FindGround(x, ref y);
+			Tile aboveTile = Framing.GetTileSafely(x, y - 1);
 
-			if (y > Main.UnderworldLayer || y < (int)Main.worldSurface || WorldGen.oceanDepths(x, y))
+			if (y > Main.UnderworldLayer || y < (int)Main.worldSurface || WorldGen.oceanDepths(x, y) || aboveTile.LiquidAmount > 150)
 				continue;
 
 			int type = Statues[Math.Clamp(statues / numPerType, 0, Statues.Count - 1)];
-			if (CreateStatue(x, y - 1, type) && ++statues >= maxStatues)
+			if (Placer.PlaceTile(x, y - 1, type).success && ++statues >= maxStatues)
 				break;
 		}
-	}
-
-	private static bool CreateStatue(int x, int y, int type)
-	{
-		WorldGen.PlaceTile(x, y, type, true);
-		return Main.tile[x, y].TileType == type;
 	}
 }

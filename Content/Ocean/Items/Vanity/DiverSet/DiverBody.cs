@@ -1,7 +1,3 @@
-using Terraria;
-using Terraria.ID;
-using Terraria.ModLoader;
-
 namespace SpiritReforged.Content.Ocean.Items.Vanity.DiverSet;
 
 [AutoloadEquip(EquipType.Body)]

@@ -1,8 +1,8 @@
 using SpiritReforged.Common.BuffCommon;
 using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using System.Linq;
 
@@ -48,7 +48,7 @@ public class ButterflyMinion : BaseMinion
 		return true;
 	}
 
-	private void SpawnStarParticle() => ParticleHandler.SpawnParticle(new StarParticle(Projectile.Center + Main.rand.NextVector2Circular(4, 4),
+	private void SpawnStarParticle() => ParticleRenderers.UnderProjectiles.Add(new StarParticle(Projectile.Center + Main.rand.NextVector2Circular(4, 4),
 		Projectile.velocity.RotatedByRandom(MathHelper.Pi / 8) * Main.rand.NextFloat(0.2f, 0.4f), Color.LightPink, Color.DeepPink, Main.rand.NextFloat(0.1f, 0.2f), 20));
 
 	public override void IdleMovement(Player player)

@@ -10,7 +10,11 @@ public class Tubeworm : ModNPC
 {
 	private byte _pickedType;
 
-	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 6;
+	public override void SetStaticDefaults()
+	{
+		Main.npcFrameCount[Type] = 6;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
+	}
 
 	public override void SetDefaults()
 	{
@@ -25,11 +29,9 @@ public class Tubeworm : ModNPC
 		NPC.knockBackResist = 0f;
 		NPC.aiStyle = -1;
 		NPC.npcSlots = 0;
-		AIType = NPCID.WebbedStylist;
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Ocean");
-
 	public override void OnSpawn(IEntitySource source)
 	{
 		NPC.scale = Main.rand.NextFloat(.6f, 1.15f);

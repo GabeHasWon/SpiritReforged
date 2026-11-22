@@ -58,7 +58,7 @@ internal class BlunderbussProjectile : GlobalProjectile
 
 	public override void SendExtraAI(Projectile projectile, BitWriter bitWriter, BinaryWriter binaryWriter)
 	{
-		binaryWriter.Write(firedFromBlunderbuss);
+		bitWriter.WriteBit(firedFromBlunderbuss);
 
 		if (firedFromBlunderbuss) //Scale isn't synced automatically
 			binaryWriter.Write(projectile.scale);
@@ -66,7 +66,7 @@ internal class BlunderbussProjectile : GlobalProjectile
 
 	public override void ReceiveExtraAI(Projectile projectile, BitReader bitReader, BinaryReader binaryReader)
 	{
-		firedFromBlunderbuss = binaryReader.ReadBoolean();
+		firedFromBlunderbuss = bitReader.ReadBit();
 
 		if (firedFromBlunderbuss)
 		{

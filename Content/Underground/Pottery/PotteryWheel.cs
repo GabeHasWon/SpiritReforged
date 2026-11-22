@@ -1,12 +1,12 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.UI.PotCatalogue;
 using SpiritReforged.Common.UI.System;
 using Terraria.GameContent.ObjectInteractions;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Underground.Pottery;
 
-public class PotteryWheel : ModTile, IAutoloadTileItem
+public class PotteryWheel : ModTile, ILoadItem
 {
 	private const int FullFrameHeight = 18 * 3;
 

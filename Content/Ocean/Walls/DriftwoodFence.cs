@@ -1,10 +1,10 @@
 ﻿using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.Ocean.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Walls;
 
-public class DriftwoodFence : ModWall, IAutoloadWallItem
+public class DriftwoodFence : ModWall, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{
@@ -21,6 +21,7 @@ public class DriftwoodFence : ModWall, IAutoloadWallItem
 		WallID.Sets.AllowsPlantsToGrow[Type] = true;
 		Main.wallHouse[Type] = true;
 		Main.wallLight[Type] = true;
+
 		DustType = DustID.BorealWood;
 	}
 

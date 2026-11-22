@@ -1,11 +1,52 @@
 using SpiritReforged.Common.NPCCommon;
+using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Content.Forest.Botanist.Tiles;
+using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Forest.Botanist.Items;
 
 public class WheatgrassSeedPouch : ModItem
 {
-	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry((shop) => shop.NpcType == NPCID.Merchant, 
+	public class WheatgrassSeed : ModProjectile
+	{
+		public override void SetStaticDefaults() => Main.projFrames[Type] = 3;
+
+		public override void SetDefaults()
+		{
+			Projectile.Size = new(6);
+			Projectile.aiStyle = -1;
+			Projectile.timeLeft = 2000;
+			Projectile.frame = Main.rand.Next(Main.projFrames[Type]); //Select a random frame
+		}
+
+		public override void AI()
+		{
+			Projectile.velocity.Y += 0.2f;
+			Projectile.rotation += Projectile.velocity.X * 0.05f;
+		}
+
+		public override void OnKill(int timeLeft)
+		{
+			Point position = (Projectile.Center + new Vector2(0, 8)).ToTileCoordinates();
+
+			if (Main.myPlayer == Projectile.owner)
+			{
+				if (WorldGen.IsTileReplacable(position.X, position.Y - 1))
+					Placer.PlaceTile<Wheatgrass>(position.X, position.Y - 1).Send();
+			}
+
+			SoundEngine.PlaySound(SoundID.Grass with { Volume = 0.5f, Pitch = 0.8f }, Projectile.Center);
+
+			for (int i = 0; i < 4; ++i)
+				Dust.NewDust(position.ToWorldCoordinates(), 2, 2, DustID.Hay, WorldGen.genRand.NextFloat(-1, 1) + Projectile.velocity.X, -Main.rand.NextFloat(1, 4), Scale: 0.6f);
+		}
+
+		public override bool? CanCutTiles() => false;
+		public override bool? CanDamage() => false;
+	}
+
+	public override void SetStaticDefaults() => NPCShopHelper.AddEntry(new NPCShopHelper.ConditionalEntry(static (shop) => !Main.LocalPlayer.ZoneDesert && shop.NpcType == NPCID.Merchant, 
 		new NPCShop.Entry(ModContent.ItemType<WheatgrassSeedPouch>(), Condition.DownedEyeOfCthulhu)));
 
 	public override void SetDefaults()
@@ -13,7 +54,7 @@ public class WheatgrassSeedPouch : ModItem
 		Item.width = Item.height = 26;
 		Item.value = Item.sellPrice(0, 0, 0, 5);
 		Item.rare = ItemRarityID.White;
-		Item.shoot = ModContent.ProjectileType<WheatgrassSeedProjectile>();
+		Item.shoot = ModContent.ProjectileType<WheatgrassSeed>();
 		Item.UseSound = SoundID.Item1;
 		Item.useStyle = ItemUseStyleID.Swing;
 		Item.shootSpeed = 8;

@@ -10,7 +10,7 @@ internal class HallowSavannaScene : ModSceneEffect
 		if (Main.dayTime)
 			return MusicID.TheHallow;
 		else
-			return MusicLoader.GetMusicSlot(Mod, "Assets/Music/SavannaNight");
+			return MusicLoader.GetMusicSlot(ModLoader.GetMod("SpiritMusic"), "Sounds/Music/HallowNight");
 	}
 
 	public override SceneEffectPriority Priority => SceneEffectPriority.BiomeHigh;

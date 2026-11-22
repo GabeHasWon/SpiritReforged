@@ -4,7 +4,7 @@ EmpoweredSwim: {
 }
 
 MantarayBuff: {
-	DisplayName: 救援蝠鲼
+	DisplayName: 救援鳐鱼
 	Description: 迅疾如潮！
 }
 
@@ -25,7 +25,7 @@ DoubleJumpPotionBuff: {
 
 FlightPotionBuff: {
 	DisplayName: 翱翔
-	Description: 增加25%飞行时间
+	Description: 飞行时间增加25%
 }
 
 BottleMountBuff: {
@@ -44,7 +44,7 @@ Impaled: {
 }
 
 KoiTotemBuff: {
-	DisplayName: 锦鲤之灵
+	DisplayName: 锦鲤图腾
 	Description: 渔力增加
 }
 
@@ -54,7 +54,7 @@ ButterflyMinion_Buff: {
 }
 
 ToucanMinion_Buff: {
-	DisplayName: 巨嘴鸟
+	DisplayName: 巨嘴鸟手杖
 	Description: 巨嘴鸟为你而战
 }
 
@@ -74,12 +74,12 @@ Frozen: {
 }
 
 GildedScarabBuff: {
-	DisplayName: 圣甲虫盾
+	DisplayName: 甲虫护盾
 	Description: 防御力增加{0}
 }
 
-PoolNoodleBubbleBuff: {
-	DisplayName: 游泳浮条泡泡
+Bubbled: {
+	DisplayName: 冒泡
 	Description: 你已寻获魂灵传说秘典……敬请期待我们的超级Boss——坠落之星，暗钢！
 }
 
@@ -109,6 +109,76 @@ ExplorerMine: {
 }
 
 JinxMark: {
-	// DisplayName: Jinx Mark
-	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+	DisplayName: 厄劫标记
+	Description: 被厄劫弓标记
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: 武器灌注：冻结
+	Description: 近战和鞭子攻击会冻结敌人
+}
+
+Slowed: {
+	DisplayName: 减速
+	Description: 你的动作变得迟钝
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: 巨嘴鸟手杖
+	Description: 巨嘴鸟手杖为你而战？
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: 小龙
+	Description: 一只小龙正跟着你
+}
+
+EnlilBuff: {
+	DisplayName: 恩利尔的援护
+	Description: 垂直机动性增加
+}
+
+ScarabLightPetBuff: {
+	DisplayName: 甲虫宝宝
+	Description: ”它在密谋……“
+}
+
+ScarabMountBuff: {
+	DisplayName: 鼠妇坐骑
+	Description: “抓稳了！”
+}
+
+DivineStrike: {
+	DisplayName: 神圣惩击
+	Description: 你的下一次攻击被强化了
+}
+
+RotDebuff: {
+	DisplayName: 腐化 [{0}]
+	Description: “你的皮肤变绿了”
+}
+
+SanguineStackingBuff: {
+	DisplayName: 染血能量 [{0}]
+	Description: 伤害增加{0}%
+}
+
+BlazeDebuff: {
+	DisplayName: 点燃
+	Description: 这很好！
+}
+
+RageGlyphBuff: {
+	DisplayName: 狂怒伤害 [{0}]
+	Description: 存储的伤害：{0}
+}
+
+ColumbatBuff: {
+	DisplayName: 蝠伦布
+	Description: 蝙蝠之物
+}
+
+ColumbaldBuff: {
+	DisplayName: 秃伦布
+	Description: 秃头之物
 }

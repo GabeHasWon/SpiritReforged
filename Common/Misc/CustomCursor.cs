@@ -5,7 +5,7 @@ public class CustomCursor : ILoadable
 	/// <summary> 'bool' is whether the cursor outline (thick cursor) is being drawn. This will be invoked twice so make sure to be explicit. </summary>
 	public static event Action<bool> DrawCustomCursor;
 	/// <summary> Whether the default cursor should not be drawn. </summary>
-	internal static bool HideCursor;
+	internal static bool HideCursor { get; set; }
 
 	public void Load(Mod mod)
 	{

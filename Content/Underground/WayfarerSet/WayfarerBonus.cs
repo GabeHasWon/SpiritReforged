@@ -1,5 +1,6 @@
-﻿using SpiritReforged.Common.Particle;
+﻿using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Particles;
 using Terraria.Audio;
@@ -28,7 +29,7 @@ internal class WayfarerBonus : ILoadable
 		var world = new Vector2(i, j).ToWorldCoordinates();
 		var player = Main.player[Player.FindClosest(world, 16, 16)];
 
-		if (WayfarerHead.SetActive(player) && player.DistanceSQ(world) < maxDistance * maxDistance)
+		if (player.WearingSet<WayfarerHead>() && player.DistanceSQ(world) < maxDistance * maxDistance)
 		{
 			if (PotTypes.Contains(type))
 				GrantBuffCommon(player, ModContent.BuffType<ExplorerPot>());
@@ -46,7 +47,7 @@ internal class WayfarerBonus : ILoadable
 			SoundEngine.PlaySound(PositiveOutcome, player.Center);
 
 			for (int i = 0; i < 12; i++)
-				ParticleHandler.SpawnParticle(new GlowParticle(player.Center, Main.rand.NextVector2CircularEdge(1, 1), Color.PapayaWhip, Main.rand.NextFloat(0.25f, 0.4f), Main.rand.Next(30, 50), 8));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(player.Center, Main.rand.NextVector2CircularEdge(1, 1), Color.PapayaWhip, Main.rand.NextFloat(0.25f, 0.4f), Main.rand.Next(30, 50), 8));
 		}
 
 		player.AddBuff(buffType, 600);

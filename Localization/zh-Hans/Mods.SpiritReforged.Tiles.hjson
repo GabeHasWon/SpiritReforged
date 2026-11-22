@@ -1,4 +1,5 @@
 Records: {
+	# Reforged pots
 	CoinPortal:
 		'''
 		永远包含一个金币传送门。
@@ -21,31 +22,77 @@ Records: {
 	UpsideDown: `生产错误`
 	Worm: 被破坏时会掉出各种蠕虫。
 	Platter: 一份热腾腾的饭菜，随时可取。是谁落在这儿的呢？
-	// WickerBasket: A picnic, just for you!
+	WickerBasket: 一份野餐，只为你！
 	Aether: 提供各种实用又闪亮的升级物品。
 	Stuffed: 在这种地方遇到商人真奇怪，他们简直是自找麻烦。
 	Scrying: 被破坏时能揭示大片地图。
 	Biome: 比常见的罐子包含更多种类的战利品。
-	// Boulder: Rolls along the ground when disturbed.
+	Boulder: 受到扰动时会沿着地面滚动。
+	Wax: 注入了强效魔法能量。
+
+	# Spooky cross mod pots
+	SpookyForest: {
+		Name: 填充桶
+		Entry: 脆弱糖果载体的前沿。
+	}
+
+	SpiderGrotto: {
+		Name: 结网烹饪锅
+		Entry: ……这些都是谁做的？
+	}
+
+	NoseTemple: {
+		Name: 瓷鼻子
+		Entry: 最华丽的瓷器，适合最傲慢的鼻子。
+	}
+
+	FetidFarms: {
+		Name: 食品杂货
+		Entry: 新鲜种植的农产品！
+	}
+
+	RottenDepths: {
+		Name: 满载骷髅
+		Entry: 看来这些鱼吞下了一些东西。
+	}
+
+	TarPits: {
+		Name: 焦油瓷罐子
+		Entry: 华丽、微粘、有点开裂。
+	}
+
+	Krampus: {
+		Name: 超棒礼品
+		Entry: 你见过的最酷的礼盒。
+	}
+
+	UpperCatacombs: {
+		Name: 远古雕刻罐子
+		Entry: 这些雕刻很可爱，但很难看到。
+	}
+
+	LowerCatacombs: {
+		Name: 嘲弄罐子
+		Entry: 他们嘲笑着你。
+	}
 }
 
-SunkenTreasureTile.MapEntry: 沉没的宝藏
+FablesGraves: {
+	SetNames: {
+		Savanna: 稀树平原坟墓
+		SaltFlats: 盐坟墓
+	}
+}
+
 HydrothermalVent.MapEntry: 热液喷口
-CoralMapEntry: 珊瑚
-KelpMapEntry: 海带
-GarInAJar_Tile.MapEntry: 罐中雀鳝
-CloudstalkTile.MapEntry: 云茎
-SmallDriftwoodTile.MapEntry: 小型浮木
-MediumDriftwoodTile.MapEntry: 中型浮木
-LargeDriftwoodTile.MapEntry: 大型浮木
-BambooBirdCage.MapEntry: 条纹竹鸟笼
-KoiTotemTile.MapEntry: 锦鲤图腾
-HerosMemorialStatue.MapEntry: 英雄纪念碑
-TermiteJar_Tile.MapEntry: 白蚁罐
-GarInAJarTile.MapEntry: 罐中雀鳝
-KillieFishbowlTile.MapEntry: 鳉鱼鱼缸
 OreCarts.MapEntry: 矿车
 PotionVats.MapEntry: 药罐
 ObsidianShroom.MapEntry: 黑曜石蘑菇
-Starflower.MapEntry: 星状花
-// BonsaiTrees.MapEntry: Bonsai
+Starflower.MapEntry: 向星葵
+BonsaiTrees.MapEntry: 盆栽
+DustyTomb.MapEntry: 尘埃陵墓
+# Neither of the moss entries are used by Reforged, but rather used for Recipe Browser for another mod's, Everware's, functionality
+OganessonMoss.MapEntry: 「气奥」苔藓
+RadonMoss.MapEntry: 氡苔藓
+StarscareSapling.MapEntry: 星惧树苗
+StarscareSaplingGreen.MapEntry: 绿色星惧树苗

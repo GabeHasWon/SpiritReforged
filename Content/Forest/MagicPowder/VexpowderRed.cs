@@ -12,7 +12,7 @@ public class VexpowderRed : Flarepowder
 	{
 		base.SetDefaults();
 		Item.shoot = ModContent.ProjectileType<VexpowderRedDust>();
-		Item.damage = 10;
+		Item.damage = 11;
 		Item.crit = 2;
 		Item.shootSpeed = 6.2f;
 		Item.value = Item.sellPrice(copper: 7);
@@ -27,6 +27,6 @@ public class VexpowderRed : Flarepowder
 
 internal class VexpowderRedDust : VexpowderBlueDust
 {
-	public override Color[] Colors => [Color.Red, Color.OrangeRed, Color.Goldenrod];
+	public override Color[] Colors => [new Color(255, 230, 180), Color.DarkGoldenrod, new Color(205, 52, 52), Color.DarkOrange, Color.Magenta * 0.5f];
 	public override void SpawnDust(Vector2 origin) => Dust.NewDustPerfect(origin, DustID.RedTorch, Projectile.velocity * 0.5f, Scale: Main.rand.NextFloat(0.5f, 1.2f)).noGravity = true;
 }

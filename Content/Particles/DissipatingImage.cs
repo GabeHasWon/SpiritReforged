@@ -1,22 +1,38 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
 public class DissipatingImage : Particle
 {
-	public bool UseLightColor { get; set; }
+	public Color? SecondaryColor { get; set; } = null;
+	public Color? TertiaryColor { get; set; } = null;
+
+	public virtual bool UseLightColor { get; set; }
+	public virtual bool Pixellate { get; set; }
+
+	public virtual string DistortNoiseString => "noise";
+
+	public virtual float ColorLerpExponent { get; set; } = 1;
+	public virtual float Intensity { get; set; } = 1;
+	public virtual float DissolveAmount { get; set; } = 0;
+	public virtual float FinalScaleMod { get; set; } = 1.5f;
+	public virtual float PixelDivisor { get; set; } = 1.5f;
+
+	public virtual EaseFunction DistortEasing { get; set; } = EaseFunction.EaseQuadIn;
 
 	private readonly Texture2D _texture;
 	private readonly float _maxDistortion;
+	private readonly Color _tint;
 	private readonly Vector2 _noiseStretch = new (1);
 	private readonly Vector2 _texExponent = new(2, 1);
+	private readonly Vector2 _scrollOffset = new(Main.rand.NextFloat(), Main.rand.NextFloat());
 
-	private float _opacity;
-
-	internal float _scaleMod = 1;
+	protected float _opacity;
+	protected float _scaleMod = 1;
 
 	public DissipatingImage(Vector2 position, Color color, float rotation, float scale, float maxDistortion, string texture, int maxTime)
 	{
@@ -25,7 +41,7 @@ public class DissipatingImage : Particle
 		Scale = scale;
 		_texture = AssetLoader.LoadedTextures[texture].Value;
 		_maxDistortion = maxDistortion;
-		Color = color;
+		_tint = color;
 		MaxTime = maxTime;
 	}
 
@@ -42,7 +58,7 @@ public class DissipatingImage : Particle
 		Scale = scale;
 		_texture = texture;
 		_maxDistortion = maxDistortion;
-		Color = color;
+		_tint = color;
 		MaxTime = maxTime;
 	}
 
@@ -52,47 +68,51 @@ public class DissipatingImage : Particle
 		_texExponent = textureExponentRange;
 	}
 
-	public DissipatingImage UsesLightColor()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
-		UseLightColor = true;
-		return this;
-	}
+		base.Update(ref settings);
 
-	public override void Update()
-	{
 		_opacity = EaseFunction.EaseQuadOut.Ease(Progress);
 		_opacity = (float)Math.Sin(_opacity * MathHelper.Pi);
-		_scaleMod = 1 + Progress / 2;
+		_scaleMod = MathHelper.Lerp(1, FinalScaleMod, Progress);
 	}
 
-	public override ParticleLayer DrawLayer => ParticleLayer.AboveProjectile;
+	public virtual Color GetLightColor() => UseLightColor ? Lighting.GetColor(Position.ToTileCoordinates()) : Color.White;
 
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"];
-		effect.Parameters["uColor"].SetValue(Color.ToVector4());
-		effect.Parameters["uTexture"].SetValue(_texture);
-		effect.Parameters["perlinNoise"].SetValue(AssetLoader.LoadedTextures["noise"].Value);
+		Effect effect = AssetLoader.LoadedShaders["DistortDissipateTexture"].Value;
+		Vector2 size = Scale * _texture.Size() * _scaleMod;
+
+		effect.Parameters["primaryColor"].SetValue(_tint.ToVector4());
+		effect.Parameters["secondaryColor"].SetValue((SecondaryColor ?? _tint).ToVector4());
+		effect.Parameters["tertiaryColor"].SetValue((TertiaryColor ?? _tint).ToVector4());
+		effect.Parameters["colorLerpExp"].SetValue(ColorLerpExponent);
+
 		effect.Parameters["Progress"].SetValue(Progress);
-		effect.Parameters["xMod"].SetValue(_noiseStretch.X);
-		effect.Parameters["yMod"].SetValue(_noiseStretch.Y);
-		effect.Parameters["distortion"].SetValue(_maxDistortion * EaseFunction.EaseQuadIn.Ease(Progress));
+		effect.Parameters["uTexture"].SetValue(_texture);
+		effect.Parameters["noise"].SetValue(AssetLoader.LoadedTextures[DistortNoiseString].Value);
+		effect.Parameters["secondaryNoise"].SetValue(AssetLoader.LoadedTextures["fbmNoise"].Value);
+		effect.Parameters["coordMods"].SetValue(_noiseStretch);
+		effect.Parameters["scroll"].SetValue(_scrollOffset);
+		effect.Parameters["intensity"].SetValue(Intensity * MathHelper.Lerp(_opacity, 1, DissolveAmount));
+
+		effect.Parameters["distortion"].SetValue(_maxDistortion * DistortEasing.Ease(Progress));
+		effect.Parameters["dissolve"].SetValue(EaseFunction.EaseCubicInOut.Ease(Progress) * DissolveAmount);
+		effect.Parameters["doDissolve"].SetValue(DissolveAmount > 0);
+
+		effect.Parameters["pixellate"].SetValue(Pixellate);
+		effect.Parameters["pixelDimensions"].SetValue(size / PixelDivisor);
 
 		float texExponent = MathHelper.Lerp(_texExponent.X, _texExponent.Y, _opacity);
 		effect.Parameters["texExponent"].SetValue(texExponent);
 
-		Color lightColor = Color.White;
-		if (UseLightColor)
-			lightColor = Lighting.GetColor(Position.ToTileCoordinates().X, Position.ToTileCoordinates().Y);
-
-		var square = new SquarePrimitive
+		SquarePrimitive square = new()
 		{
-			Color = lightColor * _opacity,
-			Height = Scale * _texture.Height * _scaleMod,
-			Length = Scale * _texture.Width * _scaleMod,
-			Position = Position - Main.screenPosition,
+			Color = GetLightColor(),
+			Height = size.Y,
+			Length = size.X,
+			Position = Position + settings.AnchorPosition,
 			Rotation = Rotation,
 		};
 		PrimitiveRenderer.DrawPrimitiveShape(square, effect);

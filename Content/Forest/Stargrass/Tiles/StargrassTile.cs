@@ -1,21 +1,30 @@
 ﻿using SpiritReforged.Common;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.TileCommon;
+using SpiritReforged.Common.TileCommon.Conversion;
 using SpiritReforged.Common.TileCommon.PresetTiles;
-using SpiritReforged.Common.Visuals.Glowmasks;
-using SpiritReforged.Common.WorldGeneration;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WorldGeneration.Noise;
 using SpiritReforged.Content.Particles;
+using SpiritReforged.Content.Savanna.Items;
+using SpiritReforged.Content.Savanna.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Forest.Stargrass.Tiles;
 
-[AutoloadGlowmask("Method:Content.Forest.Stargrass.Tiles.StargrassTile Glow")]
 public class StargrassTile : GrassTile
 {
-	public static Color Glow(object obj) 
+	//public virtual ConversionHandler.Set ConversionSet => new()
+	//{
+	//	{ BiomeConversionID.Corruption, TileID.CorruptGrass },
+	//	{ BiomeConversionID.Crimson, TileID.CrimsonGrass },
+	//	{ BiomeConversionID.Hallow, TileID.HallowedGrass },
+	//	{ BiomeConversionID.PurificationPowder, TileID.Grass },
+	//	{ SavannaConversion.ConversionType, ModContent.TileType<SavannaGrass>() }
+	//};
+
+	public static Color GetGlowColor(int i, int j) 
 	{
-		var pos = (Point)obj;
-		float sine = (float)((Math.Sin(NoiseSystem.Perlin(pos.X * 1.2f, pos.Y * 0.2f) * 3f + Main.GlobalTimeWrappedHourly * 1.3f) + 1f) * 0.5f);
+		float sine = (float)((Math.Sin(NoiseSystem.Perlin(i * 1.2f, j * 0.2f) * 3f + Main.GlobalTimeWrappedHourly * 1.3f) + 1f) * 0.5f);
 		return Color.White * MathHelper.Lerp(0.2f, 1f, sine);
 	}
 
@@ -28,16 +37,18 @@ public class StargrassTile : GrassTile
 
 		int mowType = ModContent.TileType<StargrassMowed>();
 		SpiritSets.Mowable[Type] = (Type == mowType) ? -1 : ModContent.TileType<StargrassMowed>();
+		TileHelperSets.TileGlowmask[Type] = Helpers.RequestGlowmask(this, GetGlowColor);
 
 		RegisterItemDrop(ItemID.DirtBlock);
 		AddMapEntry(new Color(28, 216, 151));
 		DustType = DustID.Flare_Blue;
-	}
 
-	public override void Convert(int i, int j, int conversionType)
-	{
-		if (conversionType == BiomeConversionID.PurificationPowder)
-			WorldGen.ConvertTile(i, j, TileID.Grass);
+		int[] mergeTypes = [TileID.Vines, TileID.VineFlowers, TileID.Plants, TileID.Plants2, TileID.DyePlants];
+		foreach (int type in mergeTypes)
+		{
+			if (TileObjectData.GetTileData(type, 0) is TileObjectData data && data.AnchorValidTiles != null)
+				data.AnchorValidTiles = [.. data.AnchorValidTiles, Type]; //Allow type to anchor to THIS type
+		}
 	}
 
 	public override void FloorVisuals(Player player)
@@ -60,7 +71,7 @@ public class StargrassTile : GrassTile
 			Vector2 velocity = new Vector2(0, -1).RotatedByRandom(MathHelper.PiOver2) * Main.rand.NextFloat(0.9f, 1.5f);
 			bool left = true;
 
-			ParticleHandler.SpawnParticle(new GlowParticle(player.Bottom + new Vector2(Main.rand.Next(player.width), 0), velocity,
+			ParticleRenderers.UnderProjectiles.Add(new GlowParticle(player.Bottom + new Vector2(Main.rand.Next(player.width), 0), velocity,
 				new Color(0, 157, 227) * 0.66f, Main.rand.NextFloat(0.35f, 0.5f), 60, 10, p =>
 				{
 					p.Velocity = p.Velocity.RotatedBy(left ? 0.1f : -0.1f);
@@ -74,11 +85,15 @@ public class StargrassTile : GrassTile
 		}
 	}
 
+	public override void Convert(int i, int j, int conversionType)
+	{
+		if (ConversionHandler.FindSet(nameof(StargrassTile), conversionType, out int newType))
+			WorldGen.ConvertTile(i, j, newType);
+	}
+
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
-		var flags = OpenTools.GetOpenings(i, j, false, false, true);
-
-		if (flags == OpenFlags.None) //Surrounded by solid tiles
+		if (!WorldGen.TileIsExposedToAir(i, j))
 			Main.tile[i, j].TileType = TileID.Grass;
 
 		return true;
@@ -86,7 +101,7 @@ public class StargrassTile : GrassTile
 
 	public override void GrowPlants(int i, int j)
 	{
-		if (Main.rand.NextBool(5) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
+		if (Main.rand.NextBool(5) && WorldGen.GrowMoreVines(i, j) && Main.tile[i, j + 1].LiquidType != LiquidID.Lava)
 			Placer.GrowVine(i, j + 1, ModContent.TileType<StargrassVine>());
 
 		if (!Main.rand.NextBool(4) || Framing.GetTileSafely(i, j - 1).HasTile)

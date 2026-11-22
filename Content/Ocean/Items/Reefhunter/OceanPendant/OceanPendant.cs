@@ -1,18 +1,17 @@
-using SpiritReforged.Content.Ocean.Items.Reefhunter.Buffs;
 using SpiritReforged.Common.ItemCommon;
-using Terraria.DataStructures;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Ocean.Items.Reefhunter.Buffs;
+using SpiritReforged.Content.Ocean.Items.Reefhunter.Particles;
+using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 
 [AutoloadEquip(EquipType.Neck)]
 [FromClassic("PendantOfTheOcean")]
-public class OceanPendant : EquippableItem
+public class OceanPendant : ModItem, IFlagged
 {
-	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.CoinPickup with { Pitch = .25f });
+	public override void SetStaticDefaults() => DiscoveryHelper.RegisterPickup(Type, SoundID.CoinPickup with { Pitch = 0.25f });
 
 	public override void SetDefaults()
 	{
@@ -23,12 +22,12 @@ public class OceanPendant : EquippableItem
 		Item.accessory = true;
 	}
 
-	public override void UpdateEquippable(Player player)
+	public override void UpdateEquip(Player player)
 	{
 		if (Collision.WetCollision(player.position, player.width, player.height))
 		{
 			if (player.velocity.Length() > 2f && Main.rand.NextBool(12))
-				ParticleHandler.SpawnParticle(new BubbleParticle(player.Center + player.velocity / 2, Vector2.Normalize(player.velocity).RotatedByRandom(MathHelper.Pi / 6) * Main.rand.NextFloat(2f, 4), Main.rand.NextFloat(0.2f, 0.4f), 40));
+				ParticleRenderers.OverPlayers.Add(new BubbleParticle(player.Center + player.velocity / 2, Vector2.Normalize(player.velocity).RotatedByRandom(MathHelper.Pi / 6) * Main.rand.NextFloat(2f, 4), Main.rand.NextFloat(0.2f, 0.4f), 40));
 
 			player.AddBuff(ModContent.BuffType<EmpoweredSwim>(), 10);
 		}

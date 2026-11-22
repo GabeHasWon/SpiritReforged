@@ -1,7 +1,17 @@
 Biomes: {
 	SavannaBiome: {
 		DisplayName: Саванна
-		TownNPCDialogueName: саванну
+		TownNPCDialogueName: Саванна
+	}
+
+	SaltBiome: {
+		DisplayName: Солончаковые равнины
+		TownNPCDialogueName: Солончаковые равнины
+	}
+
+	ZigguratBiome: {
+		DisplayName: Зиккурат
+		TownNPCDialogueName: Зиккурат
 	}
 }
 
@@ -9,46 +19,120 @@ SlotContexts.Backpack: Рюкзак
 
 Conditions: {
 	InSavanna: В саванне
-	PeevedTumbler: Когда блестит
-	Discovered: Обнаружено
-	Submerged: Под водой
+	PeevedTumbler: С блестящего перекати-поля
+	Discovered: Был найден в мире
+	Submerged: Если полностью погружён в воду
+	InSaltFlats: В солончаковых равнинах
+	IsPrickly: Со стактусов с розовым цветком
+	InZiggurat: В Зиккурате
+	InSpace: В космосе
+	NotSnow: Не в тундре
 }
 
 Misc: {
 	Pins: {
-		Move: Переместить метку
-		Obtained: Эта метка уже у вас
-		UseItem: ПКМ, чтобы добавить эту метку в коллекцию
+		Move: Переместить булавку
+		Obtained: Такая булавка уже есть в вашей коллекции
+		UseItem: Нажмите ПКМ по булавке, чтобы добавить её в коллекцию
+	}
+
+	Enchantment: {
+		PlaceToEnchant:
+			'''
+			Поместите сюда предмет,
+			чтобы зачаровать его
+			'''
+		Enchant: Зачаровать
+		Cost: "{0} [c/{1}:{^0:хроматический воск;хроматических воска;хроматических восков}]"
+		Clear: Снять зачарование
+		Random: Случайное зачарование
+	}
+
+	TombText: {
+		0: Здесь покоится {0}.
+		1: Здесь лежит {0}. Ты всегда в нашей памяти
+		2: Здесь лежат {0} и {1}.
+		3: Эта могила пуста.
 	}
 
 	NoStock: Нет в наличии
-	GraveText: <wavy>Старая, выцветшая надпись... Что здесь было написано?
-	MenuButton: Использовать стиль меню
-	// ShareMap: Map has been shared.
-	// ShareAndUpdateMap: Map has been shared & updated.
+	GraveText: <wavy>Текст старый и выцветший; вы не можете разобрать, что здесь написано.
+	MenuButton: Использовать тему меню
+	UnchangedMap: Карта осталась без изменений.
+	ShareMap: Информация с карты была передана.
+	ShareAndUpdateMap: Карта была обновлена и передана.
 }
 
 DamageSources: {
 	Impaling: {
-		0: "{0} был пронзён."
-		1: "{0} оказался нанизан."
+		0: Игрок {0} был пронзён насквозь.
+		1: Игрок {0} был насажен на кол.
 	}
 }
 
 GameTips: {
-	ReforgedTip0: Всегда носите с собой еду. Никогда не знаешь, когда она пригодится!
-	ReforgedTip1: Иногда бабочки прячутся в подземных рощах.
-	ReforgedTip2: Метки полезны! Проверьте инвентарь значков в левом нижнем углу карты.
+	# Release
+	ReforgedTip0: Всегда носите с собой еду — никогда не знаешь, когда она пригодится!
+	ReforgedTip1: Некоторые бабочки прячутся в подземных рощах.
+	ReforgedTip2: Булавки очень полезны! Проверьте свои булавки в левом нижнем углу карты.
 	ReforgedTip3: Животных саванны нельзя поймать сачком.
-	ReforgedTip4: Рюкзаки. Теперь у вас больше места.
-	ReforgedTip5: Мрачная бездна океана скрывает множество даров.
-	ReforgedTip6: Звёздная трава приносит утешение в ночной темноте.
-	ReforgedTip7: Облачный стебель всегда растёт под облаками.
-	ReforgedTip8: На вершины акаций можно забраться, если нужна высота.
-	ReforgedTip9: Вещи иногда всплывают на поверхность океана — заглядывайте время от времени!
+	ReforgedTip4: Рюкзаки. Теперь у вас больше места для вещей!
+	ReforgedTip5: В глубинах океана можно найти много интересного.
+	ReforgedTip6: Под покровом ночи свечение звёздной травы дарит приятное облегчение.
+	ReforgedTip7: Облачник всегда растёт под облаками. Не забывай поглядывать наверх!
+	ReforgedTip8: Вы можете стоять на кронах акаций, если вы хотите забраться повыше.
+	ReforgedTip9: Иногда на поверхность океана всплывают случайные предметы — проверяйте его почаще!
+	# Caves & Clubs
+	ReforgedTip10: В пещерах полно различных горшков! Смотрите внимательно!
+	ReforgedTip11: Дубины полезны для фокусированных атак по одиночным целям.
+	# Sunscorched
+	ReforgedTip12: Легенды говорят об одном древнем алтаре, принимающем подношения в виде самоцветов...
+	ReforgedTip13: Будьте осторожны, исследуя Зиккурат! Сюрпризы прячутся в каждом углу.
+	ReforgedTip14: Подземные оазисы — хорошее место для отдыха от опасностей пустынных пещер.
+	ReforgedTip15: Янтарь полон секретов! Быть может,  внутри них вы найдёте что-нибудь интересное...
+	ReforgedTip16: Будьте бдительны, исследуя руины в пустыне! Иногда пол оказывается не таким прочным, как на первый взгляд.
+	# Spellbound
+	ReforgedTip17: Глифы могут наделить ваше оружие уникальными эффектами, меняющими подход к боёвке!
+	ReforgedTip18: Хроматический воск можно найти в горшках и ящиках, а также получить с некоторых врагов.
+	ReforgedTip19: Чародей может наделить эффектом одного из множества уникальных глифов. Попробуйте их все!
 }
 
 Emotes: {
-	// CartographerEmote.Command: cartographer
-	// HikerEmote.Command: hikeremote
+	CartographerEmote.Command: cartographer
+	HikerEmote.Command: hiker
+	EnchanterEmote.Command: enchanteremote
 }
+
+InfoDisplays: {
+	LedgerInfoDisplay: {
+		DisplayName: Стоимость предметов
+		Description: Стоимость видима
+	}
+
+	ScryingLensInfoDisplay: {
+		DisplayName: Трансмутации в мерцании
+		Description: Трансмутации видимы
+	}
+}
+
+Ecotones: {
+	SaltFlatsEcotone: Солончаковые равнины
+	SavannaEcotone: Саванна
+}
+
+EcotoneEdges: {
+	Forest: Лес
+	Desert: Пустыня
+	Ocean: Океан
+	Snow: Снега
+	Jungle: Джунгли
+	Corruption: Искажение
+	Crimson: Багрянец
+	Hallow: Освящение
+	Savanna: "{$Ecotones.SavannaEcotone}"
+	SaltFlats: "{$Ecotones.SaltFlatsEcotone}"
+}
+
+DamageClasses.HybridDamageClass.DisplayName: ед. гибридного урона
+BackpackPickupEnabled: Автоматический подбор предметов: ВКЛ
+BackpackPickupDisabled: Автоматический подбор предметов: ВЫКЛ

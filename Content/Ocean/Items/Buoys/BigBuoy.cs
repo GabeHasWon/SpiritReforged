@@ -10,21 +10,14 @@ public class BigBuoy : SmallBuoy
 	{
 		if (player.whoAmI == Main.myPlayer && player.ItemAnimationJustStarted)
 		{
-			int type = SimpleEntitySystem.Types[typeof(BigBuoyEntity)];
-			var position = Main.MouseWorld;
-
-			SimpleEntitySystem.NewEntity(type, position);
+			SimpleEntitySystem.NewEntity<BigBuoyEntity>(Main.MouseWorld);
 			return true;
 		}
 
 		return null;
 	}
 
-	public override void AddRecipes() => CreateRecipe()
-			.AddRecipeGroup("CopperBars", 3)
-			.AddIngredient(ItemID.Glass, 2)
-			.AddTile(TileID.Anvils)
-			.Register();
+	public override void AddRecipes() => CreateRecipe().AddRecipeGroup("CopperBars", 3).AddIngredient(ItemID.Glass, 2).AddTile(TileID.Anvils).Register();
 }
 
 public class BigBuoyEntity : SmallBuoyEntity

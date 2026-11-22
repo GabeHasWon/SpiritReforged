@@ -1,11 +1,14 @@
 ﻿using SpiritReforged.Common.WorldGeneration;
 using System.Linq;
 using Terraria.DataStructures;
+using Terraria.Utilities;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon;
 
 public struct PlaceAttempt(bool success)
 {
+	/// <summary> Whether the last chained step has succeeded. </summary>
 	public bool success = success;
 	/// <summary> Can only be safely used if <see cref="success"/> is true. </summary>
 	public TileObject data;
@@ -16,6 +19,15 @@ public struct PlaceAttempt(bool success)
 /// <summary> Includes helper methods related to placing tiles. </summary>
 public static class Placer
 {
+	public static int HerbRadius => WorldGen.GetWorldSize() switch
+	{
+		1 => 45,
+		2 => 61,
+		_ => 31
+	};
+
+	/// <summary> Picks between <see cref="WorldGen.genRand"/> and <see cref="Main.rand"/> depending on <see cref="WorldGen.generatingWorld"/>. </summary>
+	public static UnifiedRandom Rand => WorldGen.generatingWorld ? WorldGen.genRand : Main.rand;
 	private static readonly Point16[] CardinalDirections = [new Point16(0, -1), new Point16(-1, 0), new Point16(1, 0), new Point16(0, 1)];
 
 	private static readonly int[] Replaceable = [TileID.Plants, TileID.Plants2, TileID.JunglePlants, TileID.JunglePlants2, 
@@ -24,8 +36,7 @@ public static class Placer
 	/// <returns> Whether the tile at the given coordinates is generally replaceable and safe to be cleared. Useful for random plant growth. </returns>
 	public static bool IsReplaceable(int i, int j)
 	{
-		var tile = Main.tile[i, j];
-
+		Tile tile = Main.tile[i, j];
 		if (!tile.HasTile)
 			return true;
 
@@ -60,7 +71,7 @@ public static class Placer
 		if (data is null)
 			style = 0;
 		else if (style == -1)
-			style = Main.rand.Next(data.RandomStyleRange);
+			style = Rand.Next(data.RandomStyleRange);
 
 		if (TileObject.CanPlace(i, j, type, style, 0, out var objectData))
 		{
@@ -104,11 +115,11 @@ public static class Placer
 		if (a.success && TileObject.Place(a.data) && Framing.GetTileSafely(a.Coords).TileType == a.data.type)
 			return a;
 
-		return a;
+		return a with { success = false };
 	}
 
 	/// <summary> Calls <see cref="TileObjectData.CallPostPlacementPlayerHook"/> for this attempt, and outputs entity of T. </summary>
-	public static PlaceAttempt PostPlacement<T>(this PlaceAttempt a, out T entity) where T : class
+	public static PlaceAttempt PostPlacement<T>(this PlaceAttempt a, out T entity) where T : TileEntity
 	{
 		if (a.success)
 		{
@@ -122,7 +133,7 @@ public static class Placer
 				int i = a.Coords.X;
 				int j = a.Coords.Y;
 
-				TileExtensions.GetTopLeft(ref i, ref j);
+				(i, j) = Helpers.GetTopLeft(i, j);
 
 				if (TileEntity.ByPosition.TryGetValue(new Point16(i, j), out var value) && value is T valueOfType)
 				{
@@ -149,7 +160,7 @@ public static class Placer
 				int i = a.Coords.X;
 				int j = a.Coords.Y;
 
-				TileExtensions.GetTopLeft(ref i, ref j);
+				(i, j) = Helpers.GetTopLeft(i, j);
 				NetMessage.SendTileSquare(-1, i, j, data.Width, data.Height);
 			}
 		}
@@ -163,17 +174,7 @@ public static class Placer
 
 	/// <summary> Checks the surrounding area for herbs of <paramref name="type"/>.</summary>
 	/// <returns> true if fewer than 4 herbs are in range. </returns>
-	public static bool CanPlaceHerb(int i, int j, int type)
-	{
-		int radius = WorldGen.GetWorldSize() switch
-		{
-			1 => 45,
-			2 => 61,
-			_ => 31
-		};
-
-		return WorldGen.CountNearBlocksTypes(i, j, radius, 4, type) < 4;
-	}
+	public static bool CanPlaceHerb(int i, int j, int type) => WorldGen.CountNearBlocksTypes(i, j, HerbRadius, 4, type) < 4;
 
 	/// <summary> Tries to place or extend a vine at the given coordinates. </summary>
 	/// <param name="i"> The tile's X coordinate. </param>
@@ -190,7 +191,7 @@ public static class Placer
 			while (Main.tile[i, j + 1].HasTile && Main.tile[i, j + 1].TileType == type)
 				j++; //Move to the bottom of the vine
 
-			for (int x = 0; x < maxLength; x++)
+			for (int y = 0; y < maxLength; y++)
 			{
 				if (Main.tile[i, j].HasTile && Main.tile[i, j].TileType == type)
 					j--; //Move to the next available tile above
@@ -201,7 +202,7 @@ public static class Placer
 			while (Main.tile[i, j - 1].HasTile && Main.tile[i, j - 1].TileType == type)
 				j--; //Move to the top of the vine
 
-			for (int x = 0; x < maxLength; x++)
+			for (int y = 0; y < maxLength; y++)
 			{
 				if (Main.tile[i, j].HasTile && Main.tile[i, j].TileType == type)
 					j++; //Move to the next available tile below

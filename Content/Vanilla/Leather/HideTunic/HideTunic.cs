@@ -1,6 +1,3 @@
-using SpiritReforged.Content.Ocean.Items.Vanity.Towel;
-using SpiritReforged.Content.Vanilla.Leather.MarksmanArmor;
-
 namespace SpiritReforged.Content.Vanilla.Leather.HideTunic;
 
 [AutoloadEquip(EquipType.Body)]

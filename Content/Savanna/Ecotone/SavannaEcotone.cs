@@ -1,68 +1,161 @@
 ﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.ModCompat.EcotoneMapper;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.Tree;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Common.WorldGeneration.Ecotones;
+using SpiritReforged.Common.WorldGeneration.GenConfiguration;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds;
 using SpiritReforged.Common.WorldGeneration.SecretSeeds.Seeds;
+using SpiritReforged.Content.Savanna.Biome;
 using SpiritReforged.Content.Savanna.Items;
 using SpiritReforged.Content.Savanna.Tiles;
 using SpiritReforged.Content.Savanna.Tiles.AcaciaTree;
 using SpiritReforged.Content.Savanna.Walls;
+using SpiritReforged.Content.Underground.Tiles;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
+using Terraria.ModLoader.Config;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.Savanna.Ecotone;
 
-internal class SavannaEcotone : EcotoneBase
+internal class SavannaEcotone : EcotoneBase, IGenerationPage
 {
 	private delegate bool OnAttempt(int i, int j);
 
-	[WorldBound]
-	public static Rectangle SavannaArea;
-	private static int Steps = 0;
+	private const string Path = "SpiritReforged/Content/Savanna/Ecotone/";
 
-	protected override void InternalLoad()
+	/// <summary> The tile area that the Savanna encompasses <b>ONLY</b> during world generation. </summary>
+	[WorldBound]
+	public static List<Rectangle> SavannaAreas = [];
+
+	[GenConfigurable(true)]
+	private static bool OverSpawn = false;
+
+	[GenConfigurable(2, 15)]
+	private static int Steps = 3;
+
+	[GenConfigurable(1, 9)]
+	[ReverseMinMax]
+	[Denominator]
+	private static int CampsiteChance = 3;
+
+	[GenConfigurable(5, 600)]
+	[ReverseMinMax]
+	[Denominator]
+	[Slider]
+	private static int BaseTreeChance = 90;
+
+	[GenConfigurable(1, 20)]
+	[ReverseMinMax]
+	[Denominator]
+	[Slider]
+	private static int PotChance = 8;
+
+	[GenConfigurable(10, 90)]
+	[ReverseMinMax]
+	[Denominator]
+	[Slider]
+	private static int TermiteChance = 45;
+
+	PageInfo IGenerationPage.Info => new("Savanna", Graphics.Tex(Path + "SavannaPage"), Graphics.Tex(Path + "SavannaPageButton"))
+	{
+		Presets = 
+		[
+			new("Domesticated", 
+				[
+					new IndividualPreset(nameof(CampsiteChance), 1),
+					new IndividualPreset(nameof(BaseTreeChance), 180),
+					new IndividualPreset(nameof(PotChance), 3),
+					new IndividualPreset(nameof(TermiteChance), 80),
+				], false),
+
+			new("Bumpy", 
+				[
+					new IndividualPreset(nameof(Steps), 14),
+					new IndividualPreset(nameof(BaseTreeChance), 16),
+					new IndividualPreset(nameof(PotChance), 12),
+					new IndividualPreset(nameof(TermiteChance), 55),
+					new IndividualPreset(nameof(CampsiteChance), 9),
+				], false),
+
+			new("Infested", 
+				[
+					new IndividualPreset(nameof(CampsiteChance), 9),
+					new IndividualPreset(nameof(BaseTreeChance), 550),
+					new IndividualPreset(nameof(PotChance), 5),
+					new IndividualPreset(nameof(TermiteChance), 10),
+				], false)
+		]
+	};
+
+	Mod IGenerationPage.Mod => SpiritReforgedMod.Instance;
+
+	public override HashSet<string> EcotoneEdgeBlocklist => ["Jungle", "Ocean"];
+
+	protected override EcotoneIcon GetIcon() => EcotoneIcon.FromBiome<SavannaBiome>();
+
+	private static bool AnyArea(Func<Rectangle, bool> func)
+	{
+		foreach (Rectangle rect in SavannaAreas)
+			if (func(rect))
+				return true;
+		
+		return false;
+	}
+
+	public override void Load()
 	{
 		On_WorldGen.GrowPalmTree += PreventPalmTreeGrowth;
-		On_WorldGen.PlaceSmallPile += PreventSmallPiles;
-		On_WorldGen.PlaceTile += PreventLargePiles;
-		On_WorldGen.PlacePot += ConvertPot;
-	}
-
-	private static bool PreventSmallPiles(On_WorldGen.orig_PlaceSmallPile orig, int i, int j, int X, int Y, ushort type)
-	{
-		if (WorldGen.generatingWorld && type == TileID.SmallPiles && (SavannaArea.Contains(new Point(i, j)) || OnBaobab(i, j)))
-			return false; //Skips orig
-
-		return orig(i, j, X, Y, type);
-	}
-
-	private static bool PreventLargePiles(On_WorldGen.orig_PlaceTile orig, int i, int j, int Type, bool mute, bool forced, int plr, int style)
-	{
-		if (WorldGen.generatingWorld && Type == TileID.LargePiles && (SavannaArea.Contains(new Point(i, j)) || OnBaobab(i, j)))
-			return false; //Skips orig
-
-		return orig(i, j, Type, mute, forced, plr, style);
+		TileEvents.OnPlacePot += ConvertPot;
 	}
 
 	private static bool PreventPalmTreeGrowth(On_WorldGen.orig_GrowPalmTree orig, int i, int y)
 	{
-		if (WorldGen.generatingWorld && SavannaArea.Contains(new Point(i, y)))
+		if (WorldGen.generatingWorld && AnyArea(x => x.Contains(new Point(i, y))))
 			return false; //Skips orig
 
 		return orig(i, y);
 	}
 
-	private static bool ConvertPot(On_WorldGen.orig_PlacePot orig, int x, int y, ushort type, int style)
+	private static bool ConvertPot(int x, int y, ushort type, int style)
 	{
-		if (WorldGen.generatingWorld && SavannaArea.Contains(new Point(x, y)))
-			style = WorldGen.genRand.Next(7, 10); //Jungle pots
+		if (EcotoneSurfaceMapping.CorruptAreas.FirstOrDefault(v => v.Value.ContainsKey(new Point16(x, y))) is { } area)
+		{
+			if (area.Key == BiomeConversionID.Corruption)
+			{
+				type = TileID.Pots;
+				style = WorldGen.genRand.Next(16, 20);
+			}
+			else if (area.Key == BiomeConversionID.Crimson)
+			{
+				type = TileID.Pots;
+				style = WorldGen.genRand.Next(23, 26);
+			}
+			else
+				return true;
 
-		return orig(x, y, type, style);
+			TileEvents.SkipPlacePotCheck = true;
+			WorldGen.PlacePot(x, y, type, style);
+			TileEvents.SkipPlacePotCheck = false;
+			return false;
+		}
+
+		if (WorldGen.generatingWorld && AnyArea(v => v.Contains(new Point(x, y))))
+		{
+			type = (ushort)ModContent.TileType<CommonPots>();
+			style = WorldGen.genRand.Next(6, 9);
+
+			WorldGen.PlaceTile(x, y, type, true, style: style);
+			return false;
+		}
+
+		return true;
 	}
 
 	public override void AddTasks(List<GenPass> tasks, List<EcotoneSurfaceMapping.EcotoneEntry> entries)
@@ -73,52 +166,61 @@ internal class SavannaEcotone : EcotoneBase
 		if (pyramidIndex == -1 || grassIndex == -1)
 			return;
 
-		tasks.Insert(pyramidIndex, new PassLegacy("Savanna", BaseGeneration(entries)));
+		tasks.Insert(pyramidIndex, new EcotonePass("Savanna", BaseGeneration, this));
 		tasks.Insert(grassIndex, new PassLegacy("Populate Savanna", PopulateSavanna));
 	}
 
-	private static bool CanGenerate(List<EcotoneSurfaceMapping.EcotoneEntry> entries, out (int, int) bounds)
+	private static bool CanGenerate(out (int, int) bounds)
 	{
-		static bool NotOcean(EcotoneSurfaceMapping.EcotoneEntry e) => e.Start.X > GenVars.leftBeachEnd
-			&& e.End.X > GenVars.leftBeachEnd && e.Start.X < GenVars.rightBeachStart && e.End.X < GenVars.rightBeachStart; //Don't generate next to the ocean
-
 		const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
 		bounds = (0, 0);
 
-		if (SecretSeedSystem.WorldSecretSeed == SecretSeedSystem.GetSeed<SavannaSeed>())
+		if (SecretSeedSystem.WorldSecretSeed is SavannaSeed || OverSpawn)
 		{
-			int spawn = Main.maxTilesX / 2;
-			var valid = entries.Where(x => x.Start.X < spawn && x.End.X > spawn);
-
-			if (valid.Any())
+			if (EcotoneSurfaceMapping.FindWhere(EcotoneSurfaceMapping.OverSpawn) is EcotoneSurfaceMapping.EcotoneEntry entry)
 			{
-				var e = valid.First();
-				bounds = (e.Start.X - offX, e.End.X);
-
+				bounds = (entry.Start.X - offX, entry.End.X);
 				return true;
 			}
-
-			return false;
 		}
-		else
+		else if (EcotoneSurfaceMapping.FindWhere(x => x.SurroundedBy("Desert", "Jungle") && EcotoneSurfaceMapping.OnSurface(x), true) is EcotoneSurfaceMapping.EcotoneEntry entry
+			&& !entry.Definition.Ecotone)
 		{
-			var validEntries = entries.Where(x => x.SurroundedBy("Desert", "Jungle") && Math.Abs(x.Start.Y - x.End.Y) < 120 && NotOcean(x));
-			if (!validEntries.Any())
-				return false;
-
-			var entry = validEntries.ElementAt(WorldGen.genRand.Next(validEntries.Count()));
-			if (entry is null)
-				return false;
-
 			bounds = (entry.Start.X - offX, entry.End.X);
 			return true;
 		}
+
+		return false;
 	}
 
-	private static WorldGenLegacyMethod BaseGeneration(List<EcotoneSurfaceMapping.EcotoneEntry> entries) => (progress, _) =>
+	private static void BaseGeneration(GenerationProgress progress, GameConfiguration configuration)
 	{
-		if (!CanGenerate(entries, out var bounds))
+		GenConfigPage page = GenConfigLoader.GetPage<SavannaEcotone>();
+		BaseTreeChance = page.ValueOrDefault(nameof(BaseTreeChance), CrossMod.Remnants.Enabled ? 40 : 90); // Maximum odds to generate a tree - lower in Remnants
+		Steps = page.ValueOrDefault(nameof(Steps), WorldGen.genRand.Next(2, 5)); // Number of steps per savanna
+
+		if (EcotoneMapperHooks.AnyForced<SavannaEcotone>())
+		{
+			foreach (EcotoneMapperHooks.EcotoneEntryPair pair in EcotoneMapperHooks.ForcedEcotones.Values)
+			{
+				const int offX = EcotoneSurfaceMapping.TransitionLength + 1; //Removes forest patches on the left side
+
+				GenerateIndividualSavanna(progress, (pair.Entry.Start.X - offX, pair.Entry.End.X));
+				Steps = page.ValueOrDefault(nameof(Steps), WorldGen.genRand.Next(2, 5)); // Randomize steps unless it's been pre-selected
+			}
+
 			return;
+		}
+
+		if (!CanGenerate(out var bounds))
+			return;
+
+		GenerateIndividualSavanna(progress, bounds);
+	}
+
+	private static void GenerateIndividualSavanna(GenerationProgress progress, (int, int) bounds)
+	{
+		EcotoneSurfaceMapping.AddSpawnedEcotone<SavannaEcotone>();
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaTerrain");
 
@@ -126,14 +228,7 @@ internal class SavannaEcotone : EcotoneBase
 		int endX = bounds.Item2;
 		short startY = EcotoneSurfaceMapping.TotalSurfaceY[(short)startX];
 		short endY = EcotoneSurfaceMapping.TotalSurfaceY[(short)endX];
-
-		//A hash of tile types which can be replaced
-		HashSet<int> validIds = [TileID.Dirt, TileID.Grass, TileID.ClayBlock, TileID.CrimsonGrass, TileID.CorruptGrass, TileID.Stone];
-
 		var topBottomY = new Point(Math.Min(startY, endY), Math.Max(startY, endY));
-
-		Steps = WorldGen.genRand.Next(2, 5);
-
 		var sandNoise = new Common.WorldGeneration.Noise.FastNoiseLite(WorldGen.genRand.Next());
 		sandNoise.SetFrequency(0.04f);
 		int xOffsetForFactor = -1;
@@ -161,7 +256,7 @@ internal class SavannaEcotone : EcotoneBase
 
 			float taper = Math.Clamp((float)Math.Sin((float)(x - startX) / (endX - startX) * Math.PI) * 1.75f, 0, 1);
 			int startHeight = Math.Min(HighestSurfacePoint(x) - stepY, 0);
-
+			
 			for (int depth = startHeight; depth < (30 + maxDepth + minDepth) * taper; ++depth)
 			{
 				int y = stepY + depth;
@@ -169,10 +264,13 @@ internal class SavannaEcotone : EcotoneBase
 
 				if (depth >= 0)
 				{
-					if (depth < 15 || tile.WallType == WallID.None)
+					if ((depth < 15 || tile.WallType == WallID.None) && !InvalidWall(tile.WallType) && !InvalidWall(Main.tile[x, y + 1].WallType) && !Main.wallDungeon[tile.WallType])
+					{
 						tile.HasTile = true;
+						tile.LiquidAmount = 0;
+					}
 
-					if (tile.HasTile && !validIds.Contains(tile.TileType) && !TileID.Sets.Ore[tile.TileType])
+					if (tile.HasTile && !SavannaGenSets.SavannaCanReplace[tile.TileType] && !TileID.Sets.Ore[tile.TileType])
 						continue; //Can this tile be replaced by type?
 
 					if (y < topBottomY.X)
@@ -183,20 +281,36 @@ internal class SavannaEcotone : EcotoneBase
 
 					tile.TileType = (ushort)GetType();
 
-					if (depth > 1) //Convert walls
+					int wall = tile.WallType;
+
+					// Skip corrupt walls
+					if (!InvalidWall(wall) || depth == 0)
 					{
-						if (tile.TileType is TileID.Sand or TileID.HardenedSand)
-							tile.WallType = WallID.HardenedSand;
-						else if (tile.TileType is TileID.Sandstone || TileID.Sets.Ore[tile.TileType])
-							tile.WallType = WallID.Sandstone;
-						else if (tile.WallType is WallID.None or WallID.DirtUnsafe)
-							tile.WallType = (ushort)AutoloadedWallExtensions.UnsafeWallType<SavannaDirtWall>();
+						if (depth > 1) //Convert walls
+						{
+							if (tile.TileType is TileID.Sand or TileID.HardenedSand)
+								tile.WallType = WallID.HardenedSand;
+							else if (tile.TileType is TileID.Sandstone || TileID.Sets.Ore[tile.TileType])
+								tile.WallType = WallID.Sandstone;
+							else if (tile.WallType is WallID.None or WallID.DirtUnsafe)
+								tile.WallType = (ushort)AutoloadedWallExtensions.UnsafeWallType<SavannaDirtWall>();
+						}
+						else if (SavannaGenSets.SavannaCanReplaceWall[tile.WallType])
+							tile.Clear(TileDataType.Wall); //Clear walls above the Savanna surface
 					}
-					else
-						tile.Clear(TileDataType.Wall); //Clear walls above the Savanna surface
 				}
-				else
-					tile.Clear(TileDataType.All);
+				else if (SavannaGenSets.SavannaCanClear[tile.TileType])
+				{
+					TileDataType clears = TileDataType.Tile;
+
+					if (SavannaGenSets.SavannaCanReplaceWall[tile.WallType])
+					{
+						Main.tile[x, y + 1].Clear(TileDataType.Wall);
+						clears |= TileDataType.Wall;
+					}
+
+					tile.Clear(clears);
+				}
 
 				int GetType()
 				{
@@ -225,28 +339,39 @@ internal class SavannaEcotone : EcotoneBase
 			xOffsetForFactor += (int)Math.Round(Math.Max(sandNoise.GetNoise(x, 0), 0) * 5);
 		}
 
-		SavannaArea = new Rectangle(startX, topBottomY.X, endX - startX, topBottomY.Y - topBottomY.X);
-		SavannaArea.Inflate(2, 2);
-		StopLava.AddArea(SavannaArea);
+		var currentArea = new Rectangle(startX, topBottomY.X, endX - startX, topBottomY.Y - topBottomY.X);
+		currentArea.Inflate(2, 2);
+		SavannaAreas.Add(currentArea);
+
+		WorldDetours.Regions.Add(new(currentArea, WorldDetours.Context.Lava | WorldDetours.Context.Piles));
 
 		static int HighestSurfacePoint(int x)
 		{
 			int y = (int)(Main.worldSurface * 0.35); //Sky height
-			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out int addY))
+			while (!Main.tile[x, y].HasTile && Main.tile[x, y].WallType == WallID.None && Main.tile[x, y].LiquidAmount == 0 || WorldMethods.CloudsBelow(x, y, out _))
 				y++;
 
 			return y;
 		}
-	};
+	}
+
+	/// <summary>
+	/// Whether this wall ID can be replaced by the Savanna's generation. Defaults to avoiding corrupt, crimson and invalid <see cref="SavannaGenSets.SavannaCanReplaceWall"/> wall IDs.
+	/// </summary>
+	private static bool InvalidWall(int wall) => WallID.Sets.Corrupt[wall] || WallID.Sets.Crimson[wall] || !SavannaGenSets.SavannaCanReplaceWall[wall];
 
 	private void PopulateSavanna(GenerationProgress progress, GameConfiguration configuration)
 	{
-		if (SavannaArea.IsEmpty)
+		if (SavannaAreas.Count == 0 || !AnyArea(x => !x.IsEmpty))
 			return;
 
-		const int minimumTreeSpace = 7;
+		foreach (Rectangle rect in SavannaAreas)
+			PerAreaPopulation(rect, progress);
+	}
 
-		int chanceMax = CrossMod.Remnants.Enabled ? 40 : 90; // Maximum odds to generate a tree - lower in Remnants
+	private static void PerAreaPopulation(Rectangle area, GenerationProgress progress)
+	{
+		const int minimumTreeSpace = 7;
 
 		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.SavannaObjects");
 		HashSet<int> treeSpacing = [];
@@ -256,21 +381,23 @@ internal class SavannaEcotone : EcotoneBase
 		bool genWateringHole = false;
 		bool genBaobabTree = false;
 
-		if (SavannaArea.Width > 150 && Main.rand.NextBool(3)) //Choose objects to gen
-			genWateringHole = genBaobabTree = true;
-		else if (SavannaArea.Width > 50)
+		if (area.Width > 150 && WorldGen.genRand.NextBool(3)) //Choose objects to gen
 		{
-			if (Main.rand.NextBool())
+			genWateringHole = genBaobabTree = true;
+		}
+		else if (area.Width > 50)
+		{
+			if (WorldGen.genRand.NextBool())
 				genWateringHole = true;
 			else
 				genBaobabTree = true;
 		}
 
-		GrowStones();
+		GrowStones(area);
 
 		if (genWateringHole)
 		{
-			if (IterateGen(200, HoleGen, out int i, out int j, "Watering Hole"))
+			if (IterateGen(area, 200, HoleGen, out int i, out int j, "Watering Hole"))
 				WateringHoleGen.GenerateWateringHole(i, j);
 
 			static bool HoleGen(int i, int j)
@@ -284,18 +411,19 @@ internal class SavannaEcotone : EcotoneBase
 
 		if (genBaobabTree)
 		{
-			if (IterateGen(50, BaobabTreeGen, out int i, out int j, "Great Baobab"))
+			if (IterateGen(area, 50, BaobabTreeGen, out int i, out int j, "Great Baobab"))
 			{
 				baobabArea = BaobabGen.GenerateBaobab(i, j);
 				baobabArea.Inflate(40, 20);
 			}
 
-			static bool BaobabTreeGen(int i, int j) => Main.tile[i, j].TileType == ModContent.TileType<SavannaDirt>() 
+			static bool BaobabTreeGen(int i, int j) => Main.tile[i, j].TileType == ModContent.TileType<SavannaDirt>()
 				&& Main.tile[i, j - 1].LiquidAmount < 50 && WorldMethods.IsFlat(new Point16(i, j), 20, out _, out _);
 		}
 
-		for (int i = SavannaArea.Left; i < SavannaArea.Right; ++i)
-			for (int j = SavannaArea.Top - 1; j < SavannaArea.Bottom; ++j)
+		for (int i = area.Left; i < area.Right; ++i)
+		{
+			for (int j = area.Top - 1; j < area.Bottom; ++j)
 			{
 				OpenFlags flags = OpenTools.GetOpenings(i, j, false, false, true);
 				var tile = Main.tile[i, j];
@@ -328,11 +456,12 @@ internal class SavannaEcotone : EcotoneBase
 				if (WorldGen.genRand.NextBool(120)) //Rare bones
 					WorldGen.PlaceTile(i, j - 1, TileID.LargePiles2, true, style: WorldGen.genRand.Next(52, 55));
 			}
+		}
 
-		if (WorldGen.genRand.NextBool(3))
-			Campsite();
+		if (WorldGen.genRand.NextBool(CampsiteChance))
+			Campsite(area);
 
-		int treeOdds = chanceMax;
+		int treeOdds = BaseTreeChance;
 
 		foreach (var p in grassTop)
 		{
@@ -343,13 +472,15 @@ internal class SavannaEcotone : EcotoneBase
 			int treeDistance = Math.Abs(i - treeSpacing.OrderBy(x => Math.Abs(i - x)).FirstOrDefault());
 			if (treeDistance > minimumTreeSpace)
 			{
-				if (WorldGen.genRand.NextBool(treeOdds) && !baobabArea.Contains(i, j) && GrowTree(i, j))
+				if (WorldGen.genRand.NextBool(treeOdds) && !baobabArea.Contains(i, j) && GrowTree(i, j, area))
 				{
 					treeSpacing.Add(i);
-					treeOdds = chanceMax;
+					treeOdds = BaseTreeChance;
 				}
 				else
+				{
 					treeOdds = Math.Max(treeOdds - 1, 2); //Decrease the odds every time a tree fails to generate
+				}
 			}
 		}
 	}
@@ -359,8 +490,8 @@ internal class SavannaEcotone : EcotoneBase
 	/// <param name="j"> Above the grass tile's Y coordinate. </param>
 	private static void PlaceStuffOnGrass(int i, int j)
 	{
-		if (WorldGen.genRand.NextBool(8)) //Surface pots
-			WorldGen.PlaceTile(i, j, TileID.Pots, true, true, style: 7);
+		if (WorldGen.genRand.NextBool(PotChance)) //Surface pots
+			WorldGen.PlaceTile(i, j, ModContent.TileType<CommonPots>(), true, style: WorldGen.genRand.Next(6, 9));
 
 		if (WorldGen.genRand.NextBool(13)) //Elephant grass patch
 			CreatePatch(WorldGen.genRand.Next(5, 11), 0, WorldGen.genRand.Next([0, 5]), ModContent.TileType<ElephantGrass>());
@@ -368,7 +499,7 @@ internal class SavannaEcotone : EcotoneBase
 		if (WorldGen.genRand.NextBool(9)) //Foliage patch
 			CreatePatch(WorldGen.genRand.Next(6, 13), 2, types: ModContent.TileType<SavannaFoliage>());
 
-		if (WorldGen.genRand.NextBool(45)) //Termite mound
+		if (WorldGen.genRand.NextBool(TermiteChance)) //Termite mound
 		{
 			int type = WorldGen.genRand.NextFromList(ModContent.TileType<TermiteMoundSmall>(),
 				ModContent.TileType<TermiteMoundMedium>(), ModContent.TileType<TermiteMoundLarge>());
@@ -395,7 +526,7 @@ internal class SavannaEcotone : EcotoneBase
 		}
 	}
 
-	private static bool GrowTree(int i, int j)
+	private static bool GrowTree(int i, int j, Rectangle area)
 	{
 		const int shrubSpread = 16;
 		const int rootSpread = 3;
@@ -408,7 +539,7 @@ internal class SavannaEcotone : EcotoneBase
 				if (!WorldGen.genRand.NextBool(3))
 					continue;
 
-				int y = SavannaArea.Top;
+				int y = area.Top;
 				WorldMethods.FindGround(x, ref y);
 
 				if (WorldGen.genRand.NextBool(3))
@@ -422,7 +553,7 @@ internal class SavannaEcotone : EcotoneBase
 
 			for (int x = i - shrubSpread; x < i + shrubSpread; x++)
 			{
-				int y = SavannaArea.Top;
+				int y = area.Top;
 				WorldMethods.FindGround(x, ref y);
 
 				if (WorldGen.genRand.NextBool(4))
@@ -433,46 +564,53 @@ internal class SavannaEcotone : EcotoneBase
 		return success;
 	}
 
-	private static void GrowStones()
+	private static void GrowStones(Rectangle area)
 	{
 		const int maxAttempts = 200;
 
-		int numMax = SavannaArea.Width / 150;
+		int numMax = area.Width / 150;
 		int num = 0;
 
-		int margin = (int)(SavannaArea.Width * .22f);
+		int margin = (int)(area.Width * .22f);
 
 		for (int a = 0; a < maxAttempts; a++)
 		{
-			var pos = WorldGen.genRand.NextVector2FromRectangle(SavannaArea with { Height = 2 }).ToPoint16();
+			var pos = WorldGen.genRand.NextVector2FromRectangle(area with { Height = 2 }).ToPoint16();
 			int x = pos.X;
 			int y = pos.Y;
 
-			if (pos.X > SavannaArea.Left + margin && pos.X < SavannaArea.Right - margin)
+			if (pos.X > area.Left + margin && pos.X < area.Right - margin)
 				continue;
 
 			WorldMethods.FindGround(x, ref y);
+			int type = Framing.GetTileSafely(x, y).TileType;
 
-			int halfWidth = WorldGen.genRand.Next(2, 5);
-			ShapeData data = new();
+			if (type == (ushort)ModContent.TileType<SavannaDirt>() || type == (ushort)ModContent.TileType<SavannaGrass>())
+			{
+				int halfWidth = WorldGen.genRand.Next(2, 5);
+				ShapeData data = new();
 
-			WorldUtils.Gen(new Point(x, y + 1), new Shapes.Mound(halfWidth, 3), Actions.Chain(new Modifiers.Blotches(), new Actions.SetTile(TileID.Stone).Output(data)));
+				WorldUtils.Gen(new Point(x, y + 1), new Shapes.Mound(halfWidth, 3), Actions.Chain(new Modifiers.Blotches(), new Actions.SetTile(TileID.Stone).Output(data)));
 
-			if (WorldGen.genRand.NextBool())
-				WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.OnlyTiles(TileID.Stone), new Modifiers.IsTouchingAir(), new Actions.SetTile(TileID.BrownMoss)));
+				if (WorldGen.genRand.NextBool())
+				{
+					GenAction action = Actions.Chain(new Modifiers.OnlyTiles(TileID.Stone), new Modifiers.IsTouchingAir(), new Actions.SetTile(TileID.BrownMoss));
+					WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), action);
+				}
 
-			WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), new Actions.Smooth());
-			WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.Offset(0, 4), new Modifiers.Blotches(), 
-				new Modifiers.OnlyTiles((ushort)ModContent.TileType<SavannaDirt>()), new Actions.SetTile(TileID.Sand)));
+				WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), new Actions.Smooth());
+				WorldUtils.Gen(new Point(x, y + 1), new ModShapes.All(data), Actions.Chain(new Modifiers.Offset(0, 4), new Modifiers.Blotches(),
+					new Modifiers.OnlyTiles((ushort)ModContent.TileType<SavannaDirt>()), new Actions.SetTile(TileID.Sand)));
 
-			if (++num > numMax)
-				break;
+				if (++num > numMax)
+					break;
+			}
 		}
 	}
 
-	private static void Campsite()
+	private static void Campsite(Rectangle area)
 	{
-		IterateGen(200, CampsiteGen, out int i, out int j, "Savanna Campsite");
+		IterateGen(area, 200, CampsiteGen, out int i, out int j, "Savanna Campsite");
 
 		static bool CampsiteGen(int i, int j)
 		{
@@ -500,17 +638,6 @@ internal class SavannaEcotone : EcotoneBase
 		}
 	}
 
-	private static bool OnBaobab(int i, int j)
-	{
-		var t = Framing.GetTileSafely(i, j + 1);
-
-		if (!t.HasTile)
-			return false;
-
-		int belowType = t.TileType;
-		return belowType == ModContent.TileType<LivingBaobab>() || belowType == ModContent.TileType<LivingBaobabLeaf>();
-	}
-
 	private static float GetBaseLerpFactorForX(int startX, int endX, int xOffsetForFactor, int x)
 	{
 		float factor = (MathF.Min(x + xOffsetForFactor, endX) - startX) / (endX - startX);
@@ -525,12 +652,12 @@ internal class SavannaEcotone : EcotoneBase
 		return factor;
 	}
 
-	private static bool IterateGen(int tries, OnAttempt isValid, out int x, out int y, string structureName = default)
+	private static bool IterateGen(Rectangle area, int tries, OnAttempt isValid, out int x, out int y, string structureName = default)
 	{
 		for (int t = 0; t < tries; t++)
 		{
-			int i = WorldGen.genRand.Next(SavannaArea.Left, SavannaArea.Right);
-			int j = SavannaArea.Top;
+			int i = WorldGen.genRand.Next(area.Left, area.Right);
+			int j = area.Top;
 
 			WorldMethods.FindGround(i, ref j);
 

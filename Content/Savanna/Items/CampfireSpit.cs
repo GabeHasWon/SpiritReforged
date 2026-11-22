@@ -7,6 +7,7 @@ using SpiritReforged.Content.Vanilla.Food;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Savanna.Items;
 
@@ -22,7 +23,7 @@ public class CampfireSpit : ModItem
 
 		if (target.HasTile && TileID.Sets.Campfire[target.TileType] && player.IsTargetTileInItemRange(Item))
 		{
-			TileExtensions.GetTopLeft(ref i, ref j);
+			(i, j) = Helpers.GetTopLeft(i, j);
 			return ModContent.GetInstance<CampfireSlot>().Find(i, j) == -1; //Invalid if this entity already exists
 		}
 
@@ -62,13 +63,13 @@ public class CampfireSpit : ModItem
 				int i = Player.tileTargetX;
 				int j = Player.tileTargetY;
 
-				TileExtensions.GetTopLeft(ref i, ref j);
-
+				(i, j) = Helpers.GetTopLeft(i, j);
 				int type = ModContent.TileEntityType<CampfireSlot>();
-				TileEntity.PlaceEntityNet(i, j, type);
 
 				if (Main.netMode == NetmodeID.MultiplayerClient)
 					NetMessage.SendData(MessageID.TileEntityPlacement, number: i, number2: j, number3: type);
+				else
+					ModContent.GetInstance<CampfireSlot>().Place(i, j);
 
 				if (--Item.stack <= 0)
 					Item.TurnToAir(); //Consume
@@ -98,8 +99,15 @@ public class CampfireSlot : SingleSlotEntity
 		if (Main.tile[i, j].TileType != campfire)
 			return false;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
-		PlaceEntityNet(i, j, ModContent.TileEntityType<CampfireSlot>());
+		(i, j) = Helpers.GetTopLeft(i, j);
+
+		// Generally will only be called during generation so the multiplayer
+		// client path will never be hit, but if a mod calls it then we don't
+		// know when or how (so it's safer to account for it).
+		if (Main.netMode == NetmodeID.MultiplayerClient)
+			NetMessage.SendData(MessageID.TileEntityPlacement, number: i, number2: j, number3: ModContent.TileEntityType<CampfireSlot>());
+		else
+			ModContent.GetInstance<CampfireSlot>().Place(i, j);
 
 		if (ByPosition[new Point16(i, j)] is CampfireSlot slot)
 			slot.item = new Item(ModContent.ItemType<CookedMeat>());
@@ -136,7 +144,7 @@ public class CampfireSlot : SingleSlotEntity
 			}
 
 			if (Main.netMode == NetmodeID.Server)
-				new SingleSlotData((short)ID, item).Send();
+				new TileEntityData((short)ID).Send();
 		}
 
 		bool CampfireLit() => Framing.GetTileSafely(Position).TileFrameY < 18 * 2;
@@ -145,7 +153,7 @@ public class CampfireSlot : SingleSlotEntity
 
 public class RoastGlobalTile : GlobalTile
 {
-	private static readonly Asset<Texture2D> TileTexture = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(RoastGlobalTile), "CampfireSpit_Tile"));
+	private static readonly Asset<Texture2D> TileTexture = Graphics.Tex("SpiritReforged/Content/Savanna/Items/CampfireSpit_Tile");
 
 	internal static Dictionary<int, int> CookedByRaw;
 
@@ -154,7 +162,7 @@ public class RoastGlobalTile : GlobalTile
 		if (!TileID.Sets.Campfire[Main.tile[i, j].TileType])
 			return null;
 
-		TileExtensions.GetTopLeft(ref i, ref j);
+		(i, j) = Helpers.GetTopLeft(i, j);
 		int id = ModContent.GetInstance<CampfireSlot>().Find(i, j);
 
 		return (id == -1) ? null : TileEntity.ByID[id];
@@ -171,7 +179,6 @@ public class RoastGlobalTile : GlobalTile
 			{ ItemID.Squirrel, ItemID.GrilledSquirrel },
 			{ ItemID.SquirrelRed, ItemID.GrilledSquirrel },
 			{ AutoContent.ItemType<Sparrow>(), ItemID.RoastedBird },
-			{ ModContent.ItemType<RawFish>(), ItemID.CookedFish },
 			{ ItemID.Bass, ItemID.CookedFish }, 
 			{ ItemID.Trout, ItemID.CookedFish }, 
 			{ ItemID.AtlanticCod, ItemID.CookedFish }
@@ -217,19 +224,17 @@ public class RoastGlobalTile : GlobalTile
 
 		if (Entity(i, j) is CampfireSlot slot)
 		{
-			fail = true;
+			(i, j) = Helpers.GetTopLeft(i, j);
+
+			slot.Kill(i, j);
 
 			if (Main.netMode != NetmodeID.MultiplayerClient)
 			{
-				TileExtensions.GetTopLeft(ref i, ref j);
-
 				var pos = new Vector2(i, j).ToWorldCoordinates() + new Vector2(16);
 				Item.NewItem(new EntitySource_TileBreak(i, j), pos, ModContent.ItemType<CampfireSpit>());
 
 				if (!slot.item.IsAir)
 					Item.NewItem(new EntitySource_TileBreak(i, j), pos, slot.item);
-
-				slot.Kill(i, j);
 			}
 		}
 	}
@@ -238,7 +243,7 @@ public class RoastGlobalTile : GlobalTile
 	{
 		if (TileID.Sets.Campfire[type] && TileObjectData.IsTopLeft(i, j) && Entity(i, j) is CampfireSlot slot)
 		{
-			var position = new Vector2(i, j) * 16 - Main.screenPosition - new Vector2(0, 16) + TileExtensions.TileOffset;
+			var position = new Vector2(i, j) * 16 - Main.screenPosition - new Vector2(0, 16) + TileMethods.TileOffset;
 			spriteBatch.Draw(TileTexture.Value, position, Lighting.GetColor(i + 1, j + 1));
 
 			if (!slot.item.IsAir)

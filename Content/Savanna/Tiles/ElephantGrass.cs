@@ -1,15 +1,27 @@
 ﻿using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.Corruption;
-using SpiritReforged.Common.TileCommon.TileSway;
+using SpiritReforged.Common.TileCommon.Conversion;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
-public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
+public class ElephantGrass : ModTile, ICutAttempt, ISetConversion
 {
-	protected virtual Color SubColor => Color.Goldenrod;
+	public const int FullFrameHeight = 54;
+
+	public ConversionHandler.Set ConversionSet => new()
+	{
+		{ ModContent.TileType<SavannaGrassCorrupt>(), ModContent.TileType<ElephantGrassCorrupt>() },
+		{ ModContent.TileType<SavannaGrassCrimson>(), ModContent.TileType<ElephantGrassCrimson>() },
+		{ ModContent.TileType<SavannaGrassHallow>(), ModContent.TileType<ElephantGrassHallow>() },
+		{ ModContent.TileType<SavannaGrass>(), ModContent.TileType<ElephantGrass>() }
+	};
+
+	public static readonly SoundStyle[] SwishSounds = 
+		[new("SpiritReforged/Assets/SFX/Tile/SavannaGrass1"), 
+		new("SpiritReforged/Assets/SFX/Tile/SavannaGrass2"),
+		new("SpiritReforged/Assets/SFX/Tile/SavannaGrass3")];
 
 	/// <returns> Whether this <see cref="ElephantGrass"/> tile uses its short alternate style. </returns>
 	public static bool IsShortgrass(int i, int j) => TileObjectData.GetTileStyle(Main.tile[i, j]) > 4;
@@ -25,9 +37,11 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 
 		TileID.Sets.BreakableWhenPlacing[Type] = true;
 
+		DustType = DustID.JungleGrass;
+		HitSound = SoundID.Grass;
+
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
 		TileObjectData.newTile.AnchorBottom = new AnchorData(AnchorType.SolidTile, 1, 0);
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
 		TileObjectData.newTile.StyleHorizontal = true;
 		TileObjectData.newTile.RandomStyleRange = 5;
 
@@ -35,16 +49,15 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 		TileObjectData.newAlternate.RandomStyleRange = 3;
 
 		PreAddObjectData();
+
 		TileObjectData.addAlternate(5);
 		TileObjectData.addTile(Type);
-
-		HitSound = SoundID.Grass;
 	}
 
 	public virtual void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrass>()];
 		AddMapEntry(new(104, 156, 70));
-		DustType = DustID.JungleGrass;
 	}
 
 	public override IEnumerable<Item> GetItemDrops(int i, int j)
@@ -60,8 +73,6 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 
 	public override void NearbyEffects(int i, int j, bool closer) //Play sounds when walking inside of grass patches
 	{
-		const string path = "SpiritReforged/Assets/SFX/Tile/SavannaGrass";
-
 		if (Main.gamePaused)
 			return;
 
@@ -83,7 +94,7 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 				pitch += .4f;
 			}
 
-			var style = new SoundStyle(path + Main.rand.Next(1, 4)) with { MaxInstances = -1, PitchVariance = .2f, Pitch = pitch, Volume = volume };
+			var style = Main.rand.NextFromList(SwishSounds) with { MaxInstances = -1, PitchVariance = 0.2f, Pitch = pitch, Volume = volume };
 			SoundEngine.PlaySound(style, Main.LocalPlayer.Center);
 		}
 	}
@@ -102,11 +113,19 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 		bool GrassSurrounding() => Framing.GetTileSafely(i - 1, j).TileType == Type && Framing.GetTileSafely(i + 1, j).TileType == Type;
 	}
 
+	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
+	{
+		if (ConversionHandler.FindSet(nameof(ElephantGrass), Framing.GetTileSafely(i, j + 1).TileType, out int newType) && Type != newType)
+			WorldGen.ConvertTile(i, j, newType);
+
+		return true;
+	}
+
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch) //Imitates wind sway drawing but with unique dimensions
 	{
 		const int height = 3; //Pseudo tile height
 
-		if (!TileExtensions.GetVisualInfo(i, j, out _, out _))
+		if (!TileMethods.GetVisualInfo(i, j, out _, out _))
 			return false;
 
 		var t = Main.tile[i, j];
@@ -133,70 +152,36 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 
 		static float Physics(Point16 topLeft)
 		{
-			float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, ModContent.GetInstance<TileSwaySystem>().GrassWindCounter * 2.25f);
+			float rotation = Main.instance.TilesRenderer.GetWindCycle(topLeft.X, topLeft.Y, WindTileRenderer.GrassWindCounter * 2.25f);
 			if (!WorldGen.InAPlaceWithWind(topLeft.X, topLeft.Y, 1, height))
 				rotation = 0f;
 
-			return (rotation + TileSwayHelper.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, 1, height, 20, 3f, 1, true)) * 1.9f;
+			return (rotation + WindTileRenderer.GetHighestWindGridPushComplex(topLeft.X, topLeft.Y, 1, height, 20, 3f, 1, true)) * 1.9f;
 		}
 	}
 
 	public virtual void DrawFront(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin, Point frame)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 			return;
 
-		float seed = (frame.X / 18f + i) * .8f % 1f;
-
-		offset += new Vector2(MathHelper.Lerp(-2, 2, seed), 2);
 		var source = new Rectangle(frame.X, frame.Y, 16, 16);
-		var effects = ((int)(seed * 2) % 2 == 0) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
+		var effects = (i % 3 == 0) ? default : SpriteEffects.FlipHorizontally;
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + offset + new Vector2(0, 2);
 
-		spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + offset, source, color, rotation, origin, 1, effects, 0f);
+		spriteBatch.Draw(texture, position, source, color, rotation, origin, 1, effects, 0f);
 	}
 
 	public virtual void DrawBack(int i, int j, SpriteBatch spriteBatch, Vector2 offset, float rotation, Vector2 origin, Point frame)
 	{
-		if (!TileExtensions.GetVisualInfo(i, j, out var color, out var texture))
+		if (!TileMethods.GetVisualInfo(i, j, out var color, out var texture))
 			return;
 
-		var data = Main.tile[i, j].SafelyGetData();
-		int amount = i % 2 + 1;
+		var source = new Rectangle(frame.X, frame.Y + FullFrameHeight, 16, 16);
+		var effects = (i % 3 == 0) ? SpriteEffects.FlipHorizontally : default;
+		Vector2 position = new Vector2(i, j) * 16 - Main.screenPosition + offset + new Vector2(0, 2);
 
-		for (int x = 0; x < amount; x++)
-		{
-			float seed = (frame.X / 18f + i + x * .25f) * 1.3f % 1f;
-
-			rotation += seed * .25f;
-			offset += new Vector2(MathHelper.Lerp(-2, 2, seed), 2);
-
-			int baseOffset = IsShortgrass(i, j) ? 5 : 0;
-			int frameX = (baseOffset + (int)MathHelper.Lerp(0, data.RandomStyleRange, seed)) * 18;
-
-			var source = new Rectangle(frameX, frame.Y, 16, 16);
-			var effects = ((int)(seed * 2) % 2 == 1) ? SpriteEffects.FlipHorizontally : SpriteEffects.None;
-			var subColor = Color.Lerp(Color.White, SubColor, .9f + (float)Math.Sin(i / 8f) * .3f);
-
-			spriteBatch.Draw(texture, new Vector2(i, j) * 16 - Main.screenPosition + offset, source, color.MultiplyRGB(subColor), rotation * .4f, origin, 1, effects, 0f);
-		}
-	}
-
-	public bool Convert(IEntitySource source, ConversionType type, int i, int j)
-	{
-		if (source is EntitySource_Parent { Entity: Projectile })
-			return false;
-
-		var tile = Main.tile[i, j];
-
-		tile.TileType = (ushort)(type switch
-		{
-			ConversionType.Hallow => ModContent.TileType<ElephantGrassHallow>(),
-			ConversionType.Crimson => ModContent.TileType<ElephantGrassCrimson>(),
-			ConversionType.Corrupt => ModContent.TileType<ElephantGrassCorrupt>(),
-			_ => ModContent.TileType<ElephantGrass>(),
-		});
-
-		return true;
+		spriteBatch.Draw(texture, position, source, color, rotation * 0.5f, origin, 1, effects, 0f);
 	}
 
 	public bool OnCutAttempt(int i, int j)
@@ -209,16 +194,14 @@ public class ElephantGrass : ModTile, IConvertibleTile, ICutAttempt
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
 public class ElephantGrassCorrupt : ElephantGrass
 {
-	protected override Color SubColor => Color.Gray;
-
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
+
 		TileID.Sets.AddCorruptionTile(Type);
 		TileID.Sets.Corrupt[Type] = true;
 
 		AddMapEntry(new(109, 106, 174));
-
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCorrupt>()];
 		DustType = DustID.Corruption;
 	}
 }
@@ -226,16 +209,14 @@ public class ElephantGrassCorrupt : ElephantGrass
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
 public class ElephantGrassCrimson : ElephantGrass
 {
-	protected override Color SubColor => new(190, 165, 0);
-
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
+
 		TileID.Sets.AddCrimsonTile(Type);
 		TileID.Sets.Crimson[Type] = true;
 
 		AddMapEntry(new(183, 69, 68));
-
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassCrimson>()];
 		DustType = DustID.CrimsonPlants;
 	}
 }
@@ -243,16 +224,14 @@ public class ElephantGrassCrimson : ElephantGrass
 [DrawOrder(DrawOrderAttribute.Layer.NonSolid, DrawOrderAttribute.Layer.OverPlayers)]
 public class ElephantGrassHallow : ElephantGrass
 {
-	protected override Color SubColor => Color.LightPink;
-
 	public override void PreAddObjectData()
 	{
+		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
+
 		TileID.Sets.Hallow[Type] = true;
 		TileID.Sets.HallowBiome[Type] = 1;
 
 		AddMapEntry(new(78, 193, 227));
-
-		TileObjectData.newTile.AnchorValidTiles = [ModContent.TileType<SavannaGrassHallow>()];
 		DustType = DustID.HallowedPlants;
 	}
 }

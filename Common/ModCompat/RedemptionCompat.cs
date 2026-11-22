@@ -53,12 +53,19 @@ public static class MoRHelper
 	{
 		if (!CrossMod.Redemption.Enabled)
 			return;
+
 		if (entity is Item item)
 			redemption.Call("addElementItem", elementID, item.type, projsInheritElements);
 		else if (entity is NPC npc)
 			redemption.Call("addElementNPC", elementID, npc.type);
 		else if (entity is Projectile proj)
 			redemption.Call("addElementProj", elementID, proj.type, projsInheritElements);
+	}
+
+	public static void AddElement(Entity entity, bool projsInheritElements = false, params int[] elementIDs)
+	{
+		foreach (int element in elementIDs)
+			AddElement(entity, element, projsInheritElements);
 	}
 
 	public static void AddElementToItem(int type, int elementID, bool projsInheritElements = false)
@@ -86,7 +93,14 @@ public static class MoRHelper
 	{
 		if (!CrossMod.Redemption.Enabled)
 			return;
+
 		redemption.Call("addNPCToElementTypeList", typeString, npcType);
+	}
+
+	public static void AddNPCToElementList(int npcType, params string[] typeStrings)
+	{
+		foreach (string type in typeStrings)
+			AddNPCToElementList(npcType, type);
 	}
 
 	// ------------------------------------------------------------------------------------------------------
@@ -96,18 +110,22 @@ public static class MoRHelper
 	{
 		if (!CrossMod.Redemption.Enabled)
 			return;
+
+		sbyte realId = checked((sbyte)overrideID);
+
 		if (entity is Item item)
-			redemption.Call("elementOverrideItem", item, elementID, overrideID);
+			redemption.Call("elementOverrideItem", item, elementID, realId);
 		else if (entity is NPC npc)
-			redemption.Call("elementOverrideNPC", npc, elementID, overrideID);
+			redemption.Call("elementOverrideNPC", npc, elementID, realId);
 		else if (entity is Projectile proj)
-			redemption.Call("elementOverrideProj", proj, elementID, overrideID);
+			redemption.Call("elementOverrideProj", proj, elementID, realId);
 	}
 
 	public static void OverrideElementMultiplier(NPC npc, int elementID, float value = 1, bool dontSetMultipliers = false)
 	{
 		if (!CrossMod.Redemption.Enabled)
 			return;
+
 		redemption.Call("elementMultiplier", npc, elementID, value, dontSetMultipliers);
 	}
 

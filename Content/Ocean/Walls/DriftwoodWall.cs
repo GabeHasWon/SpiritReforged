@@ -1,10 +1,10 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.WallCommon;
 using SpiritReforged.Content.Ocean.Tiles;
+using TileHelper.Common;
 
 namespace SpiritReforged.Content.Ocean.Walls;
 
-public class DriftwoodWall : ModWall, IAutoloadWallItem
+public class DriftwoodWall : ModWall, ILoadItem
 {
 	public void AddItemRecipes(ModItem item)
 	{

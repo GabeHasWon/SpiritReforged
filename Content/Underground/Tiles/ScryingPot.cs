@@ -1,25 +1,25 @@
-using RubbleAutoloader;
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.TileCommon;
 using SpiritReforged.Common.TileCommon.PresetTiles;
+using SpiritReforged.Common.UI.PotCatalogue;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Common.WorldGeneration;
 using SpiritReforged.Content.Forest.Cartography.Maps;
 using SpiritReforged.Content.Particles;
-using SpiritReforged.Content.Underground.Pottery;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.TileCommon.StyleDatabase;
-using static SpiritReforged.Common.WorldGeneration.WorldMethods;
 
 namespace SpiritReforged.Content.Underground.Tiles;
 
-public class ScryingPot : PotTile, ILootTile
+public class ScryingPot : PotTile, ILootable
 {
 	public override Dictionary<string, int[]> TileStyles => new() { { string.Empty, [0] } };
 
-	public override void AddRecord(int type, StyleGroup group)
+	public override TileRecord AddRecord(int type, NamedStyles.StyleGroup group)
 	{
 		var record = new TileRecord(group.name, type, group.styles);
-		RecordHandler.Records.Add(record.AddRating(3).AddDescription(Language.GetText(TileRecord.DescKey + ".Scrying")));
+		return record.AddRating(3).AddDescription(Language.GetText(TileRecord.DescKey + ".Scrying"));
 	}
 
 	public override void AddObjectData()
@@ -38,7 +38,7 @@ public class ScryingPot : PotTile, ILootTile
 		TileObjectData.newTile.DrawYOffset = 2;
 		TileObjectData.addTile(Type);
 
-		DustType = DustID.Pot;
+		DustType = IsRubble ? -1 : DustID.Pot;
 	}
 
 	public override void AddMapData() => AddMapEntry(new Color(146, 76, 77), Language.GetText("Mods.SpiritReforged.Items.ScryingPotItem.DisplayName"));
@@ -60,7 +60,7 @@ public class ScryingPot : PotTile, ILootTile
 
 	public override void KillMultiTile(int i, int j, int frameX, int frameY)
 	{
-		if (Generating || Autoloader.IsRubble(Type))
+		if (WorldMethods.Generating || IsRubble)
 			return;
 
 		var spawn = new Vector2(i, j).ToWorldCoordinates(16, 16);
@@ -71,7 +71,7 @@ public class ScryingPot : PotTile, ILootTile
 				Item.NewItem(new EntitySource_TileBreak(i, j), spawn, new Item(type, stack), noGrabDelay: true);
 			});
 
-			LootTable.Resolve(i, j, Type, frameX, frameY);
+			TileLootSystem.Resolve(i, j, Type, frameX, frameY);
 		}
 
 		if (!Main.dedServ)
@@ -79,9 +79,9 @@ public class ScryingPot : PotTile, ILootTile
 			int pWhoAmI = Player.FindClosest(new Vector2(i, j) * 16, 32, 32);
 
 			if (Main.myPlayer == pWhoAmI)
-				TornMapPiece.LightMap(i, j, 280, out _, .5f); //Only reveal the map for the nearest player
+				TornMapPiece.LightMap(i, j, 280, out _, 0.5f); //Only reveal the map for the nearest player
 
-			ParticleHandler.SpawnParticle(new TexturedPulseCircle(spawn, Color.MediumPurple * .15f, .25f, 400, 20, "supPerlin", Vector2.One, Common.Easing.EaseFunction.EaseQuadOut));
+			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(spawn, Color.MediumPurple * .15f, .25f, 400, 20, "supPerlin", Vector2.One, Common.Easing.EaseFunction.EaseQuadOut));
 			SoundEngine.PlaySound(SoundID.NPCDeath6 with { Pitch = .5f }, spawn);
 
 			for (int x = 0; x < 12; x++)
@@ -90,8 +90,8 @@ public class ScryingPot : PotTile, ILootTile
 				int time = Main.rand.Next(20, 50);
 				float speed = Main.rand.NextFloat(4f);
 
-				ParticleHandler.SpawnParticle(new GlowParticle(newSpawn, spawn.DirectionTo(newSpawn) * speed, Color.Purple, .5f, time));
-				ParticleHandler.SpawnParticle(new GlowParticle(newSpawn, spawn.DirectionTo(newSpawn) * speed, Color.White, .2f, time));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(newSpawn, spawn.DirectionTo(newSpawn) * speed, Color.Purple, .5f, time));
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(newSpawn, spawn.DirectionTo(newSpawn) * speed, Color.White, .2f, time));
 			}
 
 			for (int x = 51; x < 54; x++)
@@ -99,8 +99,7 @@ public class ScryingPot : PotTile, ILootTile
 		}
 	}
 
-	public void AddLoot(int objectStyle, ILoot loot) 
-		=> loot.AddOneFromOptions(1, ItemID.NightOwlPotion, ItemID.ShinePotion, ItemID.BiomeSightPotion, ItemID.TrapsightPotion, ItemID.HunterPotion, ItemID.SpelunkerPotion);
+	public void AddLoot(ILoot loot) => loot.AddOneFromOptions(1, ItemID.NightOwlPotion, ItemID.ShinePotion, ItemID.BiomeSightPotion, ItemID.TrapsightPotion, ItemID.HunterPotion, ItemID.SpelunkerPotion);
 
 	public override bool PreDraw(int i, int j, SpriteBatch spriteBatch)
 	{

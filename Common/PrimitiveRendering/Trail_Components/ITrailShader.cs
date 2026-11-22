@@ -1,4 +1,6 @@
-﻿namespace SpiritReforged.Common.PrimitiveRendering.Trail_Components;
+﻿using SpiritReforged.Common.PrimitiveRendering.Trails;
+
+namespace SpiritReforged.Common.PrimitiveRendering.Trail_Components;
 
 public interface ITrailShader
 {

@@ -1,0 +1,19 @@
+using SpiritReforged.Common.TileCommon;
+using TileHelper.Common;
+
+namespace SpiritReforged.Content.SaltFlats.Tiles;
+
+public class WoodenShingles : ModTile, ILoadItem
+{
+	public void AddItemRecipes(ModItem item) => item.CreateRecipe(2).AddRecipeGroup(RecipeGroupID.Wood).AddTile(TileID.Sawmill).Register();
+
+	public override void SetStaticDefaults()
+	{
+		Main.tileSolid[Type] = true;
+		Main.tileBlockLight[Type] = true;
+
+		TileMethods.Merge(Type, ModContent.TileType<BrownShingles>());
+		AddMapEntry(new Color(60, 45, 40));
+		DustType = DustID.WoodFurniture;
+	}
+}

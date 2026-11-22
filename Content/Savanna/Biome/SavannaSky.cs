@@ -6,7 +6,7 @@ namespace SpiritReforged.Content.Savanna.Biome;
 
 public class SavannaSky : AutoloadedSky
 {
-	private static float TimeProgress()
+	public static float TimeProgress()
 	{
 		if (Main.dayTime)
 			return (float)Math.Sin(Math.PI * Main.time / Main.dayLength);

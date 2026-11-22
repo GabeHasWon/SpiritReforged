@@ -1,23 +1,24 @@
 ﻿using SpiritReforged.Common.Easing;
-using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering.CustomTrails;
-using SpiritReforged.Common.PrimitiveRendering;
-using SpiritReforged.Common.ProjectileCommon.Abstract;
-using SpiritReforged.Content.Particles;
-using SpiritReforged.Common.MathHelpers;
-using System.IO;
-using SpiritReforged.Common.ProjectileCommon;
-using Terraria.Audio;
-using SpiritReforged.Common.ModCompat;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon;
+using SpiritReforged.Common.ItemCommon.Abstract;
+using SpiritReforged.Common.MathHelpers;
+using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Common.PrimitiveRendering;
+using SpiritReforged.Common.PrimitiveRendering.Trails;
+using SpiritReforged.Common.ProjectileCommon;
+using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
+using System.IO;
+using Terraria.Audio;
 using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Underground.Items.BoulderClub;
 
 public class Bowlder : ClubItem
 {
-	internal override float DamageScaling => 1.3f;
+	internal override float DamageScaling => 1.95f;
+	internal override float KnockbackScaling => 1.4f;
 
 	public override void SetStaticDefaults()
 	{
@@ -25,6 +26,7 @@ public class Bowlder : ClubItem
 		ItemLootDatabase.AddItemRule(ItemID.GoldenCrateHard, ItemDropRule.Common(Type, 20));
 		MoRHelper.AddElement(Item, MoRHelper.Earth, true);
 	}
+
 	public override void SafeSetDefaults()
 	{
 		Item.damage = 45;
@@ -40,7 +42,7 @@ public class Bowlder : ClubItem
 	}
 }
 
-class BowlderProj : BaseClubProj, IManualTrailProjectile
+class BowlderProj : BaseClubProj
 {
 	public const float SHOOT_SPEED = 8;
 
@@ -53,7 +55,7 @@ class BowlderProj : BaseClubProj, IManualTrailProjectile
 
 	public override void SafeSetStaticDefaults() => Main.projFrames[Type] = 2;
 
-	public void DoTrailCreation(TrailManager tM)
+	public void CreateTrail(ProjectileTrailRenderer renderer)
 	{
 		float trailDist = 60 * MeleeSizeModifier;
 		float trailWidth = 40 * MeleeSizeModifier;
@@ -68,13 +70,15 @@ class BowlderProj : BaseClubProj, IManualTrailProjectile
 				Intensity = 0.5f,
 			};
 
-			tM.CreateCustomTrail(new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
+			renderer.CreateTrail(Projectile, new SwingTrail(Projectile, parameters, GetSwingProgressStatic, SwingTrail.BasicSwingShaderParams));
 		}
 	}
 
 	public override void OnSwingStart()
 	{
-		TrailManager.ManualTrailSpawn(Projectile);
+		if (!Main.dedServ)
+			CreateTrail(TrailSystem.ProjectileRenderer);
+
 		if (FullCharge && Main.myPlayer == Owner.whoAmI)
 		{
 			StoredShotTrajectory = Owner.GetArcVel(Main.MouseWorld, 0.5f, SHOOT_SPEED);
@@ -177,7 +181,7 @@ class BowlderProj : BaseClubProj, IManualTrailProjectile
 	internal override bool CanCollide(float progress) => !FullCharge;
 	public override void OnSmash(Vector2 position)
 	{
-		TrailManager.TryTrailKill(Projectile);
+		TrailSystem.ProjectileRenderer.DissolveTrail(Projectile);
 		Collision.HitTiles(Projectile.position, Vector2.UnitY, Projectile.width, Projectile.height);
 
 		DustClouds(8);
@@ -216,14 +220,14 @@ class BowlderProj : BaseClubProj, IManualTrailProjectile
 			Vector2 particleVel = directionUnit.RotatedBy(rotationOffset) * velocity;
 			var p = new ImpactLine(position, particleVel, Color.White * 0.5f, new Vector2(0.15f, 0.6f) * TotalScale, Main.rand.Next(15, 20), 0.8f);
 			p.UseLightColor = true;
-			ParticleHandler.SpawnParticle(p);
+			ParticleRenderers.UnderProjectiles.Add(p);
 
 			if (!Main.rand.NextBool(3))
 				Dust.NewDustPerfect(position, DustID.t_LivingWood, particleVel / 3, Scale: 0.5f);
 		}
 
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
-		ParticleHandler.SpawnParticle(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(basePosition, directionUnit * 3, Color.LightGray, 0.06f * TotalScale, EaseFunction.EaseCubicOut, 30));
+		ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(basePosition, directionUnit * 6, Color.LightGray, 0.08f * TotalScale, EaseFunction.EaseCubicOut, 30));
 	}
 
 	internal override void SendExtraDataSafe(BinaryWriter writer)

@@ -19,14 +19,14 @@ internal class SmoothTunnel
 
 		if (HasNaNs(points))
 		{
-			int i = 0;
+			//int i = 0;
 		}
 
 		Vector2[] results = Spline.CreateSpline(points, 60);
 
 		if (HasNaNs(points))
 		{
-			int i = 0;
+			//int i = 0;
 		}
 
 		return CreateEquidistantSet(results, 10);

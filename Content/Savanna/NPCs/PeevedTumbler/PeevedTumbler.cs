@@ -13,6 +13,13 @@ namespace SpiritReforged.Content.Savanna.NPCs.PeevedTumbler;
 [AutoloadBanner]
 public class PeevedTumbler : ModNPC
 {
+	private class HasItem : IItemDropRuleCondition, IProvideItemConditionDescription
+	{
+		public bool CanDrop(DropAttemptInfo info) => info.npc.ModNPC is PeevedTumbler tumblr && tumblr._hasItem;
+		public bool CanShowItemDropInUI() => true;
+		public string GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.Conditions.PeevedTumbler");
+	}
+
 	public ref float Counter => ref NPC.ai[0];
 
 	private bool _hasItem;
@@ -22,10 +29,8 @@ public class PeevedTumbler : ModNPC
 		NPCID.Sets.TrailCacheLength[Type] = 5;
 		NPCID.Sets.TrailingMode[Type] = 3;
 
-		MoRHelper.AddElement(NPC, MoRHelper.Earth);
-		MoRHelper.AddElement(NPC, MoRHelper.Wind);
-		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Hot);
-		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Inorganic);
+		MoRHelper.AddElement(NPC, false, MoRHelper.Earth, MoRHelper.Wind);
+		MoRHelper.AddNPCToElementList(Type, MoRHelper.NPCType_Hot, MoRHelper.NPCType_Inorganic);
 	}
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "Sandstorm");
@@ -127,14 +132,16 @@ public class PeevedTumbler : ModNPC
 		Texture2D texture = TextureAssets.Npc[Type].Value;
 		var color = NPC.GetAlpha(NPC.GetNPCColorTintedByBuffs(drawColor));
 
-		//Draw normally
-		Main.EntitySpriteDraw(texture, NPC.Center - screenPos + new Vector2(0, NPC.gfxOffY), null, color, NPC.rotation, texture.Size() / 2, NPC.scale, SpriteEffects.None, 0);
 		//Draw trail
 		for (int i = NPC.oldPos.Length - 1; i >= 0; i--)
 		{
 			var position = NPC.oldPos[i] + NPC.Size / 2 - screenPos + new Vector2(0, NPC.gfxOffY);
 			Main.EntitySpriteDraw(texture, position, null, color * .25f * (1f - (float)i / NPC.oldPos.Length), NPC.oldRot[i], texture.Size() / 2, NPC.scale, SpriteEffects.None, 0);
 		}
+
+		//Draw normally
+		Main.EntitySpriteDraw(texture, NPC.Center - screenPos + new Vector2(0, NPC.gfxOffY), null, color, NPC.rotation, texture.Size() / 2, NPC.scale, SpriteEffects.None, 0);
+
 		//Draw eye
 		for (int i = 0; i < 2; i++)
 		{
@@ -167,15 +174,8 @@ public class PeevedTumbler : ModNPC
 	{
 		bool zoneDustStorm = spawnInfo.Player.GetModPlayer<DustStorm.DustStormPlayer>().ZoneDustStorm;
 		if (spawnInfo.Player.InModBiome<SavannaBiome>() && !spawnInfo.PlayerInTown && zoneDustStorm && !spawnInfo.Water)
-			return .16f;
+			return 0.16f;
 
 		return 0;
-	}
-
-	private class HasItem : IItemDropRuleCondition, IProvideItemConditionDescription
-	{
-		public bool CanDrop(DropAttemptInfo info) => info.npc.ModNPC is PeevedTumbler tumblr && tumblr._hasItem;
-		public bool CanShowItemDropInUI() => true;
-		public string GetConditionDescription() => Language.GetTextValue("Mods.SpiritReforged.Conditions.PeevedTumbler");
 	}
 }

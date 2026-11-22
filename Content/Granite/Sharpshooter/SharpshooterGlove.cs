@@ -1,8 +1,6 @@
 using SpiritReforged.Common.ItemCommon;
-using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.ModCompat.Classic;
-using SpiritReforged.Common.Particle;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
@@ -13,9 +11,10 @@ namespace SpiritReforged.Content.Granite.Sharpshooter;
 [AutoloadEquip(EquipType.HandsOn)]
 [AutoloadGlowmask("255,255,255")]
 [FromClassic("ShurikenLauncher")]
-public class SharpshooterGlove : EquippableItem
+public class SharpshooterGlove : ModItem, IFlagged
 {
 	public const int EffectiveDistance = 480;
+	public override bool IsLoadingEnabled(Mod mod) => false;
 
 	public override void SetDefaults()
 	{
@@ -32,7 +31,7 @@ public class SharpshooterGlove : EquippableItem
 internal class SharpshooterPlayer : ModPlayer
 {
 	private static readonly Dictionary<int, float> CooldownByNPC = [];
-	private static readonly Asset<Texture2D> Reticle = ModContent.Request<Texture2D>(DrawHelpers.RequestLocal(typeof(SharpshooterPlayer), "Reticle"));
+	private static readonly Asset<Texture2D> Reticle = Graphics.Tex("SpiritReforged/Content/Granite/Sharpshooter/Reticle");
 
 	public float Stacks { get; private set; }
 
@@ -56,12 +55,13 @@ internal class SharpshooterPlayer : ModPlayer
 			CooldownByNPC[index] = 1;
 	}
 
+	public override bool IsLoadingEnabled(Mod mod) => false;
 	public override void Load() => On_Main.DrawNPC += DrawReticle;
 	private static void DrawReticle(On_Main.orig_DrawNPC orig, Main self, int iNPCIndex, bool behindTiles)
 	{
 		orig(self, iNPCIndex, behindTiles);
 
-		if (Main.LocalPlayer.HasEquip<SharpshooterGlove>())
+		if (Main.LocalPlayer.HasFlag<SharpshooterGlove>())
 		{
 			var npc = Main.npc[iNPCIndex];
 			bool onCooldown = CooldownByNPC.TryGetValue(npc.whoAmI, out float value);
@@ -106,18 +106,18 @@ internal class SharpshooterPlayer : ModPlayer
 			float rotation = ((float)(Main.timeForVisualEffects / 40f % MathHelper.Pi) + MathHelper.PiOver2 * i) * (1f - frame);
 			var position = npc.Center + (new Vector2(-1) * distance).RotatedBy(rotation) + new Vector2(0, npc.gfxOffY);
 
-			DrawHelpers.DrawChromaticAberration(new Vector2(1), 1, delegate(Vector2 offset, Color color)
+			Graphics.DrawChromaticAberration(new Vector2(1), 1, delegate(Vector2 offset, Color color)
 			{
 				spriteBatch.Draw(texture, position - Main.screenPosition + offset, source, (color * opacity).Additive(), rotation, source.Size() / 2, scale, default, 0);
 			});
 		}
 	}
 
-	public override void ResetEffects() => Stacks = Player.HasEquip<SharpshooterGlove>() ? Math.Max(Stacks - 0.0005f, 0) : 0;
+	public override void ResetEffects() => Stacks = Player.HasFlag<SharpshooterGlove>() ? Math.Max(Stacks - 0.0005f, 0) : 0;
 
 	public override void ModifyHitNPCWithProj(Projectile proj, NPC target, ref NPC.HitModifiers modifiers)
 	{
-		if (!Player.HasEquip<SharpshooterGlove>() || !proj.DamageType.CountsAsClass(DamageClass.Ranged) || !AtRange(Player, target))
+		if (!Player.HasFlag<SharpshooterGlove>() || !proj.DamageType.CountsAsClass(DamageClass.Ranged) || !AtRange(Player, target))
 			return;
 
 		modifiers.FinalDamage *= GetDamageModifier(proj, modifiers);
@@ -131,10 +131,10 @@ internal class SharpshooterPlayer : ModPlayer
 		}
 
 		Vector2 position = target.Hitbox.ClosestPointInRect(proj.Center);
-		ParticleHandler.SpawnParticle(new TexturedPulseCircle(position, (Color.Cyan * 0.5f).Additive(), 1f, 100, 20, "supPerlin", Vector2.One, Common.Easing.EaseFunction.EaseQuinticOut).WithSkew(0.7f, proj.velocity.ToRotation()));
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(position, (Color.Cyan * 0.5f).Additive(), 1f, 100, 20, "supPerlin", Vector2.One, Common.Easing.EaseFunction.EaseQuinticOut).WithSkew(0.7f, proj.velocity.ToRotation()));
 
 		Vector2 scale = new(0.5f, 2);
-		ParticleHandler.SpawnParticle(new ImpactLine(position, Vector2.Normalize(proj.velocity) * 2, Color.Cyan.Additive(), scale, 10));
-		ParticleHandler.SpawnParticle(new ImpactLine(position, Vector2.Normalize(proj.velocity) * 2, Color.White.Additive(), scale * 0.5f, 10));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, Vector2.Normalize(proj.velocity) * 2, Color.Cyan.Additive(), scale, 10));
+		ParticleRenderers.UnderProjectiles.Add(new ImpactLine(position, Vector2.Normalize(proj.velocity) * 2, Color.White.Additive(), scale * 0.5f, 10));
 	}
 }

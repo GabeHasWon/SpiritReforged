@@ -54,7 +54,7 @@ ButterflyMinion_Buff: {
 }
 
 ToucanMinion_Buff: {
-	DisplayName: Toucano
+	DisplayName: Tucano
 	Description: O tucano luta por você
 }
 
@@ -64,7 +64,7 @@ QuenchPotion_Buff: {
 }
 
 TumblerPet_Buff: {
-	DisplayName: Tumbleweed Amigável
+	DisplayName: Arbusto Seco Amigável
 	Description: Uma bolota de galhos amiga está te seguindo
 }
 
@@ -78,7 +78,7 @@ GildedScarabBuff: {
 	Description: Defesa aumentada em {0}
 }
 
-PoolNoodleBubbleBuff: {
+Bubbled: {
 	DisplayName: Buff de Bolhas de Macarrão de Piscina
 	Description: Você encontrou o Codex Secreto do Lore dos Espíritos... Fique ligado para nosso superboss Darksteel, a Estrela Caída!
 }
@@ -99,16 +99,86 @@ OpenWounds: {
 }
 
 ExplorerPot: {
-	// DisplayName: Explorer's Thrill
-	// Description: You're eager for more!
+	DisplayName: Emoção do Explorador
+	Description: Você quer mais!
 }
 
 ExplorerMine: {
-	// DisplayName: Explorer's Vigor
-	// Description: Keep digging!
+	DisplayName: Vigor do Explorador
+	Description: Continue Cavando!
 }
 
 JinxMark: {
-	// DisplayName: Jinx Mark
-	// Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+	DisplayName: Marcado
+	Description: Mods.SpiritReforged.Buffs.JinxMark.Description
+}
+
+FlaskOfFrost_Buff: {
+	DisplayName: Congelante
+	Description: Ataques corpo-a-corpo e chicotes congelam os inimigos
+}
+
+Slowed: {
+	DisplayName: Lento
+	Description: Mods.SpiritReforged.Buffs.Slowed.Description
+}
+
+ToucaneMinion_Buff: {
+	DisplayName: Toucano
+	Description: O Toucano luta por você?
+}
+
+TinyDragonPet_Buff: {
+	DisplayName: Pequeno Dragão
+	Description: Um Pequeno Dragão te segue
+}
+
+EnlilBuff: {
+	DisplayName: Benção de Enlil
+	Description: Aumenta a velocidade verticalmente
+}
+
+ScarabLightPetBuff: {
+	DisplayName: Escarabebê
+	Description: Ela tá tramando algo...'
+}
+
+ScarabMountBuff: {
+	DisplayName: Montaria de tatu-bola
+	Description: "'Segura ai!'"
+}
+
+DivineStrike: {
+	DisplayName: Ataque Divino
+	Description: Seu próximo ataque será mais forte!
+}
+
+RotDebuff: {
+	DisplayName: Apodrecendo [{0}]
+	Description: "'Sua pele está ficando verde...'"
+}
+
+SanguineStackingBuff: {
+	DisplayName: Energia Sangrenta [{0}]
+	Description: Dano aumentado em {0}%
+}
+
+BlazeDebuff: {
+	DisplayName: Queimando
+	Description: Tá de boa!
+}
+
+RageGlyphBuff: {
+	DisplayName: Fúria Descontrolada [{0}]
+	Description: Dano guardado: {0}
+}
+
+ColumbatBuff: {
+	// DisplayName: Columbat
+	// Description: The being of bat
+}
+
+ColumbaldBuff: {
+	// DisplayName: Columbald
+	// Description: The being of bald
 }

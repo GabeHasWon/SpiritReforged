@@ -39,7 +39,7 @@ public sealed class AutoEmote(string name, string texture, int category, Func<bo
 	public static void LoadFaceEmote(ModNPC npc, Func<bool> condition)
 	{
 		string name = npc.Name + "Emote";
-		AutoEmote emote = new(name, DrawHelpers.RequestLocal(npc.GetType(), name), EmoteID.Category.Town, condition);
+		AutoEmote emote = new(name, (npc.GetType().Namespace + '.' + name).Path(), EmoteID.Category.Town, condition);
 
 		SpiritReforgedMod.Instance.AddContent(emote);
 	}

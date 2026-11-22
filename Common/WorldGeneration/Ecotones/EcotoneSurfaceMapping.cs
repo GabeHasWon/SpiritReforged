@@ -1,20 +1,76 @@
-﻿using System.Linq;
+﻿using Mono.Cecil.Cil;
+using MonoMod.Cil;
+using MonoMod.RuntimeDetour;
+using SpiritReforged.Common.ModCompat.EcotoneMapper;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Terraria.DataStructures;
 using Terraria.GameContent.Generation;
 using Terraria.IO;
+using Terraria.ModLoader.IO;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Common.WorldGeneration.Ecotones;
 
-internal class EcotoneSurfaceMapping : ModSystem
+#nullable enable
+
+public class EcotoneSurfaceMapping : ModSystem
 {
 	public class EcotoneEntry(Point start, EcotoneEdgeDefinition definition)
 	{
+		public int Width => End.X - Start.X;
+		public int Height => Bounds.Height;
+
+		/// <summary>
+		/// Total bounds of the ecotone. That is, the minimums and maximums of <see cref="SurfacePoints"/>.<br/>
+		/// This will throw if the ecotone is not yet set up. That would only happen in the middle of <see cref="MapEcotones(int, int)"/>.
+		/// </summary>
+		public Rectangle Bounds
+		{
+			get
+			{
+				if (!_boundsPrepared)
+					return Rectangle.Empty;
+
+				return _bounds;
+			}
+		}
+
+		/// <summary>
+		/// The <see cref="Start"/>/<see cref="End"/> bounds of the biome.
+		/// </summary>
+		public Rectangle StrictBounds
+		{
+			get
+			{
+				int high = Math.Min(Start.Y, End.Y);
+				int low = Math.Max(Start.Y, End.Y);
+				return new Rectangle(Start.X, high, End.X - Start.X, low - high);
+			}
+		}
+
 		public Point Start = start;
 		public Point End;
 		public HashSet<Point> SurfacePoints = [];
 		public EcotoneEdgeDefinition Definition = definition;
 		public EcotoneEdgeDefinition Left;
 		public EcotoneEdgeDefinition Right;
+
+		private bool _boundsPrepared = false;
+		private Rectangle _bounds = default;
+
+		public void FinalizeInformation()
+		{
+			int minX = SurfacePoints.MinBy(x => x.X).X;
+			int maxX = SurfacePoints.MaxBy(x => x.X).X;
+			int minY = SurfacePoints.MinBy(x => x.Y).Y;
+			int maxY = SurfacePoints.MaxBy(x => x.Y).Y;
+
+			_boundsPrepared = true;
+			_bounds = new Rectangle(minX, minY, maxX - minX, maxY - minY);
+		}
 
 		public bool TileFits(int i, int j) => Definition.ValidIds.Contains(Main.tile[i, j].TileType);
 		public bool SurroundedBy(string one, string two) => Left.Name == one && Right.Name == two || Left.Name == two && Right.Name == one;
@@ -23,93 +79,409 @@ internal class EcotoneSurfaceMapping : ModSystem
 	}
 
 	public const int TransitionLength = 20;
+	public static bool Mapped => Entries.Count != 0;
 
-	internal static readonly HashSet<Point> TotalSurfacePoints = [];
-	internal static readonly Dictionary<short, short> TotalSurfaceY = [];
+	public static readonly HashSet<Point> TotalSurfacePoints = [];
+	public static readonly Dictionary<short, short> TotalSurfaceY = [];
+	public static readonly Dictionary<int, Dictionary<Point16, float>> CorruptAreas = [];
 
-	private List<EcotoneEntry> Entries = [];
+	[WorldBound]
+	private readonly static List<EcotoneBase> SpawnedBases = [];
+
+	private readonly static List<string> UnloadedBases = [];
+
+	public static List<EcotoneEntry> Entries { get; internal set; } = [];
+
+	private static ILHook _modifyCorruptionHook = null!;
+
+	/// <summary> For some reason, the Corruption pass *really* spams "area replacement" code. So this just accounts for that. </summary>
+	internal static readonly HashSet<int> SkipCorruptAreaScanXs = [];
+
+	/// <summary> Stores the "crimson entrances" generated for future use, if desired. </summary>
+	internal static readonly HashSet<Point16> CrimsonOpenings = [];
+
+	[UnsafeAccessor(UnsafeAccessorKind.Field, Name = "_method")]
+	private extern static ref WorldGenLegacyMethod GetUnderlyingMethod(PassLegacy pass);
+
+	[UnsafeAccessor(UnsafeAccessorKind.StaticField, Name = "_vanillaGenPasses")]
+	private extern static ref Dictionary<string, GenPass> GetVanillaGenPasses(WorldGen? gen);
+
+	public static void AddSpawnedEcotone<T>() where T : EcotoneBase
+	{
+		if (!ContainsEcotone<T>())
+			SpawnedBases.Add(ModContent.GetInstance<T>());
+	}
+
+	public static bool ContainsEcotone<T>() where T : EcotoneBase => SpawnedBases.Any(x => x is T);
+	public static bool ContainsEcotone(string name) => SpawnedBases.Any(x => x.FullName == name);
+
+	public override void SaveWorldData(TagCompound tag)
+	{
+		var baseNames = SpawnedBases.Select(x => x.FullName).ToList();
+		baseNames.AddRange(UnloadedBases);
+		tag.Add("spawnedBases", baseNames);
+	}
+
+	public override void LoadWorldData(TagCompound tag)
+	{
+		IList<string> list = tag.GetList<string>("spawnedBases");
+		SpawnedBases.Clear();
+
+		foreach (string name in list)
+		{
+			if (ModContent.TryFind(name, out EcotoneBase ecotone))
+				SpawnedBases.Add(ecotone);
+			else
+				UnloadedBases.Add(name);
+		}
+	}
+
+	public override void NetSend(BinaryWriter writer)
+	{
+		int count = SpawnedBases.Count;
+		writer.Write((byte)count);
+
+		foreach (EcotoneBase ecotone in SpawnedBases)
+			writer.Write((byte)ecotone.Id);
+	}
+
+	public override void NetReceive(BinaryReader reader)
+	{
+		byte count = reader.ReadByte();
+
+		SpawnedBases.Clear();
+
+		for (int i = 0; i < count; ++i)
+		{
+			byte id = reader.ReadByte();
+			SpawnedBases.Add(EcotoneBase.Ecotones[id]);
+		}
+	}
+
+	public override void ClearWorld()
+	{
+		TotalSurfaceY.Clear();
+		Entries.Clear();
+	}
+
+	public override void SetStaticDefaults()
+	{
+		var passes = GetVanillaGenPasses(null);
+		var corruptionPass = passes.First(x => x.Value.Name == "Corruption").Value;
+
+		if (corruptionPass is PassLegacy pass)
+			_modifyCorruptionHook = new ILHook(GetUnderlyingMethod(pass).GetMethodInfo(), GetCorruptionAreaInfo);
+
+		On_WorldGen.CrimStart += LogCrimsonOpening;
+	}
+
+	private static void LogCrimsonOpening(On_WorldGen.orig_CrimStart orig, int i, int j)
+	{
+		orig(i, j);
+		CrimsonOpenings.Add(new Point16(i, j));
+	}
+
+	private static void GetCorruptionAreaInfo(ILContext il)
+	{
+		ILCursor c = new(il);
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall<WorldGen>(nameof(WorldGen.CrimStart))))
+			return;
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchLdsfld<Main>(nameof(Main.worldSurface))))
+			return;
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchStloc(22)))
+			return;
+
+		c.Emit(OpCodes.Ldloc_S, (byte)20); // left x
+		c.Emit(OpCodes.Ldloc_S, (byte)21); // right x
+		c.Emit(OpCodes.Ldloc_S, (byte)22); // bottom y
+		c.Emit(OpCodes.Ldc_I4_1); // false, for crimson
+		c.EmitDelegate(AddCorruptArea);
+
+		if (!c.TryGotoNext(MoveType.After, x => x.MatchCall<WorldGen>(nameof(WorldGen.ChasmRunner))))
+			return;
+
+		for (int i = 0; i < 2; ++i)
+			if (!c.TryGotoNext(x => x.MatchLdsfld<Main>(nameof(Main.worldSurface))))
+				return;
+
+		c.Emit(OpCodes.Ldloc_S, (byte)48); // left x
+		c.Emit(OpCodes.Ldloc_S, (byte)49); // right x
+		c.Emit(OpCodes.Ldloc_S, (byte)51); // bottom y
+		c.Emit(OpCodes.Ldc_I4_0); // true, for corruption
+		c.EmitDelegate(AddCorruptArea);
+	}
+
+	public static void AddCorruptArea(int leftX, int rightX, float bottomY, bool crimson)
+	{
+		if (SkipCorruptAreaScanXs.Contains(leftX) || SkipCorruptAreaScanXs.Contains(rightX))
+			return;
+
+		if (bottomY == 0)
+			bottomY = (int)Main.worldSurface;
+
+		SkipCorruptAreaScanXs.Add(leftX);
+		SkipCorruptAreaScanXs.Add(rightX);
+
+		int topY = (int)GenVars.worldSurfaceLow;
+		int convId = crimson ? BiomeConversionID.Crimson : BiomeConversionID.Corruption;
+
+		CorruptAreas.TryAdd(convId, []);
+
+		for (int i = leftX; i < rightX; ++i)
+		{
+			for (int j = topY; j < bottomY; ++j)
+			{
+				Point16 pos = new(i, j);
+
+				if (!CorruptAreas[convId].ContainsKey(pos))
+				{
+					float chance = 1f;
+
+					chance = Math.Min(chance, Utils.GetLerpValue(leftX, leftX + 30, i, true));
+					chance = Math.Min(chance, Utils.GetLerpValue(rightX, rightX - 30, i, true));
+					chance = Math.Min(chance, Utils.GetLerpValue(topY, topY + 30, j, true));
+					chance = Math.Min(chance, Utils.GetLerpValue(bottomY, bottomY - 30, j, true));
+
+					if (chance != 0)
+						CorruptAreas[convId].Add(pos, chance);
+				}
+			}
+		}
+	}
+
+	public override void Unload()
+	{
+		if (_modifyCorruptionHook is null)
+			return;
+
+		_modifyCorruptionHook.Dispose();
+		_modifyCorruptionHook = null!;
+	}
 
 	public override void ModifyWorldGenTasks(List<GenPass> tasks, ref double totalWeight)
 	{
-		int mapIndex = tasks.FindIndex(x => x.Name == "Corruption");
+		if (tasks.FindIndex(x => x.Name == "Corruption") is int index && index != -1)
+		{
+			foreach (var ecotone in EcotoneBase.Ecotones)
+				ecotone.AddTasks(tasks, Entries);
 
-		if (mapIndex == -1)
-			return;
-
-		foreach (var ecotone in EcotoneBase.Ecotones)
-			ecotone.AddTasks(tasks, Entries);
-
-		tasks.Insert(mapIndex + 1, new PassLegacy("Map Ecotones", MapEcotones));
-
-//#if DEBUG
-//		tasks.Add(new PassLegacy("Ecotone Debug", (progress, config) =>
-//		{
-//			foreach (var item in Entries)
-//			{
-//				for (int x = item.Start.X; x < item.End.X; ++x)
-//				{
-//					for (int nY = 90; nY < 100; ++nY)
-//						WorldGen.PlaceTile(x, nY, item.Definition.DisplayId, true, true);
-//				}
-//			}
-//		}));
-//#endif
+			tasks.Insert(index - 2, new PassLegacy("Reset Corruption Mapping", ResetCorruptionMapping));
+			tasks.Insert(tasks.Count - 2, new PassLegacy("Re-Corrupt Areas", ReCorruptAreas));
+		}
 	}
 
-	private void MapEcotones(GenerationProgress progress, GameConfiguration configuration)
+	/// <summary> Clears cached coordinates within the provided horizontal range and adjusts the range based on cleared ecotones. </summary>
+	private static void ClearRange(ref int start, ref int end)
 	{
-		const int StartX = 250;
+		if (start <= 0 && end >= Main.maxTilesX) //Avoid extra computations
+		{
+			Entries.Clear();
+			TotalSurfaceY.Clear();
 
-		progress.Message = Language.GetTextValue("Mods.SpiritReforged.Generation.Ecotones");
+			return;
+		}
 
-		Entries.Clear();
-		TotalSurfacePoints.Clear();
-		TotalSurfaceY.Clear();
+		int _start = start;
+		int _end = end;
+
+		var entryRemovals = Entries.Where(x => x.SurfacePoints.Any(z => z.X >= _start && z.X <= _end)).ToHashSet();
+
+		foreach (var item in entryRemovals)
+		{
+			if (item.Start.X < start)
+				_start = start = item.Start.X;
+
+			if (item.End.X > end)
+				_end = end = item.End.X;
+
+			Entries.Remove(item);
+		}
+
+		var dictRemovals = TotalSurfaceY.Keys.Where(x => x >= _start && x <= _end).ToHashSet();
+
+		foreach (short item in dictRemovals)
+			TotalSurfaceY.Remove(item);
+	}
+
+	private void ResetCorruptionMapping(GenerationProgress progress, GameConfiguration configuration)
+	{
+		CorruptAreas.Clear();
+		SkipCorruptAreaScanXs.Clear();
+		CrimsonOpenings.Clear();
+	}
+
+	private void ReCorruptAreas(GenerationProgress progress, GameConfiguration configuration)
+	{
+		foreach (int key in CorruptAreas.Keys)
+			foreach ((Point16 point, float chance) in CorruptAreas[key])
+				if (WorldGen.genRand.NextFloat() < chance)
+					WorldGen.Convert(point.X, point.Y, key, 0, true, true);
+	}
+
+	/// <summary> Maps ecotones spanning the entire world. Mapping should normally be done before finding an ecotone spawn location. </summary>
+	public static void MapEcotones(EcotoneBase? referenceEcotone) => MapEcotones(referenceEcotone, 0, Main.maxTilesX);
+
+	/// <summary> Maps ecotones within the provided bounds. Mapping should normally be done before finding an ecotone spawn location. </summary>
+	public static void MapEcotones(EcotoneBase? referenceEcotone, int start, int end)
+	{
+		int Fluff = WorldGen.beachDistance;
+
+		ClearRange(ref start, ref end);
+
+		start = Math.Max(start, Fluff);
+		end = Math.Min(end, Main.maxTilesX - Fluff);
 
 		int transitionCount = 0;
-		EcotoneEntry entry = null;
+		EcotoneEntry entry = new(new Point(Main.offLimitBorderTiles, 80), EcotoneEdgeDefinitions.GetEcotone("Ocean"));
+		entry.Left = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+		ManuallyMapEntry(entry, Main.offLimitBorderTiles..start);
 
-		for (int x = StartX; x < Main.maxTilesX - StartX; ++x)
+		for (int x = start; x < end; ++x)
 		{
 			int y = 80;
 
-			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out int addY))
-				y++;
-
-			if (entry is null)
-			{
-				entry = new EcotoneEntry(new Point(StartX, y), EcotoneEdgeDefinitions.GetEcotone("Ocean"));
-				entry.Left = EcotoneEdgeDefinitions.GetEcotone("Ocean");
-			}
+			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out _))
+				y++; // Skip over clouds
 
 			if (!entry.TileFits(x, y))
 				transitionCount++;
 
 			if (transitionCount > TransitionLength && EcotoneEdgeDefinitions.TryGetEcotoneByTile(Main.tile[x, y].TileType, out var def) && def.Name != entry.Definition.Name)
-			{ 
+			{
+				int conversionType = BiomeConversionID.Purity;
+
+				if (def.Name == "Corruption")
+					conversionType = BiomeConversionID.Corruption;
+				else if (def.Name == "Crimson")
+					conversionType = BiomeConversionID.Crimson;
+				else if (def.Name == "Hallow")
+					conversionType = BiomeConversionID.Hallow;
+
+				if (conversionType != BiomeConversionID.Purity)
+					def = EcotoneEdgeDefinitions.GetEcotone("Forest");
+
+				if (x <= WorldGen.beachDistance + 20 || x >= Main.maxTilesX - WorldGen.beachDistance - 20)
+					def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+
 				EcotoneEdgeDefinition old = entry.Definition;
 				entry.End = new Point(x, y);
 				entry.Right = def;
-				Entries.Add(entry);
 
-				if (x <= GenVars.leftBeachEnd || x >= GenVars.rightBeachStart)
-					def = EcotoneEdgeDefinitions.GetEcotone("Ocean");
-				
-				entry = new EcotoneEntry(new Point(x, y), def);
-				entry.Left = old;
-				transitionCount = 0;
+				if (def.Name != old.Name)
+				{
+					AddEntry(entry);
+
+					entry = new EcotoneEntry(new Point(x, y), def);
+					entry.Left = old;
+					transitionCount = 0;
+					conversionType = BiomeConversionID.Purity;
+				}
 			}
 
-			entry.SurfacePoints.Add(new Point(x, y));
-			TotalSurfacePoints.Add(new Point(x, y));
-			TotalSurfaceY.Add((short)x, (short)y);
+			MapPoint(x, y, entry);
 
-			if (x == Main.maxTilesX - StartX - 1)
+			if (x == Main.maxTilesX - WorldGen.beachDistance - 20)
 				entry.End = new Point(x, y);
 		}
 
 		entry.Right = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+
+		if (entry.End.X == 0)
+		{
+			int x = Main.maxTilesX - WorldGen.beachDistance - 20;
+			int y = 80;
+
+			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out _))
+				y++; // Skip over clouds
+
+			entry.End = new Point(x, y);
+		}
+
+		var lastX = entry.End.X;
+		AddEntry(entry);
+
+		EcotoneEntry rightEdge = new(entry.End, EcotoneEdgeDefinitions.GetEcotone("Ocean"));
+		rightEdge.Left = entry.Definition;
+		rightEdge.Right = EcotoneEdgeDefinitions.GetEcotone("Ocean");
+		rightEdge.End = new Point(Main.maxTilesX - Main.offLimitBorderTiles, 80);
+		ManuallyMapEntry(rightEdge, lastX..(Main.maxTilesX - Main.offLimitBorderTiles));
+
+		Entries.Add(rightEdge);
+
+		Entries = [.. Entries.OrderBy(x => x.Start.X)];
+
+		foreach (EcotoneEntry curEntry in Entries)
+			curEntry.FinalizeInformation();
+
+		if (EcotoneMapperHooks.ActuallyManuallyMapping && referenceEcotone is not null)
+		{
+			EcotoneMapperHooks.ReadyToContinue = false;
+			EcotoneMapperHooks.MappingEcotone = referenceEcotone;
+		}
+	}
+
+	private static void AddEntry(EcotoneEntry entry)
+	{
+		// This fixes a weird issue I can't replicate but saw a few times. Don't mind it lol
+		if (entry.Width > 2000 && entry.Definition.Name == "Ocean")
+		{
+			if (entry.Start.X < Main.maxTilesX / 2)
+				entry.End.X = WorldGen.beachDistance;
+			else
+			{
+				entry.Start.X = Main.maxTilesX - WorldGen.beachDistance;
+				entry.End.X = Main.maxTilesX - Main.offLimitBorderTiles;
+			}
+		}
+
 		Entries.Add(entry);
-		Entries = new(Entries.OrderBy(x => x.Start.X));
+	}
+
+	private static void ManuallyMapEntry(EcotoneEntry entry, Range xRange)
+	{
+		for (int x = xRange.Start.Value; x < xRange.End.Value; ++x)
+		{
+			int y = 80;
+
+			while (!WorldGen.SolidOrSlopedTile(x, y) || WorldMethods.CloudsBelow(x, y, out _))
+				y++; // Skip over clouds
+
+			MapPoint(x, y, entry);
+		}
+	}
+
+	private static void MapPoint(int x, int y, EcotoneEntry entry)
+	{
+		entry.SurfacePoints.Add(new Point(x, y));
+		TotalSurfaceY.TryAdd((short)x, (short)y);
+	}
+
+	/// <summary> Selects the largest possible ecotone from a selection matching <paramref name="predicate"/>.<para/>
+	/// Remaps ecotones by default, set <paramref name="remap"/> to false if you want to avoid this. </summary>
+	public static EcotoneEntry? FindWhere(Func<EcotoneEntry, bool> predicate, bool remap = true, EcotoneBase? referenceBase = null)
+	{
+		if (remap)
+			MapEcotones(referenceBase);
+
+		if (Entries.Where(predicate) is IEnumerable<EcotoneEntry> validEntries && validEntries.Any())
+		{
+			if (validEntries.OrderBy(x => Math.Abs(x.Start.X - x.End.X)).Last() is EcotoneEntry entry)
+				return entry;
+		}
+
+		return null;
+	}
+
+	/// <summary> Returns whether both the start and end Y coordinates of <paramref name="x"/> are on the surface. </summary>
+	public static bool OnSurface(EcotoneEntry x) => x.Start.Y < Main.worldSurface && x.End.Y < Main.worldSurface;
+
+	/// <summary> Returns whether <paramref name="x"/> is overlapping the center of the world. </summary>
+	public static bool OverSpawn(EcotoneEntry x)
+	{
+		int spawn = Main.maxTilesX / 2;
+		return x.Start.X < spawn && x.End.X > spawn;
 	}
 }

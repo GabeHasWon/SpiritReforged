@@ -2,7 +2,6 @@
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.SimpleEntity;
 using SpiritReforged.Common.TileCommon;
-using SpiritReforged.Common.TileCommon.TileSway;
 using SpiritReforged.Common.WorldGeneration;
 using System.IO;
 using Terraria.Audio;
@@ -12,7 +11,7 @@ using Terraria.Utilities;
 
 namespace SpiritReforged.Content.Savanna.Tiles;
 
-public class HangingBaobabFruit : ModTile, ISwayTile
+public class HangingBaobabFruit : ModTile
 {
 	/// <summary> Grows a baobab vine from the given coordinates including one-time framing logic. </summary>
 	internal static void GrowVine(int i, int j, int length = 1)
@@ -40,8 +39,6 @@ public class HangingBaobabFruit : ModTile, ISwayTile
 			NetMessage.SendTileSquare(-1, i, j, 1, length);
 	}
 
-	public int Style => (int)TileDrawing.TileCounterType.Vine;
-
 	public override void SetStaticDefaults()
 	{
 		Main.tileBlockLight[Type] = true;
@@ -49,7 +46,7 @@ public class HangingBaobabFruit : ModTile, ISwayTile
 		Main.tileNoFail[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 
-		TileID.Sets.VineThreads[Type] = true;
+		WindTileRenderer.TileDrawInWind[Type] = TileDrawing.TileCounterType.Vine;
 		TileID.Sets.ReplaceTileBreakDown[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style1x1);
@@ -101,7 +98,7 @@ public class HangingBaobabFruit : ModTile, ISwayTile
 			PreNewProjectile.New(new EntitySource_TileBreak(i, j), position, Vector2.Zero, ModContent.ProjectileType<FallingBaobabFruit>(), 10, 0f, ai0: tile.TileFrameX / 18, preSpawnAction: delegate (Projectile p)
 			{
 				(p.ModProjectile as FallingBaobabFruit).PickDrop();
-			}).netUpdate = true;
+			});
 		}
 	}
 }

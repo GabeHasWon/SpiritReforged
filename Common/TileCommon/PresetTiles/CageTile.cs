@@ -1,12 +1,11 @@
-using SpiritReforged.Common.ItemCommon;
 using Terraria.GameContent.Drawing;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class CageTile : ModTile, IAutoloadTileItem
+public abstract class CageTile : ModTile
 {
-	private static readonly int[] cageFrames = new int[Main.cageFrames];
-	private static readonly int[] cageFrameCounters = new int[Main.cageFrames];
+	private readonly int[] cageFrames = new int[Main.cageFrames];
+	private readonly int[] cageFrameCounters = new int[Main.cageFrames];
 
 	public abstract int NumFrames { get; }
 
@@ -20,13 +19,11 @@ public abstract class CageTile : ModTile, IAutoloadTileItem
 
 		TileID.Sets.CritterCageLidStyle[Type] = 0;
 
-		AddObjectData();
-
 		DustType = DustID.Glass;
-		AnimationFrameHeight = 54;
 		AdjTiles = [TileID.BirdCage];
+		AnimationFrameHeight = 54;
 
-		RegisterItemDrop(this.AutoItemType());
+		AddObjectData();
 	}
 
 	public virtual void AddObjectData()
@@ -45,7 +42,7 @@ public abstract class CageTile : ModTile, IAutoloadTileItem
 	{
 		var tile = Main.tile[i, j];
 		int fullWidth = TileObjectData.GetTileData(type, 0)?.CoordinateFullWidth ?? 108;
-		int tileCageFrameIndex = TileDrawing.GetBigAnimalCageFrame(i, j, tile.TileFrameX, tile.TileFrameY);
+		int tileCageFrameIndex = GetFrameIndex(i, j, tile.TileFrameX, tile.TileFrameY);
 
 		frameYOffset = cageFrames[tileCageFrameIndex] % NumFrames * AnimationFrameHeight;
 		frameXOffset = cageFrames[tileCageFrameIndex] / NumFrames * fullWidth;
@@ -60,6 +57,7 @@ public abstract class CageTile : ModTile, IAutoloadTileItem
 			AnimateCage(ref cageFrames[i], ref cageFrameCounters[i]);
 	}
 
+	public virtual int GetFrameIndex(int i, int j, int frameX, int frameY) => TileDrawing.GetBigAnimalCageFrame(i, j, frameX, frameY);
 	public virtual void AnimateCage(ref int frame, ref int frameCounter) { }
 	public override void NumDust(int i, int j, bool fail, ref int num) => num = fail ? 1 : 3;
 }

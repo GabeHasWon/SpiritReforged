@@ -1,4 +1,5 @@
-﻿using Terraria.GameContent.ItemDropRules;
+﻿using System.Linq;
+using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Common.NPCCommon;
 
@@ -15,7 +16,7 @@ internal class NPCLootDatabase : GlobalNPC
 
 	private static readonly List<ConditionalLoot> LootToAdd = [];
 
-	public static Func<NPC, NPCLoot, bool> MatchId(HashSet<int> types) => (npc, loot) => types.Contains(npc.type);
+	public static Func<NPC, NPCLoot, bool> MatchId(params int[] types) => (npc, loot) => types.Contains(npc.type);
 	public static Func<NPC, NPCLoot, bool> MatchId(int type) => (npc, loot) => type == npc.type;
 
 	/// <summary>

@@ -1,9 +1,7 @@
 ﻿using ILLogger;
 using MonoMod.Cil;
-using SpiritReforged.Common.TileCommon.TileSway;
 using System.Linq;
 using Terraria.DataStructures;
-using Terraria.GameContent.Drawing;
 using static SpiritReforged.Common.TileCommon.DrawOrderAttribute;
 
 namespace SpiritReforged.Common.TileCommon;
@@ -14,7 +12,7 @@ namespace SpiritReforged.Common.TileCommon;
 /// </summary>
 /// <param name="layers"></param>
 [AttributeUsage(AttributeTargets.Class)]
-internal class DrawOrderAttribute(params Layer[] layers) : Attribute
+public class DrawOrderAttribute(params Layer[] layers) : Attribute
 {
 	public Layer[] Layers { get; private set; }  = layers;
 
@@ -29,9 +27,9 @@ internal class DrawOrderAttribute(params Layer[] layers) : Attribute
 
 internal class DrawOrderSystem : ModSystem
 {
-	internal static event Action DrawTilesSolidEvent;
-	internal static event Action DrawTilesNonSolidEvent;
-	internal static event Action PostDrawPlayersEvent;
+	internal static event Action DrawTilesSolid;
+	internal static event Action DrawTilesNonSolid;
+	internal static event Action PostDrawPlayers;
 
 	/// <summary> Stores tile types and defined layer pairs on load. </summary>
 	private static readonly Dictionary<int, Layer[]> DrawOrderTypes = []; 
@@ -56,6 +54,44 @@ internal class DrawOrderSystem : ModSystem
 
 	public override void Load()
 	{
+		#region detours/il
+		IL_Main.DoDraw_Tiles_Solid += static il =>
+		{
+			var c = new ILCursor(il);
+			for (int i = 0; i < 2; i++)
+			{
+				if (!c.TryGotoNext(x => x.MatchCallvirt<SpriteBatch>("End")))
+				{
+					SpiritReforgedMod.Instance.LogIL("Draw Order Solids", $"Method 'SpriteBatch.End' index {i} not found.");
+					return;
+				}
+			}
+
+			c.EmitDelegate(() => DrawTilesSolid?.Invoke()); //Emit a delegate so we can draw just before the spritebatch ends
+		};
+
+		On_Main.DoDraw_Tiles_NonSolid += static (orig, self) =>
+		{
+			orig(self);
+			DrawTilesNonSolid?.Invoke();
+		};
+
+		On_Main.DrawPlayers_AfterProjectiles += static (orig, self) =>
+		{
+			orig(self);
+
+			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
+			PostDrawPlayers?.Invoke();
+			Main.spriteBatch.End();
+		};
+		#endregion
+
+		TileEvents.AddPreDrawAction(false, SpecialDrawPoints.Clear);
+
+		PostDrawPlayers += () => Draw(Layer.OverPlayers);
+		DrawTilesNonSolid += () => Draw(Layer.NonSolid);
+		DrawTilesSolid += () => Draw(Layer.Solid);
+
 		static void Draw(Layer layer)
 		{
 			Order = layer;
@@ -70,53 +106,6 @@ internal class DrawOrderSystem : ModSystem
 
 			Order = Layer.Default;
 		}
-
-		#region detours/il
-		On_TileDrawing.PreDrawTiles += ClearDrawPoints;
-
-		IL_Main.DoDraw_Tiles_Solid += static (ILContext il) =>
-		{
-			var c = new ILCursor(il);
-			for (int i = 0; i < 2; i++)
-			{
-				if (!c.TryGotoNext(x => x.MatchCallvirt<SpriteBatch>("End")))
-				{
-					SpiritReforgedMod.Instance.LogIL("Draw Order Solids", $"Method 'SpriteBatch.End' index {i} not found.");
-					return;
-				}
-			}
-
-			c.EmitDelegate(() => DrawTilesSolidEvent?.Invoke()); //Emit a delegate so we can draw just before the spritebatch ends
-		};
-
-		On_Main.DoDraw_Tiles_NonSolid += static (On_Main.orig_DoDraw_Tiles_NonSolid orig, Main self) =>
-		{
-			orig(self);
-			DrawTilesNonSolidEvent?.Invoke();
-		};
-
-		On_Main.DrawPlayers_AfterProjectiles += static (On_Main.orig_DrawPlayers_AfterProjectiles orig, Main self) =>
-		{
-			orig(self);
-
-			Main.spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, Main.DefaultSamplerState, DepthStencilState.None, Main.Rasterizer, null, Main.GameViewMatrix.TransformationMatrix);
-			PostDrawPlayersEvent?.Invoke();
-			Main.spriteBatch.End();
-		};
-
-		PostDrawPlayersEvent += () => Draw(Layer.OverPlayers);
-		DrawTilesNonSolidEvent += () => Draw(Layer.NonSolid);
-		DrawTilesSolidEvent += () => Draw(Layer.Solid);
-		#endregion
-	}
-
-	private static void ClearDrawPoints(On_TileDrawing.orig_PreDrawTiles orig, TileDrawing self, bool solidLayer, bool forRenderTargets, bool intoRenderTargets)
-	{
-		orig(self, solidLayer, forRenderTargets, intoRenderTargets);
-
-		bool flag = intoRenderTargets || Lighting.UpdateEveryFrame;
-		if (!solidLayer && flag) //Does not clear solid points when expected and may cause issues when using them
-			SpecialDrawPoints.Clear();
 	}
 
 	public override void PostSetupContent()
@@ -128,10 +117,12 @@ internal class DrawOrderSystem : ModSystem
 
 			if (tag is not null)
 				DrawOrderTypes.Add(tile.Type, tag.Layers);
-			else if (tile is ISwayTile sway && sway.Style == -1) //If no layers are defined for this ISwayTile, automatically add a valid layer for sway drawing
-				DrawOrderTypes.Add(tile.Type, [Layer.NonSolid]);
 		}
 	}
+
+	internal static void DrawNonsolid() => DrawTilesNonSolid?.Invoke();
+	internal static void DrawSolid() => DrawTilesSolid?.Invoke();
+	internal static void DrawOverPlayers() => PostDrawPlayers?.Invoke();
 }
 
 internal class DrawOrderGlobalTile : GlobalTile

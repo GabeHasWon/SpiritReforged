@@ -19,7 +19,7 @@ public class SandPiper : ModNPC
 	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = 4;
-		NPCID.Sets.ShimmerTransformToNPC[NPC.type] = NPCID.Shimmerfly;
+		NPCID.Sets.ShimmerTransformToNPC[Type] = NPCID.Shimmerfly;
 	}
 
 	public override void SetDefaults()
@@ -311,7 +311,7 @@ public class SandPiper : ModNPC
 
 	public override float SpawnChance(NPCSpawnInfo spawnInfo)
 	{
-		if (spawnInfo.Player.ZoneBeach && Main.dayTime && !spawnInfo.Water)
+		if (spawnInfo.Player.ZoneBeach && Main.dayTime && !spawnInfo.Water && spawnInfo.SpawnTileY > Main.worldSurface * 0.35f)
 			return spawnInfo.PlayerInTown ? 2 : 1;
 
 		return 0;

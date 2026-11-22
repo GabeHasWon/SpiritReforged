@@ -7,13 +7,12 @@ using Terraria.GameContent.ItemDropRules;
 
 namespace SpiritReforged.Content.Savanna.NPCs.ZombieVariants;
 
-public class SafariZombie : ReplaceNPC
+public class SafariZombie : ModNPC, ISubstitute
 {
-	private float frameCounter;
+	public int[] TypesToReplace => [NPCID.Zombie, NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie];
+	private float _frameCounter;
 
-	public override int[] TypesToReplace => [NPCID.Zombie, NPCID.PincushionZombie, NPCID.SlimedZombie, NPCID.SwampZombie];
-
-	public override void StaticDefaults()
+	public override void SetStaticDefaults()
 	{
 		Main.npcFrameCount[Type] = Main.npcFrameCount[NPCID.Zombie];
 		NPCID.Sets.Zombies[Type] = true;
@@ -33,8 +32,8 @@ public class SafariZombie : ReplaceNPC
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath2;
 		NPC.value = 50f;
-		NPC.knockBackResist = .45f;
-		NPC.aiStyle = 3;
+		NPC.knockBackResist = 0.45f;
+		NPC.aiStyle = NPCAIStyleID.Fighter;
 		AIType = NPCID.Zombie;
 		AnimationType = NPCID.Zombie;
 		Banner = Item.NPCtoBanner(NPCID.Zombie);
@@ -58,15 +57,15 @@ public class SafariZombie : ReplaceNPC
 	{
 		if (NPC.IsABestiaryIconDummy)
 		{
-			frameCounter += .1f;
-			frameCounter %= Main.npcFrameCount[Type];
-			NPC.frame.Y = frameHeight * (int)frameCounter;
+			_frameCounter += .1f;
+			_frameCounter %= Main.npcFrameCount[Type];
+			NPC.frame.Y = frameHeight * (int)_frameCounter;
 		}
 	}
 
 	public override void ModifyNPCLoot(NPCLoot npcLoot)
 	{
-		var rule = ItemDropRule.Common(ModContent.ItemType<HuntingRifle>(), 100);
+		var rule = ItemDropRule.Common(ModContent.ItemType<HuntingRifle>(), 30);
 		rule.OnSuccess(ItemDropRule.Common(ItemID.MusketBall, 1, 25, 45), hideLootReport: true);
 		npcLoot.Add(rule);
 
@@ -75,5 +74,5 @@ public class SafariZombie : ReplaceNPC
 		npcLoot.AddOneFromOptions(75, ModContent.ItemType<Items.Vanity.SafariHat>(), ModContent.ItemType<Items.Vanity.SafariVest>(), ModContent.ItemType<Items.Vanity.SafariShorts>());
 	}
 
-	public override bool CanSpawn(Player player) => player.InModBiome<SavannaBiome>();
+	public bool CanSubstitute(Player player) => player.InModBiome<SavannaBiome>();
 }

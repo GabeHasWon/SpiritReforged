@@ -90,9 +90,9 @@ CascadeLeggings: {
 	Tooltip: 15% de aumento de movimento na água
 }
 
-JellyfishStaff: {
-	DisplayName: Cajado de Água-Viva
-	Tooltip: Invoca uma água-viva pequenininha para lutar por você!
+JellyfishJamJar: {
+	DisplayName: Jarro de Águas-Vivas Festejantes
+	Tooltip: Invoca Águas-Vivas pequenininhas para lutarem por você!
 }
 
 Lifesaver: {
@@ -136,7 +136,7 @@ UrchinStaff: {
 
 GarInAJar: {
 	Tooltip: ""
-	DisplayName: Gar em um Jarro
+	DisplayName: Aquário de Gar
 }
 
 GarItem: {
@@ -150,7 +150,7 @@ SavannaDirtItem: {
 }
 
 GoldGarItem: {
-	DisplayName: Gar Dourado
+	DisplayName: Gar de Ouro
 	Tooltip: ""
 }
 
@@ -398,7 +398,7 @@ MessageBottle: {
 }
 
 GoldKillifishItem: {
-	DisplayName: Peixe Killi Dourado
+	DisplayName: Peixe Killi de Ouro
 	Tooltip: ""
 }
 
@@ -626,7 +626,7 @@ SunStaff: {
 }
 
 SavannaMusicBoxItem: {
-	DisplayName: Caixa de Música (Savana)
+	DisplayName: Caixinha de Música (Savana)
 	Tooltip: ""
 }
 
@@ -662,11 +662,6 @@ DrywoodChairItem: {
 
 DrywoodClockItem: {
 	DisplayName: Relógio de Madeira Seca
-	Tooltip: ""
-}
-
-DrywoodCouchItem: {
-	DisplayName: Sofá de Madeira Seca
 	Tooltip: ""
 }
 
@@ -901,7 +896,7 @@ RoyalKhopesh: {
 
 SavannaSandstormMusicBoxItem: {
 	Tooltip: ""
-	DisplayName: Caixa de Música (Tempestade de Areia)
+	DisplayName: Caixinha de Música (Tempestade de Areia)
 }
 
 FishLure: {
@@ -934,12 +929,12 @@ MagmastoneItem: {
 }
 
 SavannaCrateHardmode: {
-	DisplayName: Caixa de Safári
+	DisplayName: Caixote de Safári
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
 SavannaCrate: {
-	DisplayName: Caixa de Campos
+	DisplayName: Caixote de Campos
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
@@ -1220,7 +1215,7 @@ DyeCrateItem: {
 }
 
 SavannaNightMusicBoxItem: {
-	DisplayName: Caixa de Música (Noite na Savana)
+	DisplayName: Caixinha de Música (Noite na Savana)
 	Tooltip: ""
 }
 
@@ -1298,14 +1293,14 @@ RemedyPotion: {
 }
 
 CloudstalkBoxItem: {
-	DisplayName: Caixa de Plantio de Haste de Nuvem
+	DisplayName: Vaso de Haste de Nuvem
 	Tooltip: ""
 }
 
-OceanSlimeBannerItem.DisplayName: Bandeira do Slime de Côco
+OceanSlimeBannerItem.DisplayName: Bandeira do Geleia de Côco
 
 OceanDepthsBoxItem: {
-	DisplayName: Caixa de Música (Profundezas do Oceano)
+	DisplayName: Caixinha de Música (Profundezas do Oceano)
 	Tooltip: ""
 }
 
@@ -1330,683 +1325,2508 @@ SparrowCageItem: {
 }
 
 PinBlood: {
-	// DisplayName: Blood Pin
-	// Tooltip: ""
+	DisplayName: Alfinete Sangrento
+	Tooltip: ""
 }
 
 PinWulfrum: {
-	// DisplayName: Wulfrum Pin
-	// Tooltip: ""
+	DisplayName: Alfinete de Wulfrum
+	Tooltip: ""
 }
 
 WayfarerHead: {
-	// DisplayName: Wayfarer's Hat
-	// Tooltip: Immunity to darkness
+	DisplayName: Chapéu do Viajante
+	Tooltip: Imunidade a trevas
 }
 
 WayfarerBody: {
-	// DisplayName: Wayfarer's Rucksack
-	// Tooltip: 5% increased movement speed
+	DisplayName: Mochila do Viajante
+	Tooltip: Aumento de 5% na velocidade de movimento
 }
 
 WayfarerLegs: {
-	// DisplayName: Wayfarer's Pants
-	// Tooltip: 7% increased movement speed
+	DisplayName: Calças do Viajante
+	Tooltip: Aumento de 7% na velocidade de movimento
 }
 
 AncientKoiTotem: {
-	// DisplayName: Ancient Koi Totem
-	// Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
+	DisplayName: Totem da Carpa Anciã
+	Tooltip: "{$Mods.SpiritReforged.Items.KoiTotem.Tooltip}"
 }
 
 BoomShroom: {
-	// DisplayName: Boom Shroom
-	/* Tooltip:
+	DisplayName: Explodumelo
+	Tooltip:
 		'''
-		All thrown explosives are much larger... and stronger
-		Downtime between throws is increased
-		''' */
+		Todos os explosivos que arremesar serão muito maiores... e mais fortes
+		O intervalo entre os usos é aumentado
+		'''
 }
 
 ClayBomb: {
-	// DisplayName: Clay Bomb
-	// Tooltip: A small explosion that will spread clay
+	DisplayName: Bomba de Argila
+	Tooltip: Uma pequena explosão que espalha argila
 }
 
 ClayBombSticky: {
-	// DisplayName: Sticky Clay Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.ClayBomb.Tooltip}"
+	DisplayName: Bomba de Argila Adesiva
+	Tooltip: "{$Mods.SpiritReforged.Items.ClayBomb.Tooltip}"
 }
 
 SandBomb: {
-	// DisplayName: Sand Bomb
-	// Tooltip: A small explosion that will spread sand
+	DisplayName: Bomba de Areia
+	Tooltip: Uma pequena explosão que espalha areia
 }
 
 SandBombSticky: {
-	// DisplayName: Sticky Sand Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.SandBomb.Tooltip}"
+	DisplayName: Bomba de Areia Adesiva
+	Tooltip: "{$Mods.SpiritReforged.Items.SandBomb.Tooltip}"
 }
 
 CoarseBomb: {
-	// DisplayName: Coarse Bomb
-	// Tooltip: A small explosion that will spread coarse dirt
+	DisplayName: Bomba de Terra Grossa
+	Tooltip: Uma pequena explosão que espalha terra grossa
 }
 
 CoarseBombSticky: {
-	// DisplayName: Sticky Coarse Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
+	DisplayName: Bomba de Terra Grossa Adesiva
+	Tooltip: "{$Mods.SpiritReforged.Items.CoarseBomb.Tooltip}"
 }
 
 MudBomb: {
-	// DisplayName: Mud Bomb
-	// Tooltip: A small explosion that will spread mud
+	DisplayName: Bomba de Lama
+	Tooltip: Uma pequena explosão que espalha lama
 }
 
 MudBombSticky: {
-	// DisplayName: Sticky Mud Bomb
-	// Tooltip: "{$Mods.SpiritReforged.Items.MudBomb.Tooltip}"
+	DisplayName: Bomba de Lama Adesiva
+	Tooltip: "{$Mods.SpiritReforged.Items.MudBomb.Tooltip}"
 }
 
 HideTunic: {
-	// DisplayName: Hide Tunic
-	// Tooltip: Increases melee size and knockback by 25%
+	DisplayName: Túnica de Couro
+	Tooltip: Aumenta o tamanho e recuo de armas de ataque físico
 }
 
 PotteryWheelItem: {
-	// DisplayName: Pottery Wheel
-	/* Tooltip:
+	DisplayName: Roda de Oleiro
+	Tooltip:
 		'''
-		Used for crafting decorative pots
-		<right> when placed to view available recipes
-		''' */
+		Usado na criação de vasos decorativos
+		<right> após ser posicionado para ver receitas disponíveis
+		'''
 }
 
 BiomePotsCavernItem: {
-	// DisplayName: Cavern Pot
-	// Tooltip: ""
+	DisplayName: Vaso das Cavernas
+	Tooltip: ""
 }
 
 OrnatePotsItem: {
-	// DisplayName: Ornate Pot
-	// Tooltip: ""
+	DisplayName: Vaso Ornamentado
+	Tooltip: ""
 }
 
 BiomePotsIceItem: {
-	// DisplayName: Frozen Pot
-	// Tooltip: ""
+	DisplayName: Vaso Congelado
+	Tooltip: ""
 }
 
 BiomePotsDesertItem: {
-	// DisplayName: Desert Pot
-	// Tooltip: ""
+	DisplayName: Vaso do Deserto
+	Tooltip: ""
 }
 
 BiomePotsJungleItem: {
-	// DisplayName: Jungle Pot
-	// Tooltip: ""
+	DisplayName: Vaso da Selva
+	Tooltip: ""
 }
 
 BiomePotsDungeonItem: {
-	// DisplayName: Dungeon Pot
-	// Tooltip: ""
+	DisplayName: Vaso do Calabouço
+	Tooltip: ""
 }
 
 BiomePotsCorruptionItem: {
-	// DisplayName: Corrupt Pot
-	// Tooltip: ""
+	DisplayName: Vaso Corrompido
+	Tooltip: ""
 }
 
 BiomePotsCrimsonItem: {
-	// DisplayName: Crimson Pot
-	// Tooltip: ""
+	DisplayName: Vaso Carmesim
+	Tooltip: ""
 }
 
 BiomePotsMarbleItem: {
-	// DisplayName: Marble Pot
-	// Tooltip: ""
+	DisplayName: Vaso de Mármore
+	Tooltip: ""
 }
 
 BiomePotsHellItem: {
-	// DisplayName: Obsidian Pot
-	// Tooltip: ""
+	DisplayName: Vaso de Obsidiana
+	Tooltip: ""
 }
 
 BiomePotsMushroomItem: {
-	// DisplayName: Mushroom Pot
-	// Tooltip: ""
+	DisplayName: Vaso Cogumelo
+	Tooltip: ""
 }
 
 PotsCavernItem: {
-	// DisplayName: Small Cavern Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno das Cavernas
+	Tooltip: ""
 }
 
 PotsIceItem: {
-	// DisplayName: Small Frozen Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno Congelado
+	Tooltip: ""
 }
 
 PotsJungleItem: {
-	// DisplayName: Small Jungle Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno da Selva
+	Tooltip: ""
 }
 
 PotsDungeonItem: {
-	// DisplayName: Small Dungeon Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno do Calabouço
+	Tooltip: ""
 }
 
 PotsHellItem: {
-	// DisplayName: Small Obsidian Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno de Obsidiana
+	Tooltip: ""
 }
 
 PotsCorruptionItem: {
-	// DisplayName: Small Corrupt Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno Corrompido
+	Tooltip: ""
 }
 
 PotsSpiderItem: {
-	// DisplayName: Small Spider Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno de Aranha
+	Tooltip: ""
 }
 
 PotsCrimsonItem: {
-	// DisplayName: Small Crimson Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno do Carmesim
+	Tooltip: ""
 }
 
 PotsPyramidItem: {
-	// DisplayName: Small Pyramid Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno das Pirâmides
+	Tooltip: ""
 }
 
 PotsTempleItem: {
-	// DisplayName: Small Temple Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno do Templo
+	Tooltip: ""
 }
 
 PotsMarbleItem: {
-	// DisplayName: Small Marble Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno de Mármore
+	Tooltip: ""
 }
 
 PotsDesertItem: {
-	// DisplayName: Small Desert Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno do Deserto
+	Tooltip: ""
 }
 
 CommonPotsMushroomItem: {
-	// DisplayName: Small Mushroom Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno de Cogumelo
+	Tooltip: ""
 }
 
 SilverPlattersItem: {
-	// DisplayName: Silver Platter
-	// Tooltip: ""
+	DisplayName: Prato de Prata
+	Tooltip: ""
 }
 
 StuffedPotsItem: {
-	// DisplayName: Stuffed Pot
-	// Tooltip: ""
+	DisplayName: Panela Recheada
+	Tooltip: ""
 }
 
 WormPotItem: {
-	// DisplayName: Worm Pot
-	// Tooltip: ""
+	DisplayName: Vaso Minhoca
+	Tooltip: ""
 }
 
 AetherShipmentItem: {
-	// DisplayName: Aether Shipment
-	// Tooltip: ""
+	DisplayName: Vaso do Éter
+	Tooltip: ""
 }
 
 PotionVatsAntiqueItem: {
-	// DisplayName: Antique Potion Vat
-	// Tooltip: ""
+	DisplayName: Tanque de Poções Velho
+	Tooltip: ""
 }
 
 PotionVatsCloningItem: {
-	// DisplayName: Cloning Potion Vat
-	// Tooltip: ""
+	DisplayName: Tanque de Clonagem de Poções
+	Tooltip: ""
 }
 
 SilverFoodPlatterItem: {
-	// DisplayName: Silver Food Platter
-	// Tooltip: <right> to place item on platter
+	DisplayName: "{$ItemTooltip.FoodPlatter}"
+	Tooltip: <right> para colocar item no prato
 }
 
 RadonMossItem: {
-	// DisplayName: Radon Moss
-	// Tooltip: "{$ItemTooltip.XenonMoss}"
+	DisplayName: Musgo de Radônio
+	Tooltip: "{$ItemTooltip.XenonMoss}"
 }
 
 OganessonMossItem: {
-	// DisplayName: Oganesson Moss
-	// Tooltip: "{$ItemTooltip.XenonMoss}"
+	DisplayName: Musgo de Oganesson
+	Tooltip: "{$ItemTooltip.XenonMoss}"
 }
 
 RadonMossBrickItem: {
-	// DisplayName: Radon Moss Brick
-	// Tooltip: ""
+	DisplayName: Tijolo de Musgo de Radônio
+	Tooltip: ""
 }
 
 RadonMossBrickWallItem: {
-	// DisplayName: Radon Moss Brick Wall
-	// Tooltip: ""
+	DisplayName: Parede de Tijolo de Radônio
+	Tooltip: ""
 }
 
 OganessonMossBrickItem: {
-	// DisplayName: Oganesson Moss Brick
-	// Tooltip: ""
+	DisplayName: Tijolo de Musgo de Oganesson
+	Tooltip: ""
 }
 
 OganessonMossBrickWallItem: {
-	// DisplayName: Oganesson Moss Brick Wall
-	// Tooltip: ""
+	DisplayName: Parede de Tijolo de Oganesson
+	Tooltip: ""
 }
 
 ScryingPotItem: {
-	// DisplayName: Scrying Pot
-	// Tooltip: ""
+	DisplayName: Vaso Misterioso
+	Tooltip: ""
 }
 
 BombCannon: {
-	// DisplayName: Bomb Cannon
-	/* Tooltip:
+	DisplayName: Canhão de Bombas
+	Tooltip:
 		'''
-		Uses bombs as ammo
-		Bombs fired from the cannon don't destroy tiles
-		'A groundbreaking invention'
-		''' */
+		Usa bombas como munição
+		As bombas atiradas pelo ganhão não destroem blocos
+		'Uma invenção bombástica'
+		'''
 }
 
 PotHead: {
-	// DisplayName: Pot Head
-	// Tooltip: ""
+	DisplayName: Vaso pra Cabeça
+	Tooltip: ""
 }
 
 UpsideDownPotItem: {
-	// DisplayName: Upside Down Pot
-	// Tooltip: ""
+	DisplayName: Vaso de Cabeça para Baixo
+	Tooltip: ""
 }
 
 PotionVatsAlchemyItem: {
-	// DisplayName: Alchemical Potion Vat
-	// Tooltip: ""
+	DisplayName: Tanque de Alquimia
+	Tooltip: ""
 }
 
-// DunceCrabBannerItem.DisplayName: Dunce Crab Banner
-// WheezerBannerItem.DisplayName: Wheezer Banner
+DunceCrabBannerItem.DisplayName: Bandeira do Caranbroca
+WheezerBannerItem.DisplayName: Bandeira do Wheezer
 
 WheezerStatueItem: {
-	// DisplayName: Wheezer Statue
-	// Tooltip: ""
+	DisplayName: Estátua do Wheezer
+	Tooltip: ""
 }
 
 FlaskArgon: {
-	// DisplayName: Argon Moss Flask
-	// Tooltip: Spreads glowing moss on impact
+	DisplayName: Frasco de Musgo de Argônio
+	Tooltip: Espalha musgo brilhante no impacto
 }
 
 FlaskHelium: {
-	// DisplayName: Helium Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: Frasco de Musgo de Hélio
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskKrypton: {
-	// DisplayName: Krypton Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: Frasco de Musgo de Crípton
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskNeon: {
-	// DisplayName: Neon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: Frasco de Musgo Néon
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskOganesson: {
-	// DisplayName: Oganesson Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: Frasco de Musgo de Oganesson
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskRadon: {
-	// DisplayName: Radon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: Frasco de Musgo de Radônio
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 FlaskXenon: {
-	// DisplayName: Xenon Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
+	DisplayName: Frasco de Musgo de Xenônio
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskArgon.Tooltip}"
 }
 
 BiomePotsGraniteItem: {
-	// DisplayName: Granite Pot
-	// Tooltip: ""
+	DisplayName: Vaso de Granito
+	Tooltip: ""
 }
 
 CommonPotsGraniteItem: {
-	// DisplayName: Small Granite Pot
-	// Tooltip: ""
+	DisplayName: Vaso Pequeno de Granito
+	Tooltip: ""
 }
 
 OganessonBobber: {
-	// DisplayName: Oganesson Moss Fishing Bobber
-	// Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
+	DisplayName: Isca Flutuante de Pescaria do Musgo de Oganesson
+	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
 RadonBobber: {
-	// DisplayName: Radon Moss Fishing Bobber
-	// Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
+	DisplayName: Isca Flutuante de Pescaria do Musgo de Radônio
+	Tooltip: "{$ItemTooltip.FishingBobberGlowingArgon}"
 }
 
 LandscapingShears: {
-	// DisplayName: Landscaping Shears
-	// Tooltip: Increases yield when harvesting foliage
+	DisplayName: Tesoura de Jardinagem
+	Tooltip: Aumenta a produtividade na colheita da folhagem
 }
 
 WoodenClub: {
-	// DisplayName: Wooden Club
-	// Tooltip: Can be charged to increase damage and knockback
+	DisplayName: Clube de Madeira
+	Tooltip: Can be charged to increase damage and knockback
 }
 
 GoldClub: {
-	// DisplayName: Golden Greathammer
-	// Tooltip: Use again during a swing to follow up with a chargeable uppercut
+	DisplayName: Marreta de Ouro
+	Tooltip: Use novamente durante um golpe para finalizar com um outro ataque carregável.
 }
 
 PlatinumClub: {
-	// DisplayName: Platinum Scepter
-	/* Tooltip:
+	DisplayName: Cetro de Platina
+	Tooltip:
 		'''
-		Does an upwards swing that knocks enemies into the air
-		Hold to follow up with a downwards slam
-		''' */
+		Lança um ataque de baixo pra cima que arremesa os inimigos no ar
+		Segure para seguir com um golpe de cima pra baixo
+		'''
 }
 
 FrostGiantBelt: {
-	// DisplayName: Frost Giant Belt
-	/* Tooltip:
+	DisplayName: Cinturão de Gelo
+	Tooltip:
 		'''
-		50% knockback resistance while charging a club
-		Charging a club gradually increases defense
-		''' */
+		50% de resistência a recuos enquanto carrega um clube
+		Carregar um clube aumenta a defesa gradualmente
+		'''
 }
 
 Macuahuitl: {
-	// DisplayName: Macuahuitl
-	/* Tooltip:
+	DisplayName: Macuahuitl
+	Tooltip:
 		'''
-		Can be rapidly swung around the user, inflicting bleed
-		Charged strikes deal bonus damage to bleeding enemies
-		''' */
+		Pode ser girado rapidamente em volta do usuário, criando um ataque que causa sangramento ao inimigo
+		Ataques carregados causam dano extra aos inimigos que já estão sangrando
+		'''
 }
 
 BassSlapper: {
-	// DisplayName: Bass Slapper
-	// Tooltip: Fully charging does multiple slams in quick succession
+	DisplayName: Peixe Batedor
+	Tooltip: Ao ser carregado completamente lança vários golpes seguidos rapidamente
 }
 
 Shockhammer: {
-	// DisplayName: Shockhammer
-	// Tooltip: Fully charging releases a shockwave that travels along tiles
+	DisplayName: Martelo de Choque
+	Tooltip: Ao ser carregado completamente libera uma onda de choque que se propaga por alguns blocos
 }
 
 Bowlder: {
-	// DisplayName: Bowlder
-	// Tooltip: Charged strikes release a deadly bowlder
+	DisplayName: Pedregulhão
+	Tooltip: Ao ser carregado completamente lança um rochedo mortal
 }
 
 BoStaff: {
-	// DisplayName: Bo Staff
-	// Tooltip: Dealing continuous damage builds combo
+	DisplayName: Bastão Bo
+	Tooltip: Ataques contínuos criam um combo
 }
 
 Blasphemer: {
-	// DisplayName: Blasphemer
-	// Tooltip: Charged strikes erupt into a fiery geyser
+	DisplayName: O Blasfemo
+	Tooltip: Ao ser carregado completamente causa uma grande erupção de lava
 }
 
 Hummus: {
-	// DisplayName: Hummus
-	// Tooltip: Warm and tasty!
+	DisplayName: Húmus
+	Tooltip: Quentinho e Gostosinho!
 }
 
 ZenithPotsItem: {
-	// DisplayName: Zenith Pot
-	// Tooltip: ""
+	DisplayName: Vaso Zênite
+	Tooltip: ""
 }
 
 ZenithPotsPaleItem: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
-	// Tooltip: ""
+	DisplayName: "{$Mods.SpiritReforged.Items.ZenithPotsItem.DisplayName}"
+	Tooltip: ""
 }
 
 OtherworldSavannaMusicBoxItem: {
-	// DisplayName: Otherworldly Music Box (Savanna Day)
-	// Tooltip: ""
+	DisplayName: Caixinha de Música de Outro Mundo (Savana de Dia)
+	Tooltip: ""
 }
 
 OtherworldSavannaNightMusicBoxItem: {
-	// DisplayName: Otherworldly Music Box (Savanna Night)
-	// Tooltip: ""
+	DisplayName: Caixinha de Música de Outro Mundo (Noite da Savana)
+	Tooltip: ""
 }
 
 SavannaSandstormOtherworldMusicBoxItem: {
-	// DisplayName: Otherworldly Music Box (Duststorm)
-	// Tooltip: ""
+	DisplayName: Caixinha de Música de Outro Mundo (Tempestade de Poeira)
+	Tooltip: ""
 }
 
 SavannaTorchItem: {
-	// DisplayName: Savanna Torch
-	// Tooltip: ""
+	DisplayName: Tocha da Savana
+	Tooltip: ""
 }
 
 FlaskBlue: {
-	// DisplayName: Blue Moss Flask
-	// Tooltip: Spreads moss on impact
+	DisplayName: Frasco de Musgo Azul
+	Tooltip: Espalha musgo no impacto
 }
 
 FlaskBrown: {
-	// DisplayName: Brown Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: Frasco de Musgo Marrom
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskGreen: {
-	// DisplayName: Green Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: Frasco de Musgo Verde
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskLava: {
-	// DisplayName: Lava Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: Frasco de Musgo de Lava
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskPurple: {
-	// DisplayName: Purple Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: Frasco de Musgo Roxo
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 FlaskRed: {
-	// DisplayName: Red Moss Flask
-	// Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
+	DisplayName: Frasco de Musgo Vermelho
+	Tooltip: "{$Mods.SpiritReforged.Items.FlaskBlue.Tooltip}"
 }
 
 TitleMusicBoxItem: {
-	// DisplayName: Music Box (Spirit Title)
-	// Tooltip: ""
+	DisplayName: Caixinha de Música (Tela de Titúlo do Spirit)
+	Tooltip: ""
 }
 
 Drypowder: {
-	// DisplayName: Drypowder
-	// Tooltip: Spreads the savanna
+	DisplayName: Pó Seco
+	Tooltip: Espalha a Savana
 }
 
 ElephantKite: {
-	// DisplayName: Elephant Kite
-	// Tooltip: "{$CommonItemTooltip.Kite}"
+	DisplayName: Pipa de Elefante
+	Tooltip: "{$CommonItemTooltip.Kite}"
 }
 
 CartographyTableItem: {
-	// DisplayName: Cartography Table
-	// Tooltip: Allows you to share your map with other players
+	DisplayName: Tabela Cartográfica
+	Tooltip:
+		'''
+		Permite com que você divida seu mapa com outros jogadores
+		Interaja para enviar suas descobertas
+		'''
 }
 
 PurityBonsaiItem: {
-	// DisplayName: Willow Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Salgueiro
+	Tooltip: ""
 }
 
 RubyBonsaiItem: {
-	// DisplayName: Ruby Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Rubi
+	Tooltip: ""
 }
 
 SakuraBonsaiItem: {
-	// DisplayName: Sakura Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Sakura
+	Tooltip: ""
 }
 
 WillowBonsaiItem: {
-	// DisplayName: Yellow Willow Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Salgueiro Amarelo
+	Tooltip: ""
 }
 
 AmethystBonsaiItem: {
-	// DisplayName: Amethyst Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Ametista
+	Tooltip: ""
 }
 
 DiamondBonsaiItem: {
-	// DisplayName: Diamond Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Diamante
+	Tooltip: ""
 }
 
 EmeraldBonsaiItem: {
-	// DisplayName: Emerald Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Esmeralda
+	Tooltip: ""
 }
 
 SapphireBonsaiItem: {
-	// DisplayName: Sapphire Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Safira
+	Tooltip: ""
 }
 
 TopazBonsaiItem: {
-	// DisplayName: Topaz Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Topázio
+	Tooltip: ""
 }
 
 AmberBonsaiItem: {
-	// DisplayName: Amber Bonsai
-	// Tooltip: ""
+	DisplayName: Bonsai de Âmbar
+	Tooltip: ""
 }
 
 JinxBow: {
-	// DisplayName: Jinxbow
-	/* Tooltip:
+	DisplayName: Arco Jinx
+	Tooltip:
 		'''
-		Fires arrows at enemies without consuming ammo and occasionally marks them
-		Striking marked enemies with ranged attacks unleashes a powerful magic arrow
-		''' */
+		Dispara flechas contra os inimigos sem consumir munição e ocasionalmente os marca
+		Atacar inimigos marcados com ataques à distância libera uma poderosa flecha mágica
+		'''
 }
 
 ExplosiveRum: {
-	// DisplayName: Explosive Rum
-	// Tooltip: "'Oh, there it is!'"
+	DisplayName: Rum Explosivo
+	Tooltip: "'Oh, Aqui está!'"
 }
 
 Flarepowder: {
-	// DisplayName: Flarepowder
-	// Tooltip: Releases a spread of drifting magic powder
+	DisplayName: Pó de Faíscas
+	Tooltip: Libera uma nuvem de pó mágico flutuante
 }
 
 VexpowderBlue: {
-	// DisplayName: Vexpowder
-	/* Tooltip:
+	DisplayName: Pó irritante
+	Tooltip:
 		'''
 		{$Mods.SpiritReforged.Items.Flarepowder.Tooltip}
-		Confuses hit enemies
-		''' */
+		Inflige confusão nos inimigos atingidos
+		'''
 }
 
 VexpowderRed: {
-	// DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
-	// Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
+	DisplayName: "{$Mods.SpiritReforged.Items.VexpowderBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.VexpowderBlue.Tooltip}"
 }
 
 BreakawayChair: {
-	// DisplayName: Breakaway Chair
-	// Tooltip: Breaks on impact
+	DisplayName: Cadeira de Uso Único
+	Tooltip: Acaba sendo destruída após o uso
 }
 
 AncientMarksmanHood: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
-	// Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
+	DisplayName: Antigo {$Mods.SpiritReforged.Items.LeatherHood.DisplayName}
+	Tooltip: "{$Mods.SpiritReforged.Items.LeatherHood.Tooltip}"
 }
 
 AncientMarksmanLegs: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
-	// Tooltip: ""
+	DisplayName: Antigo {$Mods.SpiritReforged.Items.LeatherLegs.DisplayName}
+	Tooltip: ""
 }
 
 AncientMarksmanPlate: {
-	// DisplayName: Ancient {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
-	// Tooltip: ""
+	DisplayName: Antigo {$Mods.SpiritReforged.Items.LeatherPlate.DisplayName}
+	Tooltip: ""
 }
 
 RollingPotsItem: {
-	// DisplayName: Rolling Pot
-	// Tooltip: ""
+	DisplayName: Vaso Rolante
+	Tooltip: ""
 }
 
-// MossSlimeBannerItem.DisplayName: Moss Slime Banner
+MossSlimeBannerItem.DisplayName: Bandeira da Geleia de Musgo
 
 InvisibleLure: {
-	// DisplayName: Invisible Lure
-	// Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
+	DisplayName: Isca Invisível
+	Tooltip: "{$Mods.SpiritReforged.Items.FishLure.Tooltip}"
 }
 
 SharpshooterGlove: {
-	// DisplayName: Sharpshooter's Glove
-	/* Tooltip:
+	DisplayName: Luva do Atirador de Elite
+	Tooltip:
 		'''
-		Increases ranged damage at a distance
-		Consecutive shots at this range deal increased damage
-		''' */
+		Aumenta o dano de atirador em uma certa distância
+		Disparos consecutivos a essa distância causam dano aumentado
+		'''
 }
 
 BonsaiPot: {
-	// DisplayName: Bonsai Pot
-	// Tooltip: Used to craft decorative bonsai
+	DisplayName: Vaso de Bonsai
+	Tooltip: Usado na criação de bonsais decorativas
 }
 
 WickerBasketsItem: {
-	// DisplayName: Wicker Basket
-	// Tooltip: ""
+	DisplayName: Cesta de Vime
+	Tooltip: ""
 }
 
 EarthshakerBreastplate: {
-	// DisplayName: Earthshaker's Breastplate
-	// Tooltip: ""
+	DisplayName: Peitoral de Terremoto
+	Tooltip: ""
 }
 
 EarthshakerChestpiece: {
-	// DisplayName: Earthshaker's Chestpiece
-	// Tooltip: ""
+	DisplayName: Camiseta de Terremoto
+	Tooltip: ""
 }
 
 EarthshakerHeadgear: {
-	// DisplayName: Earthshaker's Headgear
-	// Tooltip: ""
+	DisplayName: Capacete de Terremoto
+	Tooltip: ""
 }
 
 EarthshakerTreads: {
-	// DisplayName: Earthshaker's Treads
-	// Tooltip: ""
+	DisplayName: Calças de Terremoto
+	Tooltip: ""
 }
 
 EarthshakerWarmask: {
-	// DisplayName: Earthshaker's Warmask
+	DisplayName: Máscara de Guerra de Terremoto
+	Tooltip: ""
+}
+
+GraniteBody: {
+	DisplayName: Peitoral Cinético
+	Tooltip: Aumenta levemente a altura do pulo
+}
+
+GraniteHead: {
+	DisplayName: Visor Cinético
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+GraniteLegs: {
+	DisplayName: Calças Cinéticas
+	Tooltip: "{$Mods.SpiritReforged.Items.GraniteBody.Tooltip}"
+}
+
+FingerGun: {
+	DisplayName: Arminha de Dedo
+	Tooltip:
+		'''
+		Ignora parte da defesa inimiga
+		Valores maiores de mana aumentam a velocidade da arma
+		'Pew pew!'
+		'''
+}
+
+FlaskOfFrost: {
+	DisplayName: Frasco de Gelo
+	Tooltip: Ataques físicos e de chicote congelam inimigos
+}
+
+HardlightVisor: {
+	DisplayName: Viseira Brilhante
+	Tooltip: ""
+	AltDisplayName: Viseira Futurística
+	AltTooltip: "'Era moda no ano 3000!'"
+}
+
+PolishedAmberItem: {
+	DisplayName: Âmbar Polido
+	Tooltip: ""
+}
+
+AmberFossilSafeItem: {
+	DisplayName: Fóssil de Âmbar
+	Tooltip: ""
+}
+
+GildedSandstoneItem: {
+	DisplayName: Arenito Dourado
+	Tooltip: ""
+}
+
+RedSandstoneBrickItem: {
+	DisplayName: Tijolo Vermelho de Arenito
+	Tooltip: ""
+}
+
+RedSandstoneBrickCrackedItem: {
+	DisplayName: Tijolo Vermelho de Arenito Rachado
+	Tooltip: "'Bem, me parece sólido o suficiente!'"
+}
+
+WalkieTalkie: {
+	DisplayName: Walkie-Talkie
+	Tooltip: Permite que você fale com o Pescador de qualquer lugar
+	Disabled: Não há ninguém para responder...
+}
+
+ScryingLens: {
+	DisplayName: Lente de Perscrutação
+	Tooltip: Mostra transmutações com o Brilhante
+	ShimmerLine: Se transforma em [i:{0}] [c/FFFFFF:{1}]
+}
+
+Ledger: {
+	DisplayName: Livro-Razão
+	Tooltip: Mostra o valor dos itens
+}
+
+MysticalCodex: {
+	DisplayName: Códice Místico
+	Tooltip: Mostra o valor dos itens e suas transmutações com o Brilhante
+}
+
+CommonPotsSavannaItem: {
+	DisplayName: Vaso da Savana
+	Tooltip: ""
+}
+
+SunEarrings: {
+	DisplayName: Brinco da Dançarina Solar
+	Tooltip:
+		'''
+		Aumenta a mana máxima em 20
+		7% de aumento no dano por magia
+		'''
+}
+
+SilkSirwal: {
+	DisplayName: Sarouel da Dançarina Solar
+	Tooltip: Aumenta a velocidade de movimento e aceleração no solo
+}
+
+SilkTop: {
+	DisplayName: Ciganinha da Dançarina Solar
+	Tooltip: 7% de aumento no dano por magia
+}
+
+CeremonialDagger: {
+	DisplayName: Punhal
+	Tooltip:
+		'''
+		Causa danos aos moradores de cidades
+		<right> causa danos crítico em inimigos que estão sangrando
+		'''
+}
+
+Thornball: {
+	DisplayName: Bola Espinhenta
+	Tooltip:
+		'''
+		Gruda nos Blocos
+		"'Por favor, não confundir com o armamento goblin'"
+		'''
+}
+
+SaltBlockDullItem: {
+	DisplayName: Bloco de Sal Fosco
+	Tooltip: ""
+}
+
+SaltBlockReflectiveItem: {
+	DisplayName: Bloco de Sal
+	Tooltip: "'Liso e reflexivo'"
+}
+
+NeedleTrapItem: {
+	DisplayName: Armadilha de Agulhas
+	Tooltip: ""
+}
+
+DivingBeetleItem: {
+	DisplayName: "{$Mods.SpiritReforged.NPCs.DivingBeetle.DisplayName}"
+	Tooltip: ""
+}
+
+SunDropper: {
+	DisplayName: Conta-Gotas de Luz Solar Mágica
+	Tooltip: ""
+}
+
+OsmosifierItem: {
+	DisplayName: Osmosificador
+	Tooltip: Produz passivamente blocos de sal quando colocado na água
+}
+
+GoldDivingBeetleItem: {
+	DisplayName: Besouro-Mergulhador de Ouro
+	Tooltip: ""
+}
+
+StoneStupasItem: {
+	DisplayName: Estupa de Pedra
+	Tooltip: ""
+}
+
+SaltChestItem: {
+	DisplayName: Baú de Sal
+	Tooltip: ""
+}
+
+SaltDresserItem: {
+	DisplayName: Cômoda de Sal
+	Tooltip: ""
+}
+
+SaltBathtubItem: {
+	DisplayName: Banheira de Sal
+	Tooltip: ""
+}
+
+SaltBedItem: {
+	DisplayName: Cama de Sal
+	Tooltip: ""
+}
+
+SaltBookcaseItem: {
+	DisplayName: Estante de Sal
+	Tooltip: ""
+}
+
+SaltCandelabraItem: {
+	DisplayName: Candelabro de Sal
+	Tooltip: ""
+}
+
+SaltChandelierItem: {
+	DisplayName: Lustre de Sal
+	Tooltip: ""
+}
+
+SaltClockItem: {
+	DisplayName: Relógio de Sal
+	Tooltip: ""
+}
+
+SaltDoorItem: {
+	DisplayName: Porta de Sal
+	Tooltip: ""
+}
+
+SaltLampItem: {
+	DisplayName: Lâmpada de Sal
+	Tooltip: ""
+}
+
+SaltLanternItem: {
+	DisplayName: Lâmpada de Sal
+	Tooltip: ""
+}
+
+SaltPianoItem: {
+	DisplayName: Piano de Sal
+	Tooltip: ""
+}
+
+SaltSinkItem: {
+	DisplayName: Pia de Sal
+	Tooltip: ""
+}
+
+SaltSofaItem: {
+	DisplayName: Sofá de Sal
+	Tooltip: ""
+}
+
+SaltTableItem: {
+	DisplayName: Mesa de Sal
+	Tooltip: ""
+}
+
+SaltToiletItem: {
+	DisplayName: Privada de Sal
+	Tooltip: ""
+}
+
+SaltWorkBenchItem: {
+	DisplayName: Bancada de Trabalho de Sal
+	Tooltip: ""
+}
+
+SaltCandleItem: {
+	DisplayName: Vela de Sal
+	Tooltip: ""
+}
+
+SaltChairItem: {
+	DisplayName: Cadeira de Sal
+	Tooltip: ""
+}
+
+OtherworldlyRadioItem: {
+	DisplayName: Rádio de Outro Mundo
+	Tooltip:
+		'''
+		<right> para ativar as Músicas de Outro Mundo
+		'Encantadoramente antiquado'
+		'''
+	TunedToNormal: (Frequência Padrão)
+	TunedToOtherworld: (Frequência Estranha)
+	MusicDisplay: "[i:576] Você está escutando:"
+}
+
+SleightOfHand: {
+	DisplayName: Jogo de Mão
+	Tooltip:
+		'''
+		Aperte {0} duas vezes enquanto segura uma arma de longo alcance para trocar de munição
+		Works while in the inventory
+		'''
+}
+
+RuinedSandstonePillarItem: {
+	DisplayName: Pilar de Arenito em Ruínas
+	Tooltip: ""
+}
+
+GlidingItem: {
+	DisplayName: Planando
+	Tooltip: "'Tix A. Lun'"
+}
+
+ViciousFlamingoItem: {
+	DisplayName: Flamingo Vicioso
+	Tooltip: "'Tix A. Lun'"
+}
+
+SaltWallItem: {
+	DisplayName: Parede de Sal
+	Tooltip: ""
+}
+
+JerboaItem: {
+	DisplayName: "{$Mods.SpiritReforged.NPCs.Jerboa.DisplayName}"
+	Tooltip: ""
+}
+
+JarboaItem: {
+	DisplayName: Jarra com Jerboa
+	Tooltip: Essa jarra já é boa… comigo fica jerboa!... Me desculpa
+}
+
+RedSandstoneBrickWallItem: {
+	DisplayName: Parede Vermelha de Arenito
+	Tooltip: ""
+}
+
+PolishedSandstoneWallItem: {
+	DisplayName: Parede Vermelha de Arenito Liso
+	Tooltip: ""
+}
+
+CarvedLapisItem: {
+	DisplayName: Lápis-Lazúli Esculpida
+	Tooltip: ""
+}
+
+LapisChestItem: {
+	DisplayName: Baú de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisDresserItem: {
+	DisplayName: Cômoda de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisCandleItem: {
+	DisplayName: Vela de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisBathtubItem: {
+	DisplayName: Banheira de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisBedItem: {
+	DisplayName: Cama de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisBookcaseItem: {
+	DisplayName: Estante de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisCandelabraItem: {
+	DisplayName: Candelabro de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisChairItem: {
+	DisplayName: Cadeira de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisChandelierItem: {
+	DisplayName: Lustre de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisClockItem: {
+	DisplayName: Relógio de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisDoorItem: {
+	DisplayName: Porta de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisLampItem: {
+	DisplayName: Lâmpada de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisLanternItem: {
+	DisplayName: Lanterna de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisPianoItem: {
+	DisplayName: Piano de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisSinkItem: {
+	DisplayName: Pia de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisSofaItem: {
+	DisplayName: Sofá de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisTableItem: {
+	DisplayName: Mesa de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisToiletItem: {
+	DisplayName: Privada de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisWorkBenchItem: {
+	DisplayName: Bancada de Trabalho de Lápis-Lazúli
+	Tooltip: ""
+}
+
+LapisPlatformItem: {
+	DisplayName: Plataforma de Lápis-Lazúli
+	Tooltip: ""
+}
+
+SwordStandItem: {
+	DisplayName: Suporte de Espada
+	Tooltip: Permite que algumas armas sejam exibidas apertando <right>
+}
+
+TrellisItem: {
+	DisplayName: Treliça
+	Tooltip: Coloque {$ItemName.GrassSeeds} para que vinhas começem a crescer
+}
+
+TrellisBorealItem: {
+	DisplayName: Treliça de Madeira Boreal
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisEbonwoodItem: {
+	DisplayName: Treliça de Madeira de Ébano
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisMahoganyItem: {
+	DisplayName: Treliça de Mógno
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPalmItem: {
+	DisplayName: Treliça de Madeira de Palmeira
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisPearlwoodItem: {
+	DisplayName: Treliça de Madeira de Pérola
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisShadewoodItem: {
+	DisplayName: Treliça de Madeira Escura
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoItem: {
+	DisplayName: Treliça Cruzada
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoBorealItem: {
+	DisplayName: Treliça Cruzada de Madeira Boreal
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoEbonwoodItem: {
+	DisplayName: Treliça Cruzada de Madeira de Ébano
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoMahoganyItem: {
+	DisplayName: Treliça Cruzada de Mógno
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPalmItem: {
+	DisplayName: Treliça Cruzada de Madeira de Palmeira
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoPearlwoodItem: {
+	DisplayName: Treliça Cruzada de Madeira de Pérola
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoShadewoodItem: {
+	DisplayName: Treliça Cruzada de Madeira Escura
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+ChainLoopItem: {
+	DisplayName: Laço de Corrente
+	Tooltip: Pressione para cima/para baixo enquanto posiciona a corrente para ajustar o comprimento.
+}
+
+GoldChainLoopItem: {
+	DisplayName: Laço de Corrente Dourado
+	Tooltip: "{$Mods.SpiritReforged.Items.ChainLoopItem.Tooltip}"
+}
+
+SaltPlatformItem: {
+	DisplayName: Plataforma de Sal
+	Tooltip: ""
+}
+
+MahakalaMaskBlue: {
+	DisplayName: Máscara de Mahakala
+	Tooltip: Reduz os danos sofridos por inimigos corrompidos
+}
+
+MahakalaMaskRed: {
+	DisplayName: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.DisplayName}"
+	Tooltip: "{$Mods.SpiritReforged.Items.MahakalaMaskBlue.Tooltip}"
+}
+
+RedSandstoneSlabItem: {
+	DisplayName: Laje de Arenito
+	Tooltip: ""
+}
+
+CenserItem: {
+	DisplayName: Incensário
+	Tooltip: ""
+}
+
+CarvedLapisWallItem: {
+	DisplayName: Parede de Lapís-Lazúli Esculpida
+	Tooltip: ""
+}
+
+BronzePotsItem: {
+	DisplayName: Vaso de Bronze
+	Tooltip: ""
+}
+
+LapisPotsItem: {
+	DisplayName: Vaso de Lapís-Lazúli
+	Tooltip: ""
+}
+
+TrellisDrywoodItem: {
+	DisplayName: Treliça de Madeira Seca
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDrywoodItem: {
+	DisplayName: Treliça Cruzada de Madeira Seca
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+BronzeGrateItem: {
+	DisplayName: Grelha de Bronze
+	Tooltip: ""
+}
+
+BronzePlatingItem: {
+	DisplayName: Revestimento de Cobre
+	Tooltip: ""
+}
+
+BronzePlatingWallItem: {
+	DisplayName: Parede de Revestimento de Cobre
+	Tooltip: ""
+}
+
+BronzePlatformItem: {
+	DisplayName: Plataforma de Bronze
+	Tooltip: ""
+}
+
+ZigguratTorchItem: {
+	DisplayName: Tocha do Zigurate
+	Tooltip: Acende com a aproximação
+}
+
+SwordStandMahoganyItem: {
+	DisplayName: Suporte de Espada de Mógno
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+SwordStandSandstoneItem: {
+	DisplayName: Suporte de Espada de Arenito
+	Tooltip: "{$Mods.SpiritReforged.Items.SwordStandItem.Tooltip}"
+}
+
+RedSandstoneBrickForegroundWallItem: {
+	DisplayName: Parede de Primeiro Plano de Tijolo Vermelho de Arenito
+	Tooltip: ""
+}
+
+SaltPylonItem: {
+	DisplayName: Pilar das Salinas
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+SaltNightMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Caixinha de Música (Noite das Salinas)
+}
+
+SaltMusicBoxItem: {
+	Tooltip: ""
+	DisplayName: Caixinha de Música (Salinas)
+}
+
+PineappleSeeds: {
+	DisplayName: Sementes de Abacaxi
+	Tooltip: ""
+}
+
+Dragonsong: {
+	DisplayName: Canção do Dragão
+	Tooltip:
+		'''
+		50% de chance de economizar munição
+		'Você é uma pessoa terrível'
+		'''
+}
+
+TinyDragon: {
+	DisplayName: Pequeno Dragão
+	Tooltip:
+		'''
+		Invoca um pequeno dragão que irá te seguir
+		'Último de sua espécie...'
+		'''
+}
+
+PileOfConsequences: {
+	DisplayName: Amontoado de Consequências
+	Tooltip: "'Você sabe de seus pecados, não sabe?.'"
+}
+
+BrineShrimpItem: {
+	DisplayName: Camarão da Salmoura
+	Tooltip: ""
+}
+
+GoldenBrineShrimpItem: {
+	DisplayName: Camarão da Salmoura de Ouro
+	Tooltip: ""
+}
+
+CorruptStactusBannerItem.DisplayName: Bandeira do Empilhacto Corrompido
+CrimsonStactusBannerItem.DisplayName: Bandeira do Empilhacto do Carmim
+DesertStactusBannerItem.DisplayName: Bandeira do Empilhacto do Deserto
+HallowedStactusBannerItem.DisplayName: Bandeia do Empilhacto Consagrado
+
+AncientBannerItem: {
+	DisplayName: Bandeira Antiga
+	Tooltip: ""
+}
+
+TallSandstoneShelfItem: {
+	DisplayName: Estante Alta de Arenito
+	Tooltip: ""
+}
+
+SaltTorchItem: {
+	DisplayName: Tocha de Sal
+	Tooltip: ""
+}
+
+ZigguratMusicBoxItem: {
+	DisplayName: Caixinha de Música (Zigurate)
+	Tooltip: ""
+}
+
+PinSaltFlat: {
+	DisplayName: Alfinete das Salinas
+	Tooltip: ""
+}
+
+PinZiggurat: {
+	DisplayName: Alfinete do Zigurate
+	Tooltip: ""
+}
+
+BangleOfStrength: {
+	DisplayName: Bracelete da Força
+	Tooltip: Periodicamente aumenta o dano por ataque físico
+}
+
+ScarabTabletOneItem: {
+	DisplayName: Ídolo Cristado
+	Tooltip: ""
+}
+
+ScarabTabletTwoItem: {
+	DisplayName: Sol Alado
+	Tooltip: ""
+}
+
+ScarabAltarItem: {
+	DisplayName: Altar Antigo
+	Tooltip: ""
+}
+
+RedSandstoneBrickCrackedWallItem: {
+	DisplayName: Parede de Tijolo Vermelho de Arenito Rachado
+	Tooltip: ""
+}
+
+AncientBooksItem: {
+	DisplayName: Livro Antigo
+	Tooltip: "'Tornaram-se ilegíveis com o tempo'"
+}
+
+SaltGlassWallItem: {
+	DisplayName: Parede de Vidro de Sal
+	Tooltip: ""
+}
+
+SaltPanelWallItem: {
+	DisplayName: Parede de Painel de Sal
+	Tooltip: ""
+}
+
+SaltPlateWallItem: {
+	DisplayName: Parede de Placa de Sal
+	Tooltip: ""
+}
+
+SaltFireplaceItem: {
+	DisplayName: Lareira de Sal
+	Tooltip: ""
+}
+
+SaltGlassItem: {
+	DisplayName: Vidro de Sal
+	Tooltip: ""
+}
+
+SaltPanelItem: {
+	DisplayName: Painel de Sal
+	Tooltip: ""
+}
+
+SaltPlateItem: {
+	DisplayName: Placa de Sal
+	Tooltip: ""
+}
+
+SaltCrate: {
+	DisplayName: Caixote Salgado
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SaltCrateHardmode: {
+	DisplayName: Caixote de Salmoura
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SaltCrateRestored: {
+	DisplayName: Caixote Salgado Restaurado
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+SaltCrateHardmodeRestored: {
+	DisplayName: Caixote de Salmoura Restaurado
+	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
+}
+
+GraverobberBannerItem.DisplayName: Bandeira do Ladrão de Sepulturas
+
+GiantBag: {
+	DisplayName: Sacola de Brindes
+	Tooltip: "{$CommonTooltips.Backpack}"
+}
+
+CrackedSandstoneItem: {
+	DisplayName: Arenito Rachado
+	Tooltip: ""
+}
+
+StoneReliquaryItem: {
+	DisplayName: Relicário de Pedra
+	Tooltip: ""
+}
+
+SaltCampfireItem: {
+	DisplayName: Fogueira de Sal
+	Tooltip: "{$ItemTooltip.Campfire}"
+}
+
+SaltFountainItem: {
+	DisplayName: Fonte de Água Salgada
+	Tooltip: ""
+}
+
+SaltskipperQuestFish: {
+	Description: Aquelas Salinas são bem loucas! Eu nem conseguia distinguir onde o sal terminava e a água começava! Mas quando finalmente consegui fisgar meu peixe, um peixe com uma aparência horrível simplesmente saltou da água ao meu lado e começou a respirar AR! Traga-o para mim para que eu possa passear com meu novo peixinho de estimação.
+	CatchLocation: As Salinas
+	DisplayName: Capitão do Sal
+	Tooltip: "'Capturado nas Salinas'"
+}
+
+WispBannerItem.DisplayName: Bandeira do Tatá
+DecrepitMummyBannerItem.DisplayName: Bandeira da Múmia Decrépita
+
+PaleHiveItem: {
+	DisplayName: Urticária Pálida
+	Tooltip: ""
+}
+
+PaleHiveWallItem: {
+	DisplayName: Parede de Urticária Pálida
+	Tooltip: ""
+}
+
+GooBlockItem: {
+	DisplayName: Bloco de Gosma
+	Tooltip: ""
+}
+
+WindshearScepter: {
+	DisplayName: Cetro Corta-Vento
+	Tooltip: ""
+}
+
+SaltTallGateItem: {
+	DisplayName: Portão Alto de Sal
+	Tooltip: ""
+}
+
+EnlilStatueItem: {
+	DisplayName: Estátua de Enlil
+	Tooltip: Aumenta a mobilidade vértical na área posicionada
+}
+
+SerratedClaws: {
+	DisplayName: Garras Serrilhadas
+	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
+}
+
+FlagRingItem: {
+	DisplayName: Mastro de Bandeira
+	Tooltip: Pode ser martelado para adicionar bandeiras
+}
+
+CobbledBrickWallItem: {
+	DisplayName: Parede de Tijolo de Concreto
+	Tooltip: ""
+}
+
+CobbledBrickItem: {
+	DisplayName: Tijolo de Concetro
+	Tooltip: ""
+}
+
+BronzeGrateDoorItem: {
+	DisplayName: Porta de Grelha de Cobre
+	Tooltip: ""
+}
+
+CalmingBellItem: {
+	DisplayName: Sino Calmante
+	Tooltip: Botão Direito para diminuir taxa de surgimento de inimigos
+}
+
+BrownShinglesItem: {
+	DisplayName: Telha Marrom
+	Tooltip: ""
+}
+
+WoodenShinglesItem: {
+	DisplayName: Telha de Madeira
+	Tooltip: ""
+}
+
+GildedRedSandstoneItem: {
+	DisplayName: Tijolo Vermelho de Arenito Dourado
+	Tooltip: ""
+}
+
+BronzeGrateBlockItem: {
+	DisplayName: Bloco de Grelha de Bronze
+	Tooltip: ""
+}
+
+BedouinBreastplate: {
+	DisplayName: Peitoral do Beduíno
+	Tooltip: 5% de aumento nos danos
+}
+
+BedouinCowl: {
+	DisplayName: Capô do Beduíno
+	Tooltip: 5% de aumento de chance de ataque crítico
+}
+
+BedouinLeggings: {
+	DisplayName: Calças do Beduíno
+	Tooltip: 10% de aumento na velocidade de movimento
+}
+
+ZigguratTikiTorchItem: {
+	DisplayName: Tocha Tiki do Zigurate
+	Tooltip: ""
+}
+
+CricketItem: {
+	DisplayName: Grilo
+	Tooltip: ""
+}
+
+GoldCricketItem: {
+	DisplayName: Grilo de Ouro
+	Tooltip: ""
+}
+
+CricketCageItem: {
+	DisplayName: Gaiola para Grilo
+	Tooltip: ""
+}
+
+GoldCricketCageItem: {
+	DisplayName: Gaiola para Grilo de Ouro
+	Tooltip: ""
+}
+
+CarrotCake: {
+	DisplayName: Bolo de Cenoura
+	Tooltip: "{$BuffDescription.WellFed3}"
+}
+
+AvianRitualMask: {
+	DisplayName: Máscara do Ritual Aviário
+	Tooltip: ""
+}
+
+BullRitualMask: {
+	DisplayName: Máscara de Ritual do Touro
+	Tooltip: ""
+}
+
+AdornedBow: {
+	DisplayName: Arco Carregado do Sol
+	Tooltip:
+		'''
+		Carrega um tiro poderoso
+		Tiros carregados dão dano em inimigos próximos
+		'''
+}
+
+BagOScarabs: {
+	DisplayName: Bolsa do Tesouro (Escaravelhaos)
+	Tooltip: ""
+}
+
+ScarabMask: {
+	DisplayName: Máscara da Escaravelhaos
+	Tooltip: ""
+}
+
+ScarabRelic: {
+	DisplayName: Relíquia da Escaravelhaos
+	Tooltip: ""
+}
+
+ScarabTrophy: {
+	DisplayName: Troféu da Escaravelhaos
+	Tooltip: ""
+}
+
+ScarabRadio: {
+	DisplayName: Rádio de Escaravelho
+	Tooltip: ""
+}
+
+SpaceHeater: {
+	DisplayName: Radiador
+	Tooltip: Clique com o botão direito do mouse no bloco para modificar sua configuração de calor
+}
+
+ScarabMusicBox: {
+	DisplayName: Caixinha de Música (Escaravelhaos)
+	Tooltip: ""
+
+	Toggle: {
+		0: Fase 1
+		1: Fase 2
+	}
+}
+
+SpiritTreeTopper: {
+	DisplayName: Ponteira de Árvore do Spirit
+	Tooltip: ""
+}
+
+LocustCrook: {
+	DisplayName: Cajado do Gafanhoto
+	Tooltip:
+		'''
+		Invoca uma sentinela
+		Arremesa uma lança que atrai gafanhotos
+		'''
+}
+
+IridescentDye: {
+	DisplayName: Tintura Iridescente
+	Tooltip: ""
+}
+
+ScarabLightPetItem: {
+	DisplayName: Bulbo de Escaravelho
+	Tooltip:
+		'''
+		Invoca um pequeno Escarabebêus!
+		'Eureca!'
+		'''
+}
+
+BeetleLicense: {
+	DisplayName: Licença para Besouro
+	Tooltip:
+		'''
+		Use para adotar um besouro na sua cidade.
+		Já tem um besouro?
+		Use licenças adicionais para ativar o Programa de Troca de Animais de Estimação! 
+		Encontre o estilo perfeito para você e seu besouro!
+		'''
+	LicenseUse: A licença se teletransporta para o serviço de entrega de besouros...
+}
+
+GooeyHiveItem: {
+	DisplayName: Urticária Gosmenta
+	Tooltip: ""
+}
+
+ScarabMountItem: {
+	DisplayName: Botão de Madressilva
+	Tooltip: Invoca uma montaria de tatu-bola
+}
+
+SandySandstoneItem: {
+	DisplayName: Lápide Arenosa
+	Tooltip: ""
+}
+
+TerracottaTombstoneItem: {
+	DisplayName: Lápide de Terracota
+	Tooltip: ""
+}
+
+TerracottaGraveMarkerItem: {
+	DisplayName: Cova de Terracota
+	Tooltip: ""
+}
+
+TerracottaGravestoneItem: {
+	DisplayName: Túmulo de Terracota
+	Tooltip: ""
+}
+
+TerracottaObeliskItem: {
+	DisplayName: Obelisco de Terracota
+	Tooltip: ""
+}
+
+DrywoodTombstoneItem: {
+	DisplayName: Lápide de Madeira Seca
+	Tooltip: ""
+}
+
+SavannaGravestoneItem: {
+	DisplayName: Túmulo da Savana
+	Tooltip: ""
+}
+
+DrywoodGraveMarkerItem: {
+	DisplayName: Cova de Madeira Seca
+	Tooltip: ""
+}
+
+DrywoodCrossGraveMarkerItem: {
+	DisplayName: Lápide com Cruz de Madeira Seca
+	Tooltip: ""
+}
+
+ModernObeliskItem: {
+	DisplayName: Obelisco Moderno
+	Tooltip: ""
+}
+
+ModernTombscreenItem: {
+	DisplayName: Túmulo Moderno
+	Tooltip: ""
+}
+
+ModernGravestoneItem: {
+	DisplayName: Lápide Moderna
+	Tooltip: ""
+}
+
+ModernHeadstoneItem: {
+	DisplayName: Cova Moderna
+	Tooltip: ""
+}
+
+SaltHeadstoneItem: {
+	DisplayName: Cova de Sal
+	Tooltip: ""
+}
+
+SaltTombstoneItem: {
+	DisplayName: Túmulo de Sal
+	Tooltip: ""
+}
+
+SaltGravestoneItem: {
+	DisplayName: Lápide de Sal
+	Tooltip: ""
+}
+
+SaltGraveMarkerItem: {
+	DisplayName: Obelisco de Sal
+	Tooltip: ""
+}
+
+NotSunItemIcon: {
+	DisplayName: Ícone de Item (Não-Solar)
+	Tooltip: ""
+}
+
+ChromaticWax: {
+	DisplayName: Cera Cromática
+	Tooltip: Pode ser trocada por glifos mágicos
+	Gain: O encantamento que sua irá ganhar vai ser: [c/{0}:{1}]
+	Target: Pode ser aplicado apenas em armas
+	RightClick: Segure este glifo e clique com o botão direito do mouse sobre a arma que você quer encantar
+	# {0} - glyph prefix, {1} - item name
+	GlyphPrefixing: ({0}) {1}
+}
+
+BlazeGlyph: {
+	DisplayName: Glifo das Chamas
+	Tooltip:
+		'''
+		Dar dano faz você começar a queimar
+		Aumento de 25% de aumento nos danos e 10% na chance de ataques críticos
+		'''
+	Effect: Chamas
+	Death: "{0} foi consumido pela raiva..."
+
+	# Russian-only localization - feel free to leave unset. If your language needs gendering support, let the team know.
+	# The Effect key above is the masculine/default form
+	Gendered: {
+		Fem: Piromaníaca
+		Neutral: Piromaníaco
+		Plural: Piromaníacos
+	}
+}
+
+RadiantGlyph: {
+	DisplayName: Glifo da Fortitude
+	Tooltip: Cria uma energia enquanto você não está atacando, deixando seu próximo ataque mais forte
+	Effect: Fortitude
+
+	Gendered: {
+		Fem: Forte
+		Neutral: Forte
+		Plural: Fortes
+	}
+}
+
+StormGlyph: {
+	DisplayName: Glifo da Tempestade
+	Tooltip:
+		'''
+		Pode ser aplicado apenas em armas que lançam projéteis
+		Aumenta a velocidade de projéteis
+		Projéteis ocasionalmente irão lançar fortes rajadas de vento
+		'''
+	Effect: Brisante
+
+	Gendered: {
+		Fem: Brisada
+		Neutral: Brisado
+		Plural: Brisados
+	}
+}
+
+MoonlightGlyph: {
+	DisplayName: Glifo do Luar
+	Tooltip:
+		'''
+		Converte 20% do dano do seu item em danos por magia
+		Quanto menos mana você tem, mais forte seus ataques ficarão
+		Atacar inimigos irá absorver mana
+		'''
+	Effect: Deslumbrante
+
+	Gendered: {
+		Fem: Deslumbrada
+		Neutral: Deslumbrado
+		Plural: Deslumbrados
+	}
+}
+
+RotGlyph: {
+	DisplayName: Glifo da Podridão
+	Tooltip:
+		'''
+		Ataques lançam uma praga contagiosa
+		Essa praga pode ser transmitida para você a partir inimigos que sofrem dela
+		'''
+	Effect: Assolado
+
+	Gendered: {
+		Fem: Assolada
+		Neutral: Assolado
+		Plural: Assolados
+	}
+}
+
+ShockGlyph: {
+	DisplayName: Glifo Elétrico
+	Tooltip: Ataques críticos irão causar 25% a mais de dano e lançar raios
+	Effect: Eletrizante
+
+	Gendered: {
+		Fem: Eletrizante
+		Neutral: Eletrizante
+		Plural: Eletrizantes
+	}
+}
+
+BeeGlyph: {
+	DisplayName: Glifo de Abelha
+	Tooltip:
+		'''
+		Converte 20% do dano do item em danos por invocação
+		Acertar inimigos irá dar foco neles
+		Inimigos focados lançam abelhas ao serem atingidos por lacaios
+		'''
+	Effect: Zumbido
+
+	Gendered: {
+		Fem: Zumbido
+		Neutral: Zumbido
+		Plural: Zumbidos
+	}
+}
+
+SanguineGlyph: {
+	DisplayName: Glifo Sangrento
+	Tooltip:
+		'''
+		20% de redução nos danos
+		Ataques sugam vida dos inimigos, efeito que fica mais forte quando você está mais perto de morrer
+		Roubar vida irá te dar níveis de aumento de dano
+		'''
+	Effect: Sanguessuga
+
+	Gendered: {
+		Fem: Sanguessuga
+		Neutral: Sanguessuga
+		Plural: Sanguessugas
+	}
+}
+
+PrefixVoucher: {
+	DisplayName: Comprovante de Prefixo {0}
+	Tooltip:
+		'''
+		Pode ser usado nos seus itens com <right>
+		Aplica [c/{0}:{1}]
+		'''
+	AccessoryTooltip: Pode ser usado em acessórios com o botão direito
+	WeaponTooltip: Pode ser usado em armas com o botão direito
+}
+
+EnchantedStamp: {
+	DisplayName: Carimbo Encantado
+	Tooltip:
+		'''
+		Desbloqueia uma opção para desativar ou ativar suas habilidades no canto do inventário
+		Quando ativado, ocasionalmente irá dar efeitos de glifos em itens criados, reforjados, e saqueados
+		'''
+	Active: Encantamento ativado
+	Inactive: Encantamento desativado
+}
+
+CelestialStamp: {
+	DisplayName: Carimbo Celestial
+	Tooltip:
+		'''
+		Desbloqueia uma opção para desativar ou ativar suas habilidades no canto do inventário
+		Quando ativado, ocasionalmente irá dar efeitos de glifos em itens criados, reforjados, e saqueados
+		Adicionalmente deixa que seus itens possam ter um prefixo e um glifo neles ao mesmo tempo
+		'''
+}
+
+RageGlyph: {
+	DisplayName: Glifo da Fúria
+	Tooltip: Dano em excesso que você inflige ao matar, ou que você leva, será guardado para o próximo ataque
+	Effect: Vingativo
+
+	Gendered: {
+		Fem: Vingativa
+		Neutral: Vingativo
+		Plural: Vingativos
+	}
+}
+
+CharmcasterHat: {
+	DisplayName: Chapéu do Mestre dos Feitiços
+	Tooltip: ""
+}
+
+CharmcasterLeggings: {
+	DisplayName: Calças do Mestre dos Feitiços
+	Tooltip: ""
+}
+
+CharmcasterRobe: {
+	DisplayName: Roupão do Mestre dos Feitiços
+	Tooltip: ""
+}
+
+VoidGlyph: {
+	DisplayName: Glifo do Vazio
+	Tooltip:
+		'''
+		Ataques infligem níveis de Colapso do Vazio
+		Colapso do Vazio cria um singularidade ameaçadora que após chegar em um certo nível, ataca seus oponentes
+		'''
+	Effect: Vazio
+
+	Gendered: {
+		Fem: Vazia
+		Neutral: Vazio
+		Plural: Vazios
+	}
+}
+
+GlitterPurse: {
+	DisplayName: Bolsa de Glitter
+	Tooltip: Permanentemente aumenta a capacidade das mochilas
+	StatusText: Suas mochilas se expandem
+}
+
+MariglowSeedPouch: {
+	DisplayName: Saquinho de Sementes de Calêndula Solar
+	Tooltip: Lança um punhado de sementes que fazem Calêndulas Solares brotarem na areia
+}
+
+DisplayCaseItem: {
+	DisplayName: Caixa Demonstrativa
+	Tooltip: <right> para colocar um acessório na caixa
+}
+
+SkyPylonItem: {
+	DisplayName: Pilar do Espaço
+	Tooltip: "{$CommonItemTooltip.TeleportationPylon}"
+}
+
+CandlewickItem: {
+	DisplayName: Pavio de Vela
+	Tooltip: ""
+}
+
+WaxBlockItem: {
+	DisplayName: Bloco de Cera
+	Tooltip: ""
+}
+
+WaxPotItem: {
+	DisplayName: Vaso de Cera
+	Tooltip: ""
+}
+
+EnchantedMirrorItem: {
+	DisplayName: Espelho do Retorno
+	Tooltip: <right> para voltar para casa e criar um portal
+}
+
+MirrorItem: {
+	DisplayName: Espelho
+	Tooltip: ""
+}
+
+EnchantedWorkbenchItem: {
+	DisplayName: Prensa de Cera
+	Tooltip: ""
+}
+
+CandlewickCoil: {
+	DisplayName: Rolo de Corda de Pavio de Vela
+	Tooltip: Arremessa um pavio que pode ser usado em escalada
+}
+
+CandleBathtubItem: {
+	DisplayName: Banheira de Vela
+	Tooltip: ""
+}
+
+CandleBedItem: {
+	DisplayName: Cama de Vela
+	Tooltip: ""
+}
+
+CandleBookcaseItem: {
+	DisplayName: Estante de Vela
+	Tooltip: ""
+}
+
+CandleCandelabraItem: {
+	DisplayName: Candelabro de Vela
+	Tooltip: ""
+}
+
+CandleCandleItem: {
+	DisplayName: Vela de Vela
+	Tooltip: ""
+}
+
+CandleChairItem: {
+	DisplayName: Cadeira de Vela
+	Tooltip: ""
+}
+
+CandleChandelierItem: {
+	DisplayName: Lustre de Vela
+	Tooltip: ""
+}
+
+CandleChestItem: {
+	DisplayName: Baú de Vela
+	Tooltip: ""
+}
+
+CandleDoorItem: {
+	DisplayName: Porta de Vela
+	Tooltip: ""
+}
+
+CandleDresserItem: {
+	DisplayName: Cômoda de Vela
+	Tooltip: ""
+}
+
+CandleLampItem: {
+	DisplayName: Lâmpada de Vela
+	Tooltip: ""
+}
+
+CandleLanternItem: {
+	DisplayName: Lanterna de Vela
+	Tooltip: ""
+}
+
+CandleSinkItem: {
+	DisplayName: Pia de Vela
+	Tooltip: ""
+}
+
+CandleSofaItem: {
+	DisplayName: Sofá de Vela
+	Tooltip: ""
+}
+
+CandleTableItem: {
+	DisplayName: Mesa de Vela
+	Tooltip: ""
+}
+
+CandleToiletItem: {
+	DisplayName: Privada de Vela
+	Tooltip: ""
+}
+
+CandleWorkBenchItem: {
+	DisplayName: Bancada de Trabalho de Vela
+	Tooltip: ""
+}
+
+CandleClockItem: {
+	DisplayName: Relógio de Vela
+	Tooltip: ""
+}
+
+CandlePianoItem: {
+	DisplayName: Piano de Vela
+	Tooltip: ""
+}
+
+# You don't need to localize this, as it's only used to register a shader ID.
+ChromaticWaxShaderDummy: {
+	DisplayName: Chromatic Wax Shader Dummy
+	Tooltip: Olá parceiros de mods de cheat/receitas!
+}
+
+WaxPlatformItem: {
+	DisplayName: Plataforma de Vela
+	Tooltip: ""
+}
+
+PinSpookyFarms: {
+	// DisplayName: Fetid Farms Pin
 	// Tooltip: ""
+}
+
+PinSpookyKrampus: {
+	// DisplayName: Krampus' Workshop Pin
+	// Tooltip: ""
+}
+
+PinSpookyNose: {
+	// DisplayName: Temple of Moco Pin
+	// Tooltip: ""
+}
+
+PinSpookyRotten: {
+	// DisplayName: Rotten Depths Pin
+	// Tooltip: ""
+}
+
+StarGourdGreenCarvedItem: {
+	// DisplayName: Carved Green Stargourd
+	// Tooltip: ""
+}
+
+StarGourdLimeCarvedItem: {
+	// DisplayName: Carved Lime Stargourd
+	// Tooltip: ""
+}
+
+StarGourdOrangeLimeCarvedItem: {
+	// DisplayName: Carved Orange-Lime Stargourd
+	// Tooltip: ""
+}
+
+StarGourdOrangeCarvedItem: {
+	// DisplayName: Carved Orange Stargourd
+	// Tooltip: ""
+}
+
+StarGourdRedCarvedItem: {
+	// DisplayName: Carved Red Stargourd
+	// Tooltip: ""
+}
+
+StarGourdRottenCarvedItem: {
+	// DisplayName: Carved Rotten Stargourd
+	// Tooltip: ""
+}
+
+StarGourdWhiteCarvedItem: {
+	// DisplayName: Carved White Stargourd
+	// Tooltip: ""
+}
+
+StarGourdYellowCarvedItem: {
+	// DisplayName: Carved Yellow Stargourd
+	// Tooltip: ""
+}
+
+StarGourdYellowGreenCarvedItem: {
+	// DisplayName: Carved Yellow-Green Stargourd
+	// Tooltip: ""
+}
+
+PumpkinPailOrange: {
+	// DisplayName: Pumpkin Pail
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Classically spooky'
+		''' */
+}
+
+PumpkinPailPurple: {
+	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Unabashedly spooky'
+		''' */
+}
+
+PumpkinPailWhite: {
+	// DisplayName: "{$PumpkinPailOrange.DisplayName}"
+	/* Tooltip:
+		'''
+		{$CommonTooltips.Backpack}
+		'Actually spooky'
+		''' */
+}
+
+TrellisOldBirchItem: {
+	// DisplayName: Crossed Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisOldBirchTwoItem: {
+	// DisplayName: Old Birch Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodItem: {
+	// DisplayName: Crossed Old Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodTwoItem: {
+	// DisplayName: Old Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+DhampirQuestItem: {
+	// DisplayName: Sad Little Bat
+	/* Tooltip:
+		'''
+		You feel an instinctual need to care for it
+		Attracts a certain creature in the salt flats while in your inventory
+		''' */
+}
+
+UncommonSpookyPotsLowerCatacombsItem: {
+	// DisplayName: "{$Tiles.Records.LowerCatacombs.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsUpperCatacombsItem: {
+	// DisplayName: "{$Tiles.Records.UpperCatacombs.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsKrampusItem: {
+	// DisplayName: "{$Tiles.Records.Krampus.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsTarPitsItem: {
+	// DisplayName: "{$Tiles.Records.TarPits.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsRottenDepthsItem: {
+	// DisplayName: "{$Tiles.Records.RottenDepths.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsFetidFarmsItem: {
+	// DisplayName: "{$Tiles.Records.FetidFarms.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsNoseTempleItem: {
+	// DisplayName: "{$Tiles.Records.NoseTemple.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsSpiderGrottoItem: {
+	// DisplayName: "{$Tiles.Records.SpiderGrotto.Name}"
+	// Tooltip: ""
+}
+
+UncommonSpookyPotsSpookyForestItem: {
+	// DisplayName: "{$Tiles.Records.SpookyForest.Name}"
+	// Tooltip: ""
+}
+
+FruitBrownie: {
+	// DisplayName: Fruit Brownie
+	// Tooltip: "'This is edible, but just not a brownie'"
+}
+
+SandBrownie: {
+	// DisplayName: Sand Brownie
+	// Tooltip: "'At least it's not glass?'"
+}
+
+MummyQuestItem: {
+	// DisplayName: Ancient Crown
+	/* Tooltip:
+		'''
+		This is a disproportionally small crown
+		Attracts a certain creature on top of the ziggurat while in your inventory
+		''' */
+}
+
+BallOfBandages: {
+	// DisplayName: Ball Of Bandages
+	/* Tooltip:
+		'''
+		Little Eye may be interested in this
+		'Uniquely odd to hold'
+		''' */
+}
+
+DhampirCompletionItem: {
+	// DisplayName: Dhampir Ear
+	/* Tooltip:
+		'''
+		Little Eye may be interested in this
+		'Yeowch!'
+		''' */
+}
+
+MummyBandageScrap: {
+	// DisplayName: Mummy Bandage Scrap
+	// Tooltip: Little Eye wants a ball of these...for some reason
+}
+
+LookerClub: {
+	// DisplayName: Looker
+	/* Tooltip:
+		'''
+		Charged strikes burst into temporary eyeball minions
+		These minions count as both melee and summon damage
+		''' */
+}
+
+PumpkinClub: {
+	// DisplayName: Smack 'O Lantern
+	// Tooltip: Charged strikes split into flaming chunks
+}
+
+ShovelClub: {
+	// DisplayName: Gravemaker
+	/* Tooltip:
+		'''
+		Charged strikes unearth skeletal remains
+		Aim those remains with the cursor
+		''' */
+}
+
+DhampirPaintingItem: {
+	// DisplayName: Dhampir at Dusk
+	// Tooltip: "'S. Pookie'"
+}
+
+MummyPaintingItem: {
+	// DisplayName: Sparkling Gourds
+	// Tooltip: "'S. Pookie'"
+}
+
+DhampirCape: {
+	// DisplayName: Weathered Cape
+	/* Tooltip:
+		'''
+		Reduces gravity and removes fall damage
+		Reduces aggro
+		Hides the player when the accessory is hidden
+		'It looks about as good as it feels to wear'
+		''' */
+}
+
+DhampirRelic: {
+	// DisplayName: Dhampir Relic
+	// Tooltip: ""
+}
+
+MummyRelic: {
+	// DisplayName: Mummiath Relic
+	// Tooltip: ""
+}
+
+GiantThornWallItem: {
+	// DisplayName: Giant Thorn Wall
+	// Tooltip: ""
+}
+
+StonePillarItem: {
+	// DisplayName: Stone Pillar
+	// Tooltip: ""
+}
+
+HerosMemorialStatueMossyItem: {
+	// DisplayName: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.DisplayName}"
+	// Tooltip: "{$Mods.SpiritReforged.Items.HerosMemorialStatueItem.Tooltip}"
+}
+
+GloomyStatueItem: {
+	// DisplayName: Gloomy Statue
+	// Tooltip: ""
+}
+
+BoxOfSpareLimbs: {
+	// DisplayName: Box Of Spare Limbs
+	/* Tooltip:
+		'''
+		Getting hit spawns a spare limb to fight for you
+		A leg will hop at nearby enemies, and a hand will grab for nearby enemies, and nothing else
+		''' */
+}
+
+LushWoodTrellisItem: {
+	// DisplayName: Lush Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+LushWoodTrellisTwoItem: {
+	// DisplayName: Crossed Lush Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodVanillaItem: {
+	// DisplayName: Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoSpookyWoodVanillaItem: {
+	// DisplayName: Crossed Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }

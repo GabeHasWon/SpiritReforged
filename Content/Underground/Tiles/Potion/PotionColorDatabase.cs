@@ -59,42 +59,10 @@ internal static class PotionColorDatabase
 		{ ItemID.RecallPotion, new Color(10, 177, 209) },
 		{ ItemID.GenderChangePotion, new Color(188, 183, 222) },
 		{ ItemID.WormholePotion, new Color(37, 201, 252) },
+		{ ItemID.PotionOfReturn, new Color(129, 111, 179) },
 		{ ModContent.ItemType<RemedyPotion>(), new Color(184, 255, 195) },
 		{ ModContent.ItemType<QuenchPotion>(), new Color(129, 255, 245) },
 		{ ModContent.ItemType<DoubleJumpPotion>(), new Color(147, 132, 207) },
+		{ ModContent.ItemType<FlightPotion>(), Color.SkyBlue },
 	};
-
-	public static void RegisterColor(int item, Color color, bool decorative) 
-	{
-		if (decorative)
-			DecorativeBrewColors.Add(item, color);
-		else
-			NaturalBrewColors.Add(item, color);
-	}
-
-	public static bool ParseNewPotion(params object[] args)
-	{
-		if (args.Length < 3)
-			throw new ArgumentException("AddPotionVat requires int, Color, bool arguments!");
-
-		int value;
-
-		if (args[0] is int intVal)
-			value = intVal;
-		else if (args[0] is short shortVal)
-			value = shortVal;
-		else if (args[0] is ushort ushortVal)
-			value = ushortVal;
-		else
-			throw new ArgumentException("AddPotionVat parameter 0 should be an int, short or ushort!");
-
-		if (args[1] is not Color color)
-			throw new ArgumentException("AddPotionVat parameter 1 should be a Color!");
-
-		if (args[2] is not bool decor)
-			throw new ArgumentException("AddPotionVat parameter 2 should be a bool!");
-
-		RegisterColor(value, color, decor);
-		return true;
-	}
 }

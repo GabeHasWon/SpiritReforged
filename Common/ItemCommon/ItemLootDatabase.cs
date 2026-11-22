@@ -12,7 +12,11 @@ internal class ItemLootDatabase : GlobalItem
 	internal static List<ItemLootDrop> ItemRules = [];
 
 	public static void AddItemRule(int itemType, IItemDropRule rule) => ItemRules.Add(new ItemLootDrop(itemType, rule));
-	public static void ModifyItemRule(int itemType, ModifyLoot rule) => LootDelegates.Add(itemType, rule);
+	public static void ModifyItemRule(int itemType, ModifyLoot rule)
+	{
+		if (!LootDelegates.TryAdd(itemType, rule))
+			LootDelegates[itemType] += rule;
+	}
 
 	public override void ModifyItemLoot(Item item, ItemLoot itemLoot)
 	{

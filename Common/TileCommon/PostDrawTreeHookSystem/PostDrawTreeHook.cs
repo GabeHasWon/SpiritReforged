@@ -31,7 +31,8 @@ internal class PostDrawTreeHook : ModSystem
 
 		foreach ((Point position, IPostDrawTree tree) in points)
 		{
-			tree.PostDrawTree(position.X, position.Y);
+			if (tree.DrawAfter)
+				tree.PostDrawTree(position.X, position.Y);
 		}
 	}
 
@@ -64,9 +65,9 @@ internal class PostDrawTreeHook : ModSystem
 
 	public static void PopTreeDraw(int x, int y)
 	{
-		if (ModContent.GetInstance<PostDrawTreeHook>().TreePoints.TryGetValue(new Point(x, y), out IPostDrawTree tree))
+		if (ModContent.GetInstance<PostDrawTreeHook>().TreePoints.TryGetValue(new Point(x, y), out IPostDrawTree tree) && !tree.DrawAfter)
 		{
-			//tree.PostDrawTree(x, y);
+			tree.PostDrawTree(x, y);
 		}
 	}
 }

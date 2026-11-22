@@ -10,9 +10,11 @@ public class FloatingDriftwood : FloatingItem
 	public override float SpawnWeight => base.Weight * 1.2f;
 	public override float Weight => base.Weight * 0.9f;
 	public override float Bouyancy => base.Bouyancy * 1.05f;
-	public override string Texture => base.Texture.Replace("Floating", string.Empty);
 
-	public override void SetStaticDefaults() => VariantGlobalItem.AddVariants(Type, 3);
+	public override string Texture => ModContent.GetInstance<SmallDriftwoodItem>().Texture;
+
+	public override void SetStaticDefaults() => VariantItemRenderer.VariantCounts[Type] = 3;
+
 	public override void SetDefaults()
 	{
 		Item.width = 30;
@@ -23,7 +25,7 @@ public class FloatingDriftwood : FloatingItem
 
 	public override bool OnPickup(Player player)
 	{
-		int stack = VariantGlobalItem.GetVariant(Item) switch
+		int stack = VariantItemRenderer.GetVariant(Item) switch
 		{
 			1 => 20,
 			2 => 25,

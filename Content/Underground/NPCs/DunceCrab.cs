@@ -1,14 +1,14 @@
 using SpiritReforged.Common.MathHelpers;
 using SpiritReforged.Common.NPCCommon;
-using SpiritReforged.Common.Particle;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items.EarthshakerVanity;
+using SpiritReforged.Content.Underground.Moss;
 using SpiritReforged.Content.Vanilla.Food;
 using System.IO;
 using Terraria.Audio;
 using Terraria.DataStructures;
 using Terraria.GameContent.Bestiary;
-using Terraria.ID;
 
 namespace SpiritReforged.Content.Underground.NPCs;
 
@@ -172,12 +172,12 @@ public class DunceCrab : ModNPC
 	{
 		if (NPC.collideY || NPC.velocity.Y == 0)
 		{
-			if ((State)Animation != State.Flail)
+			if ((State)Animation != State.Flail && !Main.dedServ)
 			{
 				Collision.HitTiles(NPC.position, NPC.velocity, NPC.width, NPC.height);
 
 				SoundEngine.PlaySound(SoundID.NPCHit38 with { Pitch = .5f }, NPC.Center);
-				ParticleHandler.SpawnParticle(new SmokeCloud(NPC.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .2f, Common.Easing.EaseFunction.EaseCircularOut, 120));
+				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(NPC.Bottom, Vector2.UnitY * -.5f, Color.SandyBrown * .5f, .2f, Common.Easing.EaseFunction.EaseCircularOut, 120));
 
 				for (int i = 0; i < 12; i++)
 					Dust.NewDustPerfect(NPC.Bottom, DustID.Dirt, (Vector2.UnitY * -Main.rand.NextFloat(4f)).RotatedByRandom(1f), 150, Scale: Main.rand.NextFloat() + 1).noGravity = true;
@@ -185,11 +185,23 @@ public class DunceCrab : ModNPC
 
 			ChangeState(State.Flail);
 			NPC.velocity = Vector2.Zero;
+
+			if (!CollisionChecks.Tiles(NPC.Hitbox, CollisionChecks.AnySurface)) // Fall if not actually embedded
+			{
+				ChangeState(State.Fall);
+				NPC.velocity.Y = 0.1f;
+			}
 		}
 		else
 		{
 			NPC.velocity.X = 0;
 			NPC.velocity.Y += 1f;
+
+			if (NPC.velocity.Y > 60)
+				NPC.velocity.Y = 60;
+
+			if (Collision.WetCollision(NPC.position, NPC.width, NPC.height))
+				NPC.position.Y -= NPC.velocity.Y * 0.85f;
 		}
 
 		NPC.rotation = MathHelper.Pi;
@@ -202,7 +214,7 @@ public class DunceCrab : ModNPC
 		int distanceX = (int)Math.Abs(NPC.Center.X - target.Center.X);
 		bool eatingMoss = EatingMoss();
 
-		if ((Side)Surface is Side.Down && (target.Center.Y > NPC.Center.Y && distanceX < 16 * 8 && Collision.CanHit(NPC, target)) || eatingMoss)
+		if ((Side)Surface is Side.Down && target.Center.Y > NPC.Center.Y && distanceX < 16 * 8 && Collision.CanHit(NPC, target) || eatingMoss)
 		{
 			ChangeState(State.Hide);
 			NPC.rotation = MathHelper.Pi;
@@ -385,9 +397,10 @@ public class DunceCrab : ModNPC
 
 		int x = spawnInfo.SpawnTileX;
 		int y = spawnInfo.SpawnTileY;
+		float mossMultiplier = NeonMossScene.InNeonMoss ? 1.2f : 1f;
 
 		if (y > Main.worldSurface && spawnInfo.Player.ZonePurity && !spawnInfo.Water && NPC.IsValidSpawningGroundTile(x, y))
-			return Main.hardMode ? .06f : .12f;
+			return (Main.hardMode ? 0.06f : 0.12f) * mossMultiplier;
 
 		return 0;
 	}

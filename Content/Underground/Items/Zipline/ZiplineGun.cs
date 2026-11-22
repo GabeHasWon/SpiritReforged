@@ -126,7 +126,7 @@ public class ZiplineGun : ModItem
 
 			if (CheckRemoveable())
 			{
-				var outline = TextureAssets.Extra[2].Value;
+				var outline = TextureAssets.Extra[ExtrasID.LaserRuler].Value;
 				var source = new Rectangle(0, 0, 16, 16);
 
 				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (Color.Green * .5f).Additive());
@@ -149,7 +149,7 @@ public class ZiplineGun : ModItem
 				if (!exceedsRange)
 					DrawDottedLine(color.Additive());
 
-				var outline = TextureAssets.Extra[2].Value;
+				var outline = TextureAssets.Extra[ExtrasID.LaserRuler].Value;
 				var source = new Rectangle(0, 0, 16, 16);
 
 				Main.spriteBatch.Draw(grid, cursorPos - grid.Size() / 2, (color * .5f).Additive());

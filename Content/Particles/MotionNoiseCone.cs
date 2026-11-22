@@ -1,6 +1,7 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.PrimitiveRendering;
+﻿using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.PrimitiveShape;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -8,10 +9,9 @@ public abstract class MotionNoiseCone : Particle
 {
 	private readonly float _width;
 	private readonly float _length;
-	private Entity _attatchedEntity = null;
+	private Entity _attachedEntity = null;
 	private Vector2 _offset = Vector2.Zero;
-
-	private readonly int _detatchTime;
+	private int _detachTime;
 
 	public MotionNoiseCone(Vector2 position, Vector2 velocity, float width, float length, float rotation, int maxTime)
 	{
@@ -25,37 +25,43 @@ public abstract class MotionNoiseCone : Particle
 
 	public MotionNoiseCone(Entity entity, Vector2 basePosition, Vector2 velocity, float width, float length, float rotation, int maxTime, int detatchTime = -1) : this(basePosition, velocity, width, length, rotation, maxTime)
 	{
-		if(entity == null)
+		if (entity == null)
 			return;
 
-		_attatchedEntity = entity;
+		_attachedEntity = entity;
 		_offset = basePosition - entity.Center;
-		_detatchTime = detatchTime;
+		_detachTime = detatchTime;
 	}
 
-	public override void Update()
+	public MotionNoiseCone AttachTo(Entity entity, int detachTime = -1)
 	{
-		if (TimeActive == _detatchTime && _attatchedEntity != null)
-			_attatchedEntity = null;
+		_attachedEntity = entity;
+		_offset = Position - entity.Center;
+		_detachTime = detachTime;
 
-		if (_attatchedEntity != null)
+		return this;
+	}
+
+	public override void Update(ref ParticleRendererSettings settings)
+	{
+		base.Update(ref settings);
+
+		if (TimeActive == _detachTime && _attachedEntity != null)
+			_attachedEntity = null;
+
+		if (_attachedEntity != null)
 		{
-			if (!_attatchedEntity.active)
+			if (!_attachedEntity.active)
 			{
-				_attatchedEntity = null;
+				_attachedEntity = null;
 				return;
 			}
 
-			Position = _attatchedEntity.Center + _offset;
+			Position = _attachedEntity.Center + _offset;
 		}
-
 		else
 			Velocity *= 0.97f;
 	}
-
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public override ParticleLayer DrawLayer => ParticleLayer.AbovePlayer;
 
 	internal virtual Color DarkColor { get; set; }
 	internal virtual Color BrightColor { get; set; }
@@ -116,9 +122,9 @@ public abstract class MotionNoiseCone : Particle
 	/// </summary>
 	internal virtual float FinalIntensity { get; set; }
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
-		Effect effect = AssetLoader.LoadedShaders["MotionNoiseCone"];
+		Effect effect = AssetLoader.LoadedShaders["MotionNoiseCone"].Value;
 		Texture2D texture = AssetLoader.LoadedTextures["vnoise"].Value;
 		effect.Parameters["uTexture"].SetValue(texture);
 

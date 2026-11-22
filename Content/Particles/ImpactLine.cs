@@ -1,5 +1,6 @@
-﻿using SpiritReforged.Common.Particle;
-using SpiritReforged.Common.Easing;
+﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.Visuals;
+using Terraria.Graphics.Renderers;
 
 namespace SpiritReforged.Content.Particles;
 
@@ -11,35 +12,38 @@ public class ImpactLine : Particle
 	public bool UseLightColor { get; set; }
 
 	internal readonly Entity _ent = null;
+	internal readonly Action<Particle> _action = null;
 
-	internal Color _color;
 	internal Vector2 _scaleMod;
 	internal Vector2 _offset;
 	internal readonly float _acceleration;
 
-	public override ParticleDrawType DrawType => ParticleDrawType.Custom;
-
-	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, float acceleration, Entity attatchedEntity = null)
+	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, float acceleration, Entity attatchedEntity = null, Action<Particle> extraUpdateAction = null)
 	{
 		Position = position;
 		Velocity = velocity;
-		_color = color;
+		Color = color;
 		_scaleMod = scale;
 		MaxTime = timeLeft;
 		_ent = attatchedEntity;
 		_acceleration = acceleration;
+		_action = extraUpdateAction;
 
-		if(_ent != null)
+		if (_ent != null)
 			_offset = Position - _ent.Center;
 	}
 
-	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, Entity attatchedEntity = null) : this(position, velocity, color, scale, timeLeft, 1, attatchedEntity) { }
+	public ImpactLine(Vector2 position, Vector2 velocity, Color color, Vector2 scale, int timeLeft, Entity attatchedEntity = null, Action<Particle> extraUpdateAction = null) : this(position, velocity, color, scale, timeLeft, 1, attatchedEntity, extraUpdateAction) { }
 
-	public override void Update()
+	public override void Update(ref ParticleRendererSettings settings)
 	{
+		base.Update(ref settings);
+
 		float opacity = EaseFunction.EaseQuadOut.Ease(EaseFunction.EaseSine.Ease(Progress));
-		Color = _color * opacity;
-		Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
+		Color *= opacity;
+
+		if (Velocity != Vector2.Zero)
+			Rotation = Velocity.ToRotation() + MathHelper.PiOver2;
 
 		if (!NoLight)
 			Lighting.AddLight(Position, Color.ToVector3() / 2f);
@@ -48,7 +52,7 @@ public class ImpactLine : Particle
 		{
 			if (!_ent.active)
 			{
-				Kill();
+				ShouldBeRemovedFromRenderer = true;
 				return;
 			}
 
@@ -56,15 +60,17 @@ public class ImpactLine : Particle
 			_offset += Velocity;
 		}
 
+		_action?.Invoke(this);
+
 		Velocity *= _acceleration;
 	}
 
-	public override void CustomDraw(SpriteBatch spriteBatch)
+	public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
 	{
 		float progress = EaseFunction.EaseSine.Ease(Progress);
 		var scale = new Vector2(0.5f, progress) * _scaleMod;
 		var offset = Vector2.Zero;
-		var tex = ParticleHandler.GetTexture(Type);
+		var tex = Texture;
 		var origin = new Vector2(tex.Width / 2, tex.Height / 2);
 
 		Color uColor = Color;

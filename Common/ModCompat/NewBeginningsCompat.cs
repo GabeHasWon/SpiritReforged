@@ -1,16 +1,27 @@
 ﻿using SpiritReforged.Common.ItemCommon.Backpacks;
+using SpiritReforged.Common.WorldGeneration.Microbiomes;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Discoveries.Passes;
 using SpiritReforged.Common.WorldGeneration.Micropasses.Passes;
-using SpiritReforged.Common.WorldGeneration.PointOfInterest;
+using SpiritReforged.Common.WorldGeneration.Micropasses.Passes.Ziggurat;
+using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Content.Forest.Backpacks;
 using SpiritReforged.Content.Forest.Botanist.Items;
-using SpiritReforged.Content.Forest.Botanist.Tiles;
+using SpiritReforged.Content.Forest.MagicPowder;
 using SpiritReforged.Content.Forest.Stargrass.Tiles;
+using SpiritReforged.Content.Forest.WoodClub;
+using SpiritReforged.Content.Glyphs;
+using SpiritReforged.Content.Glyphs.CharmcasterSet;
 using SpiritReforged.Content.Ocean.Items.KoiTotem;
 using SpiritReforged.Content.Ocean.Items.Reefhunter.OceanPendant;
 using SpiritReforged.Content.Ocean.Items.Vanity.DiverSet;
+using SpiritReforged.Content.SaltFlats.Items;
+using SpiritReforged.Content.SaltFlats.Tiles.Salt;
 using SpiritReforged.Content.Savanna.Items.HuntingRifle;
 using SpiritReforged.Content.Savanna.Items.Vanity;
 using SpiritReforged.Content.Savanna.Tiles;
+using SpiritReforged.Content.Vanilla.Leather.HideTunic;
+using SpiritReforged.Content.Ziggurat.Windshear;
+using System.Linq;
 using Terraria.DataStructures;
 using Terraria.WorldBuilding;
 
@@ -32,6 +43,11 @@ internal class NewBeginningsCompat : ModSystem
 			AddRecluse();
 			AddHunter();
 			AddHiker();
+			AddCaveman();
+			AddDisentombed();
+			AddWorshipper();
+			AddPurifier();
+			AddEnchanter();
 		});
 
 		void AddDiver()
@@ -39,9 +55,8 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ModContent.ItemType<DiverHead>(), ModContent.ItemType<DiverBody>(), ModContent.ItemType<DiverLegs>(),
 				new int[] { ItemID.Flipper, ModContent.ItemType<OceanPendant>() });
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindBeachSpawnPoint);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Diver"), "ReforgedDiver",
-				"Mods.SpiritReforged.Origins.Diver", Array.Empty<(int, int)>(), equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindBeachSpawnPoint);
+			AddOrigin("Diver", [], equip, misc, dele);
 		}
 
 		void AddBotanist()
@@ -49,19 +64,16 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ModContent.ItemType<BotanistHat>(), ModContent.ItemType<BotanistBody>(), ModContent.ItemType<BotanistLegs>(),
 				Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1, ItemID.Sickle);
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindScarecrowSpawnPoint);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Botanist"), "ReforgedBotanist",
-				"Mods.SpiritReforged.Origins.Botanist", new (int, int)[] { (ItemID.HerbBag, 3) }, equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindScarecrowSpawnPoint);
+			AddOrigin("Botanist", [(ItemID.HerbBag, 3)], equip, misc, dele);
 		}
 
 		void AddRecluse()
 		{
 			object equip = beginnings.Call("EquipData", ItemID.AnglerHat, ItemID.None, ItemID.None, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindRecluseSpawn);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Recluse"), "ReforgedRecluse",
-				"Mods.SpiritReforged.Origins.Recluse", new (int, int)[] { (ItemID.FiberglassFishingPole, 1), (ItemID.MasterBait, 2), 
-					(ItemID.ApprenticeBait, 10), (ItemID.WoodenCrate, 3), (ItemID.Torch, 25) }, equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindRecluseSpawn);
+			AddOrigin("Recluse", [(ItemID.FiberglassFishingPole, 1), (ItemID.MasterBait, 2), (ItemID.ApprenticeBait, 10), (ItemID.WoodenCrate, 3), (ItemID.Torch, 25)], equip, misc, dele);
 		}
 
 		void AddHunter()
@@ -69,21 +81,178 @@ internal class NewBeginningsCompat : ModSystem
 			object equip = beginnings.Call("EquipData", ModContent.ItemType<SafariHat>(), ModContent.ItemType<SafariVest>(), ModContent.ItemType<SafariShorts>(), 
 				Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<HuntingRifle>());
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindHunterSpawn);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Hunter"), "ReforgedHunter",
-				"Mods.SpiritReforged.Origins.Hunter", new (int, int)[] { (ItemID.MusketBall, 60) }, equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindHunterSpawn);
+			AddOrigin("Hunter", [(ItemID.MusketBall, 60)], equip, misc, dele);
 		}
 
 		void AddHiker()
 		{
 			object equip = beginnings.Call("EquipData", ItemID.None, ItemID.None, ItemID.None, Array.Empty<int>());
 			object misc = beginnings.Call("MiscData", 100, 20, -1);
-			object dele = beginnings.Call("DelegateData", () => true, (List<GenPass> list) => { }, () => true, (Func<Point16>)FindHighestSurface, 
-				(Action<Player>)AddHikerBackpack);
-			object result = beginnings.Call("ShortAddOrigin", GetIcon("Hiker"), "ReforgedHiker",
-				"Mods.SpiritReforged.Origins.Hiker", new (int, int)[] { (ItemID.Rope, 150), (ItemID.Glowstick, 30), (ItemID.Torch, 60) }, equip, misc, dele);
+			object dele = GetDelegateData(() => true, list => { }, () => true, FindHighestSurface, AddHikerBackpack);
+			AddOrigin("Hiker", [(ItemID.Rope, 150), (ItemID.Glowstick, 30), (ItemID.Torch, 60)], equip, misc, dele);
 		}
+
+		void AddCaveman()
+		{
+			object equip = beginnings.Call("EquipData", ItemID.None, ModContent.ItemType<HideTunic>(), ItemID.None, Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<WoodenClub>());
+			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnUnderground);
+			AddOrigin("Caveman", [], equip, misc, dele);
+		}
+
+		void AddDisentombed()
+		{
+			object equip = beginnings.Call("EquipData", ItemID.MummyMask, ItemID.MummyShirt, ItemID.MummyPants, Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1);
+			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnInZiggurat);
+			AddOrigin("Disentombed", [(ItemID.DesertTorch, 3)], equip, misc, dele);
+		}
+
+		void AddWorshipper()
+		{
+			object equip = beginnings.Call("EquipData", ModContent.ItemType<SunEarrings>(), ModContent.ItemType<SilkTop>(), ModContent.ItemType<SilkSirwal>(), Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<WindshearScepter>());
+			object dele = GetDelegateData(() => true, list => { }, () => true, SpawnInOasis);
+			AddOrigin("Worshipper", [], equip, misc, dele);
+		}
+
+		void AddPurifier()
+		{
+			object equip = beginnings.Call("EquipData", ModContent.ItemType<MahakalaMaskBlue>(), ItemID.None, ItemID.None, Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, -1, ModContent.ItemType<BoStaff>());
+			object dele = GetDelegateData(() => true, list => { }, () => true, TrySpawnInSaltFlats, player =>
+			{
+				if (Main.rand.NextBool()) // Randomize mask on creation
+					player.armor[0] = new Item(ModContent.ItemType<MahakalaMaskRed>());
+			});
+
+			AddOrigin("Purifier", [], equip, misc, dele);
+		}
+
+		void AddEnchanter()
+		{
+			object equip = beginnings.Call("EquipData", ModContent.ItemType<CharmcasterHat>(), ModContent.ItemType<CharmcasterRobe>(), 
+				ModContent.ItemType<CharmcasterLeggings>(), Array.Empty<int>());
+			object misc = beginnings.Call("MiscData", 100, 20, ModContent.NPCType<Enchanter>());
+			object dele = GetDelegateData(() => true, list => { }, () => false, () => Point16.Zero);
+
+			AddOrigin("Enchanter", [(ModContent.ItemType<Flarepowder>(), 60), (ModContent.ItemType<ChromaticWax>(), 3)], equip, misc, dele);
+		}
+
+		void AddOrigin(string name, (int, int)[] inventory, object equipData, object miscData, object delegateData) 
+			=> beginnings.Call("ShortAddOrigin", GetIcon(name), "Reforged" + name, "Mods.SpiritReforged.Origins." + name, inventory, equipData, miscData, delegateData);
 	}
+
+	private static Point16 TrySpawnInSaltFlats()
+	{
+		List<Point16> points = new(500);
+
+		for (int i = WorldGen.beachDistance; i < Main.maxTilesX - WorldGen.beachDistance; ++i)
+		{
+			for (int j = (int)(Main.worldSurface * 0.35); j < Main.worldSurface; ++j)
+			{
+				Tile tile = Main.tile[i, j];
+
+				if (tile.HasTile && (tile.TileType == ModContent.TileType<SaltBlockDull>() || tile.TileType == ModContent.TileType<SaltBlockReflective>()) && 
+					!Collision.SolidCollision(new Vector2(i, j - 3) * 16, 54, 54) && Main.tile[i, j - 2].WallType == WallID.None)
+					points.Add(new Point16(i, j - 3));
+			}
+		}
+
+		if (points.Count == 0)
+			return Point16.NegativeOne;
+
+		return WorldGen.genRand.Next(points);
+	}
+
+	private static Point16 SpawnInOasis()
+	{
+		if (OasisMicropass.OasisAreas.Count == 0)
+			return Point16.NegativeOne;
+
+		Rectangle selection = WorldGen.genRand.NextFromList([.. OasisMicropass.OasisAreas]);
+		return new(selection.Center.X, selection.Center.Y);
+	}
+
+	private static Point16 SpawnInZiggurat()
+	{
+		var ziggurats = MicrobiomeSystem.Microbiomes.Where(x => x is ZigguratMicropass.ZigguratBiome).Select(x => (ZigguratMicropass.ZigguratBiome)x).ToHashSet();
+
+		if (ziggurats.Count == 0)
+			return Point16.NegativeOne;
+
+		ZigguratMicropass.ZigguratBiome ziggurat = WorldGen.genRand.Next([.. ziggurats]);
+		Point16 pos = ziggurat.Position;
+		Point16 spawn;
+		Tile tile;
+
+		do
+		{
+			Rectangle bounds = ziggurat.FullArea;
+			spawn = new Point16(pos.X + WorldGen.genRand.Next(-bounds.Width / 2, bounds.Width / 2), pos.Y + WorldGen.genRand.Next(-10, bounds.Height - 20));
+			tile = Main.tile[spawn];
+		} while (tile.HasTile || !DisentombedIsValidWall(tile) || !DisentombedOpenSpace(spawn));
+
+		return spawn;
+	}
+
+	private static bool DisentombedOpenSpace(Point16 spawn)
+	{
+		Vector2 worldSpawn = spawn.ToWorldCoordinates(0, 0);
+		return Collision.SolidCollision(worldSpawn - new Vector2(36, 0), 72, 36, false) && !Collision.SolidCollision(worldSpawn + new Vector2(-18, -40), 36, 36);
+	}
+
+	private static bool DisentombedIsValidWall(Tile t)
+	{
+		SpiritReforgedMod mod = SpiritReforgedMod.Instance;
+		return t.WallType == mod.Find<ModWall>("RedSandstoneBrickWallUnsafe").Type || t.WallType == mod.Find<ModWall>("RedSandstoneBrickWallUnsafe").Type;
+	}
+
+	private static Point16 SpawnUnderground()
+	{
+		for (int i = 0; i < 30000; ++i)
+		{
+			Point16 point = new(WorldGen.genRand.Next(WorldGen.beachDistance * 2, Main.maxTilesX - WorldGen.beachDistance * 2), 
+				WorldGen.genRand.Next((int)Main.worldSurface + 100, (int)Main.worldSurface + 400));
+
+			if (Collision.SolidCollision(point.ToWorldCoordinates() - new Vector2(36), 72, 72))
+				continue;
+
+			if (!Collision.SolidCollision(point.ToWorldCoordinates() + new Vector2(-18, 36), 36, 16))
+				continue;
+
+			const int Range = 70;
+
+			int stoneCount = 150;
+
+			for (int x = point.X - Range; x < point.X + Range; ++x)
+			{
+				for (int y = point.Y - Range; y < point.Y + Range; ++y)
+				{
+					Tile tile = Main.tile[x, y];
+
+					if (tile.HasTile && tile.TileType is TileID.Stone or TileID.Dirt or TileID.Granite or TileID.Marble or TileID.MushroomGrass)
+						stoneCount--;
+					else if (tile.HasTile && tile.TileType is TileID.JungleGrass or TileID.CorruptGrass or TileID.CrimsonGrass or TileID.Ash)
+						stoneCount++;
+				}
+			}
+
+			if (stoneCount > 0)
+				continue;
+
+			return point;
+		}
+
+		return Point16.NegativeOne;
+	}
+
+	public static object GetDelegateData(Func<bool> condition, Action<List<GenPass>> modifyWorldGen , Func<bool> hasCustomSpawn, Func<Point16> actualSpawn) 
+		=> ((Mod)CrossMod.NewBeginnings).Call("DelegateData", condition, modifyWorldGen, hasCustomSpawn, actualSpawn);
+
+	public static object GetDelegateData(Func<bool> condition, Action<List<GenPass>> modifyWorldGen, Func<bool> hasCustomSpawn, Func<Point16> actualSpawn,
+		Action<Player> modifyCreation) => ((Mod)CrossMod.NewBeginnings).Call("DelegateData", condition, modifyWorldGen, hasCustomSpawn, actualSpawn, modifyCreation);
 
 	private Point16 FindHighestSurface()
 	{
@@ -120,7 +289,7 @@ internal class NewBeginningsCompat : ModSystem
 	private void AddHikerBackpack(Player player)
 	{
 		player.GetModPlayer<BackpackPlayer>().backpack = new Item(ModContent.ItemType<LeatherBackpack>(), 1);
-		(player.GetModPlayer<BackpackPlayer>().backpack.ModItem as BackpackItem).items[0] = new Item(ItemID.CalmingPotion, 3);
+		(player.GetModPlayer<BackpackPlayer>().backpack.ModItem as BackpackItem).Items[0] = new Item(ItemID.CalmingPotion, 3);
 	}
 
 	private static Point16 FindHunterSpawn()
@@ -148,41 +317,40 @@ internal class NewBeginningsCompat : ModSystem
 	{
 		var area = WorldGen.genRand.Next([.. FishingAreaMicropass.Coves]);
 
+		// Check for and spawn on Koi Totem if possible,
 		for (int x = area.Left; x < area.Right; x++)
-			for (int y = area.Top; x < area.Bottom; y++)
+		{
+			for (int y = area.Top; y < area.Bottom; y++)
 			{
 				if (Main.tile[x, y].HasTile && Main.tile[x, y].TileType == ModContent.TileType<KoiTotemTile>())
 					return new Point16(x, y);
 			}
+		}
 
-		return new Point16(Main.spawnTileX, Main.spawnTileY);
+		HashSet<int> validGrounds = [TileID.Stone, TileID.Platforms, TileID.WoodBlock, TileID.BorealWood, TileID.RichMahogany];
+		HashSet<Point16> positions = [];
+
+		// if not, spawn anywhere valid,
+		for (int x = area.Left; x < area.Right; x++)
+		{
+			for (int y = area.Top; y < area.Bottom; y++)
+			{
+				if (Main.tile[x, y].HasTile && validGrounds.Contains(Main.tile[x, y].TileType))
+					positions.Add(new Point16(x, y - 3));
+			}
+		}
+
+		// else, default to spawn.
+		if (positions.Count == 0)
+			return new Point16(Main.spawnTileX, Main.spawnTileY);
+
+		return WorldGen.genRand.Next(positions.ToList());
 	}
 
 	private static Point16 FindScarecrowSpawnPoint()
 	{
-		Point16[] poI = [.. PointOfInterestSystem.Instance.WorldGen_PointsOfInterestByPosition[InterestType.Curiosity]];
-		Point16 pos = WorldGen.genRand.Next(poI);
-
-		while (CantFindScarecrowNearby(pos))
-		{
-			pos = WorldGen.genRand.Next(poI);
-		}
-
-		return pos;
-	}
-
-	private static bool CantFindScarecrowNearby(Point16 pos)
-	{
-		for (int i = pos.X - 60; i < pos.X + 60; ++i)
-		{
-			for (int j = pos.Y - 40; j < pos.Y + 40; ++j)
-			{
-				if (Main.tile[i, j].TileType == ModContent.TileType<Scarecrow>())
-					return false;
-			}
-		}
-
-		return true;
+		Point16 position = new(ScarecrowDiscovery.Position);
+		return (position == Point16.Zero) ? Point16.NegativeOne : position;
 	}
 
 	public static Point16 FindBeachSpawnPoint()

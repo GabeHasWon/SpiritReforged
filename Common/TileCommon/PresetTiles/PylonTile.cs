@@ -1,12 +1,13 @@
 ﻿using Terraria.DataStructures;
 using Terraria.Map;
 using Terraria.ModLoader.Default;
+using TileHelper.Common;
 
 namespace SpiritReforged.Common.TileCommon.PresetTiles;
 
-public abstract class PylonTile : ModPylon, IAutoloadTileItem
+public abstract class PylonTile : ModPylon, ILoadItem
 {
-	protected ModItem ModItem => Mod.Find<ModItem>(Name + "Item");
+	public ModItem ModItem => ItemLoader.GetItem(((ILoadItem)this).ItemType);
 
 	protected const int frameCount = 8;
 	public Asset<Texture2D> crystalTexture, crystalHighlightTexture, mapIcon;

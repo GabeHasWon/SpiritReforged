@@ -1,5 +1,4 @@
-﻿using SpiritReforged.Common.Misc;
-using SpiritReforged.Common.Multiplayer;
+﻿using SpiritReforged.Common.Multiplayer;
 using System.IO;
 using Terraria.DataStructures;
 using Terraria.Map;
@@ -26,7 +25,9 @@ internal class RevealMap
 			new RevealMapData((byte)MapSyncId.DrawMap, new Point16(x, y), (short)radius).Send();
 		}
 		else
+		{
 			DrawMap(x, y, radius);
+		}
 	}
 
 	private static void DrawMap(int x, int y, int radius)
