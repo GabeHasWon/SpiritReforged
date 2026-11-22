@@ -48,7 +48,7 @@ public sealed class VariantItemRenderer : GlobalItem
 
 	public override bool PreDrawInWorld(Item item, SpriteBatch spriteBatch, Color lightColor, Color alphaColor, ref float rotation, ref float scale, int whoAmI)
 	{
-		subID ??= Main.rand.Next(VariantCounts[item.type]);
+		subID ??= Main.gameMenu ? 0 : Main.rand.Next(VariantCounts[item.type]);
 
 		Texture2D texture = GetTexture(item, out _);
 		ItemMethods.DrawInWorld(item, lightColor, rotation, scale, texture);
@@ -57,7 +57,7 @@ public sealed class VariantItemRenderer : GlobalItem
 
 	public override bool PreDrawInInventory(Item item, SpriteBatch spriteBatch, Vector2 position, Rectangle frame, Color drawColor, Color itemColor, Vector2 origin, float scale)
 	{
-		subID ??= Main.rand.Next(VariantCounts[item.type]);
+		subID ??= Main.gameMenu ? 0 : Main.rand.Next(VariantCounts[item.type]);
 
 		Texture2D texture = GetTexture(item, out Rectangle source);
 

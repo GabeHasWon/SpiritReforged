@@ -1,4 +1,3 @@
-using SpiritReforged.Common.ConfigurationCommon;
 using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;

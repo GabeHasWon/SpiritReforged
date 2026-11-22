@@ -21,6 +21,7 @@ public abstract class PinItem : ModItem
 		Item.width = Item.height = 32;
 		Item.value = Item.buyPrice(silver: 50);
 		Item.rare = ItemRarityID.Green;
+		Item.maxStack = Item.CommonMaxStack;
 	}
 
 	public override bool CanRightClick() => !Main.LocalPlayer.PinUnlocked(Name);

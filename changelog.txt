@@ -9,3 +9,5 @@ v0.2.3.3
 	"GetOases": returns Rectangle[], takes nothing
 	Returns all Oasis bounding boxes in the current world. 
 - Updated Russian and Chinese localization
+- Allowed Pin items to stack to the common max (9999)
+- Fixed "variant items", such as Kelp, changing variants every frame in the main menu (such as on the gen configuration screen)
