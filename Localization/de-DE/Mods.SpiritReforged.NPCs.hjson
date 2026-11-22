@@ -839,3 +839,8 @@ SpookyMummyLegs: {
 }
 
 // PassiveGhost.DisplayName: Passive Ghost
+
+GoldJerboa: {
+	// DisplayName: Gold Jerboa
+	// Entry: ""
+}

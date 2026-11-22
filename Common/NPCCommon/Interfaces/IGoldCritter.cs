@@ -11,6 +11,8 @@ namespace SpiritReforged.Common.NPCCommon.Interfaces;
 public interface IGoldCritter
 {
 	public int[] NormalPersistentIDs => [];
+
+	void CreateItemDefaults();
 }
 
 public class GoldCritterNPC : GlobalNPC

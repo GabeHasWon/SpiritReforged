@@ -31,10 +31,7 @@ public class Jerboa : ModNPC
 
 	public override void SetStaticDefaults()
 	{
-		//Add critter item defaults
-		ItemEvents.CreateItemDefaults(
-			this.AutoItemType(),
-			static item => item.value = Item.sellPrice(0, 0, 0, 45));
+		CreateItemDefaults();
 
 		Main.npcFrameCount[Type] = 13; //Rows
 		Main.npcCatchable[Type] = true;
@@ -59,6 +56,13 @@ public class Jerboa : ModNPC
 		AIType = -1;
 		SpawnModBiomes = [ModContent.GetInstance<SavannaBiome>().Type];
 	}
+
+	public virtual void CreateItemDefaults() =>
+		//Add critter item defaults
+		ItemEvents.CreateItemDefaults(
+			this.AutoItemType(),
+			static item => item.value = Item.sellPrice(0, 0, 0, 45)
+	);
 
 	public override void SetBestiary(BestiaryDatabase database, BestiaryEntry bestiaryEntry) => bestiaryEntry.AddInfo(this, "");
 
