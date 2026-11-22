@@ -33,6 +33,7 @@ public class SaltCrateHardmode : ModItem
 		int[] dropOptions = [ModContent.ItemType<MahakalaMaskBlue>(),
 			ModContent.ItemType<MahakalaMaskRed>(),
 			ModContent.ItemType<BoStaff>(),
+			ModContent.ItemType<GnarledRod>(),
 			ItemID.CloudinaBottle,
 			ItemID.WaterWalkingBoots];
 
