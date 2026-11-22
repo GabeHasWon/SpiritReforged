@@ -1,13 +1,59 @@
 v0.2.3.3
 - Publicized ICheckItemUse interface for crossmod use
 - Added CheckItem.RegisterMod for ICheckItemUse with weak references
-- Added Lush Wood (from Verdant) Trellises
+- Added Lush Wood (from Verdant), vanilla Spooky Wood Trellises
 - Added the following Mod.Call functionalities:
 	"InOasis": returns bool, takes (Player player)
 	Returns if the player is in an oasis.
 
 	"GetOases": returns Rectangle[], takes nothing
 	Returns all Oasis bounding boxes in the current world. 
-- Updated Russian and Chinese localization
+
+	"RegisterPin": returns CrossmodPin? (a ModItem), takes (Mod mod, string name, string texture)
+	Adds a pin from your mod using the given values.
+
+	"RegisterInterest": returns CrossmodInterest?, takes 
+		(Mod mod, string name, Func<int[]> getPins, bool isMapped, Func<int, int, HashSet<string>, bool>? mapperFunc, LocalizedText[]? dialogue = null, Func<bool>? isAvailable = null)
+	Registers a cross mod "interest". An interest is a rare or semi-rare naturally generated object or structure that can be noted by the Cartographer, alongside using a custom pin.
+
+	"PlaceInterest": returns void, takes (int x, int y, string name) 
+	Places the given cross mod interest at the given location. The name should be in the format "MyMod/MyInterest".
+
+- Added the given referenced crossmod support:
+	InterestDefinition:
+		The backend for an interest definition, used internally for our interests and crossmod interests.
+		Refer to our internal definitions for various examples on how to use them: https://github.com/GabeHasWon/SpiritReforged/blob/master/Common/WorldGeneration/PointOfInterest/LegacyInterests.cs
+
+	PinItem:
+		The backend for a pin item. Unlike InterestDefinition, CrossmodPin is not necessary for referenced crossmod; simply use the Pinitem class and it will work out of the box.
+
+- Overhauled the points-of-interest system for the above and for scalability.
+	As with all of our crossmod content, if you use this system, please let us know! It's so cool.
+- Buffed the Gravemaker's damage (15 -> 35 base, scaling unchanged)
+- Buffed the Smack o' Lantern's damage (8 -> 11 base, scaling unchanged)
+- Made the Looker sell for 75 silver base instead of 5 copper
 - Allowed Pin items to stack to the common max (9999)
 - Fixed "variant items", such as Kelp, changing variants every frame in the main menu (such as on the gen configuration screen)
+- Made all of our gold critters appear as golden on the Lifeform Analyzer
+- Made a minor performance improvement to the pixelation system, unlikely to be noticeable
+- Fixed issue where, if our chest item population code runs out of chest space, it'd crash
+- Fixed issue with Desert Wind particles not updating properly
+- Modified all Backpack sell prices:
+	Fashionable: 15 silver -> 12 silver
+	Giant Bag: 15 silver -> 75 copper
+	Hiking: 15 silver -> 10 silver
+	Leather: 15 silver -> 5 silver
+	Minipack: 15 silver -> 5 silver
+	Pink: 15 silver -> 8 silver
+	Pouch: 15 silver -> 10 silver
+- Added dialogue for Cartographer having more pins, but being conditionally unable to use them, if a crossmod project chooses to do so for some reason
+- Buffed both Vexpowders' damage (8 -> 11 base)
+- Made Crickets shimmer into Shimmerflies
+- Made both Mirrors only do their drawing logic if they are on screen, reducing the rendering load when not using either
+- Improved the performance of the shrouding of the player's reflection on Enchanted Mirrors
+- Allowed Mirror reflections to be turned off by disabling reflections in the config
+- Fixed Painter paintings being sold in multiple shops
+- Added recipe for Stone Reliquary - 15 Stone Blocks, 4 of any Salt block, 2 of any Iron Bar @ heavy workbench
+- Made Killifish not count as friendly
+- Reduced Windshear Sceptre damage (28 -> 22 base)
+- Updated Russian and Chinese localization

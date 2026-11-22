@@ -193,7 +193,7 @@ public class Cartographer : WorldNPC, ITravelNPC
 		RevealMap.Reveal(position.X, position.Y, radius);
 
 		if (Main.netMode != NetmodeID.SinglePlayer)
-			new PointOfInterestSystem.SyncPoIData(position, interest.legacyType, true).Send();
+			new PointOfInterestSystem.SyncPoIData(position, interest.definition.FullName, true).Send();
 	}
 
 	/// <summary> Gets the pin item associated with <paramref name="interest"/>, returns -1 if none exists. </summary>

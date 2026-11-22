@@ -103,10 +103,18 @@ public class PointOfInterestSystem : ModSystem
 		private readonly bool _discovered;
 
 		public SyncPoIData() { }
-		public SyncPoIData(Point16 position, InterestType type, bool value)
+
+		internal SyncPoIData(Point16 position, InterestType type, bool value)
 		{
 			_position = position;
 			_type = "SpiritReforged/" + type.ToString();
+			_discovered = value;
+		}
+
+		public SyncPoIData(Point16 position, string type, bool value)
+		{
+			_position = position;
+			_type = type;
 			_discovered = value;
 		}
 
