@@ -3830,3 +3830,8 @@ TrellisTwoSpookyWoodVanillaItem: {
 	// DisplayName: Crossed Spooky Wood Trellis
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
+
+SavannaPlanterBoxItem: {
+	// DisplayName: Savanna Planter Box
+	// Tooltip: ""
+}
