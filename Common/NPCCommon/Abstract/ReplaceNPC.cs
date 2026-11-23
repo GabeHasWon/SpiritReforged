@@ -29,7 +29,7 @@ public class ReplaceGlobalNPC : GlobalNPC
 
 	public override void OnSpawn(NPC npc, IEntitySource source)
 	{
-		if (Main.netMode == NetmodeID.MultiplayerClient || source is not EntitySource_SpawnNPC)
+		if (Main.netMode == NetmodeID.MultiplayerClient || (source is not EntitySource_SpawnNPC and not EntitySource_TileBreak))
 			return;
 
 		Player closest = Main.player[Player.FindClosest(npc.position, npc.width, npc.height)];

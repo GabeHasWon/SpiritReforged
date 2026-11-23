@@ -3851,7 +3851,7 @@ GnarledRod: {
 }
 
 GoldJerboaItem: {
-  // DisplayName: Gold Jerboa
+	// DisplayName: Gold Jerboa
 	// Tooltip: ""
 }
 
