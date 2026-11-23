@@ -3856,6 +3856,11 @@ TrellisTwoSpookyWoodVanillaItem: {
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
+GoldJerboaItem: {
+	// DisplayName: Gold Jerboa
+	// Tooltip: ""
+}
+
 SavannaPlanterBoxItem: {
 	// DisplayName: Savanna Planter Box
 	// Tooltip: ""
