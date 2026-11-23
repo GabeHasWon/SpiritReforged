@@ -839,9 +839,9 @@ SpookyMummyLegs: {
 }
 
 PassiveGhost.DisplayName: 被动鬼魂
-// NuclearBunny.DisplayName: Nuclear Bunny
+NuclearBunny.DisplayName: 核武兔
 
 GoldJerboa: {
-	// DisplayName: Gold Jerboa
-	// Entry: This rare Jerboa's glint makes it a prime target for predators.
+	DisplayName: 金跳鼠
+	Entry: 这种罕见的跳鼠身上的闪光使其成为了捕食者的主要目标。
 }

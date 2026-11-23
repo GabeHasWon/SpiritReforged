@@ -109,5 +109,5 @@ ShovelClubBoneProjectile.DisplayName: 骨头
 SpareLeg.DisplayName: 备用腿
 SpareHand.DisplayName: 备用手
 SpareHeart.DisplayName: 备用心
-// NuclearBomb.DisplayName: Nuclear Bomb
-// GnarledRodBobber.DisplayName: Gnarled Rod Bobber
+NuclearBomb.DisplayName: 核弹
+GnarledRodBobber.DisplayName: 曲枝钓竿浮标
