@@ -3845,6 +3845,11 @@ TrellisTwoSpookyWoodVanillaItem: {
 }
 
 GoldJerboaItem: {
+  // DisplayName: Gold Jerboa
 	// Tooltip: ""
-	// DisplayName: Gold Jerboa Item
+}
+
+SavannaPlanterBoxItem: {
+	// DisplayName: Savanna Planter Box
+	// Tooltip: ""
 }
