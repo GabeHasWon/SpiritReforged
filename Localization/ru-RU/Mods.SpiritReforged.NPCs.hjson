@@ -845,3 +845,8 @@ SpookyMummyLegs: {
 
 PassiveGhost.DisplayName: Приведение
 // NuclearBunny.DisplayName: Nuclear Bunny
+
+GoldJerboa: {
+	// DisplayName: Gold Jerboa
+	// Entry: This rare Jerboa's glint makes it a prime target for predators.
+}

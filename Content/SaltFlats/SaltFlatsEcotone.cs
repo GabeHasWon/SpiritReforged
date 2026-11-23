@@ -440,7 +440,7 @@ internal class SaltFlatsEcotone : EcotoneBase, IGenerationPage
 
 	private static void PopulateChest(Chest chest)
 	{
-		int[] main = [ModContent.ItemType<MahakalaMaskBlue>(), ModContent.ItemType<MahakalaMaskRed>(), ModContent.ItemType<BoStaff>()];
+		int[] main = [ModContent.ItemType<GnarledRod>(), ModContent.ItemType<MahakalaMaskBlue>(), ModContent.ItemType<MahakalaMaskRed>(), ModContent.ItemType<BoStaff>()];
 
 		WeightedRandom<(int, Range)> secondary = new();
 		secondary.Add((ModContent.ItemType<TornMapPiece>(), 1..2));
