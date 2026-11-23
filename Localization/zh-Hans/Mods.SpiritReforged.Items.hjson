@@ -3845,16 +3845,16 @@ TrellisTwoSpookyWoodVanillaItem: {
 }
 
 GnarledRod: {
-	// DisplayName: Gnarled Rod
-	// Tooltip: "{$ItemTooltip.CratePotion}"
+	DisplayName: 曲枝钓竿
+	Tooltip: "{$ItemTooltip.CratePotion}"
 }
 
 GoldJerboaItem: {
-	// DisplayName: Gold Jerboa
-	// Tooltip: ""
+	DisplayName: 金跳鼠
+	Tooltip: ""
 }
 
 SavannaPlanterBoxItem: {
-	// DisplayName: Savanna Planter Box
-	// Tooltip: ""
+	DisplayName: 稀树平原种植盆
+	Tooltip: ""
 }
