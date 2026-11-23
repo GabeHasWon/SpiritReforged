@@ -158,17 +158,6 @@ public class ShotgunGlobalItem : GlobalItem
 
 			for (int i = 0; i < ammoStats.GetShotCount(player, itemStats); i++)
 				projectiles.Add(ammo.OnShoot(item, player, source, position, velocity.RotatedByRandom(ammoStats.GetShotSpread(player, itemStats)), type, damage, knockback, i));
-
-			if (item.type < ItemID.Count) //Vanilla-only effects
-			{
-				Vector2 normalized = velocity.SafeNormalize(Vector2.UnitX);
-				Vector2 shellPos = position + new Vector2(item.width / 2, -8 * player.direction).RotatedBy(velocity.ToRotation());
-
-				ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPos, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 1f, 60, ammo));
-
-				for (int i = 0; i < 4; i++)
-					Dust.NewDustPerfect(shellPos, DustID.Torch, -normalized * Main.rand.NextFloat(3f, 5f) - Vector2.UnitY * Main.rand.NextFloat(2f), 0, default, Main.rand.NextFloat(2f));
-			}
 		}
 
 		return projectiles.ToArray();

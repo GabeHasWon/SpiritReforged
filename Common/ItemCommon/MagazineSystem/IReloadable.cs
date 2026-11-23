@@ -67,6 +67,8 @@ public class ReloadableGlobalItem : GlobalItem
 	public int capacity;
 	public int reloadTime;
 
+	private int _hiddenReloadTime;
+
 	public override bool AppliesToEntity(Item entity, bool lateInstantiation) => MagazineByType.ContainsKey(entity.type);
 
 	public override void SetStaticDefaults() //Register all interface types during content loading
@@ -149,6 +151,26 @@ public class ReloadableGlobalItem : GlobalItem
 		}
 	}
 
+	public override void UpdateInventory(Item item, Player player)
+	{
+		MagazinePlayer mPlayer = player.GetModPlayer<MagazinePlayer>();
+		if (!player.ItemAnimationActive && reloadTime == 0 && mPlayer.ReloadingInInventory && item.ModItem is IReloadable iReloadable && capacity < iReloadable.Magazine.FullCapacity)
+		{
+			if (_hiddenReloadTime == 0)
+			{
+				_hiddenReloadTime = (int)(iReloadable.Magazine.ReloadDuration * mPlayer.inventoryReloadMultiplier);
+			}
+			else if (_hiddenReloadTime-- == 1)
+			{
+				capacity = iReloadable.Magazine.FullCapacity;
+			}
+		}
+		else
+		{
+			_hiddenReloadTime = 0;
+		}
+	}
+
 	public void StartReload(Player player, Item item)
 	{
 		if (item.ModItem is IReloadable iReloadable)
@@ -207,6 +229,10 @@ public class MagazinePlayer : ModPlayer
 
 	public static bool UIActive => !Main.gameMenu && !Main.LocalPlayer.mouseInterface; //TODO: add config
 
+	public bool ReloadingInInventory => inventoryReloadMultiplier > 0;
+
+	public float inventoryReloadMultiplier;
+
 	public StatModifier magazineScale = StatModifier.Default;
 	public StatModifier reloadLength = StatModifier.Default;
 
@@ -225,6 +251,7 @@ public class MagazinePlayer : ModPlayer
 
 	public override void ResetEffects()
 	{
+		//inventoryReloadMultiplier = 0;
 		magazineScale = StatModifier.Default;
 		reloadLength = StatModifier.Default;
 	}

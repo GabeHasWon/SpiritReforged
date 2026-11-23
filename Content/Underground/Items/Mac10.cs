@@ -24,6 +24,9 @@ public class Mac10 : ReloadableItem
 		Item.damage = 12;
 	}
 
+	//Randomize spread and speed of bullets
+	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) => velocity = (velocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedByRandom(0.1f);
+
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
 	{
 		Player player = drawInfo.drawPlayer;

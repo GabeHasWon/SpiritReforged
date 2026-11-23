@@ -51,15 +51,12 @@ public class Survivalist : ReloadableItem
 
 	public override void OnReload(Item item, Player player, IReloadable.ReloadContext context)
 	{
-		if (context == IReloadable.ReloadContext.Ended)
+		if (context == IReloadable.ReloadContext.Ended && ++ReloadInfo.capacity < Magazine.FullCapacity) //Reload one shot at a time
 		{
-			if (++ReloadInfo.capacity < Magazine.FullCapacity) //Reload one shot at a time
-			{
-				ReloadInfo.StartReload(player, item);
+			ReloadInfo.StartReload(player, item);
 
-				_reloadEffects = new bool[5];
-				_spawnedEffects = false;
-			}
+			_reloadEffects = new bool[5];
+			_spawnedEffects = false;
 		}
 	}
 
@@ -73,21 +70,21 @@ public class Survivalist : ReloadableItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		Vector2 direction = Vector2.Normalize(velocity);
+
 		if (player.altFunctionUse == 2)
 		{
 			_cooldown = MAX_COOLDOWN;
 
 			Vector2 underbarrelPosition = position + new Vector2(46, 2 * player.direction).RotatedBy(velocity.ToRotation());
-			
 			for (int i = 0; i < 8; i++)
 			{
+				Dust.NewDustPerfect(underbarrelPosition, DustID.Torch, velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(6f), 0, default, Main.rand.NextFloat(1f, 4f)).noGravity = true;
 				ParticleRenderers.UnderProjectiles.Add(new SmokeCloud(underbarrelPosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkGray * 0.3f, 0.05f, EaseFunction.EaseQuadOut, 60)
 				{
 					Pixellate = true,
 					PixelDivisor = 3,
 				});
-
-				Dust.NewDustPerfect(underbarrelPosition, DustID.Torch, velocity.RotatedByRandom(0.2f) * Main.rand.NextFloat(6f), 0, default, Main.rand.NextFloat(1f, 4f)).noGravity = true;
 			}
 
 			ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
@@ -102,7 +99,7 @@ public class Survivalist : ReloadableItem
 				EaseFunction.EaseCubicOut).WithSkew(0.9f, velocity.ToRotation()).UsesLightColor());
 
 			SoundEngine.PlaySound(GrenadeShot with { Volume = 0.5f, PitchVariance = 0.1f }, position);
-			Projectile.NewProjectile(source, position, velocity * 11f, ModContent.ProjectileType<SurvivalistGrenadeProjectile>(), 30 + damage / 3, knockback * 2, player.whoAmI);
+			Projectile.NewProjectile(source, position, velocity, ModContent.ProjectileType<SurvivalistGrenadeProjectile>(), 30 + damage / 3, knockback * 2, player.whoAmI);
 		}
 		else
 		{
@@ -127,20 +124,21 @@ public class Survivalist : ReloadableItem
 					PixelDivisor = 2,
 				});
 
-				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
-				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), direction * Main.rand.NextFloat(2f), Color.LightGray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), direction * Main.rand.NextFloat(2f), Color.Gray * 0.4f, Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
 				{
 					Variant = CompositeSmoke.SmallVariant
 				});
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.LightGray * 0.4f, 10 + Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
-			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(2f), Color.Gray * 0.4f, 10 + Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
-			{
-				Variant = CompositeSmoke.SmallVariant
-			});
+
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), direction * Main.rand.NextFloat(2f), Color.LightGray * 0.4f, 10 + Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.01f));
+				ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), direction * Main.rand.NextFloat(2f), Color.Gray * 0.4f, 10 + Main.rand.Next(90), default, (particle) => particle.Velocity.Y -= 0.005f)
+				{
+					Variant = CompositeSmoke.SmallVariant
+				});
 
 				for (int x = 0; x < 2; x++)
 				{
-					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkOrange, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, direction.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), Color.DarkOrange, 0.4f, 30, 2, p => p.Velocity *= 0.9f));
 					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(muzzlePosition, Main.rand.NextVector2Circular(3, 3), Color.Orange, 0.2f, 40, 2, p => p.Velocity *= 0.9f));
 
 					Dust.NewDustPerfect(muzzlePosition, DustID.Torch, Main.rand.NextVector2Circular(4, 4), 0, default, Main.rand.NextFloat(1f, 3f)).noGravity = true;

@@ -47,7 +47,7 @@ public class Heirloom : ReloadableItem
 		Item.UseSound = SoundID.Item36;
 	}
 
-	public override bool AltFunctionUse(Player player) => ReloadInfo.capacity == Magazine.FullCapacity; //Only let the player use the alternate use when at full magazine
+	public override bool AltFunctionUse(Player player) => ReloadInfo.capacity == Magazine.GetFullCapacity(player); //Only let the player use the alternate use when at full magazine
 
 	public override bool? UseItem(Player player)
 	{
@@ -57,35 +57,30 @@ public class Heirloom : ReloadableItem
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
+			lastUsedAmmo = shotgunAmmo;
+
 		if (player.altFunctionUse == 2)
 		{
+			int fullCapacity = Magazine.GetFullCapacity(player);
+			StatModifiers modifiers = new(
+				new StatModifier(1.5f, 1),
+				StatModifier.Default);
+
 			damage = (int)(damage * 0.94f); // 6% decrease in damage
-			player.velocity -= velocity * 5f;
+			player.velocity -= Vector2.Normalize(velocity) * 5f;
 
-			if (Main.myPlayer == player.whoAmI)
-				ScreenshakeHelper.Shake(player.Center, -velocity, 4, 2, 10);
-
+			ScreenshakeHelper.Shake(player.Center, -velocity, 4, 2, 10);
 			SoundEngine.PlaySound(Blunderbuss.Fire2, position);
-			//shotgunStats = new(0, 0, 0, 0.1f, 0, 0.5f);
 
-			for (int i = 0; i < 2; i++)
+			for (int i = 0; i < fullCapacity; i++)
 			{
-				float strength = 1f;
-
-				// if the player has more than two shots, add 20% strength per
-				if (Magazine.FullCapacity > 2)
-					strength += (Magazine.FullCapacity - 2) * 0.20f;
-
-				//base.Shoot(player, source, position, velocity, type, (int)(damage * strength), knockback * strength);
+				float strength = Math.Max(1f, 1f + (fullCapacity - 2) * 0.2f); //If the player has more than two shots, add 20% strength per
+				ShotgunGlobalItem.ShotgunShoot(modifiers, source, position, velocity, type, (int)(damage * strength), knockback * strength);
+				
+				if (i > 0)
+					player.PickAmmo(Item, out type, out float speed, out damage, out knockback, out _); //Only consume ammo after first shot
 			}
-
-			while (ReloadInfo.capacity > 0)
-			{
-				player.PickAmmo(Item, out type, out float speed, out damage, out knockback, out _);
-				Projectile.NewProjectile(source, position, Vector2.Normalize(velocity) * speed, type, damage, knockback);
-			}
-
-			//shotgunStats = new();
 
 			return false;
 		}
@@ -141,9 +136,6 @@ public class Heirloom : ReloadableItem
 				Variant = CompositeSmoke.SmallVariant
 			});
 		}
-
-		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
-			lastUsedAmmo = shotgunAmmo;
 
 		return false;
 

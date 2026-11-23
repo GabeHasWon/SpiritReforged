@@ -19,11 +19,5 @@ public class LeatherSling : ModItem
 		return true;
 	}
 
-	public override void UpdateEquip(Player player)
-	{
-		var modPlayer = player.GetModPlayer<MagazinePlayer>();
-
-		//modPlayer.inventoryReload = true;
-		//modPlayer.inventoryReloadTimerMax = 3;
-	}
+	public override void UpdateEquip(Player player) => player.GetModPlayer<MagazinePlayer>().inventoryReloadMultiplier = 3f;
 }
