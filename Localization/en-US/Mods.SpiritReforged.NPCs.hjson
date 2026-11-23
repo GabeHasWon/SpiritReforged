@@ -839,6 +839,7 @@ SpookyMummyLegs: {
 }
 
 PassiveGhost.DisplayName: Passive Ghost
+NuclearBunny.DisplayName: Nuclear Bunny
 
 GoldJerboa: {
 	DisplayName: Gold Jerboa

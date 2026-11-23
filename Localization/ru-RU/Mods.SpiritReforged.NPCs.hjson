@@ -844,6 +844,7 @@ SpookyMummyLegs: {
 }
 
 PassiveGhost.DisplayName: Приведение
+// NuclearBunny.DisplayName: Nuclear Bunny
 
 GoldJerboa: {
 	// DisplayName: Gold Jerboa
