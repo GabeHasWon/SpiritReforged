@@ -44,6 +44,14 @@ public sealed class AutoEmote(string name, string texture, int category, Func<bo
 		SpiritReforgedMod.Instance.AddContent(emote);
 	}
 
+	public static void LoadEnemyEmote(ModNPC npc, Func<bool> condition)
+	{
+		string name = npc.Name + "Emote";
+		AutoEmote emote = new(name, (npc.GetType().Namespace + '.' + name).Path(), EmoteID.Category.CrittersAndMonsters, condition);
+
+		SpiritReforgedMod.Instance.AddContent(emote);
+	}
+
 	public override ModEmoteBubble Clone(EmoteBubble newEntity)
 	{
 		var emote = base.Clone(newEntity) as AutoEmote;

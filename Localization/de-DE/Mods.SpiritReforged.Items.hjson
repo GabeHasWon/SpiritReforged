@@ -3845,6 +3845,16 @@ TrellisTwoSpookyWoodVanillaItem: {
 }
 
 GnarledRod: {
-	// Tooltip: "{$ItemTooltip.CratePotion}"
 	// DisplayName: Gnarled Rod
+	// Tooltip: "{$ItemTooltip.CratePotion}"
+}
+
+GoldJerboaItem: {
+  // DisplayName: Gold Jerboa
+	// Tooltip: ""
+}
+
+SavannaPlanterBoxItem: {
+	// DisplayName: Savanna Planter Box
+	// Tooltip: ""
 }
