@@ -383,11 +383,14 @@
         <member name="T:TileHelper.Content.Tiles.ChestTile">
             <summary> A default chest tile. </summary>
         </member>
+        <member name="P:TileHelper.Content.Tiles.ChestTile.KeyType">
+            <summary> The key item type registered with <see cref="M:TileHelper.Content.Tiles.ChestTile.MakeLocked(System.Int32)"/>. </summary>
+        </member>
         <member name="P:TileHelper.Content.Tiles.ChestTile.MapEntry">
             <inheritdoc/>
         </member>
         <member name="M:TileHelper.Content.Tiles.ChestTile.MakeLocked(System.Int32)">
-            <summary> Registers a key to use on this chest when locked. </summary>
+            <summary> Registers a key to use on this chest when locked. Should be used in <see cref="M:Terraria.ModLoader.ModType.SetStaticDefaults"/>. </summary>
         </member>
         <member name="M:TileHelper.Content.Tiles.ChestTile.SetStaticDefaults">
             <inheritdoc/>
