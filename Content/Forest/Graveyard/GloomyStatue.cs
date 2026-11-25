@@ -2,9 +2,12 @@ using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.SaltFlats.Tiles;
 using Terraria.DataStructures;
 using Terraria.GameContent.Drawing;
+using Terraria.GameContent.ObjectInteractions;
 using TileHelper.Common;
+using static SpiritReforged.Content.SaltFlats.Tiles.CalmingBell;
 
 namespace SpiritReforged.Content.Forest.Graveyard;
 
@@ -45,6 +48,8 @@ public class GloomyStatue : ModTile, ILoadItem
 		public override void ResetNearbyTileEffects() => ForcedGraveyardIntensity = null;
 	}
 
+	public bool isGraveyardOn = true;
+
 	void ILoadItem.AddItemRecipes(ModItem item) => item.CreateRecipe(1).AddIngredient(ItemID.StoneBlock, 20).AddIngredient(ItemID.Bone, 8).AddTile(TileID.HeavyWorkBench).AddCondition(Condition.InGraveyard).Register();
 
 	public override void SetStaticDefaults()
@@ -53,6 +58,7 @@ public class GloomyStatue : ModTile, ILoadItem
 		Main.tileNoAttach[Type] = true;
 		Main.tileLavaDeath[Type] = true;
 		Main.tileLighted[Type] = true;
+		TileID.Sets.HasOutlines[Type] = true;
 
 		TileObjectData.newTile.CopyFrom(TileObjectData.Style2xX);
 		TileObjectData.newTile.Width = 4;
@@ -74,7 +80,29 @@ public class GloomyStatue : ModTile, ILoadItem
 			(r, g, b) = (0.2f, 0.2f, 0.2f);
 	}
 
-	public override void NearbyEffects(int i, int j, bool closer) => GloomyLightingSystem.ForcedGraveyardIntensity = Math.Max(Main.GraveyardVisualIntensity, 0.8f);
+	public override bool HasSmartInteract(int i, int j, SmartInteractScanSettings settings) => true;
+
+	public override void MouseOver(int i, int j)
+	{
+		Player player = Main.LocalPlayer;
+		player.noThrow = 2;
+		player.cursorItemIconEnabled = true;
+		player.cursorItemIconID = AutoContent.ItemType<GloomyStatue>();
+	}
+
+	public override bool RightClick(int i, int j)
+	{
+		isGraveyardOn = !isGraveyardOn;
+		return true;
+	}
+
+	public override void HitWire(int i, int j) => isGraveyardOn = !isGraveyardOn;
+
+	public override void NearbyEffects(int i, int j, bool closer)
+	{
+		if (isGraveyardOn)
+			GloomyLightingSystem.ForcedGraveyardIntensity = Math.Max(Main.GraveyardVisualIntensity, 0.8f);
+	}
 
 	public override void EmitParticles(int i, int j, Tile tile, short tileFrameX, short tileFrameY, Color tileLight, bool visible)
 	{
@@ -108,5 +136,6 @@ public class GloomyStatue : ModTile, ILoadItem
 			spriteBatch.Draw(texture, position + offset, source, Color.White.Additive() * 0.5f, 0, source.Size() / 2, 1, 0, 0));
 
 		spriteBatch.Draw(texture, position, source, Color.Lerp(lightColor, Color.White.Additive(), (EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 200f) + 1) / 2f * 0.1f), 0, source.Size() / 2, 1, 0, 0);
+
 	}
 }
