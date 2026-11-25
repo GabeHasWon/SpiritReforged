@@ -2,7 +2,7 @@
 
 namespace SpiritReforged.Content.Forest.Misc;
 
-[AutoloadEquip(EquipType.Body)]
+[AutoloadEquip(EquipType.Front)]
 public class Bandolier : ModItem
 {
 	public override void SetDefaults()
