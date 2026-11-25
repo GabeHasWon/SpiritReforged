@@ -4074,7 +4074,7 @@ TotalRecall: {
 
 LeatherSling: {
 	// DisplayName: Leather Sling
-	// Tooltip: ""
+	// Tooltip: Magazine weapons passively reload at a reduced rate
 }
 
 Lumberjack: {
@@ -4108,5 +4108,10 @@ Mac10: {
 
 Luger: {
 	// DisplayName: Luger
+	// Tooltip: ""
+}
+
+TwinMill: {
+	// DisplayName: Twin Mill
 	// Tooltip: ""
 }

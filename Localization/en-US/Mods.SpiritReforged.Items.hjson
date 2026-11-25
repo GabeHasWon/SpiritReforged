@@ -4102,3 +4102,8 @@ Luger: {
 	DisplayName: Luger
 	Tooltip: ""
 }
+
+TwinMill: {
+	DisplayName: Twin Mill
+	Tooltip: Fires two shots simultaneously
+}
