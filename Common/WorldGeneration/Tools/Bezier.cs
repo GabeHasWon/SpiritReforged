@@ -1,5 +1,8 @@
 ﻿namespace SpiritReforged.Common.WorldGeneration.Tools;
 
+/// <summary>
+/// Builds a minimal-allocation bezier based on the given points.
+/// </summary>
 internal class Bezier
 {
 	public readonly Vector2[] ControlPoints = [];
@@ -15,7 +18,7 @@ internal class Bezier
 
 		while (prog <= 1)
 		{
-			points.Add(BuildBezier(list, prog));
+			points.Add(QuickBezier(list, prog));
 			prog += step;
 		}
 
@@ -32,24 +35,30 @@ internal class Bezier
 		return totalDist;
 	}
 
-	public static Vector2 BuildBezier(List<Vector2> points, float t)
+	public static unsafe Vector2 QuickBezier(List<Vector2> list, float t)
 	{
-		if (points.Count < 2)
+		if (list.Count < 2)
 			throw new Exception("Curve must have at least two points.");
 
-		return RecurseBezier(points, t);
+		Vector2* points = stackalloc Vector2[list.Count];
+		
+		for (int i = 0; i < list.Count; ++i)
+			points[i] = list[i]; 
+
+		return RecurseQuick(points, list.Count, t);
 	}
 
-	private static Vector2 RecurseBezier(List<Vector2> points, float t)
+	private static unsafe Vector2 RecurseQuick(Vector2* points, int length, float t)
 	{
-		if (points.Count == 2)
+		if (length == 2)
 			return Vector2.Lerp(points[0], points[1], t);
 
-		var lines = new List<Vector2>(points.Count - 1);
+		length--;
+		var lines = stackalloc Vector2[length];
 
-		for (int i = 0; i < points.Count - 1; i++)
-			lines.Add(Vector2.Lerp(points[i], points[i + 1], t));
+		for (int i = 0; i < length; i++)
+			lines[i] = Vector2.Lerp(points[i], points[i + 1], t);
 
-		return BuildBezier(lines, t);
+		return RecurseQuick(lines, length, t);
 	}
 }
