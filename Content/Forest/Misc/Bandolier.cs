@@ -13,7 +13,7 @@ public class Bandolier : ModItem
 
 	public override bool CanAccessoryBeEquippedWith(Item equippedItem, Item incomingItem, Player player)
 	{
-		if (equippedItem.ModItem is Bandolier && incomingItem.ModItem is LeatherSling || equippedItem.ModItem is  LeatherSling && incomingItem.ModItem is Bandolier)
+		if (equippedItem.ModItem is Bandolier && incomingItem.ModItem is LeatherSling || equippedItem.ModItem is LeatherSling && incomingItem.ModItem is Bandolier)
 			return false;
 
 		return true;
