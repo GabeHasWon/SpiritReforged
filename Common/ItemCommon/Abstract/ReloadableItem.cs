@@ -166,7 +166,7 @@ public abstract class ReloadableItem : ModItem, IReloadable
 			rotation = input.rotation - (recoilValue.Ease?.Ease(animation) ?? animation) * recoilValue.Strength * player.direction;
 		}
 
-		Vector2 position = player.GetFrontHandPosition(player.compositeFrontArm.stretch, rotation) - Main.screenPosition + offset;
+		Vector2 position = player.GetFrontHandPosition(player.compositeFrontArm.stretch, rotation) - Main.screenPosition + new Vector2(0, player.gfxOffY) + offset;
 		Vector2 size = input.sourceRect?.Size() ?? input.texture.Size();
 		Vector2 origin = (input.effect == SpriteEffects.FlipHorizontally) ? new Vector2(size.X - holdOrigin.X, holdOrigin.Y) : holdOrigin;
 

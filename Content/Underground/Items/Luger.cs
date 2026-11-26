@@ -9,7 +9,7 @@ namespace SpiritReforged.Content.Underground.Items;
 
 public class Luger : ReloadableItem
 {
-	public override IReloadable.MagazineInfo Magazine => new(6, 60);
+	public override IReloadable.MagazineInfo Magazine => new(4, 60);
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Bullet);
 

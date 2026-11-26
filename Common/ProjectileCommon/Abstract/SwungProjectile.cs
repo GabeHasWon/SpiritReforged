@@ -29,6 +29,8 @@ public abstract class SwungProjectile : ModProjectile
 	public float SwingArc;
 	/// <summary> The progress of the swing. </summary>
 	public int Counter;
+	/// <summary> Whether the player's item use time and animation should be paused. Defaults to true </summary>
+	public bool PauseUseAnimation = true;
 
 	private IConfiguration _config;
 
@@ -47,7 +49,7 @@ public abstract class SwungProjectile : ModProjectile
 		Projectile.ignoreWater = true;
 		Projectile.tileCollide = false;
 		Projectile.penetrate = -1;
-		Projectile.timeLeft = 2;
+		Projectile.timeLeft = 999;
 		Projectile.usesLocalNPCImmunity = true;
 		Projectile.localNPCHitCooldown = -1;
 
@@ -65,11 +67,12 @@ public abstract class SwungProjectile : ModProjectile
 		Projectile.spriteDirection = Projectile.direction = owner.direction = (Projectile.velocity.X > 0) ? 1 : -1;
 		Projectile.rotation = GetRotation(out float armRotation, out Player.CompositeArmStretchAmount stretch);
 		Projectile.Center = owner.GetFrontHandPosition(stretch, armRotation);
+		Projectile.timeLeft = Math.Min(Projectile.timeLeft, (int)Math.Ceiling(SwingTime)); //Limit TimeLeft
 
 		owner.SetCompositeArmFront(true, stretch, armRotation);
 		owner.heldProj = Projectile.whoAmI;
 
-		if (++Counter < SwingTime - 2)
+		if (++Counter < SwingTime - 2 && PauseUseAnimation)
 			owner.itemAnimation = owner.itemTime = Projectile.timeLeft = 2;
 	}
 

@@ -4107,3 +4107,8 @@ TwinMill: {
 	DisplayName: Twin Mill
 	Tooltip: Fires two shots simultaneously
 }
+
+DuelingPistols: {
+	DisplayName: Dueling Pistols
+	Tooltip: ""
+}
