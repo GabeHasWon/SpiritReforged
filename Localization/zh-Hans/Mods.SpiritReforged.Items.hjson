@@ -3860,21 +3860,21 @@ SavannaPlanterBoxItem: {
 }
 
 TrellisAshwoodItem: {
-	// DisplayName: Trellis Ashwood Item
-	// Tooltip: ""
+	DisplayName: 灰烬木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}" 
 }
 
 TrellisDynastyWoodItem: {
-	// DisplayName: Trellis Dynasty Wood Item
-	// Tooltip: ""
+	DisplayName: 王朝木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoAshwoodItem: {
-	// DisplayName: Trellis Two Ashwood Item
-	// Tooltip: ""
+	DisplayName: 十字灰烬木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoDynastyWoodItem: {
-	// DisplayName: Trellis Two Dynasty Wood Item
-	// Tooltip: ""
+	DisplayName: 十字王朝木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
