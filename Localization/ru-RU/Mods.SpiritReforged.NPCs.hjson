@@ -329,7 +329,7 @@ Cartographer: {
 			}
 
 			FirstPin: Я добавила эту булавку в твою коллекцию. Ты можешь её открыть в любое время в левом нижнем углу своей карты.
-			// NoValidPins: Oh, sorry, looks like I can't find any pins. I swear I had some though...did they come off when I fell...?
+			NoValidPins: Ох, прости, что-то я никак не могу найти свои булавки. У меня они точно были с собой... Неужто они выпали, когда я тогда споткнулась?..
 		}
 	}
 
@@ -844,9 +844,9 @@ SpookyMummyLegs: {
 }
 
 PassiveGhost.DisplayName: Приведение
-// NuclearBunny.DisplayName: Nuclear Bunny
+NuclearBunny.DisplayName: Ядерный кролик
 
 GoldJerboa: {
-	// DisplayName: Gold Jerboa
-	// Entry: This rare Jerboa's glint makes it a prime target for predators.
+	DisplayName: Золотой тушканчик
+	Entry: Золотистый блеск этой редкой разновидности тушканчиков делает их более заметными и привлекает хищников.
 }

@@ -3837,56 +3837,56 @@ BoxOfSpareLimbs: {
 }
 
 LushWoodTrellisItem: {
-	// DisplayName: Lush Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Lush Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 LushWoodTrellisTwoItem: {
-	// DisplayName: Crossed Lush Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Crossed Lush Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisSpookyWoodVanillaItem: {
-	// DisplayName: Spooky Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из жуткого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoSpookyWoodVanillaItem: {
-	// DisplayName: Crossed Spooky Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из жуткого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 GnarledRod: {
-	// DisplayName: Gnarled Rod
-	// Tooltip: "{$ItemTooltip.CratePotion}"
+	DisplayName: Сучковая удочка
+	Tooltip: Имеет повышенный шанс выловить ящик
 }
 
 GoldJerboaItem: {
-	// DisplayName: Gold Jerboa
-	// Tooltip: ""
+	DisplayName: Золотой тушканчик
+	Tooltip: ""
 }
 
 SavannaPlanterBoxItem: {
-	// DisplayName: Savanna Planter Box
-	// Tooltip: ""
+	DisplayName: Кадка саванны
+	Tooltip: ""
 }
 
 TrellisAshwoodItem: {
-	// DisplayName: Trellis Ashwood Item
-	// Tooltip: ""
+	DisplayName: Трельяж из пепельного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisDynastyWoodItem: {
-	// DisplayName: Trellis Dynasty Wood Item
-	// Tooltip: ""
+	DisplayName: Трельяж из восточного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoAshwoodItem: {
-	// DisplayName: Trellis Two Ashwood Item
-	// Tooltip: ""
+	DisplayName: Квадратный трельяж из пепельного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoDynastyWoodItem: {
-	// DisplayName: Trellis Two Dynasty Wood Item
-	// Tooltip: ""
+	DisplayName: Квадратный трельяж из восточного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
