@@ -3824,3 +3824,13 @@ BoxOfSpareLimbs: {
 		A leg will hop at nearby enemies, and a hand will grab for nearby enemies, and nothing else
 		''' */
 }
+
+LushWoodTrellisItem: {
+	// DisplayName: Lush Wood Trellis Item
+	// Tooltip: ""
+}
+
+LushWoodTrellisTwoItem: {
+	// DisplayName: Lush Wood Trellis Two Item
+	// Tooltip: ""
+}

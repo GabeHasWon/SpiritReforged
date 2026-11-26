@@ -1,4 +1,5 @@
-﻿using SpiritReforged.Content.Crossmod.Spooky.Items;
+﻿using SpiritReforged.Common.ModCompat;
+using SpiritReforged.Content.Crossmod.Spooky.Items;
 using SpiritReforged.Content.Underground.Tiles;
 using SpiritReforged.Content.Ziggurat.Biome;
 using Terraria.GameContent.Bestiary;
@@ -8,6 +9,8 @@ namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
 internal class SpookyMummyHand : ModNPC
 {
 	public Player Target => Main.player[NPC.target];
+
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 6;
 

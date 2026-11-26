@@ -12,6 +12,7 @@ public class GreenSpookyStargrass : GrassTile
 {
 	public virtual int PlantsType => ModContent.TileType<GreenStargrassPlants>();
 	public virtual int VineType => ModContent.TileType<StargrassVine>();
+	protected override int DirtType => CrossMod.Spooky.Find<ModTile>("SpookyDirt").Type;
 	protected virtual Color ParticleColor => new Color(157, 130, 80) * 0.66f;
 
 	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
@@ -87,7 +88,7 @@ public class GreenSpookyStargrass : GrassTile
 	public override bool TileFrame(int i, int j, ref bool resetFrame, ref bool noBreak)
 	{
 		if (!WorldGen.TileIsExposedToAir(i, j))
-			Main.tile[i, j].TileType = TileID.Grass;
+			Main.tile[i, j].TileType = (ushort)DirtType;
 
 		return true;
 	}

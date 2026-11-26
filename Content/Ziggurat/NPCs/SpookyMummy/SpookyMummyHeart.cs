@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Ziggurat.Biome;
@@ -9,6 +10,8 @@ namespace SpiritReforged.Content.Ziggurat.NPCs.SpookyMummy;
 internal class SpookyMummyHeart : ModNPC
 {
 	public Player Target => Main.player[NPC.target];
+
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
 
 	public override void SetStaticDefaults() => Main.npcFrameCount[Type] = 24;
 
@@ -52,7 +55,7 @@ internal class SpookyMummyHeart : ModNPC
 
 	public override void HitEffect(NPC.HitInfo hit)
 	{
-		if (!Main.dedServ)
+		if (Main.dedServ)
 			return;
 
 		for (int i = 0; i < 8; ++i)

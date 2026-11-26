@@ -90,6 +90,8 @@ public class CurvingEmberParticle : Particle
 {
 	private const float FADETIME = 0.3f;
 
+	public override string TexturePath => AssetLoader.EmptyTexture;
+
 	public bool emitLight = true;
 
 	private int _time;
@@ -122,7 +124,10 @@ public class CurvingEmberParticle : Particle
 		_time = 0;
 	}
 
-	public CurvingEmberParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, int direction, int timeToCurve, int maxTrailLength = 1) : this(position, velocity, color, color, scale, maxTime, direction, timeToCurve, maxTrailLength) { }
+	public CurvingEmberParticle(Vector2 position, Vector2 velocity, Color color, float scale, int maxTime, int direction, int timeToCurve, int maxTrailLength = 1) 
+		: this(position, velocity, color, color, scale, maxTime, direction, timeToCurve, maxTrailLength)
+	{
+	}
 
 	public override void Update(ref ParticleRendererSettings settings)
 	{

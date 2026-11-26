@@ -1,3 +1,4 @@
-v0.2.3.2
-- Made the Points of Interest system not try to add the same PoI position twice
-- Made the PoI system add all three new Spooky PoI (Smack o' Lantern, Gravemaker, Pumpkin Pails)
+v0.2.3.3
+- Publicized ICheckItemUse interface for crossmod use
+- Added CheckItem.RegisterMod for ICheckItemUse with weak references
+- Added Lush Wood (from Verdant) Trellises

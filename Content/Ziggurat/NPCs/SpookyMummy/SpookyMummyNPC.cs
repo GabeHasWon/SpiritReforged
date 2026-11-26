@@ -1,5 +1,6 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.ModCompat;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Common.Visuals.Glowmasks;
 using SpiritReforged.Content.Crossmod.Spooky.Items;
@@ -52,6 +53,8 @@ internal class SpookyMummyNPC : ModNPC
 	private ref float DeathTimer => ref NPC.ai[2];
 	private ref float FootstepTimer => ref NPC.ai[3];
 
+	public override bool IsLoadingEnabled(Mod mod) => CrossMod.Spooky.Enabled;
+
 	internal static bool IsGrounded(NPC npc) => npc.collideY || Collision.SolidCollision(npc.BottomLeft, npc.width, 6, true);
 
 	internal static void AddRelic(NPCLoot loot)
@@ -65,7 +68,7 @@ internal class SpookyMummyNPC : ModNPC
 
 	public override void SetDefaults()
 	{
-		NPC.lifeMax = 1200;
+		NPC.lifeMax = 800;
 		NPC.defense = 30;
 		NPC.damage = 75;
 		NPC.aiStyle = -1;
@@ -76,6 +79,7 @@ internal class SpookyMummyNPC : ModNPC
 		NPC.HitSound = SoundID.NPCHit1;
 		NPC.DeathSound = SoundID.NPCDeath6;
 		NPC.friendly = false;
+		NPC.rarity = 5;
 	
 		SpawnModBiomes = [ModContent.GetInstance<ZigguratBiome>().Type];
 	}
@@ -102,13 +106,16 @@ internal class SpookyMummyNPC : ModNPC
 			{
 				Vector2 pos = NPC.direction == -1 ? NPC.BottomRight : NPC.BottomLeft;
 
-				ParticleRenderers.UnderNPCs.Add(new SmokeCloud(pos, -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 6f), new Color(160, 155, 106) * 0.22f, Main.rand.NextFloat(0.05f, 0.12f), EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+				Vector2 velocity = -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 6f);
+				float scale = Main.rand.NextFloat(0.05f, 0.12f);
+				ParticleRenderers.UnderNPCs.Add(new SmokeCloud(pos, velocity, new Color(160, 155, 106) * 0.22f, scale, EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
 				{
 					Pixellate = true,
 					PixelDivisor = 2,
 				});
 
-				Dust.NewDustPerfect(pos, DustID.Sand, -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 12f), 150, default, Main.rand.NextFloat(1f, 2.5f)).noGravity = !Main.rand.NextBool(4);
+				Vector2 vel = -Vector2.UnitX.RotatedByRandom(0.1f) * NPC.direction * Main.rand.NextFloat(3f, 12f);
+				Dust.NewDustPerfect(pos, DustID.Sand, vel, 150, default, Main.rand.NextFloat(1f, 2.5f)).noGravity = !Main.rand.NextBool(4);
 			}		
 
 			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubImpact") with { Volume = 0.05f, Pitch = -0.5f}, NPC.Bottom);
@@ -218,7 +225,11 @@ internal class SpookyMummyNPC : ModNPC
 
 					Dust.NewDustPerfect(hitSpot + Main.rand.NextVector2Circular(15, 15), DustID.Smoke, hitVelocity, 235, default, Main.rand.NextFloat(5f) * scale);
 
-					ParticleRenderers.UnderNPCs.Add(new SmokeCloud(hitSpot + Main.rand.NextVector2Circular(5, 5), hitVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 0.75f), new Color(160, 155, 106) * 0.12f, Main.rand.NextFloat(0.05f, 0.2f) * scale, EaseFunction.EaseQuadOut, 30 + Main.rand.Next(100))
+					Vector2 velocity = hitVelocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(0.33f, 0.75f);
+					float scl = Main.rand.NextFloat(0.05f, 0.2f) * scale;
+					Vector2 position = hitSpot + Main.rand.NextVector2Circular(5, 5);
+					int maxTime = 30 + Main.rand.Next(100);
+					ParticleRenderers.UnderNPCs.Add(new SmokeCloud(position, velocity, new Color(160, 155, 106) * 0.12f, scl, EaseFunction.EaseQuadOut, maxTime)
 					{
 						Pixellate = true,
 						PixelDivisor = 2,
@@ -248,7 +259,8 @@ internal class SpookyMummyNPC : ModNPC
 
 				type = ModContent.Find<ModGore>("SpiritReforged/Bandage" + Main.rand.Next(2)).Type;
 
-				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center + Main.rand.NextVector2Circular(30, 30), Main.rand.NextVector2CircularEdge(5f, 5f) - Vector2.UnitY * Main.rand.NextFloat(3f), type);
+				Vector2 velocity = Main.rand.NextVector2CircularEdge(5f, 5f) - Vector2.UnitY * Main.rand.NextFloat(3f);
+				var gore = Gore.NewGoreDirect(NPC.GetSource_Death(), NPC.Center + Main.rand.NextVector2Circular(30, 30), velocity, type);
 
 				gore.sticky = true;
 				gore.alpha = 70;
@@ -271,56 +283,60 @@ internal class SpookyMummyNPC : ModNPC
 	{
 		Tile tile = Main.tile[spawnInfo.SpawnTileX, spawnInfo.SpawnTileY];
 		bool hasItem = spawnInfo.Player.HasItem(ModContent.ItemType<MummyQuestItem>());
-		
-		if (hasItem && Main.tileSand[spawnInfo.SpawnTileType] && CanSpawn(spawnInfo) && tile.WallType == WallID.None && !NPC.AnyNPCs(Type))
-			return 0.1f;
+		bool noWall = tile.WallType == WallID.None;
+
+		if (!noWall || !hasItem || spawnInfo.SpawnTileY > Main.worldSurface)
+			return 0;
+
+		if ((TileIsRedSandtone(tile.TileType) || TileSand(spawnInfo.SpawnTileType) && CanSpawn(spawnInfo)) && !NPC.AnyNPCs(Type))
+			return 3;
 
 		return 0;
 	}
 
+	private static bool TileSand(int type) => type == TileID.Sand || Main.tileSand[type] || TileIsRedSandtone(type);
+
 	private static bool CanSpawn(NPCSpawnInfo spawnInfo)
 	{
+		const int XRange = 30;
+		const int YRange = 20;
+
 		int x = spawnInfo.SpawnTileX;
 		int y = spawnInfo.SpawnTileY;
 
-		for (int i = x - 20; i < x + 20; ++i)
+		for (int i = x - XRange; i < x + XRange; ++i)
 		{
-			for (int j = y - 15; j < y + 15; ++j)
+			for (int j = y - YRange; j < y + YRange; ++j)
 			{
 				Tile tile = Main.tile[i, j];
 
-				if (tile.HasTile && (tile.TileType == ModContent.TileType<RedSandstoneBrick>() || tile.TileType == ModContent.TileType<RedSandstoneBrickCracked>() ||
-					tile.TileType == ModContent.TileType<RedSandstoneSlab>()))
-				{
+				if (tile.HasTile && TileIsRedSandtone(tile.TileType))
 					return true;
-				}
 			}
 		}
 
 		return false;
 	}
 
+	private static bool TileIsRedSandtone(int tile) => tile == ModContent.TileType<RedSandstoneBrick>() || tile == ModContent.TileType<RedSandstoneBrickCracked>() 
+		|| tile == ModContent.TileType<RedSandstoneSlab>();
+
 	public override void OnKill()
 	{
 		Point center = NPC.Center.ToPoint();
 		var n = NPC.NewNPCDirect(NPC.GetSource_Death(), center.X - NPC.spriteDirection * 24, center.Y - 18, ModContent.NPCType<SpookyMummyHead>());
-
 		n.velocity = -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(2f, 5f);
 
 		n = NPC.NewNPCDirect(NPC.GetSource_Death(), center.X, center.Y, ModContent.NPCType<SpookyMummyHeart>());
-
 		n.velocity = -Vector2.UnitY.RotatedByRandom(1f) * 7f;
 
 		for (int i = 0; i < 2; ++i)
 		{
 			n = NPC.NewNPCDirect(NPC.GetSource_Death(), center.X - NPC.spriteDirection * 12, center.Y + 6, ModContent.NPCType<SpookyMummyHand>());
-
 			n.velocity = -Vector2.UnitY.RotatedByRandom(2f) * Main.rand.NextFloat(3f);
 
 			n = NPC.NewNPCDirect(NPC.GetSource_Death(), center.X - NPC.spriteDirection * (i == 0 ? 20 : 16), center.Y + 20 - i * 6, ModContent.NPCType<SpookyMummyLegs>());
-
 			n.velocity = -Vector2.UnitY.RotatedByRandom(1f) * Main.rand.NextFloat(3f);
-
 		}
 	}
 
