@@ -111,6 +111,8 @@ public abstract class ReloadableItem : ModItem, IReloadable
 
 	public readonly record struct Recoil(EaseFunction Ease = null, float Speed = 2f, float Strength = 0.5f);
 
+	public static readonly SoundStyle EmptyMagazine = new("SpiritReforged/Assets/SFX/Item/EmptyMagazine");
+
 	/// <summary> Shortcut for <see cref="Item.GetGlobalItem{T}()"/>. </summary>
 	public ReloadableGlobalItem ReloadInfo => Item.GetGlobalItem<ReloadableGlobalItem>();
 
@@ -123,7 +125,7 @@ public abstract class ReloadableItem : ModItem, IReloadable
 	public virtual void OnReload(Item item, Player player, IReloadable.ReloadContext context)
 	{
 		if (context == IReloadable.ReloadContext.Started)
-			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/EmptyMagazine"), player.Center);
+			SoundEngine.PlaySound(EmptyMagazine, player.Center);
 		else if (context == IReloadable.ReloadContext.Ended && item.TryGetGlobalItem(out ReloadableGlobalItem global))
 			global.capacity = Magazine.GetFullCapacity(player);
 	}

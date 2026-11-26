@@ -59,6 +59,8 @@ public class Pepperbox : ReloadableItem
 		}
 	}
 
+	public static readonly SoundStyle MiniFire = new("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunMini", 3);
+
 	public static readonly Asset<Texture2D> Handle = DrawHelpers.RequestLocal<Pepperbox>("Pepperbox_Handle", false);
 	public static readonly Asset<Texture2D> Barrel = DrawHelpers.RequestLocal<Pepperbox>("Pepperbox_Barrel", false);
 
@@ -73,13 +75,13 @@ public class Pepperbox : ReloadableItem
 	public override void SetDefaults()
 	{
 		Item.DefaultToShotgun(25, 1);
+		Item.UseSound = MiniFire;
 		Item.damage = 4;
 		Item.knockBack = 6;
 		Item.width = 40;
 		Item.height = 20;
 		Item.value = Item.buyPrice(0, 5, 0, 0);
 		Item.rare = ItemRarityID.Blue;
-		Item.UseSound = SoundID.Item36;
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
@@ -90,18 +92,19 @@ public class Pepperbox : ReloadableItem
 
 		ShotgunGlobalItem.ShotgunShoot(modifiers, source, position, velocity, type, damage, knockback);
 
+		var direction = Vector2.Normalize(velocity);
 		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
 		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
 
 		if (ContentSamples.ItemsByType[source.AmmoItemIdUsed].ModItem is IShotgunAmmo shotgunAmmo)
-			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, shotgunAmmo));
+			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, shotgunAmmo));
 		
-		ParticleRenderers.OverPlayers.Add(new PepperboxFlash(muzzlePosition, velocity, Main.rand.NextFloat(0.9f, 1.1f), 20 + Main.rand.Next(5, 10)));
+		ParticleRenderers.OverPlayers.Add(new PepperboxFlash(muzzlePosition, direction, Main.rand.NextFloat(0.9f, 1.1f), 20 + Main.rand.Next(5, 10)));
 
 		for (int i = 0; i < 3; i++)
 		{
-			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity, Color.White * 0.4f, 75, default, (particle) => particle.Velocity.Y -= 0.01f));
-			ParticleRenderers.OverPlayers.Add(new EmberParticle(muzzlePosition, velocity.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
+			ParticleRenderers.OverPlayers.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), direction, Color.White * 0.4f, 75, default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.OverPlayers.Add(new EmberParticle(muzzlePosition, direction.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
 		}
 
 		_spawnedReloadDust = false;

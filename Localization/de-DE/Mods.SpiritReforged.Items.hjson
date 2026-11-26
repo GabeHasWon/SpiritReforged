@@ -4119,7 +4119,7 @@ MammothGun: {
 }
 
 HoloSight: {
-	// DisplayName: Holo Sight
+	// DisplayName: Holo-Sight
 	/* Tooltip:
 		'''
 		Increases gun accuracy and velocity

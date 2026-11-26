@@ -9,6 +9,8 @@ namespace SpiritReforged.Content.Underground.Items;
 
 public class Luger : ReloadableItem
 {
+	public static readonly SoundStyle EmptyClip = new("SpiritReforged/Assets/SFX/Item/Subclasses/EmptyClip", 2);
+
 	public override IReloadable.MagazineInfo Magazine => new(4, 60);
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Bullet);
@@ -16,9 +18,10 @@ public class Luger : ReloadableItem
 	public override void SetDefaults()
 	{
 		Item.DefaultToBow(24, 10, true);
-		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3);
+		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3) with { Volume = 0.5f };
 		Item.useAmmo = AmmoID.Bullet;
 		Item.damage = 24;
+		Item.knockBack = 4;
 	}
 
 	public override bool? UseItem(Player player)
@@ -32,9 +35,20 @@ public class Luger : ReloadableItem
 				Dust.NewDustPerfect(endPosition, Main.rand.NextFromList(DustID.Smoke, DustID.Torch), unit * Main.rand.NextFloat(), 150, Scale: Main.rand.NextFloat(1, 2)).noGravity = true;
 
 			Dust.NewDustPerfect(player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ReloadInfo.LastRotation), ModContent.DustType<ShellDust>(), new Vector2(-player.direction, -8));
+
+			if (ReloadInfo.capacity == 0)
+				SoundEngine.PlaySound(EmptyClip, player.Center);
 		}
 
 		return null;
+	}
+
+	public override void OnReload(Item item, Player player, IReloadable.ReloadContext context)
+	{
+		if (context == IReloadable.ReloadContext.Started)
+			SoundEngine.PlaySound(EmptyMagazine with { Pitch = 0.5f }, player.Center);
+		else if (context == IReloadable.ReloadContext.Ended && item.TryGetGlobalItem(out ReloadableGlobalItem global))
+			global.capacity = Magazine.GetFullCapacity(player);
 	}
 
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)

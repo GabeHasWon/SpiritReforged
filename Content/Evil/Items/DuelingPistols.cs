@@ -2,9 +2,13 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.ProjectileCommon.Abstract;
+using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Particles;
 using SpiritReforged.Content.Underground.Items;
+using SpiritReforged.Content.Underground.Items.Pepperbox;
 using Terraria.Audio;
 using Terraria.DataStructures;
+using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Evil.Items;
 
@@ -85,7 +89,7 @@ public class DuelingPistols : ReloadableItem
 	public override void SetDefaults()
 	{
 		Item.DefaultToBow(12, 10, true);
-		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3);
+		Item.UseSound = Pepperbox.MiniFire;
 		Item.useAmmo = AmmoID.Bullet;
 		Item.damage = 20;
 	}
@@ -99,10 +103,35 @@ public class DuelingPistols : ReloadableItem
 
 			for (int i = 0; i < 5; i++)
 				Dust.NewDustPerfect(endPosition, Main.rand.NextFromList(DustID.Smoke, DustID.Torch), unit * Main.rand.NextFloat(), 150, Scale: Main.rand.NextFloat(1, 2)).noGravity = true;
+
+			for (int i = 0; i < 3; i++)
+			{
+				ParticleRenderers.OverPlayers.Add(new CompositeSmoke(player.Top + Main.rand.NextVector2Circular(5f, 5f), -unit, Color.Gray * 0.4f, 75, default, (particle) => particle.Velocity.Y -= 0.01f)
+				{
+					Variant = CompositeSmoke.SmallVariant
+				});
+				ParticleRenderers.OverPlayers.Add(new EmberParticle(player.Top, -unit.RotatedByRandom(0.3f) * Main.rand.NextFloat(3f), new Color(200, 160, 0, 0), 0.2f, 30, 2));
+			}
+
+			float pitch = 1f - ReloadInfo.capacity / (float)Magazine.GetFullCapacity(player);
+			if (pitch > 0.75f)
+			{
+				float risingPitch = (pitch - 0.75f) / 0.25f;
+				SoundEngine.PlaySound(Luger.EmptyClip with { Pitch = risingPitch, Volume = risingPitch * 2 }, player.Center);
+			}
 		}
 
 		_backHand = !_backHand; //Switch hands
 		return null;
+	}
+
+	public override void OnReload(Item item, Player player, IReloadable.ReloadContext context)
+	{
+		float progress = 1f - ReloadInfo.reloadTime / (float)Magazine.GetReloadDuration(player);
+		if (progress == 0.5f)
+			SoundEngine.PlaySound(EmptyMagazine with { Pitch = 0.2f }, player.MountedCenter);
+
+		base.OnReload(item, player, context);
 	}
 
 	public override bool CanConsumeAmmo(Item ammo, Player player) => Main.rand.NextFloat() > SAVE_AMMO_CHANCE; //20% chance to not consume ammo

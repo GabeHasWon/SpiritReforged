@@ -28,12 +28,17 @@ public class MammothGun : ModItem
 				Dust.NewDustPerfect(endPosition, Main.rand.NextFromList(DustID.Smoke, DustID.Torch), unit * Main.rand.NextFloat(), 150, Scale: Main.rand.NextFloat(1, 2)).noGravity = true;
 
 			Dust.NewDustPerfect(player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, player.itemRotation), ModContent.DustType<ShellDust>(), new Vector2(-player.direction, -8));
+			SoundEngine.PlaySound(Luger.EmptyClip, player.Center);
 		}
 
 		return null;
 	}
 
-	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback) => base.Shoot(player, source, position, velocity, type, damage, knockback);
+	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
+	{
+		player.velocity -= velocity * 0.5f;
+		return true;
+	}
 
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
 	{
@@ -49,12 +54,11 @@ public class MammothGun : ModItem
 
 		Vector2 end = drawData.position + new Vector2((size.X - origin.X - 4) * direction, -6).RotatedBy(drawData.rotation);
 		float scale = Math.Max((player.itemAnimation / (float)player.itemAnimationMax - 0.9f) * 10f, 0);
-		float randomRotation = (float)EaseFunction.EaseSine.Ease((float)Main.timeForVisualEffects / 30f) * 0.1f;
 
-		drawInfo.DrawDataCache.Add(new(flash, end, null, Color.White.Additive(100), drawData.rotation + randomRotation, new Vector2((direction == -1) ? flash.Width : 0, flash.Height / 2), new Vector2(3 - scale, 1 * scale), drawData.effect, 0));
+		drawInfo.DrawDataCache.Add(new(flash, end, null, Color.White.Additive(100), drawData.rotation, new Vector2((direction == -1) ? flash.Width : 0, flash.Height / 2), new Vector2(3 - scale, 1 * scale), drawData.effect, 0));
 
 		for (int i = 0; i < 2; i++)
-			drawInfo.DrawDataCache.Add(new(flash, end, null, Color.White.Additive(100), drawData.rotation - randomRotation - 0.5f + 1f * i, new Vector2((direction == -1) ? flash.Width : 0, flash.Height / 2), scale, drawData.effect, 0));
+			drawInfo.DrawDataCache.Add(new(flash, end, null, Color.White.Additive(100), drawData.rotation - 0.5f + 1f * i, new Vector2((direction == -1) ? flash.Width : 0, flash.Height / 2), scale, drawData.effect, 0));
 
 		return false;
 	}
