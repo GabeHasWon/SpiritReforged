@@ -214,7 +214,7 @@ public class TrellisSpookyWoodVanilla : Trellis
 	public override void AddItemRecipes(ModItem item)
 	{
 		item.CreateRecipe(4).AddIngredient(ItemID.SpookyWood).AddTile(TileID.Sawmill).Register();
-		item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<TrellisSpookyWoodVanilla>(), 4).AddTile(TileID.Sawmill).Register();
+		item.CreateRecipe(4).AddIngredient(AutoContent.ItemType<TrellisTwoSpookyWoodVanilla>(), 4).AddTile(TileID.Sawmill).Register();
 	}
 
 	public override void AddEntry()
