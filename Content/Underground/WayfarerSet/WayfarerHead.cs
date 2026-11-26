@@ -21,6 +21,6 @@ public class WayfarerHead : ModItem
 	public override void UpdateArmorSet(Player player)
 	{
 		player.setBonus = Language.GetTextValue("Mods.SpiritReforged.SetBonuses.Wayfarer");
-		player.GetModPlayer<CoinLootPlayer>().AddMult(10);
+		player.GetModPlayer<StatsPlayer>().CoinDrops += 0.1f;
 	}
 }

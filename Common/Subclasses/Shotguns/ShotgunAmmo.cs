@@ -1,37 +1,10 @@
-﻿using Mono.Cecil;
+﻿using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Forest.Ammo;
 using SpiritReforged.Content.Particles;
-using Terraria;
 using Terraria.DataStructures;
-using Terraria.WorldBuilding;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace SpiritReforged.Common.Subclasses.Shotguns;
-
-/*/// <summary>
-/// The behavior of shotgun shell ammo is completely contained in the ammo class, so any shotgun that uses the ammo does the same thing.
-/// Different weapons can effect the behavior through addition and multiplication of stats, but there is general parity between them.
-/// Furthermore <see cref="ShotgunPlayer"/> handles additional shotgun related stat boosts.
-/// Both weapon and stat boosts are NOT handled in the ammo class. These bonuses are automatically passed into the delegate, <see cref="ShootBehavior"/>
-/// Implementation of these stat changes are simply handled twice, once in the global item for vanilla / cross mod, and once in the abstract shotgun class, <see cref="ShotgunItem"/>
-/// This is to avoid having to code in the stat changes in every inherited ShotgunAmmoItem.
-/// </summary>
-public abstract class ShotgunAmmoItem(ShootBehavior behavior, int shotCount, float spreadAmount, float speed) : ModItem
-{
-	public readonly ShootBehavior Behaviour = behavior;
-
-	public int shotCount = shotCount;
-	public float spreadAmount = spreadAmount;
-
-	public override void SetDefaults()
-	{
-		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
-		Item.ammo = ModContent.ItemType<Shot>();
-		Item.maxStack = Item.CommonMaxStack;
-		Item.consumable = true;
-	}
-}*/
 
 public readonly record struct StatModifiers
 {
@@ -59,7 +32,7 @@ public readonly record struct StatModifiers
 		for (int i = 0; i < additionalModifiers.Length; i++)
 			initial = initial.CombineWith(additionalModifiers[i].ShotCount);
 
-		return (int)player.GetModPlayer<ShotgunStatsPlayer>().shotCount.CombineWith(initial).ApplyTo(1);
+		return (int)player.GetModPlayer<StatsPlayer>().ShotCount.CombineWith(initial).ApplyTo(1);
 	}
 
 	public readonly float GetShotSpread(Player player, params StatModifiers[] additionalModifiers)
@@ -69,7 +42,7 @@ public readonly record struct StatModifiers
 		for (int i = 0; i < additionalModifiers.Length; i++)
 			initial = initial.CombineWith(additionalModifiers[i].ShotSpread);
 
-		return player.GetModPlayer<ShotgunStatsPlayer>().shotSpread.CombineWith(initial).ApplyTo(1);
+		return player.GetModPlayer<StatsPlayer>().Inaccuracy.CombineWith(initial).ApplyTo(1);
 	}
 }
 
@@ -161,17 +134,5 @@ public class ShotgunGlobalItem : GlobalItem
 		}
 
 		return projectiles.ToArray();
-	}
-}
-
-public class ShotgunStatsPlayer : ModPlayer
-{
-	public StatModifier shotCount = StatModifier.Default;
-	public StatModifier shotSpread = StatModifier.Default;
-
-	public override void ResetEffects()
-	{
-		shotCount = StatModifier.Default;
-		shotSpread = StatModifier.Default;
 	}
 }

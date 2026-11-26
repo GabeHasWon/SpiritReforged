@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Common.Subclasses.Shotguns;
 using SpiritReforged.Common.Visuals;
@@ -50,12 +51,12 @@ public class Flakker : ReloadableItem
 		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(direction.ToRotation());
 		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(direction.ToRotation());
 
-		for (int i = 0; i < player.GetModPlayer<ShotgunStatsPlayer>().shotCount.ApplyTo(3); i++)
+		for (int i = 0; i < player.GetModPlayer<StatsPlayer>().ShotCount.ApplyTo(3); i++)
 		{
 			ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -direction.RotatedByRandom(0.4f) * Main.rand.NextFloat(1f, 4f) - Vector2.UnitY * Main.rand.NextFloat(3f), 1f, 120, ammo));
 			float baseSpread = i == 0 ? 0 : 0.25f;
 
-			PreNewProjectile.New(source, position, direction.RotatedByRandom(player.GetModPlayer<ShotgunStatsPlayer>().shotSpread.ApplyTo(baseSpread)) * Main.rand.NextFloat(10, 15),
+			PreNewProjectile.New(source, position, direction.RotatedByRandom(player.GetModPlayer<StatsPlayer>().Inaccuracy.ApplyTo(baseSpread)) * Main.rand.NextFloat(10, 15),
 				ModContent.ProjectileType<FlakkerProjectile>(), damage / 3, knockback, player.whoAmI, source.AmmoItemIdUsed, preSpawnAction: p => (p.ModProjectile as FlakkerProjectile).parent = Item.ModItem as Flakker);
 		}
 

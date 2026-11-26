@@ -1,4 +1,4 @@
-﻿using SpiritReforged.Common.Subclasses.Shotguns;
+﻿using SpiritReforged.Common.PlayerCommon;
 
 namespace SpiritReforged.Content.Underground.Items;
 
@@ -12,5 +12,5 @@ public class ChokeTube : ModItem
 		Item.value = Item.sellPrice(silver: 50);
 	}
 
-	public override void UpdateEquip(Player player) => player.GetModPlayer<ShotgunStatsPlayer>().shotSpread *= 0.5f;
+	public override void UpdateEquip(Player player) => player.GetModPlayer<StatsPlayer>().Inaccuracy *= 0.5f;
 }

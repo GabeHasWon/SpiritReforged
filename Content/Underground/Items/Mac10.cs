@@ -2,6 +2,7 @@
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
+using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -25,7 +26,7 @@ public class Mac10 : ReloadableItem
 	}
 
 	//Randomize spread and speed of bullets
-	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) => velocity = (velocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedByRandom(0.2f);
+	public override void ModifyShootStats(Player player, ref Vector2 position, ref Vector2 velocity, ref int type, ref int damage, ref float knockback) => velocity = (velocity * Main.rand.NextFloat(0.9f, 1.1f)).RotatedByRandom(player.GetModPlayer<StatsPlayer>().Inaccuracy.ApplyTo(0.2f));
 
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
 	{

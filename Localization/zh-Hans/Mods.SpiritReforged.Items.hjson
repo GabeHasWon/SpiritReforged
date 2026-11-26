@@ -4117,3 +4117,12 @@ MammothGun: {
 	// DisplayName: Mammoth Gun
 	// Tooltip: ""
 }
+
+HoloSight: {
+	// DisplayName: Holo Sight
+	/* Tooltip:
+		'''
+		Increases gun accuracy and velocity
+		Increases ranged crit chance by 4%
+		''' */
+}

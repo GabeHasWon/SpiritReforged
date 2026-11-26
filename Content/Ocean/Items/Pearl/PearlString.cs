@@ -24,7 +24,7 @@ public class PearlString : ModItem, IFlagged
 	{
 		base.UpdateAccessory(player, hideVisual);
 
-		player.luck += .15f;
-		player.GetModPlayer<CoinLootPlayer>().AddMult(10);
+		player.luck += 0.15f;
+		player.GetModPlayer<StatsPlayer>().CoinDrops += 0.1f;
 	}
 }
