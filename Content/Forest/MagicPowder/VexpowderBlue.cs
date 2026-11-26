@@ -18,7 +18,7 @@ public class VexpowderBlue : Flarepowder
 	{
 		base.SetDefaults();
 		Item.shoot = ModContent.ProjectileType<VexpowderBlueDust>();
-		Item.damage = 8;
+		Item.damage = 11;
 		Item.crit = 2;
 		Item.shootSpeed = 6.2f;
 		Item.value = Item.sellPrice(copper: 7);

@@ -11,14 +11,14 @@ public class PumpkinClub : ClubItem
 
 	public override void SafeSetDefaults()
 	{
-		Item.damage = 8;
+		Item.damage = 11;
 		Item.knockBack = 5f;
 		ChargeTime = 60;
 		SwingTime = 35;
 		Item.width = 60;
 		Item.height = 60;
 		Item.crit = 4;
-		Item.value = Item.sellPrice(gold: 5);
+		Item.value = Item.sellPrice(gold: 1);
 		Item.rare = ItemRarityID.Green;
 		Item.shoot = ModContent.ProjectileType<PumpkinClubProj>();
 	}

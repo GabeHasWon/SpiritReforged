@@ -8,7 +8,7 @@ public class Minipack : BackpackItem
 	public override void SetDefaults()
 	{
 		Item.Size = new Vector2(34, 28);
-		Item.value = Item.buyPrice(0, 0, 5, 0);
+		Item.value = Item.sellPrice(0, 0, 5, 0);
 		Item.rare = ItemRarityID.Blue;
 
 		slotCount = 4;

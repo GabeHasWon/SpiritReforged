@@ -1,5 +1,6 @@
 ﻿using ReLogic.Utilities;
 using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.EmoteCommon;
 using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.NPCCommon;
@@ -219,6 +220,7 @@ public partial class Scarabeus : ModNPC, IBossChecklistProvider
 
 	public override void Load()
 	{
+		AutoEmote.LoadEnemyEmote(this, static () => !BossFlags.Downed(ModContent.NPCType<Scarabeus>()));
 		PhaseTwoHeadSlot = Mod.AddBossHeadTexture(BossHeadTexture + "2");
 		NPCEvents.ModifyCollisionParameters += ShrinkTileHitbox;
 		NPCEvents.ModifyJourneyStrengthScaling += NoJourneyScaling;

@@ -3346,7 +3346,7 @@ CharmcasterHat: {
 }
 
 CharmcasterLeggings: {
-	DisplayName: 魔石法师护胫
+	DisplayName: 魔石法师护腿
 	Tooltip: ""
 }
 
@@ -3825,11 +3825,56 @@ BoxOfSpareLimbs: {
 }
 
 LushWoodTrellisItem: {
-	// DisplayName: Lush Wood Trellis Item
-	// Tooltip: ""
+	DisplayName: 葱郁木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 LushWoodTrellisTwoItem: {
-	// DisplayName: Lush Wood Trellis Two Item
+	DisplayName: 十字葱郁木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodVanillaItem: {
+	DisplayName: 阴森木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoSpookyWoodVanillaItem: {
+	DisplayName: 十字阴森木藤架
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+GnarledRod: {
+	DisplayName: 曲枝钓竿
+	Tooltip: "{$ItemTooltip.CratePotion}"
+}
+
+GoldJerboaItem: {
+	DisplayName: 金跳鼠
+	Tooltip: ""
+}
+
+SavannaPlanterBoxItem: {
+	DisplayName: 稀树平原种植盆
+	Tooltip: ""
+}
+
+TrellisAshwoodItem: {
+	// DisplayName: Trellis Ashwood Item
+	// Tooltip: ""
+}
+
+TrellisDynastyWoodItem: {
+	// DisplayName: Trellis Dynasty Wood Item
+	// Tooltip: ""
+}
+
+TrellisTwoAshwoodItem: {
+	// DisplayName: Trellis Two Ashwood Item
+	// Tooltip: ""
+}
+
+TrellisTwoDynastyWoodItem: {
+	// DisplayName: Trellis Two Dynasty Wood Item
 	// Tooltip: ""
 }

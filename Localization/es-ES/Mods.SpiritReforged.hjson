@@ -97,6 +97,7 @@ Emotes: {
 	CartographerEmote.Command: Cartógrafa
 	HikerEmote.Command: Excursionista
 	EnchanterEmote.Command: enchanteremote
+	// ScarabeusEmote.Command: scarabeus
 }
 
 InfoDisplays: {

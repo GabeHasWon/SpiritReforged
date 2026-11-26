@@ -16,6 +16,7 @@ public class GoldCricket : Cricket, IGoldCritter, ItemEvents.IQuickRecipeNPC
 		this.AutoItemType(),
 		item =>
 		{
+			item.rare = ItemRarityID.Orange;
 			item.value = Item.sellPrice(0, 10, 0, 0);
 			item.bait = 50;
 		}

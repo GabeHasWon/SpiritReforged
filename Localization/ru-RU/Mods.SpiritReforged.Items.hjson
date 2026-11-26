@@ -3837,11 +3837,56 @@ BoxOfSpareLimbs: {
 }
 
 LushWoodTrellisItem: {
-	// DisplayName: Lush Wood Trellis Item
-	// Tooltip: ""
+	// DisplayName: Lush Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 LushWoodTrellisTwoItem: {
-	// DisplayName: Lush Wood Trellis Two Item
+	// DisplayName: Crossed Lush Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisSpookyWoodVanillaItem: {
+	// DisplayName: Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoSpookyWoodVanillaItem: {
+	// DisplayName: Crossed Spooky Wood Trellis
+	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+GnarledRod: {
+	// DisplayName: Gnarled Rod
+	// Tooltip: "{$ItemTooltip.CratePotion}"
+}
+
+GoldJerboaItem: {
+	// DisplayName: Gold Jerboa
+	// Tooltip: ""
+}
+
+SavannaPlanterBoxItem: {
+	// DisplayName: Savanna Planter Box
+	// Tooltip: ""
+}
+
+TrellisAshwoodItem: {
+	// DisplayName: Trellis Ashwood Item
+	// Tooltip: ""
+}
+
+TrellisDynastyWoodItem: {
+	// DisplayName: Trellis Dynasty Wood Item
+	// Tooltip: ""
+}
+
+TrellisTwoAshwoodItem: {
+	// DisplayName: Trellis Two Ashwood Item
+	// Tooltip: ""
+}
+
+TrellisTwoDynastyWoodItem: {
+	// DisplayName: Trellis Two Dynasty Wood Item
 	// Tooltip: ""
 }
