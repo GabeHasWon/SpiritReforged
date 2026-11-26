@@ -134,7 +134,7 @@ SkullSentry: {
 }
 
 UrchinStaff: {
-	DisplayName: Метатель ежей
+	DisplayName: Ёжeметатель
 	Tooltip: ""
 }
 
@@ -364,7 +364,7 @@ DoubleJumpPotion: {
 }
 
 FlightPotion: {
-	DisplayName: Зелье парения
+	DisplayName: Зелье высокого полёта
 	Tooltip: Увеличивает время полёта на 25%
 }
 
@@ -865,12 +865,12 @@ BeachTowel: {
 }
 
 BikiniBottom: {
-	DisplayName: Трусики
+	DisplayName: Трусики бикини
 	Tooltip: «Долой броню, свободу трусикам!»
 }
 
 BikiniTop: {
-	DisplayName: Бюстгальтер
+	DisplayName: Бюстгальтер бикини
 	Tooltip: «Вопреки ожиданиям, он действительно не даёт никакой защиты»
 }
 
@@ -942,7 +942,7 @@ SavannaCrateHardmode: {
 }
 
 SavannaCrate: {
-	DisplayName: Ящик саванны
+	DisplayName: Степной ящик
 	Tooltip: "{$CommonItemTooltip.RightClickToOpen}"
 }
 
@@ -1317,7 +1317,7 @@ OceanDepthsBoxItem: {
 }
 
 OstrichPants: {
-	DisplayName: Страусиные штаны
+	DisplayName: Штаны в форме страуса
 	Tooltip: «Словно живые!»
 }
 
@@ -1367,7 +1367,7 @@ AncientKoiTotem: {
 }
 
 BoomShroom: {
-	DisplayName: Взрывогриб
+	DisplayName: Взрывной гриб
 	Tooltip:
 		'''
 		Вся метательная взрывчатка значительно увеличивается в размере... и мощности
@@ -1794,7 +1794,7 @@ ZenithPotsPaleItem: {
 }
 
 OtherworldSavannaMusicBoxItem: {
-	DisplayName: Иномирная музыкальная шкатулка (Дневная саванна)
+	DisplayName: Иномирная музыкальная шкатулка (Саванна)
 	Tooltip: ""
 }
 
@@ -2870,7 +2870,7 @@ EnlilStatueItem: {
 }
 
 SerratedClaws: {
-	DisplayName: Зазубренные клешни
+	DisplayName: Зазубренные когти
 	Tooltip: "{$ItemTooltip.TungstenPickaxe}"
 }
 
@@ -2975,7 +2975,7 @@ BullRitualMask: {
 }
 
 AdornedBow: {
-	DisplayName: Золочёный большой лук
+	DisplayName: Позолоченный большой лук
 	Tooltip:
 		'''
 		Зарядите, чтобы совершить усиленный выстрел
@@ -3119,22 +3119,22 @@ DrywoodCrossGraveMarkerItem: {
 }
 
 ModernObeliskItem: {
-	DisplayName: Современный обелиск
+	DisplayName: Модерновый обелиск
 	Tooltip: ""
 }
 
 ModernTombscreenItem: {
-	DisplayName: Современный надгробный экран
+	DisplayName: Модерновый надгробный экран
 	Tooltip: ""
 }
 
 ModernGravestoneItem: {
-	DisplayName: Современная могильная плита
+	DisplayName: Модерновая могильная плита
 	Tooltip: ""
 }
 
 ModernHeadstoneItem: {
-	DisplayName: Современное надгробие
+	DisplayName: Модерновое надгробие
 	Tooltip: ""
 }
 
@@ -3306,7 +3306,7 @@ SanguineGlyph: {
 }
 
 PrefixVoucher: {
-	DisplayName: "{0} ваучер"
+	DisplayName: Ваучер префикса «{0}»
 	Tooltip:
 		'''
 		{0}
@@ -3405,8 +3405,8 @@ SkyPylonItem: {
 }
 
 CandlewickItem: {
-	DisplayName: Верёвка из фитиля
-	Tooltip: "{$ItemTooltip.Rope}"
+	DisplayName: Фитиль
+	Tooltip: По нему можно взбираться
 }
 
 WaxBlockItem: {
@@ -3439,8 +3439,8 @@ EnchantedWorkbenchItem: {
 }
 
 CandlewickCoil: {
-	DisplayName: Моток верёвки из фитиля
-	Tooltip: Бросьте, чтобы расправить моток верёвки из фитиля
+	DisplayName: Моток фитиля
+	Tooltip: Бросьте, чтобы расправить моток фитиля
 }
 
 CandleBathtubItem: {
@@ -3837,56 +3837,56 @@ BoxOfSpareLimbs: {
 }
 
 LushWoodTrellisItem: {
-	// DisplayName: Lush Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Lush Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 LushWoodTrellisTwoItem: {
-	// DisplayName: Crossed Lush Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Crossed Lush Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisSpookyWoodVanillaItem: {
-	// DisplayName: Spooky Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Трельяж из жуткого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoSpookyWoodVanillaItem: {
-	// DisplayName: Crossed Spooky Wood Trellis
-	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+	DisplayName: Квадратный трельяж из жуткого дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 GnarledRod: {
-	// DisplayName: Gnarled Rod
-	// Tooltip: "{$ItemTooltip.CratePotion}"
+	DisplayName: Сучковая удочка
+	Tooltip: Имеет повышенный шанс выловить ящик
 }
 
 GoldJerboaItem: {
-	// DisplayName: Gold Jerboa
-	// Tooltip: ""
+	DisplayName: Золотой тушканчик
+	Tooltip: ""
 }
 
 SavannaPlanterBoxItem: {
-	// DisplayName: Savanna Planter Box
-	// Tooltip: ""
+	DisplayName: Кадка саванны
+	Tooltip: ""
 }
 
 TrellisAshwoodItem: {
-	// DisplayName: Trellis Ashwood Item
-	// Tooltip: ""
+	DisplayName: Трельяж из пепельного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisDynastyWoodItem: {
-	// DisplayName: Trellis Dynasty Wood Item
-	// Tooltip: ""
+	DisplayName: Трельяж из восточного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoAshwoodItem: {
-	// DisplayName: Trellis Two Ashwood Item
-	// Tooltip: ""
+	DisplayName: Квадратный трельяж из пепельного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
 TrellisTwoDynastyWoodItem: {
-	// DisplayName: Trellis Two Dynasty Wood Item
-	// Tooltip: ""
+	DisplayName: Квадратный трельяж из восточного дерева
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }

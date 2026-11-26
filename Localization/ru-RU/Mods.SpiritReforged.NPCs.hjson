@@ -305,7 +305,7 @@ Cartographer: {
 			}
 
 			Spooky_FetidFarms: {
-				// 0: I try not to go in the jungle, right? Wet, treacherous, bees and stingers everywhere. It started to smell like rotting around...here, I think. I saw a glasshouse shortly before falling as the mushy floor gives way. That was awful.
+				0: Знаешь, я в джунгли особо не суюсь: всюду сыро, опасно, и пчёлы эти летают. Но, кажется, здесь было что-то необычное — оттуда пасло гнилью, и я увидела какую-то теплицу... перед тем как провалилась через размякшую почву. Это было просто ужасно.
 				// 1: Should be here...ahem. I don't have the strongest stomach, but they say honey will cure what ails you. Well, let me tell you, keep walking long enough in the underground jungle, come face to face with a big, rotten carrot thing thrashing in a glasshouse...I'll spare the details.
 				// 2: It's here or whereabouts, honestly I didn't really pay much attention. I held my torch up, illuminated this weird glasshouse, and there was like a...veggie ghost trying to eat the glass. Unsuccessfully. Well, maybe. I didn't stick around to check.
 			}
@@ -329,7 +329,7 @@ Cartographer: {
 			}
 
 			FirstPin: Я добавила эту булавку в твою коллекцию. Ты можешь её открыть в любое время в левом нижнем углу своей карты.
-			// NoValidPins: Oh, sorry, looks like I can't find any pins. I swear I had some though...did they come off when I fell...?
+			NoValidPins: Ох, прости, что-то я никак не могу найти свои булавки. У меня они точно были с собой... Неужто выпали, когда я тогда споткнулась?..
 		}
 	}
 
@@ -844,9 +844,9 @@ SpookyMummyLegs: {
 }
 
 PassiveGhost.DisplayName: Приведение
-// NuclearBunny.DisplayName: Nuclear Bunny
+NuclearBunny.DisplayName: Ядерный кролик
 
 GoldJerboa: {
-	// DisplayName: Gold Jerboa
-	// Entry: This rare Jerboa's glint makes it a prime target for predators.
+	DisplayName: Золотой тушканчик
+	Entry: Золотистый блеск этой редкой разновидности тушканчиков делает их более заметными и привлекает хищников.
 }
