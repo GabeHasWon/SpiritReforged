@@ -3870,3 +3870,23 @@ SavannaPlanterBoxItem: {
 	// DisplayName: Savanna Planter Box
 	// Tooltip: ""
 }
+
+TrellisAshwoodItem: {
+	// DisplayName: Trellis Ashwood Item
+	// Tooltip: ""
+}
+
+TrellisDynastyWoodItem: {
+	// DisplayName: Trellis Dynasty Wood Item
+	// Tooltip: ""
+}
+
+TrellisTwoAshwoodItem: {
+	// DisplayName: Trellis Two Ashwood Item
+	// Tooltip: ""
+}
+
+TrellisTwoDynastyWoodItem: {
+	// DisplayName: Trellis Two Dynasty Wood Item
+	// Tooltip: ""
+}

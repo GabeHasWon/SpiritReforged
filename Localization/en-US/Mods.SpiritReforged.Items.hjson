@@ -3858,3 +3858,23 @@ SavannaPlanterBoxItem: {
 	DisplayName: Savanna Planter Box
 	Tooltip: ""
 }
+
+TrellisAshwoodItem: {
+	DisplayName: Ash Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}" 
+}
+
+TrellisDynastyWoodItem: {
+	DisplayName: Dynasty Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoAshwoodItem: {
+	DisplayName: Crossed Ash Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
+
+TrellisTwoDynastyWoodItem: {
+	DisplayName: Crossed Dynasty Wood Trellis
+	Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
+}
