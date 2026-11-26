@@ -4113,3 +4113,8 @@ DuelingPistols: {
 	// DisplayName: Dueling Pistols
 	// Tooltip: ""
 }
+
+MammothGun: {
+	// DisplayName: Mammoth Gun
+	// Tooltip: ""
+}

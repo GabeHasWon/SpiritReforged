@@ -126,9 +126,9 @@ public class DuelingPistols : ReloadableItem
 		DuelingPistolHeld.Desaturate(ref backColor, 0.5f);
 
 		if (parallax != 0)
-			spriteBatch.Draw(texture, position - new Vector2(0, 4) * scale * parallax, texture.Frame(1, 2, 0, 0, 0, -2), backColor, 0, origin, scale, 0, 0);
+			spriteBatch.Draw(texture, position - new Vector2(8) * scale * parallax, texture.Frame(1, 2, 0, 0, 0, -2), backColor, 0, origin, scale, 0, 0);
 
-		spriteBatch.Draw(texture, position + new Vector2(0, 4) * scale * parallax, texture.Frame(1, 2, 0, 1, 0, -2), drawColor, 0, origin, scale, 0, 0);
+		spriteBatch.Draw(texture, position + new Vector2(8) * scale * parallax, texture.Frame(1, 2, 0, 1, 0, -2), drawColor, 0, origin, scale, 0, 0);
 
 		return false;
 	}
@@ -136,7 +136,7 @@ public class DuelingPistols : ReloadableItem
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
 	{
 		Player player = drawInfo.drawPlayer;
-		Vector2 origin = new(2, 20);
+		Vector2 origin = new(2, 24);
 
 		if (ReloadInfo.IsReloading(player) && Item.TryGetGlobalItem(out ReloadableGlobalItem global)) //Draw reload visuals
 		{
@@ -178,7 +178,7 @@ public class DuelingPistols : ReloadableItem
 			Vector2 origin = input.sourceRect?.Size() / 2 ?? input.texture.Size() / 2;
 
 			DrawData outputData = GetDrawHeld(input with { rotation = rotation }, player, origin, out _, offset: frontOffset);
-			outputData.rotation = progress * 8 * -player.direction; //Do flips
+			outputData.rotation = progress * 9 * -player.direction; //Do flips
 
 			return outputData;
 		}
