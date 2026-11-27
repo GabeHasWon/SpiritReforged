@@ -4048,7 +4048,12 @@ Flakker: {
 
 TotalRecall: {
 	// DisplayName: Total Recall
-	// Tooltip: ""
+	/* Tooltip:
+		'''
+		Bullets remain suspended in mid-air for a short time
+		Press <right> to recall the bullets, doubling their damage
+		'Opposites attract'
+		''' */
 }
 
 LeatherSling: {

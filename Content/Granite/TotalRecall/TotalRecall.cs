@@ -15,52 +15,12 @@ using SpiritReforged.Content.Desert.Silk;
 using SpiritReforged.Common.ProjectileCommon;
 using SpiritReforged.Content.Evil.Items.Ammo;
 using SpiritReforged.Content.Forest.Ammo;
+using Terraria.Audio;
 
 namespace SpiritReforged.Content.Granite.TotalRecall;
 
-public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultiplier: -0.2f))
+public class TotalRecall() : ShotgunItem(new(shotMultiplier: -0.5f, spreadMultiplier: -0.2f))
 {
-	class TotalRecallShellParticle(Vector2 position, Vector2 velocity, float scale, int maxTime, ShotgunAmmoItem item = null) : ShotgunShellParticle(position, velocity, scale, maxTime, item)
-	{
-		public override void Update(ref ParticleRendererSettings settings)
-		{
-			base.Update(ref settings);
-
-			if (Progress < 0.33f)
-			{
-				float progress = Progress / 0.33f;
-
-				Position += Main.rand.NextVector2CircularEdge(1, 1) * (1 - progress); // shake
-
-				Velocity.Y += 0.05f;
-				if (Velocity.Y > 0)
-					Velocity.Y *= 1.04f;
-
-				if (Velocity.Y > 20f)
-					Velocity.Y = 20f;
-
-				Velocity *= 0.97f;
-				Velocity.X *= 0.96f;
-
-				Rotation += Velocity.Length() * 0.02f;
-			}
-		}
-
-		public override void Draw(ref ParticleRendererSettings settings, SpriteBatch spriteBatch)
-		{
-			if (Progress < 0.33f)
-			{
-				var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
-
-				float progress = 1f - Progress / 0.33f;
-
-				spriteBatch.Draw(bloom, Position - Main.screenPosition, null, Color.LightCyan.Additive() * progress * 0.15f, 0f, bloom.Size() / 2f, Scale * 0.2f, 0f, 0f);
-			}
-
-			base.Draw(ref settings, spriteBatch);
-		}
-	}
-
 	int _shootDirection;
 	float _shootRotation;
 
@@ -75,7 +35,7 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 		Item.width = 66;
 		Item.height = 26;
 		
-		Item.useTime = Item.useAnimation = 32;
+		Item.useTime = Item.useAnimation = 45;
 
 		Item.useStyle = ItemUseStyleID.Shoot;
 		Item.noMelee = true;
@@ -88,21 +48,39 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 	public override void UpdateInventory(Player player)
 	{
 		if (cooldown > 0)
+		{
 			cooldown--;
+			if (cooldown == 0)
+				SoundEngine.PlaySound(SoundID.MaxMana, player.Center);
+		}		
 	}
 
 	public override void UseItemFrame(Player player)
 	{
+		if (player.altFunctionUse == 2)
+		{
+			ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, 0.15f, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), false, new(0.25f, 0.75f));
+			return;
+		}
+
 		ItemVisualHelpers.SetGunUseItemFrame(player, _shootDirection, _shootRotation, -0.25f, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), false, new(0.05f, 0.95f));
 	}
 
 	public override void UseStyle(Player player, Rectangle heldItemFrame)
 	{
+		if (player.altFunctionUse == 2)
+		{
+			ItemVisualHelpers.SetGunUseStyle(player, Item, _shootDirection, -15, EaseFunction.EaseCircularOut, EaseFunction.EaseCircularInOut, new Vector2(66, 26), new Vector2(-16, -4), new(0.5f, 0.5f));
+			return;
+		}
+
 		ItemVisualHelpers.SetGunUseStyle(player, Item, _shootDirection, -12, EaseFunction.EaseQuinticOut, EaseFunction.EaseOutBack(2.2f), new Vector2(66, 26), new Vector2(-16, -4), new(0.05f, 0.95f));
 	}
 
 	public override bool Shoot(Player player, EntitySource_ItemUse_WithAmmo source, Vector2 position, Vector2 velocity, int type, int damage, float knockback)
 	{
+		Vector2 muzzlePosition = position + new Vector2(56, -2 * player.direction).RotatedBy(velocity.ToRotation());
+
 		_shootRotation = (player.Center - Main.MouseWorld).ToRotation();
 		_shootDirection = Main.MouseWorld.X < player.Center.X ? -1 : 1;
 
@@ -111,6 +89,30 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 			TotalRecallGlobalProjectile.Pullback(player);
 
 			cooldown = MAX_COOLDOWN;
+
+			if (player.whoAmI == Main.myPlayer)
+				ScreenshakeHelper.Shake(player.Center, velocity * 2f, 0.66f, 2, 10);
+
+			ParticleRenderers.OverSolids.Add(new TotalRecallDistortionParticle(muzzlePosition, 2, 1, Main.rand.NextFloat(), 35));
+
+			ParticleRenderers.OverNPCs.Add(new SharpStarParticle(muzzlePosition, Vector2.Zero, Color.LightBlue.Additive() * 0.2f, 0.65f, 25, 0));
+
+			for (int i = 0; i < 6; i++)
+			{
+				Vector2 pos = muzzlePosition + velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(150f, 350f);
+
+				ParticleRenderers.OverSolids.Add(new SparkParticle(pos, pos.DirectionTo(muzzlePosition) * Main.rand.NextFloat(8f, 14f),
+					Color.Lerp(Color.CornflowerBlue, Color.MediumVioletRed, Main.rand.NextFloat()), Main.rand.NextFloat(1f, 2f), 10 + Main.rand.Next(30), tileCollide: false));
+
+				pos = muzzlePosition + Main.rand.NextVector2CircularEdge(150f, 150f) * Main.rand.NextFloat(0.5f, 1f);
+
+				ParticleRenderers.OverSolids.Add(new SparkParticle(pos, pos.DirectionTo(muzzlePosition) * Main.rand.NextFloat(1f, 2f),
+					Color.Lerp(Color.CornflowerBlue, Color.MediumVioletRed, Main.rand.NextFloat()), Main.rand.NextFloat(0.5f, 1.5f), 20 + Main.rand.Next(30), tileCollide: false));
+			}
+
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/GenericClubWhoosh") with { Volume = 0.5f }, player.Center); //CACHE ME
+
+			SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/TotalRecallShoot") with { Volume = 0.1f }, player.Center); //CACHE ME
 
 			return false;
 		}
@@ -124,6 +126,32 @@ public class TotalRecall() : ShotgunItem(new(shotMultiplier: 0.33f, spreadMultip
 		Vector2 shellPosition = position + new Vector2(12, -10 * player.direction).RotatedBy(velocity.ToRotation());
 
 		ParticleRenderers.OverPlayers.Add(new ShotgunShellParticle(shellPosition, -velocity.RotatedByRandom(0.4f) * Main.rand.NextFloat(2f, 4f) - Vector2.UnitY * Main.rand.NextFloat(4f), 1f, 120, ammo));
+
+		for (int i = 0; i < 4; i++)
+		{
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(1.5f), Color.LightSkyBlue * 0.4f, 30 + Main.rand.Next(60), default, (particle) => particle.Velocity.Y -= 0.01f));
+			ParticleRenderers.UnderProjectiles.Add(new CompositeSmoke(muzzlePosition + Main.rand.NextVector2Circular(5f, 5f), velocity * Main.rand.NextFloat(3f), Color.LightSlateGray * 0.4f, 20 + Main.rand.Next(60), default, (particle) => particle.Velocity.Y -= 0.01f)
+			{
+				Variant = CompositeSmoke.SmallVariant
+			});
+
+			ParticleRenderers.UnderProjectiles.Add(new EmberParticle(muzzlePosition, velocity.RotatedByRandom(0.5f) * Main.rand.NextFloat(5f), Color.Lerp(Color.CornflowerBlue, Color.MediumVioletRed, Main.rand.NextFloat()), 0.4f, 30, 2));
+		}
+
+		ParticleRenderers.UnderProjectiles.Add(new TexturedPulseCircle(
+				muzzlePosition,
+				Color.LightCyan,
+				Color.MediumVioletRed.Additive(),
+				0.4f,
+				120,
+				35,
+				"supPerlin",
+				new Vector2(2, 3),
+				EaseFunction.EaseCubicOut).WithSkew(0.9f, velocity.ToRotation()).UsesLightColor());
+
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot_0" + Main.rand.Next(1, 4)) with { Volume = 0.35f }, player.Center); //CACHE ME
+
+		SoundEngine.PlaySound(new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/TotalRecallShoot") with { Volume = 0.25f }, player.Center); //CACHE ME
 	}
 }
 
@@ -144,6 +172,7 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 	public bool _pullingBack;
 	public bool _active;
 	public bool _red;
+	public bool _hitTile;
 
 	public int _maxPullbackTime;
 	public int _lingerTime;
@@ -236,6 +265,42 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 		return true;
 	}
 
+	public override bool OnTileCollide(Projectile projectile, Vector2 oldVelocity)
+	{
+		if (_shaderItem is not null && _active)
+		{
+			ParticleRenderers.OverSolids.Add(new TotalRecallDistortionParticle(projectile.Center, _shaderItem.Scale, _shaderItem.DistortionStrength, _shaderItem.ColorInterpolant, 20, IsSlug(projectile)));
+			ParticleRenderers.UnderProjectiles.Add(new TotalRecallBulletParticle(projectile.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), 1f, 120, IsSlug(projectile)));
+			
+			for (int i = 0; i < 2; i++)
+			{
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(projectile.Center, Main.rand.NextVector2Circular(4f, 4f),
+					Color.Lerp(Color.LightBlue, Color.MediumVioletRed, Main.rand.NextFloat()), Main.rand.NextFloat(0.2f, 0.4f), 40, extraUpdateAction: p => p.Velocity *= 0.95f));
+			}
+
+			_active = false;
+		}
+
+		return base.OnTileCollide(projectile, oldVelocity);
+	}
+
+	public override void OnHitNPC(Projectile projectile, NPC target, NPC.HitInfo hit, int damageDone)
+	{
+		if (_shaderItem is not null && _active && projectile.penetrate == 1)
+		{
+			ParticleRenderers.OverSolids.Add(new TotalRecallDistortionParticle(projectile.Center, _shaderItem.Scale, _shaderItem.DistortionStrength, _shaderItem.ColorInterpolant, 20, IsSlug(projectile)));
+			ParticleRenderers.UnderProjectiles.Add(new TotalRecallBulletParticle(projectile.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), 1f, 120, IsSlug(projectile)));
+
+			for (int i = 0; i < 2; i++)
+			{
+				ParticleRenderers.UnderProjectiles.Add(new GlowParticle(projectile.Center, Main.rand.NextVector2Circular(4f, 4f),
+					Color.Lerp(Color.LightBlue, Color.MediumVioletRed, Main.rand.NextFloat()), Main.rand.NextFloat(0.2f, 0.4f), 40, extraUpdateAction: p => p.Velocity *= 0.95f));
+			}
+
+			_active = false;
+		}
+	}
+
 	public override void AI(Projectile projectile)
 	{
 		if (_active && _pullingBack)
@@ -245,13 +310,16 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 			else
 			{
 				// little bit of homing
-				projectile.velocity += projectile.DirectionTo(_pullbackPosition) * 1f;
+				projectile.velocity += projectile.DirectionTo(_pullbackPosition) * (IsSlug(projectile) ? 0.1f : 1f);
 			}
 		}
 	}
 
 	public override bool PreDraw(Projectile projectile, ref Color lightColor)
 	{
+		if (!_active)
+			return true;
+
 		var bulletTex = ModContent.Request<Texture2D>("SpiritReforged/Content/Granite/TotalRecall/TotalRecallSmallBullet").Value;
 		var star = AssetLoader.LoadedTextures["Star"].Value;
 		var bloom = AssetLoader.LoadedTextures["Bloom"].Value;
@@ -289,8 +357,6 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 
 	public static void Pullback(Player player)
 	{
-		bool activated = false;
-
 		foreach (Projectile p in Main.ActiveProjectiles)
 		{
 			if (p.active && p.TryGetGlobalProjectile<TotalRecallGlobalProjectile>(out var gp) && gp._active && gp._lingerTime > 0)
@@ -298,22 +364,20 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 				if (gp._shaderItem is not null)
 					ParticleRenderers.OverSolids.Add(new TotalRecallDistortionParticle(p.Center, gp._shaderItem.Scale, gp._shaderItem.DistortionStrength, gp._shaderItem.ColorInterpolant, 25, gp.IsSlug(p)));
 
+				for (int i = 0; i < 2; i++)
+				{
+					ParticleRenderers.UnderProjectiles.Add(new GlowParticle(p.Center, Main.rand.NextVector2Circular(4f, 4f),
+						Color.Lerp(Color.LightBlue, Color.MediumVioletRed, Main.rand.NextFloat()), Main.rand.NextFloat(0.2f, 0.4f), 40, extraUpdateAction: p => p.Velocity *= 0.95f));
+				}
+
 				p.damage *= 2;
-				p.velocity = p.DirectionTo(player.Center) * gp._originalVelocity.Length() * 2f;
+				p.velocity = p.DirectionTo(player.Center) * gp._originalVelocity.Length();
 				p.timeLeft = gp._maxPullbackTime;
 				gp._pullingBack = true;
 				gp._pullbackPosition = player.Center;
 
-				activated = true;
+				gp._shaderItem = null;
 			}
-		}
-
-		if (activated)
-		{
-			if (player.whoAmI == Main.myPlayer)
-				ScreenshakeHelper.Shake(player.Center, Main.rand.NextVector2CircularEdge(2f,2f), 0.66f, 2, 10);
-
-			ParticleRenderers.OverSolids.Add(new TotalRecallDistortionParticle(player.Center, 2, 1, Main.rand.NextFloat(), 35));
 		}
 	}
 }
@@ -330,7 +394,11 @@ class TotalRecallBulletParticle(Vector2 position, Vector2 velocity, float scale,
 	{
 		Texture2D texture = Slug ? SlugTex.Value : SmallTex.Value;
 
-		spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color.White, Rotation, texture.Size() / 2f, Scale, 0f, 0f);
+		float fade = 1f;
+		if (Progress > 0.8f)
+			fade = 1f - (Progress - 0.8f) / 0.2f;
+
+		spriteBatch.Draw(texture, Position - Main.screenPosition, null, Color.White * fade, Rotation, texture.Size() / 2f, Scale, 0f, 0f);
 	}
 }
 
