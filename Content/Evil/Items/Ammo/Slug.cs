@@ -57,8 +57,6 @@ public class Slug : ShotgunAmmoItem
 public class SlugProjectile : ModProjectile
 {
 	public static readonly Asset<Texture2D> BaseTexture = DrawHelpers.RequestLocal<SlugProjectile>("SlugProjectile", false);
-	public static readonly Asset<Texture2D> OutlineTexture = DrawHelpers.RequestLocal<SlugProjectile>("SlugProjectile_Outline", false);
-
 	public const int MAX_TIMELEFT = 720;
 	public const int TIME_TILL_GRAVITY = 60;
 	public const int TIME_TILL_FIRE_FADEOUT = 120;
