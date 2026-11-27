@@ -128,6 +128,7 @@ public class DuelingPistols : ReloadableItem
 	public override void OnReload(Item item, Player player, IReloadable.ReloadContext context)
 	{
 		float progress = 1f - ReloadInfo.reloadTime / (float)Magazine.GetReloadDuration(player);
+
 		if (progress == 0.5f)
 			SoundEngine.PlaySound(EmptyMagazine with { Pitch = 0.2f }, player.MountedCenter);
 
@@ -207,7 +208,7 @@ public class DuelingPistols : ReloadableItem
 			Vector2 origin = input.sourceRect?.Size() / 2 ?? input.texture.Size() / 2;
 
 			DrawData outputData = GetDrawHeld(input with { rotation = rotation }, player, origin, out _, offset: frontOffset);
-			outputData.rotation = progress * 9 * -player.direction; //Do flips
+			outputData.rotation = progress * 12 * -player.direction; //Do flips
 
 			return outputData;
 		}

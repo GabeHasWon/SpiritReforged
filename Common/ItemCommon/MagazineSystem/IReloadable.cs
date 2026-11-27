@@ -61,6 +61,8 @@ public class ReloadableGlobalItem : GlobalItem
 	public int LastDirection => Math.Sign(LastRotation.ToRotationVector2().X);
 
 	public float LastRotation { get; private set; }
+	/// <summary> Whether ammo was consumed after a given use. </summary>
+	public bool ConsumedAmmo { get; private set; }
 
 	public bool IsReloading(Player player) => !player.ItemAnimationActive && reloadTime > 0;
 
@@ -96,6 +98,7 @@ public class ReloadableGlobalItem : GlobalItem
 			return false;
 		}
 
+		ConsumedAmmo = false;
 		return capacity > 0;
 	}
 
@@ -116,6 +119,8 @@ public class ReloadableGlobalItem : GlobalItem
 	{
 		if (--capacity <= 0) //Consume ammo from the magazine
 			StartReload(player, weapon);
+
+		ConsumedAmmo = true;
 	}
 
 	public override void HoldStyle(Item item, Player player, Rectangle heldItemFrame)

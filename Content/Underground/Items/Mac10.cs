@@ -4,6 +4,7 @@ using SpiritReforged.Common.ItemCommon.MagazineSystem;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
+using SpiritReforged.Content.Dusts;
 using Terraria.Audio;
 using Terraria.DataStructures;
 
@@ -23,6 +24,12 @@ public class Mac10 : ReloadableItem
 		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3);
 		Item.useAmmo = AmmoID.Bullet;
 		Item.damage = 12;
+	}
+
+	public override bool? UseItem(Player player)
+	{
+		Dust.NewDustPerfect(player.GetFrontHandPosition(Player.CompositeArmStretchAmount.Full, ReloadInfo.LastRotation), ModContent.DustType<ShellDust>(), (new Vector2(-player.direction, -8) * Main.rand.NextFloat(0.9f, 1.5f)).RotatedByRandom(0.5f));
+		return null;
 	}
 
 	//Randomize spread and speed of bullets

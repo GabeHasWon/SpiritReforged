@@ -18,7 +18,7 @@ public class Luger : ReloadableItem
 	public override void SetDefaults()
 	{
 		Item.DefaultToBow(24, 10, true);
-		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3) with { Volume = 0.5f };
+		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3) with { Volume = 0.7f };
 		Item.useAmmo = AmmoID.Bullet;
 		Item.damage = 24;
 		Item.knockBack = 4;

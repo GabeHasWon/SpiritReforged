@@ -32,7 +32,7 @@ public abstract class ReloadableItem : ModItem, IReloadable
 			int fullCapacity = iReloadable.Magazine.FullCapacity;
 			int usedCapacity = iReloadable.Magazine.FullCapacity - global.capacity;
 			int moveTimeMax = Main.LocalPlayer.itemTimeMax;
-			int moveTime = Main.LocalPlayer.itemTime;
+			int moveTime = global.ConsumedAmmo ? Main.LocalPlayer.itemTime : 0;
 
 			for (int i = 0; i < global.capacity; i++)
 			{
