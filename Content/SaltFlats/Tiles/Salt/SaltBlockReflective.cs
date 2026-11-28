@@ -285,10 +285,9 @@ public class SaltBlockReflective : SaltBlock
 				s.Parameters["backgroundComposite"].SetValue(SaltBGStyle.backgroundTarget.Target);
 
 				Matrix mainMatrix = Main.Transform;
-				mainMatrix.Decompose(out Vector3 matrixScale, out Quaternion matrixRotation, out Vector3 matrixTranslation);
+				mainMatrix.Decompose(out Vector3 matrixScale, out _, out _);
 
 				s.Parameters["backgroundCompositeScale"].SetValue(matrixScale);
-				//s.Parameters["backgroundCompositeMatrix"].SetValue(inverse);
 			}
 
 			s.Parameters["skyColor"].SetValue(SaltSky.GetSkyGradient(1f)[1].ToVector4() * Main.ColorOfTheSkies.ToVector4());

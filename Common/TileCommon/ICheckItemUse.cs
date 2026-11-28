@@ -40,13 +40,13 @@ public sealed class CheckItem : GlobalItem
 
 		foreach (Mod mod in AddedMods)
 		{
-			foreach (var tile in Mod.GetContent<ModTile>())
+			foreach (var tile in mod.GetContent<ModTile>())
 			{
 				if (tile is ICheckItemUse check)
 					RegisterTileCheck(tile.Type, check.CheckItemUse);
 			}
 
-			foreach (var wall in Mod.GetContent<ModWall>())
+			foreach (var wall in mod.GetContent<ModWall>())
 			{
 				if (wall is ICheckItemUse check)
 					RegisterWallCheck(wall.Type, check.CheckItemUse);

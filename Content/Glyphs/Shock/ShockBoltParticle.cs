@@ -28,9 +28,9 @@ public class ShockGlyphLightningSystem : ModSystem
 
 	private static void DrawLightningTarget()
 	{
-		GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 		if (DrawQueue.Count > 0)
 		{
+			GraphicsDevice graphics = Main.graphics.GraphicsDevice;
 			graphics.SetRenderTarget(LightningTarget.Value);
 			graphics.Clear(Color.Transparent);
 

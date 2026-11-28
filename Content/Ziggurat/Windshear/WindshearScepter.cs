@@ -306,7 +306,7 @@ public class WindshearScepter : ModItem
 
 	public override void SetDefaults()
 	{
-		Item.damage = 28;
+		Item.damage = 22;
 		Item.mana = 10;
 		Item.knockBack = 6.5f;
 		Item.width = Item.height = 46;

@@ -8,6 +8,14 @@ public sealed class Reflections : ILoadable
 {
 	/// <summary> Whether reflection detail is high enough to calculate. </summary>
 	public static bool Enabled => Lighting.NotRetro && Detail > 0;
+
+	/// <summary>
+	/// The detail used for reflections.<br/><br/>
+	/// <b>0</b>: Disabled<br/>
+	/// <b>1</b>: Draw NPCs, players, Mirror [of Return] reflections<br/>
+	/// <b>2</b>: 1, and also draw projectiles, tiles, post-tiles, walls, various Fables crossmod draw layers, Mirror of Return noise<br/>
+	/// <b>3</b>: Draw everything that can be reflected<br/>
+	/// </summary>
 	public static int Detail => ModContent.GetInstance<ReforgedClientConfig>().ReflectionDetail;
 
 	/// <summary> Whether screen dimensions are beyond 1920x1080.<br/>Included in a bandaid fix for tiles not reflecting correctly on high resolutions. </summary>

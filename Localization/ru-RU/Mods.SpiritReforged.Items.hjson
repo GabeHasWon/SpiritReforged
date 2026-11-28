@@ -3856,6 +3856,21 @@ TrellisTwoSpookyWoodVanillaItem: {
 	// Tooltip: "{$Mods.SpiritReforged.Items.TrellisItem.Tooltip}"
 }
 
+GnarledRod: {
+	// DisplayName: Gnarled Rod
+	// Tooltip: "{$ItemTooltip.CratePotion}"
+}
+
+GoldJerboaItem: {
+	// DisplayName: Gold Jerboa
+	// Tooltip: ""
+}
+
+SavannaPlanterBoxItem: {
+	// DisplayName: Savanna Planter Box
+	// Tooltip: ""
+}
+
 BasaltTileItem: {
 	// DisplayName: Basalt Tile Item
 	// Tooltip: ""
