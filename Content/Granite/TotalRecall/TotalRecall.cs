@@ -183,7 +183,7 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 	public TotalRecallDistortionHandler.DistortionShaderItem _shaderItem;
 
 	public bool IsSlug(Projectile projectile) => slugIDs.Contains(projectile.type);
-	public float LifetimeProgress(Projectile projectile) => _lifeTime / (float)(MAX_LIFE_TIME * (IsSlug(projectile) ? 2f : 1f) * projectile.extraUpdates);
+	public float LifetimeProgress(Projectile projectile) => _lifeTime / (float)(MAX_LIFE_TIME * (IsSlug(projectile) ? 2f : 1f) * (1 + projectile.extraUpdates));
 
 	public override void OnSpawn(Projectile projectile, IEntitySource source)
 	{
@@ -239,7 +239,7 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 				}
 				else
 				{
-					float lingerProgress = _lingerTime / (float)(MAX_LINGER_TIME * projectile.extraUpdates);
+					float lingerProgress = _lingerTime / (float)(MAX_LINGER_TIME * (1 + projectile.extraUpdates));
 
 					_shaderItem.Position = projectile.Center;
 					_shaderItem.timeActive = 2;
@@ -252,7 +252,7 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 					_shaderItem.ColorInterpolant = _red ? 1 - lingerProgress : lingerProgress;
 				}
 
-				if (++_lingerTime > MAX_LINGER_TIME * projectile.extraUpdates)
+				if (++_lingerTime > MAX_LINGER_TIME * (1 + projectile.extraUpdates))
 				{
 					projectile.Kill();
 					ParticleRenderers.UnderProjectiles.Add(new TotalRecallBulletParticle(projectile.Center, -Vector2.UnitY.RotatedByRandom(0.5f) * Main.rand.NextFloat(3f), 1f, 120, IsSlug(projectile)));
@@ -327,9 +327,9 @@ public class TotalRecallGlobalProjectile : GlobalProjectile
 		if (IsSlug(projectile))
 			bulletTex = ModContent.Request<Texture2D>("SpiritReforged/Content/Granite/TotalRecall/TotalRecallSlugBullet").Value;
 
-		if (!_pullingBack)
+		if (!_pullingBack && _lingerTime > 0)
 		{
-			float lingerProgress = _lingerTime / (float)(MAX_LINGER_TIME * projectile.extraUpdates);
+			float lingerProgress = _lingerTime / (float)(MAX_LINGER_TIME * (1 + projectile.extraUpdates));
 
 			float fade = 1f;
 

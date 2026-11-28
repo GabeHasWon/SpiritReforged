@@ -106,6 +106,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 
 	/// <summary>A random-value shortcut for small <see cref="Variant"/>s.</summary>
 	public static int SmallVariant => Main.rand.Next(3, 6);
+	public static int DefaultVariant => Main.rand.Next(3);
 
 	public readonly Action<Particle> Action;
 
@@ -128,7 +129,7 @@ public class CompositeSmoke : Particle, CompositeRenderer.ICompositeRendering
 		_settings = settings;
 
 		Color = color;
-		Variant = Main.rand.Next(3); //Choose a random large variant by default
+		Variant = DefaultVariant; //Choose a random large variant by default
 		Action = extraUpdateAction;
 	}
 

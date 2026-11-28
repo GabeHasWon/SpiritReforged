@@ -4084,3 +4084,8 @@ Bandolier: {
 	// DisplayName: Bandolier
 	// Tooltip: ""
 }
+
+SpectralShot: {
+	// DisplayName: Spectral Shot
+	// Tooltip: ""
+}
