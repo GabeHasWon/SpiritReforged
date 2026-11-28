@@ -16,9 +16,11 @@ public class TwinMill : ReloadableItem
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Bullet);
 
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(Math.Round(SAVE_AMMO_CHANCE * 100));
+
 	public override void SetDefaults()
 	{
-		Item.DefaultToBow(50, 10, true);
+		Item.DefaultToBow(44, 10, true);
 		Item.UseSound = new SoundStyle("SpiritReforged/Assets/SFX/Item/Subclasses/Shotguns/ShotgunShoot", 3);
 		Item.useAmmo = AmmoID.Bullet;
 		Item.damage = 28;

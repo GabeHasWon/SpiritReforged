@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Easing;
 using SpiritReforged.Common.ItemCommon.Abstract;
 using SpiritReforged.Common.ItemCommon.MagazineSystem;
+using SpiritReforged.Common.Visuals;
 using SpiritReforged.Content.Dusts;
 using Terraria.Audio;
 using Terraria.DataStructures;
@@ -10,6 +11,7 @@ namespace SpiritReforged.Content.Underground.Items;
 public class Luger : ReloadableItem
 {
 	public static readonly SoundStyle EmptyClip = new("SpiritReforged/Assets/SFX/Item/Subclasses/EmptyClip", 2);
+	public static readonly Asset<Texture2D> HeldTexture = DrawHelpers.RequestLocal<Luger>("LugerHeld", false);
 
 	public override IReloadable.MagazineInfo Magazine => new(4, 60);
 
@@ -46,34 +48,42 @@ public class Luger : ReloadableItem
 	public override void OnReload(Item item, Player player, IReloadable.ReloadContext context)
 	{
 		if (context == IReloadable.ReloadContext.Started)
+		{
 			SoundEngine.PlaySound(EmptyMagazine with { Pitch = 0.5f }, player.Center);
+			Gore.NewGore(player.GetSource_ItemUse(item), player.GetFrontHandPosition(player.compositeFrontArm.stretch, player.compositeFrontArm.rotation), Vector2.UnitY, Mod.Find<ModGore>("LugerMag").Type);
+		}
 		else if (context == IReloadable.ReloadContext.Ended && item.TryGetGlobalItem(out ReloadableGlobalItem global))
+		{
 			global.capacity = Magazine.GetFullCapacity(player);
+		}
 	}
 
 	public override bool ModifyItemDraw(ref PlayerDrawSet drawInfo, ref DrawData drawData, ref DrawData? coloredDrawData, ref DrawData? glowMaskDrawData)
 	{
 		Player player = drawInfo.drawPlayer;
-		Vector2 origin = new(-2, 20);
+		Vector2 origin = new(-2, 30);
+
+		drawData.texture = HeldTexture.Value;
+		drawData.sourceRect = drawData.texture.Frame(1, 2, 0, (player.ItemAnimationActive && player.itemAnimation > player.itemAnimationMax * 0.7f) ? 1 : 0, 0, -2);
 
 		if (ReloadInfo.IsReloading(player) && Item.TryGetGlobalItem(out ReloadableGlobalItem global)) //Draw reload visuals
 		{
 			float progress = 1f - global.reloadTime / (float)Magazine.GetReloadDuration(player);
-			float rotation = drawData.rotation + EaseFunction.EaseCubicInOut.Ease(progress * 3f) * player.direction;
+			float rotation = drawData.rotation - EaseFunction.EaseCubicInOut.Ease(progress * 3f) * player.direction;
 
 			if (progress > 0.8f)
 			{
-				rotation = drawData.rotation + (1 - EaseFunction.EaseCubicIn.Ease((progress - 0.8f) / 0.2f)) * player.direction;
+				rotation = drawData.rotation - (1 - EaseFunction.EaseCubicIn.Ease((progress - 0.8f) / 0.2f)) * player.direction;
 			}
 			else if (progress > 0.33f)
 			{
-				rotation = drawData.rotation + 1 * player.direction;
+				rotation = drawData.rotation - 1 * player.direction;
 			}
 
 			drawInfo.DrawDataCache.Add(GetDrawHeld(drawData with { rotation = rotation }, drawInfo.drawPlayer, origin, out float armRotation));
 
 			player.SetCompositeArmFront(true, Player.CompositeArmStretchAmount.Full, armRotation);
-			player.SetCompositeArmBack(true, (progress > 0.5f) ? Player.CompositeArmStretchAmount.Quarter : Player.CompositeArmStretchAmount.Full, armRotation);
+			player.SetCompositeArmBack(true, Player.CompositeArmStretchAmount.Full, MathHelper.Lerp(armRotation + 2 * player.direction, armRotation, MathHelper.Min(progress / 0.5f, 1)));
 		}
 		else if (player.ItemAnimationActive) //Draw shoot visuals
 		{

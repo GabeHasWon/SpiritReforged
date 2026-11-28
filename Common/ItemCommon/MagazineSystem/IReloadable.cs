@@ -1,8 +1,10 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
+using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Renderers;
+using static AssGen.Assets;
 
 namespace SpiritReforged.Common.ItemCommon.MagazineSystem;
 
@@ -117,8 +119,8 @@ public class ReloadableGlobalItem : GlobalItem
 
 	public override void OnConsumeAmmo(Item weapon, Item ammo, Player player)
 	{
-		if (--capacity <= 0) //Consume ammo from the magazine
-			StartReload(player, weapon);
+		if (--capacity <= 0 && weapon.ModItem is IReloadable iReloadable) //Consume ammo from the magazine
+			reloadTime = iReloadable.Magazine.GetReloadDuration(player); //StartReload(player, weapon); //Queue a reload rather than starting one so the item animation has time to complete
 
 		ConsumedAmmo = true;
 	}
@@ -146,7 +148,11 @@ public class ReloadableGlobalItem : GlobalItem
 
 			if (item.ModItem is IReloadable iReloadable)
 			{
-				IReloadable.ReloadContext context = (--reloadTime <= 0) ? IReloadable.ReloadContext.Ended : IReloadable.ReloadContext.Running;
+				IReloadable.ReloadContext context = (reloadTime >= iReloadable.Magazine.GetReloadDuration(player)) ? IReloadable.ReloadContext.Started : IReloadable.ReloadContext.Running;
+
+				if (--reloadTime <= 0) //Just ending
+					context = IReloadable.ReloadContext.Ended;
+
 				iReloadable.OnReload(item, player, context);
 			}
 		}
@@ -181,7 +187,7 @@ public class ReloadableGlobalItem : GlobalItem
 		if (item.ModItem is IReloadable iReloadable)
 		{
 			reloadTime = iReloadable.Magazine.GetReloadDuration(player);
-			iReloadable.OnReload(item, player, IReloadable.ReloadContext.Started);
+			//iReloadable.OnReload(item, player, IReloadable.ReloadContext.Started);
 		}
 	}
 }

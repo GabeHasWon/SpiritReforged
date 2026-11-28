@@ -8,7 +8,6 @@ using SpiritReforged.Content.Underground.Items;
 using SpiritReforged.Content.Underground.Items.Pepperbox;
 using Terraria.Audio;
 using Terraria.DataStructures;
-using static SpiritReforged.Common.PlayerCommon.DoubleTapPlayer;
 
 namespace SpiritReforged.Content.Evil.Items;
 
@@ -81,6 +80,8 @@ public class DuelingPistols : ReloadableItem
 	public override IReloadable.MagazineInfo Magazine => new(12, 100);
 
 	public override InterfaceProfile? Profile => new(MagazinePlayer.StyleID.Bullet);
+
+	public override LocalizedText Tooltip => base.Tooltip.WithFormatArgs(Math.Round(SAVE_AMMO_CHANCE * 100));
 
 	private bool _backHand;
 
