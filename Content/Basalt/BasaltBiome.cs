@@ -2,9 +2,11 @@
 using SpiritReforged.Common.WorldGeneration.Micropasses;
 using SpiritReforged.Common.WorldGeneration.Tools;
 using SpiritReforged.Content.Basalt.Tiles;
+using System.Diagnostics;
 using System.Linq;
 using Terraria.DataStructures;
 using Terraria.IO;
+using Terraria.Utilities;
 using Terraria.WorldBuilding;
 
 namespace SpiritReforged.Content.Basalt;
@@ -26,6 +28,16 @@ internal class BasaltBiome : Micropass
 		BIT_MAX = 6,
 	}
 
+	public readonly record struct Offsets(int[] Offs, int[] Widths)
+	{
+		/// <summary>
+		/// Gets the actual height offset for this position.
+		/// </summary>
+		public int this[int index] => Offs[index + Widths[index]];
+	}
+
+	private static WeightedRandom<int> UsableWidths = null!;
+
 	public override string WorldGenName => "Basalt";
 
 	public override int GetWorldGenIndexInsert(List<GenPass> tasks, ref bool afterIndex) => tasks.FindIndex(x => x.Name == "Granite");
@@ -37,6 +49,14 @@ internal class BasaltBiome : Micropass
 
 	public static void Place(Point16 point)
 	{
+		UsableWidths = new WeightedRandom<int>();
+		UsableWidths.Add(1, 0.2f);
+		UsableWidths.Add(2, 0.8f);
+		UsableWidths.Add(3, 1f);
+		UsableWidths.Add(4, 0.7f);
+		UsableWidths.Add(5, 0.4f);
+		UsableWidths.Add(6, 0.1f);
+
 		int reps = 1;// WorldGen.genRand.Next(5) + 1;
 
 		for (int i = 0; i < reps; ++i)
@@ -47,17 +67,89 @@ internal class BasaltBiome : Micropass
 	{
 		float halfWidth = WorldGen.genRand.NextFloat(50, 80);
 		var flags = (BiomeFlags)WorldGen.genRand.Next(1 << (int)BiomeFlags.BIT_MAX);
+		int circleWidth = 16;
 		flags |= BiomeFlags.MutatingAngle;
 
 		if (Main.getGoodWorld)
 			halfWidth = WorldGen.genRand.NextBool(2) ? WorldGen.genRand.NextFloat(20, 30) : WorldGen.genRand.NextFloat(110, 140);
 
 		Bezier bez = new Bezier(0.5f, BuildControl(point, halfWidth, flags));
+		Offsets offsets = GenerateOffsets(point.X - halfWidth * 2, point.X + halfWidth * 2);
+		HashSet<Point16> placements = [];
 
 		foreach (Vector2 pos in bez.GeneratedPoints)
-			WorldGen.PlaceTile((int)pos.X, (int)pos.Y, ModContent.TileType<BasaltTile>());
+			OffsetCircleGeneration(pos, offsets, circleWidth, true, placements);
+
+		placements.Clear();
+		foreach (Vector2 pos in bez.GeneratedPoints)
+			OffsetCircleGeneration(pos, offsets, circleWidth / 2, false, placements);
 
 		return Point16.Zero;
+	}
+
+	private static void OffsetCircleGeneration(Vector2 pos, Offsets offsets, int circleWidth, bool place, HashSet<Point16> placements)
+	{
+		int lastOffset = -60_000;
+		ushort type = (ushort)ModContent.TileType<BasaltTile>();
+		int offsetIndex = 0;
+
+		for (int i = (int)pos.X - circleWidth; i < (int)pos.X + circleWidth; ++i)
+		{
+			int offset = offsets[offsetIndex];
+			offsetIndex++;
+
+			if (lastOffset != offset)
+				type = type == (ushort)ModContent.TileType<BasaltTile>() ? (ushort)ModContent.TileType<AccentBasalt>() : (ushort)ModContent.TileType<BasaltTile>();
+
+			for (int j = (int)pos.Y - circleWidth; j < (int)pos.Y + circleWidth; ++j)
+			{
+				Point16 placePos = new(i, j + offset);
+
+				if (placements.Contains(placePos))
+					continue;
+
+				if (Vector2.DistanceSquared(new Vector2(i, j), pos) < circleWidth * circleWidth)
+				{
+					Tile tile = Main.tile[i, j + offset];
+
+					if (place)
+					{
+						tile.HasTile = true;
+						tile.TileType = type;
+					}
+					else
+						tile.ClearTile();
+
+					placements.Add(placePos);
+				}
+			}
+		}
+	}
+
+	private static Offsets GenerateOffsets(float minX, float maxX)
+	{
+		int widthRange = (int)(maxX - minX);
+		int[] offsets = new int[widthRange];
+		int[] widths = new int[widthRange];
+		int currentWidth = UsableWidths.Get();
+		int currentOffset = WorldGen.genRand.Next(-26, 27);
+		int count = 0;
+
+		for (int i = 0; i < widthRange; ++i)
+		{
+			offsets[i] = currentOffset;
+			widths[i] = count;
+			count--;
+
+			if (-count == currentWidth)
+			{
+				currentWidth = UsableWidths.Get();
+				currentOffset = WorldGen.genRand.Next(-6, 7);
+				count = 0;
+			}
+		}
+
+		return new Offsets(offsets, widths);
 	}
 
 	private static Vector2[] BuildControl(Point16 pos, float halfWidth, BiomeFlags flags)
