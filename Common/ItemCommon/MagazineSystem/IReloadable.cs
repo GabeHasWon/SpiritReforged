@@ -1,6 +1,7 @@
 ﻿using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PlayerCommon;
 using SpiritReforged.Common.Visuals;
+using System;
 using Terraria;
 using Terraria.Audio;
 using Terraria.Graphics.Renderers;
@@ -180,6 +181,13 @@ public class ReloadableGlobalItem : GlobalItem
 		{
 			_hiddenReloadTime = 0;
 		}
+	}
+
+	public override void ModifyTooltips(Item item, List<TooltipLine> tooltips)
+	{
+		int index = tooltips.FindIndex(line => line.Mod.Equals("Terraria") && line.Name.Equals("Damage"));
+		if (index != -1 && item.ModItem is IReloadable iReloadable)
+			tooltips.Insert(index + 1, new(Mod, "Magazine", Language.GetText("Mods.SpiritReforged.Items.CommonTooltips.Magazine").WithFormatArgs(iReloadable.Magazine.GetFullCapacity(Main.LocalPlayer)).Value));
 	}
 
 	public void StartReload(Player player, Item item)

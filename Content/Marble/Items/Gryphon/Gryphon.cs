@@ -1,4 +1,5 @@
 ﻿using SpiritReforged.Common.Easing;
+using SpiritReforged.Common.ItemCommon;
 using SpiritReforged.Common.Misc;
 using SpiritReforged.Common.PrimitiveRendering;
 using SpiritReforged.Common.PrimitiveRendering.Trail_Components;
@@ -17,21 +18,13 @@ public class Gryphon : ModItem
 {
 	public override void SetDefaults()
 	{
+		Item.DefaultToShotgun(90, 10);
 		Item.damage = 19;
 		Item.knockBack = 8;
-		Item.DamageType = ModContent.GetInstance<ShotgunClass>();
-		Item.useAmmo = ModContent.ItemType<Shot>();
-		Item.width = 54;
-		Item.height = 26;
-		Item.useTime = Item.useAnimation = 90;
-		Item.useStyle = ItemUseStyleID.Shoot;
-		Item.noMelee = true;
 		Item.noUseGraphic = true;
 		Item.channel = true;
-
 		Item.value = Item.buyPrice(0, 1, 50, 0);
 		Item.rare = ItemRarityID.Green;
-		Item.autoReuse = true;
 	}
 
 	public override bool CanUseItem(Player player) => player.ownedProjectileCounts[ModContent.ProjectileType<GryphonHoldout>()] <= 0;
@@ -147,7 +140,6 @@ public class GryphonHoldout : ModProjectile, IDrawPixelated
 			for (int i = 0; i < MAX_POINTS; i++)
 			{
 				float step = i / (float)MAX_POINTS;
-
 				cache2.Add(Vector2.Lerp(start, end, step));
 			}
 
@@ -222,7 +214,7 @@ public class GryphonHoldout : ModProjectile, IDrawPixelated
 		Item item = Owner.HeldItem;
 		StatModifiers modifiers = new(
 			new StatModifier(FullyCharged ? 1.2f : 1f, 1f),
-			new StatModifier(1.5f, 1));
+			new StatModifier(MathHelper.Lerp(1.5f, 0.3f, ChargeProgress), 1));
 
 		Item ammoItem = Owner.ChooseAmmo(item);
 		if (ammoItem != null && ammoItem.ModItem is IShotgunAmmo ammo)

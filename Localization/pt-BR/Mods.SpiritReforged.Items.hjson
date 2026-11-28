@@ -15,6 +15,7 @@ CommonTooltips: {
 		Hold <left> to block incoming damage
 		Gains increased damage with defense
 		''' */
+	// Magazine: Can fire {0} shots before reloading
 }
 
 Kelp: {
@@ -4092,12 +4093,16 @@ Luger: {
 
 TwinMill: {
 	// DisplayName: Twin Mill
-	// Tooltip: Fires two shots simultaneously
+	/* Tooltip:
+		'''
+		{0}% chance to save ammo
+		Fires two shots simultaneously
+		''' */
 }
 
 DuelingPistols: {
 	// DisplayName: Dueling Pistols
-	// Tooltip: ""
+	// Tooltip: "{0}% chance to save ammo"
 }
 
 MammothGun: {

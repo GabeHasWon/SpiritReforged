@@ -15,6 +15,7 @@ CommonTooltips: {
 		Hold <left> to block incoming damage
 		Gains increased damage with defense
 		'''
+	Magazine: "{0} magazine capacity"
 }
 
 Kelp: {
